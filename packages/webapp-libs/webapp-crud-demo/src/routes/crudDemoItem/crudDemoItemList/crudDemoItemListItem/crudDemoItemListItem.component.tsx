@@ -98,17 +98,19 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
   );
 
   return (
-    <li className="group dark:hover:text-slate-500">
-      <div className="group flex items-center justify-between w-full min-w-15 p-4 transition focus:outline-none hover:bg-secondary hover:text-secondary-foreground dark:hover:text-slate-100">
+    <li className="group">
+      <div className="group flex items-center justify-between w-full min-w-15 p-4 transition focus:outline-none hover:bg-muted/50">
         <Link
-          className="border-input transition-colors group-hover:dark:text-slate-100 hover:no-underline w-full justify-start min-w-0 max-w-full cursor-pointer"
+          className="transition-colors hover:no-underline w-full justify-start min-w-0 max-w-full cursor-pointer flex-1"
           to={generateTenantPath(RoutesConfig.crudDemoItem.details, { id: data.id })}
         >
-          <p className="dark:hover:text-slate-500 text-base transition-colors whitespace-nowrap overflow-hidden text-ellipsis">
+          <p className="text-base font-medium transition-colors whitespace-nowrap overflow-hidden text-ellipsis hover:text-primary">
             {data.name}
           </p>
         </Link>
-        {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
+        <div className="flex-shrink-0 ml-4">
+          {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
+        </div>
       </div>
     </li>
   );

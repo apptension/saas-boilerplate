@@ -1,15 +1,16 @@
 import { CrudDemoItemListQueryQuery, getFragmentData, gql, pageCursorsFragment } from '@sb/webapp-api-client/graphql';
 import { usePagedPaginatedQuery } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
-import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Paragraph } from '@sb/webapp-core/components/typography';
 import { TableFooter } from '@sb/webapp-core/components/table';
-import { Card, CardContent } from '@sb/webapp-core/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
-import { PlusCircle } from 'lucide-react';
-import { FormattedMessage } from 'react-intl';
+import { Database, Plus } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemListItem } from './crudDemoItemListItem';
@@ -37,6 +38,7 @@ type CrudDemoItemListSearchParams = {
 };
 
 export const CrudDemoItemList = () => {
+  const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
   const { data: currentTenant } = useCurrentTenant();
 
@@ -61,9 +63,21 @@ export const CrudDemoItemList = () => {
       if (data.allCrudDemoItems && data.allCrudDemoItems.edges.length <= 0) return renderEmptyList();
 
       return (
-        <Card className="mt-4">
-          <CardContent>
-            <ul className="w-full mt-4 rounded [&>li]:border-b [&>li:last-child]:border-none">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              <FormattedMessage id="CrudDemoItemList / Items title" defaultMessage="Items" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                id="CrudDemoItemList / Items description"
+                defaultMessage="Manage your CRUD example items"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ul className="divide-y">
               {mapConnection(
                 (node) => (
                   <CrudDemoItemListItem item={node} key={node.id} />
@@ -80,15 +94,28 @@ export const CrudDemoItemList = () => {
 
   const renderEmptyList = () => {
     return (
-      <Card className="mt-4">
-        <CardContent>
-          <ul className="flex items-center justify-center w-full mt-4 rounded [&>li]:border-b [&>li]:border-slate-200 [&>li:last-child]:border-none">
-            <li className="py-16">
-              <h3 className="text-muted-foreground">
-                <FormattedMessage id="CrudDemoItemList / Headline" defaultMessage="Empty list" />
-              </h3>
-            </li>
-          </ul>
+      <Card>
+        <CardContent className="py-16">
+          <div className="flex flex-col items-center justify-center text-center">
+            <Database className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">
+              <FormattedMessage id="CrudDemoItemList / Empty title" defaultMessage="No items yet" />
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              <FormattedMessage
+                id="CrudDemoItemList / Empty description"
+                defaultMessage="Get started by creating your first CRUD example item"
+              />
+            </p>
+            <Link
+              to={generateLocalePath(RoutesConfig.crudDemoItem.add)}
+              variant={ButtonVariant.PRIMARY}
+              className="gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              <FormattedMessage id="CrudDemoItemList / Add first item" defaultMessage="Add your first item" />
+            </Link>
+          </div>
         </CardContent>
       </Card>
     );
@@ -96,43 +123,65 @@ export const CrudDemoItemList = () => {
 
   return (
     <PageLayout>
-      <PageHeadline
-        header={<FormattedMessage id="CrudDemoItemList / Title" defaultMessage="CRUD Example Items" />}
-        subheader={
-          <FormattedMessage
-            id="CrudDemoItemList / Subheader"
-            defaultMessage="Interactive CRUD example to explore and understand features"
-          />
-        }
+      <Helmet
+        title={intl.formatMessage({
+          defaultMessage: 'CRUD Example Items',
+          id: 'CrudDemoItemList / page title',
+        })}
       />
 
-      <Link
-        to={generateLocalePath(RoutesConfig.crudDemoItem.add)}
-        variant={ButtonVariant.PRIMARY}
-        icon={<PlusCircle className="mr-2 h-4 w-4" />}
-      >
-        <FormattedMessage id="CrudDemoItemList / Add new" defaultMessage="Add new item" />
-      </Link>
+      <div className="mx-auto w-full max-w-5xl space-y-8">
+        {/* Hero Section */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Database className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">
+              <FormattedMessage id="CrudDemoItemList / Title" defaultMessage="CRUD Example Items" />
+            </h1>
+          </div>
+          <Paragraph className="text-lg text-muted-foreground">
+            <FormattedMessage
+              id="CrudDemoItemList / Subheader"
+              defaultMessage="Interactive CRUD example to explore and understand features"
+            />
+          </Paragraph>
+        </div>
 
-      {loading ? (
-        <ListSkeleton />
-      ) : (
-        <>
-          {renderList()}
-          <TableFooter
-            pageSize={pageSize}
-            pagination={{
-              around: pageCursors?.around,
-              first: pageCursors?.first,
-              last: pageCursors?.last,
-              next: pageCursors?.next,
-              previous: pageCursors?.previous,
-              onPageClick: onPageClick,
-            }}
-            onPageSizeChange={handlePageSizeChange}
-          />
-        </>
-      )}
+        {/* Actions */}
+        <div className="flex justify-end">
+          <Link
+            to={generateLocalePath(RoutesConfig.crudDemoItem.add)}
+            variant={ButtonVariant.PRIMARY}
+            className="gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            <FormattedMessage id="CrudDemoItemList / Add new" defaultMessage="Add new item" />
+          </Link>
+        </div>
+
+        {/* Content */}
+        {loading ? (
+          <ListSkeleton />
+        ) : (
+          <>
+            {renderList()}
+            {data?.allCrudDemoItems && data.allCrudDemoItems.edges.length > 0 && (
+              <TableFooter
+                pageSize={pageSize}
+                pagination={{
+                  around: pageCursors?.around,
+                  first: pageCursors?.first,
+                  last: pageCursors?.last,
+                  next: pageCursors?.next,
+                  previous: pageCursors?.previous,
+                  onPageClick: onPageClick,
+                }}
+                onPageSizeChange={handlePageSizeChange}
+              />
+            )}
+          </>
+        )}
+      </div>
     </PageLayout>
   );
 };

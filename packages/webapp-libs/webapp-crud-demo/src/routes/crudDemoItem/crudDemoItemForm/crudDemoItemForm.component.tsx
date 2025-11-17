@@ -37,7 +37,7 @@ export const CrudDemoItemForm = ({ initialData, onSubmit, error, loading }: Crud
 
   return (
     <Form {...form}>
-      <form className="flex flex-col" onSubmit={handleFormSubmit}>
+      <form className="flex flex-col gap-6" onSubmit={handleFormSubmit}>
         <FormField
           control={form.control}
           name="name"
@@ -77,18 +77,22 @@ export const CrudDemoItemForm = ({ initialData, onSubmit, error, loading }: Crud
           )}
         />
 
-        {hasGenericErrorOnly && <span className="absolute text-red-500">{genericError}</span>}
+        {hasGenericErrorOnly && (
+          <div className="text-sm text-destructive">
+            <span>{genericError}</span>
+          </div>
+        )}
 
-        <div className="mt-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end mt-6">
           <Link
-            className="mr-4"
             to={generateLocalePath(RoutesConfig.crudDemoItem.list)}
             variant={ButtonVariant.SECONDARY}
+            className="w-full sm:w-fit"
           >
             <FormattedMessage defaultMessage="Cancel" id="CrudDemoItem form / Cancel button" />
           </Link>
 
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading} className="w-full sm:w-fit">
             <FormattedMessage defaultMessage="Save changes" id="CrudDemoItem form / Submit button" />
           </Button>
         </div>

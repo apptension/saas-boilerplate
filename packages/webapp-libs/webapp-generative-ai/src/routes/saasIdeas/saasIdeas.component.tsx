@@ -57,16 +57,25 @@ export const SaasIdeas = () => {
 
   const [commitGenerateSaasIdeasMutation, { loading }] = useMutation(generateSaasIdeasMutation, {
     onError: (error) => {
+      console.error('GraphQL Error:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
       toast({ description: error.message, variant: 'destructive' });
       setIsTyping(false);
     },
     onCompleted: (data) => {
-      const ideas = data?.generateSaasIdeas?.ideas || [];
-      if (ideas.length > 0) {
-        const formattedResponse = ideas
-          .filter((idea): idea is string => idea !== null)
-          .map((idea, index) => `${index + 1}. ${idea}`)
-          .join('\n\n');
+      console.log('GraphQL Response:', data);
+      console.log('Full data object:', JSON.stringify(data, null, 2));
+      const response = data?.generateSaasIdeas?.response;
+      console.log('Extracted response:', response);
+      console.log('Response type:', typeof response);
+      console.log('Response length:', response?.length);
+      
+      if (response) {
+        // Check if response looks like code (contains common code patterns)
+        const looksLikeCode = /(function|const|import|export|def |class |<|>|{|}|;|\(\))/.test(response);
+        if (looksLikeCode) {
+          console.warn('Response looks like code!', response.substring(0, 500));
+        }
         
         setIsTyping(false);
         setTimeout(() => {
@@ -75,16 +84,22 @@ export const SaasIdeas = () => {
             {
               id: Date.now().toString(),
               role: 'assistant',
-              content: formattedResponse,
+              content: response,
               timestamp: new Date(),
             },
           ]);
         }, 500);
+      } else {
+        console.warn('No response in data:', data);
+        setIsTyping(false);
       }
     },
   });
 
   const handleFormSubmit = handleSubmit(async (data) => {
+    const keywordsArray = data.keywords.split(',').map((keyword) => keyword.trim());
+    console.log('Form submit - keywords:', keywordsArray);
+    
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
@@ -96,13 +111,17 @@ export const SaasIdeas = () => {
     setIsTyping(true);
     reset();
 
-    await commitGenerateSaasIdeasMutation({
-      variables: {
-        input: {
-          keywords: data.keywords.split(',').map((keyword) => keyword.trim()),
+    try {
+      await commitGenerateSaasIdeasMutation({
+        variables: {
+          input: {
+            keywords: keywordsArray,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.error('Mutation error in handleFormSubmit:', error);
+    }
   });
 
   useEffect(() => {
@@ -130,42 +149,55 @@ export const SaasIdeas = () => {
 
   const examplePrompts = useMemo(
     () => [
-      intl.formatMessage({
-        defaultMessage: 'Recruitment software, performance management',
-        id: 'SaaS ideas / Example prompt 1',
-      }),
-      intl.formatMessage({
-        defaultMessage: 'Task management, project management',
-        id: 'SaaS ideas / Example prompt 2',
-      }),
-      intl.formatMessage({
-        defaultMessage: 'Sales automation, inventory management',
-        id: 'SaaS ideas / Example prompt 3',
-      }),
+      {
+        keywords: ['Recruitment software', 'performance management'],
+        label: intl.formatMessage({
+          defaultMessage: 'Show me ideas for recruitment & HR SaaS products',
+          id: 'SaaS ideas / Example prompt 1',
+        }),
+      },
+      {
+        keywords: ['Task management', 'project management'],
+        label: intl.formatMessage({
+          defaultMessage: 'Show me ideas for project management SaaS products',
+          id: 'SaaS ideas / Example prompt 2',
+        }),
+      },
+      {
+        keywords: ['Sales automation', 'inventory management'],
+        label: intl.formatMessage({
+          defaultMessage: 'Show me ideas for sales & inventory SaaS products',
+          id: 'SaaS ideas / Example prompt 3',
+        }),
+      },
     ],
     [intl]
   );
 
-  const handleExampleClick = async (example: string) => {
-    form.setValue('keywords', example);
+  const handleExampleClick = async (example: { keywords: string[]; label: string }) => {
+    console.log('Button click - keywords:', example.keywords);
+    const keywordsString = example.keywords.join(', ');
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: example,
+      content: keywordsString,
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setIsTyping(true);
-    form.reset();
 
-    await commitGenerateSaasIdeasMutation({
-      variables: {
-        input: {
-          keywords: example.split(',').map((keyword) => keyword.trim()),
+    try {
+      await commitGenerateSaasIdeasMutation({
+        variables: {
+          input: {
+            keywords: example.keywords,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.error('Mutation error in handleExampleClick:', error);
+    }
   };
 
   return (
@@ -196,7 +228,7 @@ export const SaasIdeas = () => {
 
         {/* Chat Interface Card */}
         <Card className="flex flex-col h-[600px]">
-          <CardHeader>
+          <CardHeader className="flex-shrink-0">
             <CardTitle className="flex items-center gap-2">
               <Bot className="h-5 w-5" />
               <FormattedMessage defaultMessage="Chat" id="SaaS ideas / Chat title" />
@@ -208,9 +240,9 @@ export const SaasIdeas = () => {
               />
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex-1 flex flex-col p-0">
+          <CardContent className="flex-1 flex flex-col p-0 min-h-0">
             {/* Messages Area */}
-            <div ref={scrollAreaRef} className="flex-1 overflow-y-auto px-6">
+            <div ref={scrollAreaRef} className="flex-1 overflow-y-auto px-6 min-h-0">
               <div className="space-y-4 py-6">
                 {messages.map((message) => (
                   <div
@@ -229,7 +261,7 @@ export const SaasIdeas = () => {
                           : 'bg-muted text-foreground'
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                      <p className="text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere">{message.content}</p>
                     </div>
                     {message.role === 'user' && (
                       <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -257,7 +289,7 @@ export const SaasIdeas = () => {
             </div>
 
             {/* Input Area */}
-            <div className="border-t p-4">
+            <div className="border-t p-4 flex-shrink-0">
               <Form {...form}>
                 <form onSubmit={handleFormSubmit} noValidate className="space-y-4">
                   <FormField
@@ -302,7 +334,7 @@ export const SaasIdeas = () => {
                             disabled={loading || isTyping}
                             className="text-xs"
                           >
-                            {prompt}
+                            {prompt.label}
                           </Button>
                         ))}
                       </div>

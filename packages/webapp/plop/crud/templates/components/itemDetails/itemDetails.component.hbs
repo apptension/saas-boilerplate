@@ -1,14 +1,22 @@
 import { useQuery } from '@apollo/client';
 import { gql } from '@sb/webapp-api-client/graphql';
-import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Separator } from '@sb/webapp-core/components/separator';
+import { Paragraph } from '@sb/webapp-core/components/typography';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { Skeleton } from '@sb/webapp-core/components/ui/skeleton';
-import { useParams } from 'react-router';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { useToast } from '@sb/webapp-core/toast';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
+import { ArrowLeft, Database } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+
+import { RoutesConfig } from '../../../app/config/routes';
 
 export const {{ pascalCase name }}DetailsQuery = gql(/* GraphQL */ `
-  query {{ pascalCase name }}DetailsQuery($id: ID!) {
-    {{ pascalCase name }}(id: $id) {
+  query {{ pascalCase name }}DetailsQuery($id: ID!, $tenantId: ID!) {
+    {{ camelCase name }}(id: $id, tenantId: $tenantId) {
       id
       name
     }
@@ -20,30 +28,108 @@ export const {{ pascalCase name }}Details = () => {
     id: string;
   };
   const { id } = useParams<keyof Params>() as Params;
+  const { data: currentTenant } = useCurrentTenant();
+  const { toast } = useToast();
+  const intl = useIntl();
+  const navigate = useNavigate();
+  const generateLocalePath = useGenerateLocalePath();
+  const errorMessage = intl.formatMessage({
+    id: '{{ pascalCase name }} / {{ pascalCase name }}Details / ErrorMessage',
+    defaultMessage: 'Failed to load item details',
+  });
 
   const { loading, data } = useQuery({{ pascalCase name }}DetailsQuery, {
     variables: {
       id,
+      tenantId: currentTenant?.id || '',
     },
+    onError: () => {
+      toast({ description: errorMessage, variant: 'destructive' });
+      navigate(generateLocalePath(RoutesConfig.{{ camelCase name }}.list));
+    },
+    skip: !currentTenant,
   });
 
   if (loading) {
     return (
       <PageLayout>
-        <div className="flex w-full justify-between items-center">
-          <Skeleton className="h-4 w-1/2" />
-          <Skeleton className="h-6 w-8" />
+        <div className="mx-auto w-full max-w-5xl space-y-8">
+          <div className="space-y-4">
+            <Skeleton className="h-10 w-48" />
+            <Skeleton className="h-6 w-96" />
+          </div>
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-4 w-64" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-6 w-48" />
+            </CardContent>
+          </Card>
         </div>
-        <Separator />
       </PageLayout>
     );
   }
 
-  const itemData = data?.{{ pascalCase name }};
+  const itemData = data?.{{ camelCase name }};
+
+  if (!itemData) {
+    return null;
+  }
 
   return (
     <PageLayout>
-      <PageHeadline hasBackButton header={itemData?.name} />
+      <Helmet
+        title={intl.formatMessage({
+          defaultMessage: 'Item Details',
+          id: '{{ pascalCase name }}Details / page title',
+        })}
+      />
+
+      <div className="mx-auto w-full max-w-5xl space-y-8">
+        {/* Hero Section */}
+        <div className="space-y-4">
+          <Link
+            to={generateLocalePath(RoutesConfig.{{ camelCase name }}.list)}
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <FormattedMessage defaultMessage="Back to items" id="{{ pascalCase name }}Details / Back" />
+          </Link>
+          <div className="flex items-center gap-2">
+            <Database className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">{itemData.name}</h1>
+          </div>
+          <Paragraph className="text-lg text-muted-foreground">
+            <FormattedMessage defaultMessage="View item details" id="{{ pascalCase name }}Details / Description" />
+          </Paragraph>
+        </div>
+
+        {/* Details Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              <FormattedMessage defaultMessage="Item Information" id="{{ pascalCase name }}Details / Card title" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Details about this item"
+                id="{{ pascalCase name }}Details / Card description"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-1">
+              <div className="text-sm font-medium text-muted-foreground">
+                <FormattedMessage defaultMessage="Name:" id="{{ pascalCase name }}Details / Name label" />
+              </div>
+              <Paragraph className="text-base font-semibold">{itemData.name}</Paragraph>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </PageLayout>
   );
 };

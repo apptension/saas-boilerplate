@@ -24,7 +24,7 @@ RUN \
   apt-get update && \
   apt-get install -yqq nodejs && \
   pip install -U pip~=23.0.1 && pip install "urllib3<2" pdm~=2.5.2 && \
-  npm i -g npm@^8 pnpm@~9.5.0 && \
+  npm i -g npm@^8 pnpm@~10.13.0 && \
   rm -rf /var/lib/apt/lists/*
 
 COPY --from=chamber /chamber /bin/chamber
@@ -35,7 +35,7 @@ RUN pdm sync
 
 WORKDIR $APP_PATH
 COPY /patches/ $APP_PATH/patches/
-COPY package.json pnpm*.yaml $APP_PATH/
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml $APP_PATH/
 COPY $SRC_CORE_PATH/package.json $DEST_CORE_PATH/
 COPY $SRC_WORKERS_PATH/package.json $DEST_WORKERS_PATH/
 COPY tsconfig* $APP_PATH/

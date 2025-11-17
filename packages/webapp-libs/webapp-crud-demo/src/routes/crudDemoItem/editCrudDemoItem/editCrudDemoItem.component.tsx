@@ -1,14 +1,16 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Separator } from '@sb/webapp-core/components/ui/separator';
+import { Paragraph } from '@sb/webapp-core/components/typography';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { Skeleton } from '@sb/webapp-core/components/ui/skeleton';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
+import { ArrowLeft, Database, Edit } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Navigate, useNavigate, useParams } from 'react-router';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
@@ -48,25 +50,34 @@ export const EditCrudDemoItem = () => {
     },
   });
 
-  if (loading)
+  if (loading) {
     return (
       <PageLayout>
-        <div className="flex w-full justify-between items-center">
-          <Skeleton className="h-4 w-1/2" />
-          <Skeleton className="h-6 w-8" />
-        </div>
-        <Separator />
-        <div className="flex flex-col">
-          <div className="mt-6">
-            <Skeleton className="h-8 w-48 mb-4" />
-            <div className="flex gap-4">
-              <Skeleton className="h-6 w-16" />
-              <Skeleton className="h-6 w-16" />
-            </div>
+        <div className="mx-auto w-full max-w-5xl space-y-8">
+          <div className="space-y-4">
+            <Skeleton className="h-10 w-48" />
+            <Skeleton className="h-6 w-96" />
           </div>
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-4 w-64" />
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Skeleton className="h-10 w-full" />
+                <div className="flex gap-4">
+                  <Skeleton className="h-10 w-24" />
+                  <Skeleton className="h-10 w-32" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </PageLayout>
     );
+  }
+
   if (!crudDemoItem) return <Navigate to={generateLocalePath(RoutesConfig.crudDemoItem.index)} />;
 
   const onFormSubmit = (formData: CrudDemoItemFormFields) => {
@@ -75,13 +86,56 @@ export const EditCrudDemoItem = () => {
       variables: { input: { tenantId: currentTenant.id, id: crudDemoItem.id, name: formData.name } },
     });
   };
+
   return (
     <PageLayout>
-      <PageHeadline
-        hasBackButton
-        header={<FormattedMessage defaultMessage="Edit CRUD Example Item" id="EditCrudDemoItem / Header" />}
+      <Helmet
+        title={intl.formatMessage({
+          defaultMessage: 'Edit CRUD Example Item',
+          id: 'EditCrudDemoItem / page title',
+        })}
       />
-      <CrudDemoItemForm onSubmit={onFormSubmit} initialData={crudDemoItem} error={error} loading={loadingMutation} />
+
+      <div className="mx-auto w-full max-w-5xl space-y-8">
+        {/* Hero Section */}
+        <div className="space-y-4">
+          <Link
+            to={generateLocalePath(RoutesConfig.crudDemoItem.list)}
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <FormattedMessage defaultMessage="Back to items" id="EditCrudDemoItem / Back" />
+          </Link>
+          <div className="flex items-center gap-2">
+            <Edit className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">
+              <FormattedMessage defaultMessage="Edit CRUD Example Item" id="EditCrudDemoItem / Header" />
+            </h1>
+          </div>
+          <Paragraph className="text-lg text-muted-foreground">
+            <FormattedMessage defaultMessage="Update the item details" id="EditCrudDemoItem / Description" />
+          </Paragraph>
+        </div>
+
+        {/* Form Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              <FormattedMessage defaultMessage="Item Details" id="EditCrudDemoItem / Form title" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Update the details for this item"
+                id="EditCrudDemoItem / Form description"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CrudDemoItemForm onSubmit={onFormSubmit} initialData={crudDemoItem} error={error} loading={loadingMutation} />
+          </CardContent>
+        </Card>
+      </div>
     </PageLayout>
   );
 };

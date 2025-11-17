@@ -746,7 +746,6 @@ export type ContentfulTag = {
 
 export type CreateCrudDemoItemMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  createdBy?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   tenantId: Scalars['String']['input'];
 };
@@ -760,7 +759,6 @@ export type CreateCrudDemoItemMutationPayload = {
 
 export type CreateDocumentDemoItemMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  createdBy?: InputMaybe<Scalars['String']['input']>;
   file?: InputMaybe<Scalars['Upload']['input']>;
 };
 
@@ -774,7 +772,6 @@ export type CreateDocumentDemoItemMutationPayload = {
 export type CreateFavoriteContentfulDemoItemMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   item: Scalars['String']['input'];
-  user?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateFavoriteContentfulDemoItemMutationPayload = {
@@ -1071,6 +1068,7 @@ export type DisableOtpMutationPayload = {
   ok?: Maybe<Scalars['Boolean']['output']>;
 };
 
+/** An enumeration. */
 export enum DjstripeChargeFailureCodeChoices {
   /** Account already exists */
   ACCOUNT_ALREADY_EXISTS = 'ACCOUNT_ALREADY_EXISTS',
@@ -1248,6 +1246,7 @@ export enum DjstripeChargeFailureCodeChoices {
   URL_INVALID = 'URL_INVALID'
 }
 
+/** An enumeration. */
 export enum DjstripeChargeStatusChoices {
   /** Failed */
   FAILED = 'FAILED',
@@ -1257,6 +1256,7 @@ export enum DjstripeChargeStatusChoices {
   SUCCEEDED = 'SUCCEEDED'
 }
 
+/** An enumeration. */
 export enum DjstripeInvoiceBillingReasonChoices {
   /** Automatic pending invoice item invoice */
   AUTOMATIC_PENDING_INVOICE_ITEM_INVOICE = 'AUTOMATIC_PENDING_INVOICE_ITEM_INVOICE',
@@ -1276,6 +1276,7 @@ export enum DjstripeInvoiceBillingReasonChoices {
   UPCOMING = 'UPCOMING'
 }
 
+/** An enumeration. */
 export enum DjstripeInvoiceCollectionMethodChoices {
   /** Charge automatically */
   CHARGE_AUTOMATICALLY = 'CHARGE_AUTOMATICALLY',
@@ -1283,6 +1284,7 @@ export enum DjstripeInvoiceCollectionMethodChoices {
   SEND_INVOICE = 'SEND_INVOICE'
 }
 
+/** An enumeration. */
 export enum DjstripeInvoiceCustomerTaxExemptChoices {
   /** Exempt */
   EXEMPT = 'EXEMPT',
@@ -1292,6 +1294,7 @@ export enum DjstripeInvoiceCustomerTaxExemptChoices {
   REVERSE = 'REVERSE'
 }
 
+/** An enumeration. */
 export enum DjstripeInvoiceStatusChoices {
   /** Draft */
   DRAFT = 'DRAFT',
@@ -1305,6 +1308,7 @@ export enum DjstripeInvoiceStatusChoices {
   VOID = 'VOID'
 }
 
+/** An enumeration. */
 export enum DjstripePaymentMethodTypeChoices {
   /** Acss Dbit */
   ACSS_DEBIT = 'ACSS_DEBIT',
@@ -1368,6 +1372,7 @@ export enum DjstripePaymentMethodTypeChoices {
   WECHAT_PAY = 'WECHAT_PAY'
 }
 
+/** An enumeration. */
 export enum DjstripePlanAggregateUsageChoices {
   /** Last during period */
   LAST_DURING_PERIOD = 'LAST_DURING_PERIOD',
@@ -1379,6 +1384,7 @@ export enum DjstripePlanAggregateUsageChoices {
   SUM = 'SUM'
 }
 
+/** An enumeration. */
 export enum DjstripePlanBillingSchemeChoices {
   /** Per-unit */
   PER_UNIT = 'PER_UNIT',
@@ -1386,6 +1392,7 @@ export enum DjstripePlanBillingSchemeChoices {
   TIERED = 'TIERED'
 }
 
+/** An enumeration. */
 export enum DjstripePlanIntervalChoices {
   /** Day */
   DAY = 'DAY',
@@ -1397,6 +1404,7 @@ export enum DjstripePlanIntervalChoices {
   YEAR = 'YEAR'
 }
 
+/** An enumeration. */
 export enum DjstripePlanTiersModeChoices {
   /** Graduated */
   GRADUATED = 'GRADUATED',
@@ -1404,6 +1412,7 @@ export enum DjstripePlanTiersModeChoices {
   VOLUME = 'VOLUME'
 }
 
+/** An enumeration. */
 export enum DjstripePlanUsageTypeChoices {
   /** Licensed */
   LICENSED = 'LICENSED',
@@ -1411,6 +1420,7 @@ export enum DjstripePlanUsageTypeChoices {
   METERED = 'METERED'
 }
 
+/** An enumeration. */
 export enum DjstripePriceBillingSchemeChoices {
   /** Per-unit */
   PER_UNIT = 'PER_UNIT',
@@ -1418,6 +1428,7 @@ export enum DjstripePriceBillingSchemeChoices {
   TIERED = 'TIERED'
 }
 
+/** An enumeration. */
 export enum DjstripePriceTiersModeChoices {
   /** Graduated */
   GRADUATED = 'GRADUATED',
@@ -1425,6 +1436,7 @@ export enum DjstripePriceTiersModeChoices {
   VOLUME = 'VOLUME'
 }
 
+/** An enumeration. */
 export enum DjstripePriceTypeChoices {
   /** One-time */
   ONE_TIME = 'ONE_TIME',
@@ -1432,6 +1444,7 @@ export enum DjstripePriceTypeChoices {
   RECURRING = 'RECURRING'
 }
 
+/** An enumeration. */
 export enum DjstripeProductTypeChoices {
   /** Good */
   GOOD = 'GOOD',
@@ -1439,6 +1452,7 @@ export enum DjstripeProductTypeChoices {
   SERVICE = 'SERVICE'
 }
 
+/** An enumeration. */
 export enum DjstripeSetupIntentCancellationReasonChoices {
   /** Abandoned */
   ABANDONED = 'ABANDONED',
@@ -1448,6 +1462,7 @@ export enum DjstripeSetupIntentCancellationReasonChoices {
   REQUESTED_BY_CUSTOMER = 'REQUESTED_BY_CUSTOMER'
 }
 
+/** An enumeration. */
 export enum DjstripeSetupIntentStatusChoices {
   /** Cancellation invalidates the intent for future confirmation and cannot be undone. */
   CANCELED = 'CANCELED',
@@ -1463,6 +1478,7 @@ export enum DjstripeSetupIntentStatusChoices {
   SUCCEEDED = 'SUCCEEDED'
 }
 
+/** An enumeration. */
 export enum DjstripeSetupIntentUsageChoices {
   /** Off session */
   OFF_SESSION = 'OFF_SESSION',
@@ -1470,6 +1486,7 @@ export enum DjstripeSetupIntentUsageChoices {
   ON_SESSION = 'ON_SESSION'
 }
 
+/** An enumeration. */
 export enum DjstripeSubscriptionScheduleEndBehaviorChoices {
   /** Cancel */
   CANCEL = 'CANCEL',
@@ -1477,6 +1494,7 @@ export enum DjstripeSubscriptionScheduleEndBehaviorChoices {
   RELEASE = 'RELEASE'
 }
 
+/** An enumeration. */
 export enum DjstripeSubscriptionScheduleStatusChoices {
   /** Active */
   ACTIVE = 'ACTIVE',
@@ -1490,6 +1508,7 @@ export enum DjstripeSubscriptionScheduleStatusChoices {
   RELEASED = 'RELEASED'
 }
 
+/** An enumeration. */
 export enum DjstripeSubscriptionStatusChoices {
   /** Active */
   ACTIVE = 'ACTIVE',
@@ -1589,7 +1608,7 @@ export type GenerateSaasIdeasMutationInput = {
 export type GenerateSaasIdeasMutationPayload = {
   __typename?: 'GenerateSaasIdeasMutationPayload';
   clientMutationId?: Maybe<Scalars['String']['output']>;
-  ideas?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  response?: Maybe<Scalars['String']['output']>;
 };
 
 export enum ImageFormat {
@@ -2771,7 +2790,6 @@ export enum TenantUserRole {
 
 export type UpdateCrudDemoItemMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  createdBy?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   name: Scalars['String']['input'];
   tenantId: Scalars['String']['input'];
@@ -3251,7 +3269,7 @@ export type GenerateSaasIdeasMutationMutationVariables = Exact<{
 }>;
 
 
-export type GenerateSaasIdeasMutationMutation = { __typename?: 'ApiMutation', generateSaasIdeas?: { __typename?: 'GenerateSaasIdeasMutationPayload', ideas?: Array<string | null> | null } | null };
+export type GenerateSaasIdeasMutationMutation = { __typename?: 'ApiMutation', generateSaasIdeas?: { __typename?: 'GenerateSaasIdeasMutationPayload', response?: string | null } | null };
 
 export type NotificationMutationMutationVariables = Exact<{
   input: UpdateNotificationMutationInput;
@@ -3505,7 +3523,7 @@ export const StripeCreateSetupIntentMutation_Document = {"kind":"Document","defi
 export const SubscriptionChangeActiveSubscriptionMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"subscriptionChangeActiveSubscriptionMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChangeActiveSubscriptionMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"changeActiveSubscription"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subscriptionSchedule"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment_"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionScheduleType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phases"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"price"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"trialStart"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"canActivateTrial"}},{"kind":"Field","name":{"kind":"Name","value":"defaultPaymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment_"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<SubscriptionChangeActiveSubscriptionMutationMutation, SubscriptionChangeActiveSubscriptionMutationMutationVariables>;
 export const SubscriptionPlansAllQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"subscriptionPlansAllQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allSubscriptionPlans"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"100"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionPriceItemFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionPriceItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePriceType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}}]}}]} as unknown as DocumentNode<SubscriptionPlansAllQueryQuery, SubscriptionPlansAllQueryQueryVariables>;
 export const StripeAllChargesQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"stripeAllChargesQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCharges"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripeChargeFragment"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionPlanItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionPlanType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"amount"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripeChargeFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripeChargeType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"created"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}},{"kind":"Field","name":{"kind":"Name","value":"paymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"invoice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plan"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionPlanItemFragment"}}]}}]}}]}}]}}]} as unknown as DocumentNode<StripeAllChargesQueryQuery, StripeAllChargesQueryQueryVariables>;
-export const GenerateSaasIdeasMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"generateSaasIdeasMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GenerateSaasIdeasMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"generateSaasIdeas"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ideas"}}]}}]}}]} as unknown as DocumentNode<GenerateSaasIdeasMutationMutation, GenerateSaasIdeasMutationMutationVariables>;
+export const GenerateSaasIdeasMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"generateSaasIdeasMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GenerateSaasIdeasMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"generateSaasIdeas"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"response"}}]}}]}}]} as unknown as DocumentNode<GenerateSaasIdeasMutationMutation, GenerateSaasIdeasMutationMutationVariables>;
 export const NotificationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"notificationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateNotificationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateNotification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"notificationEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<NotificationMutationMutation, NotificationMutationMutationVariables>;
 export const NotificationsListQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"notificationsListQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"count"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}},"defaultValue":{"kind":"IntValue","value":"20"}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"cursor"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListContentFragment"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsButtonContent"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListContentFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"allNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"count"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"cursor"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListItemFragment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsButtonContent"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}}]}}]} as unknown as DocumentNode<NotificationsListQueryQuery, NotificationsListQueryQueryVariables>;
 export const NotificationCreatedSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"NotificationCreatedSubscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"notificationCreated"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"notification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListItemFragment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<NotificationCreatedSubscriptionSubscription, NotificationCreatedSubscriptionSubscriptionVariables>;

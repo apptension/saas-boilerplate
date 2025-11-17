@@ -26,3 +26,12 @@ class OpenAICompletionResponseChoice(BaseModel):
 class OpenAICompletionResponse(OpenAIResponse):
     model: str
     choices: list[OpenAICompletionResponseChoice]
+
+
+# Structured SaaS Idea model
+class SaaSIdea(BaseModel):
+    name: str
+    description: str
+    targetMarket: str
+    features: list[str]
+    monetization: str

@@ -836,7 +836,7 @@ type DeleteTenantMembershipMutationPayload {
   clientMutationId: String
 }
 type GenerateSaasIdeasMutationPayload {
-  ideas: [String]
+  response: String
   clientMutationId: String
 }
 type ChangeActiveSubscriptionMutationPayload {
@@ -1046,12 +1046,14 @@ enum TenantUserRole {
   ADMIN
   MEMBER
 }
+"An enumeration."
 enum DjstripeProductTypeChoices {
   "Good"
   GOOD
   "Service"
   SERVICE
 }
+"An enumeration."
 enum DjstripePlanAggregateUsageChoices {
   "Last during period"
   LAST_DURING_PERIOD
@@ -1062,12 +1064,14 @@ enum DjstripePlanAggregateUsageChoices {
   "Sum"
   SUM
 }
+"An enumeration."
 enum DjstripePlanBillingSchemeChoices {
   "Per-unit"
   PER_UNIT
   "Tiered"
   TIERED
 }
+"An enumeration."
 enum DjstripePlanIntervalChoices {
   "Day"
   DAY
@@ -1078,18 +1082,21 @@ enum DjstripePlanIntervalChoices {
   "Year"
   YEAR
 }
+"An enumeration."
 enum DjstripePlanTiersModeChoices {
   "Graduated"
   GRADUATED
   "Volume-based"
   VOLUME
 }
+"An enumeration."
 enum DjstripePlanUsageTypeChoices {
   "Licensed"
   LICENSED
   "Metered"
   METERED
 }
+"An enumeration."
 enum DjstripeSubscriptionStatusChoices {
   "Active"
   ACTIVE
@@ -1106,30 +1113,35 @@ enum DjstripeSubscriptionStatusChoices {
   "Unpaid"
   UNPAID
 }
+"An enumeration."
 enum DjstripePriceTypeChoices {
   "One-time"
   ONE_TIME
   "Recurring"
   RECURRING
 }
+"An enumeration."
 enum DjstripePriceBillingSchemeChoices {
   "Per-unit"
   PER_UNIT
   "Tiered"
   TIERED
 }
+"An enumeration."
 enum DjstripePriceTiersModeChoices {
   "Graduated"
   GRADUATED
   "Volume-based"
   VOLUME
 }
+"An enumeration."
 enum DjstripeSubscriptionScheduleEndBehaviorChoices {
   "Cancel"
   CANCEL
   "Release"
   RELEASE
 }
+"An enumeration."
 enum DjstripeSubscriptionScheduleStatusChoices {
   "Active"
   ACTIVE
@@ -1142,6 +1154,7 @@ enum DjstripeSubscriptionScheduleStatusChoices {
   "Released"
   RELEASED
 }
+"An enumeration."
 enum DjstripePaymentMethodTypeChoices {
   "Acss Dbit"
   ACSS_DEBIT
@@ -1204,6 +1217,7 @@ enum DjstripePaymentMethodTypeChoices {
   "Wechat Pay"
   WECHAT_PAY
 }
+"An enumeration."
 enum DjstripeChargeFailureCodeChoices {
   "Account already exists"
   ACCOUNT_ALREADY_EXISTS
@@ -1380,6 +1394,7 @@ enum DjstripeChargeFailureCodeChoices {
   "URL invalid"
   URL_INVALID
 }
+"An enumeration."
 enum DjstripeInvoiceBillingReasonChoices {
   "Automatic pending invoice item invoice"
   AUTOMATIC_PENDING_INVOICE_ITEM_INVOICE
@@ -1398,12 +1413,14 @@ enum DjstripeInvoiceBillingReasonChoices {
   "Upcoming"
   UPCOMING
 }
+"An enumeration."
 enum DjstripeInvoiceCollectionMethodChoices {
   "Charge automatically"
   CHARGE_AUTOMATICALLY
   "Send invoice"
   SEND_INVOICE
 }
+"An enumeration."
 enum DjstripeInvoiceCustomerTaxExemptChoices {
   "Exempt"
   EXEMPT
@@ -1412,6 +1429,7 @@ enum DjstripeInvoiceCustomerTaxExemptChoices {
   "Reverse"
   REVERSE
 }
+"An enumeration."
 enum DjstripeInvoiceStatusChoices {
   "Draft"
   DRAFT
@@ -1424,6 +1442,7 @@ enum DjstripeInvoiceStatusChoices {
   "Void"
   VOID
 }
+"An enumeration."
 enum DjstripeChargeStatusChoices {
   "Failed"
   FAILED
@@ -1432,6 +1451,7 @@ enum DjstripeChargeStatusChoices {
   "Succeeded"
   SUCCEEDED
 }
+"An enumeration."
 enum DjstripeSetupIntentCancellationReasonChoices {
   "Abandoned"
   ABANDONED
@@ -1440,6 +1460,7 @@ enum DjstripeSetupIntentCancellationReasonChoices {
   "Requested by Customer"
   REQUESTED_BY_CUSTOMER
 }
+"An enumeration."
 enum DjstripeSetupIntentStatusChoices {
   "Cancellation invalidates the intent for future confirmation and cannot be undone."
   CANCELED
@@ -1454,6 +1475,7 @@ enum DjstripeSetupIntentStatusChoices {
   "Setup was successful and the payment method is optimized for future payments."
   SUCCEEDED
 }
+"An enumeration."
 enum DjstripeSetupIntentUsageChoices {
   "Off session"
   OFF_SESSION
@@ -1612,14 +1634,12 @@ input MarkReadAllNotificationsMutationInput {
 input CreateCrudDemoItemMutationInput {
   tenantId: String!
   name: String!
-  createdBy: String
   clientMutationId: String
 }
 input UpdateCrudDemoItemMutationInput {
   id: ID!
   tenantId: String!
   name: String!
-  createdBy: String
   clientMutationId: String
 }
 input DeleteCrudDemoItemMutationInput {
@@ -1629,7 +1649,6 @@ input DeleteCrudDemoItemMutationInput {
 }
 input CreateDocumentDemoItemMutationInput {
   file: Upload
-  createdBy: String
   clientMutationId: String
 }
 input DeleteDocumentDemoItemMutationInput {
@@ -1638,7 +1657,6 @@ input DeleteDocumentDemoItemMutationInput {
 }
 input CreateFavoriteContentfulDemoItemMutationInput {
   item: String!
-  user: String
   clientMutationId: String
 }
 input DeleteFavoriteContentfulDemoItemMutationInput {

@@ -59,7 +59,7 @@ const documents = {
     "\n  query stripeAllChargesQuery($tenantId: ID!) {\n    allCharges(tenantId: $tenantId) {\n      edges {\n        node {\n          id\n          ...stripeChargeFragment\n        }\n      }\n    }\n  }\n": types.StripeAllChargesQueryDocument,
     "\n  fragment stripeChargeFragment on StripeChargeType {\n    id\n    created\n    billingDetails\n    paymentMethod {\n      ...stripePaymentMethodFragment\n      id\n    }\n    amount\n    invoice {\n      id\n      subscription {\n        plan {\n          ...subscriptionPlanItemFragment\n        }\n      }\n    }\n  }\n": types.StripeChargeFragmentFragmentDoc,
     "\n  fragment subscriptionPlanItemFragment on SubscriptionPlanType {\n    id\n    pk\n    product {\n      id\n      name\n    }\n    amount\n  }\n": types.SubscriptionPlanItemFragmentFragmentDoc,
-    "\n  mutation generateSaasIdeasMutation($input: GenerateSaasIdeasMutationInput!) {\n    generateSaasIdeas(input: $input) {\n      ideas\n    }\n  }\n": types.GenerateSaasIdeasMutationDocument,
+    "\n  mutation generateSaasIdeasMutation($input: GenerateSaasIdeasMutationInput!) {\n    generateSaasIdeas(input: $input) {\n      response\n    }\n  }\n": types.GenerateSaasIdeasMutationDocument,
     "\n  mutation notificationMutation($input: UpdateNotificationMutationInput!) {\n    updateNotification(input: $input) {\n      hasUnreadNotifications\n      notificationEdge {\n        node {\n          id\n          readAt\n        }\n      }\n    }\n  }\n": types.NotificationMutationDocument,
     "\n  query notificationsListQuery($count: Int = 20, $cursor: String) {\n    ...notificationsListContentFragment\n    ...notificationsButtonContent\n  }\n": types.NotificationsListQueryDocument,
     "\n  subscription NotificationCreatedSubscription {\n    notificationCreated {\n      notification {\n        ...notificationsListItemFragment\n      }\n    }\n  }\n": types.NotificationCreatedSubscriptionDocument,
@@ -292,7 +292,7 @@ export function gql(source: "\n  fragment subscriptionPlanItemFragment on Subscr
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation generateSaasIdeasMutation($input: GenerateSaasIdeasMutationInput!) {\n    generateSaasIdeas(input: $input) {\n      ideas\n    }\n  }\n"): (typeof documents)["\n  mutation generateSaasIdeasMutation($input: GenerateSaasIdeasMutationInput!) {\n    generateSaasIdeas(input: $input) {\n      ideas\n    }\n  }\n"];
+export function gql(source: "\n  mutation generateSaasIdeasMutation($input: GenerateSaasIdeasMutationInput!) {\n    generateSaasIdeas(input: $input) {\n      response\n    }\n  }\n"): (typeof documents)["\n  mutation generateSaasIdeasMutation($input: GenerateSaasIdeasMutationInput!) {\n    generateSaasIdeas(input: $input) {\n      response\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -37,7 +37,7 @@ export const {{ pascalCase name }}Form = ({ initialData, onSubmit, error, loadin
 
   return (
     <Form {...form}>
-      <form className="flex flex-col" onSubmit={handleFormSubmit}>
+      <form className="flex flex-col gap-6" onSubmit={handleFormSubmit}>
         <FormField
           control={form.control}
           name="name"
@@ -77,18 +77,22 @@ export const {{ pascalCase name }}Form = ({ initialData, onSubmit, error, loadin
           )}
         />
 
-        {hasGenericErrorOnly && <span className="absolute text-red-500">{genericError}</span>}
+        {hasGenericErrorOnly && (
+          <div className="text-sm text-destructive">
+            <span>{genericError}</span>
+          </div>
+        )}
 
-        <div className="mt-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end mt-6">
           <Link
-            className="mr-4"
             to={generateLocalePath(RoutesConfig.{{ camelCase name }}.list)}
             variant={ButtonVariant.SECONDARY}
+            className="w-full sm:w-fit"
           >
             <FormattedMessage defaultMessage="Cancel" id="{{ pascalCase name }} form / Cancel button" />
           </Link>
 
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading} className="w-full sm:w-fit">
             <FormattedMessage defaultMessage="Save changes" id="{{ pascalCase name }} form / Submit button" />
           </Button>
         </div>
