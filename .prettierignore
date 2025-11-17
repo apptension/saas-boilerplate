@@ -6,3 +6,6 @@
 /.nx/cache
 
 /packages/backend/templates
+
+# GraphQL generated files
+**/__generated__/

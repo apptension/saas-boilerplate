@@ -1,13 +1,15 @@
 import hashid_field
-
-from django.db import models, IntegrityError, transaction
 from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError, models, transaction
+from django.db.models import Q, UniqueConstraint
+from django.utils import timezone
 from django.utils.text import slugify
-from django.db.models import UniqueConstraint, Q
+
+from common.models import TimestampedMixin
 
 from . import constants
 from .managers import TenantManager, TenantMembershipManager
-from common.models import TimestampedMixin
 
 
 class Tenant(TimestampedMixin, models.Model):
@@ -158,4 +160,20 @@ class TenantMembership(TimestampedMixin, models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user.email} {self.tenant.name} {self.role}"
+        if self.user:
+            return f"{self.user.email} - {self.tenant.name} - {self.role}"
+        else:
+            return f"{self.invitee_email_address} (pending) - {self.tenant.name} - {self.role}"
+
+    def save(self, *args, **kwargs):
+        if self.is_accepted and not self.invitation_accepted_at:
+            self.invitation_accepted_at = timezone.now()
+
+        elif not self.is_accepted:
+            self.invitation_accepted_at = None
+
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        if not self.is_accepted and self.invitation_accepted_at:
+            raise ValidationError("Pending invitations cannot have an accepted date")
