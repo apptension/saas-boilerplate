@@ -33,10 +33,9 @@ definitions:
 
   scripts:
     initializeStep: &initializeStep cp .env.test .env
-      && corepack enable
-      && corepack prepare pnpm@~9.5.0 --activate
-      && export PNPM_HOME="/root/.local/share/pnpm"
-      && export PATH="$PNPM_HOME:$PATH"
+      && npm install -g pnpm@10.13.1
+      && export PATH="/usr/local/bin:$PATH"
+      && pnpm --version
 
     setupAwsCli:
       &setupAwsCli export AWS_CLI_DEST_PATH=~/.clicache/awscli-2.8.8.zip
@@ -46,12 +45,11 @@ definitions:
       && /bin/bash ./aws/install
       && aws --version
 
-    setupDockerCompose:
-      &setupDockerCompose |
-        apt-get update && apt-get install -y curl
-        mkdir -p ~/.docker/cli-plugins
-        curl -SL https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
-        chmod +x ~/.docker/cli-plugins/docker-compose
+    setupDockerCompose: &setupDockerCompose |
+      apt-get update && apt-get install -y curl
+      mkdir -p ~/.docker/cli-plugins
+      curl -SL https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+      chmod +x ~/.docker/cli-plugins/docker-compose
 
     installWebappDeps: &installWebappDeps pnpm install
       --include-workspace-root
@@ -358,7 +356,7 @@ definitions:
             --frozen-lockfile
             --filter=backend...
           - pnpm nx run backend:lint:js
-          - export DOCKER_BUILDKIT=0  # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
+          - export DOCKER_BUILDKIT=0 # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
           - pnpm nx run backend:test
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
           - pipe: sonarsource/sonarcloud-scan:1.4.0
@@ -387,7 +385,7 @@ definitions:
             --include-workspace-root
             --frozen-lockfile
             --filter=workers...
-          - export DOCKER_BUILDKIT=0  # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
+          - export DOCKER_BUILDKIT=0 # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
           - pnpm nx run workers:lint
           - pnpm nx run workers:test
           - if [ -z "${SONAR_ORGANIZATION}" ]; then exit 0; fi
@@ -417,7 +415,7 @@ definitions:
             --frozen-lockfile
             --filter=workers...
             --filter=webapp-emails...
-          - export DOCKER_BUILDKIT=0  # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
+          - export DOCKER_BUILDKIT=0 # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
           - pnpm nx run webapp-emails:build
           - pnpm nx run workers:build
         services:
@@ -474,7 +472,7 @@ definitions:
             --frozen-lockfile
             --filter=docs...
             --filter=backend...
-          - export DOCKER_BUILDKIT=0  # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
+          - export DOCKER_BUILDKIT=0 # Workaround for https://community.atlassian.com/t5/Jira-Work-Management-Questions/Can-t-run-compose-in-bitbucket-pipelines-getting-privileged-true/qaq-p/2233411
           - pnpm nx run docs:lint
           - pnpm nx run docs:build
         services:
@@ -544,30 +542,30 @@ pipelines:
   branches:
     master:
       - parallel:
-        - step: *webappTest
-        - step: *webappBuild
-        - step: *webappCoreTest
-        - step: *webappApiClientTest
-        - step: *webappContentfulTest
-        - step: *webappCrudTest
-        - step: *webappDocsTest
-        - step: *webappNotificationsTest
-        - step: *webappEmailsTest
-        - step: *webappFinancesTest
-        - step: *webappGenAiTest
-        - step: *webappTenantsTest
+          - step: *webappTest
+          - step: *webappBuild
+          - step: *webappCoreTest
+          - step: *webappApiClientTest
+          - step: *webappContentfulTest
+          - step: *webappCrudTest
+          - step: *webappDocsTest
+          - step: *webappNotificationsTest
+          - step: *webappEmailsTest
+          - step: *webappFinancesTest
+          - step: *webappGenAiTest
+          - step: *webappTenantsTest
 
-        - step: *backendBuildAndTest
+          - step: *backendBuildAndTest
 
-        - step: *workersTest
-        - step: *workersBuild
+          - step: *workersTest
+          - step: *workersBuild
 
-        - step: *infraCoreBuild
-        - step: *infraSharedBuild
+          - step: *infraCoreBuild
+          - step: *infraSharedBuild
 
-        - step: *internalDocsBuild
-        - step: *internalStatusDashboardBuild
-        - step: *internalToolsBuild
+          - step: *internalDocsBuild
+          - step: *internalStatusDashboardBuild
+          - step: *internalToolsBuild
 
       - step:
           <<: *deploy-current-branch

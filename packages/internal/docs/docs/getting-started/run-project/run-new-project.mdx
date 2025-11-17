@@ -24,19 +24,13 @@ You can use a special CLI tool to run a new local instance of the <ProjectName/>
 
 <Tabs>
   <TabItem value="npm" label="npm" default>
-    <CodeBlock>
-      npm init saas-boilerplate PATH
-    </CodeBlock>
+    <CodeBlock>npm init saas-boilerplate PATH</CodeBlock>
   </TabItem>
   <TabItem value="pnpm" label="pnpm">
-    <CodeBlock>
-      pnpm create saas-boilerplate PATH
-    </CodeBlock>
+    <CodeBlock>pnpm create saas-boilerplate PATH</CodeBlock>
   </TabItem>
   <TabItem value="yarn" label="yarn">
-    <CodeBlock>
-      yarn create saas-boilerplate PATH
-    </CodeBlock>
+    <CodeBlock>yarn create saas-boilerplate PATH</CodeBlock>
   </TabItem>
 </Tabs>
 
@@ -55,27 +49,41 @@ After the initialization process is complete, you will be able to start the app 
 <InstallDeps />
 
 #### Adjust `.env.shared` files
+
 Root and almost all packages allow configuration through environmental variables. For local machines, those need to be present in so-called `.env` files. These are, of course, ignored in GIT to avoid secret values being committed and shared with everyone. We prepared a set of defaults in the form of `.env.shared` files located in the same directories that will be enough to run the project locally, but a few need to be adjusted before you start the project for the first time.
 
-:::caution
+Start by copying and renaming shared default envs.
 
-Never store any secret values in those files!
-
-:::
+```bash
+(from root level)
+cp .env.shared .env
+cd packages/backend && cp .env.shared .env
+```
 
 ##### `.env.shared` (in project root)
 
 | Name           | Example | Description                                                                         |
-|----------------|---------|-------------------------------------------------------------------------------------|
+| -------------- | ------- | ----------------------------------------------------------------------------------- |
 | `PROJECT_NAME` | `myapp` | The name of your project (best if 3-5 characters to avoid AWS names being too long) |
 
 ##### `./packages/backend/.env.shared`
 
 | Name                     | Example                            | Description                                                                                        |
-|--------------------------|------------------------------------|----------------------------------------------------------------------------------------------------|
+| ------------------------ | ---------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `DJANGO_SECRET_KEY`      | `Zs639zRcb5!9om2@tW2H6XG#Znj^TB^I` | 50-character random string; [docs](https://docs.djangoproject.com/en/3.1/ref/settings/#secret-key) |
 | `HASHID_FIELD_SALT`      | `t5$^r*xsMRXn1xjzhRSl8I5Hb3BUW$4U` | 50-character random string; [docs](https://django-hashid-field.readthedocs.io/en/latest/)          |
 | `ADMIN_EMAIL`            | `admin@example.com`                | Will be used to create the first super admin user                                                  |
 | `ADMIN_DEFAULT_PASSWORD` | `AvPZpabgj9Z8`                     | Will be used to create the first super admin user                                                  |
+
+:::info
+
+You can generate secret and hash using following commands:
+
+```
+django_secret: python3 -c "import secrets; print(secrets.token_urlsafe(64))"
+salt: python3 -c "import secrets; print(secrets.token_hex(16))"
+```
+
+:::
 
 <StartApp />
