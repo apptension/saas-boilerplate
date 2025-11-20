@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/w
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { TenantRoleAccess } from '@sb/webapp-tenants/components/tenantRoleAccess';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
-import { AlertCircle, ArrowUpRight, BookOpen, Github, Sparkles } from 'lucide-react';
+import { AlertCircle, ArrowUpRight, BookOpen, Github, Rocket, Sparkles, Shield, ExternalLink, Server, Code2 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -124,7 +124,7 @@ export const Home = () => {
         })}
       />
 
-      <div className="mx-auto w-full max-w-5xl space-y-8">
+      <div className="mx-auto w-full max-w-7xl space-y-8">
         {/* Hero Section */}
         <div className="space-y-4">
           <div className="flex items-center gap-2">
@@ -179,25 +179,350 @@ export const Home = () => {
           </Button>
         </div>
 
-        {/* Info Alert */}
-        <Alert variant="info" className="border-blue-700/20 bg-blue-50 dark:bg-blue-950/20">
-          <AlertCircle className="h-4 w-4 text-blue-700" />
-          <AlertTitle className="text-base font-semibold text-blue-900 dark:text-blue-100">Heads up!</AlertTitle>
-          <AlertDescription className="mt-2 space-y-3 text-sm text-blue-800 dark:text-blue-200">
-            <p>
-              Each feature you see here is a module demonstrating the versatility and usability of the SaaS Boilerplate.
-              Please remember, these modules are simply examples. You are encouraged to customize, adjust, and modify each
-              module to best fit your application's needs.
-            </p>
-            <p className="font-medium">Remember, the SaaS Boilerplate is your starting point - make it your own!</p>
-          </AlertDescription>
-        </Alert>
+        {/* Two Column Layout */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          {/* Getting Started Section - Takes 2 columns on large screens */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Rocket className="h-5 w-5 text-primary" />
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {intl.formatMessage({
+                    defaultMessage: 'Getting Started',
+                    id: 'Home / Getting Started / Title',
+                  })}
+                </h2>
+              </div>
+              <Paragraph className="text-muted-foreground">
+                {intl.formatMessage({
+                  defaultMessage: 'Follow these steps to start developing with the SaaS Boilerplate.',
+                  id: 'Home / Getting Started / Subtitle',
+                })}
+              </Paragraph>
+            </div>
 
-        {/* Features Grid */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold tracking-tight">Available Features</h2>
-          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {dashboardItems.map((item, key) => renderItem(item, key))}
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Code2 className="h-5 w-5 text-primary" />
+                    {intl.formatMessage({
+                      defaultMessage: 'Development Commands',
+                      id: 'Home / Development Commands / Title',
+                    })}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-muted-foreground">
+                      {intl.formatMessage({
+                        defaultMessage: 'Generate Code',
+                        id: 'Home / Development Commands / Generate',
+                      })}
+                    </p>
+                    <div className="space-y-1">
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
+                        pnpm run plop
+                      </code>
+                      <p className="text-xs text-muted-foreground">
+                        {intl.formatMessage({
+                          defaultMessage: 'Generate components, CRUD modules, hooks, emails, and more',
+                          id: 'Home / Development Commands / Plop Description',
+                        })}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-muted-foreground">
+                      {intl.formatMessage({
+                        defaultMessage: 'Database',
+                        id: 'Home / Development Commands / Database',
+                      })}
+                    </p>
+                    <div className="space-y-1">
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
+                        pnpm saas backend makemigrations
+                      </code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
+                        pnpm saas backend migrate
+                      </code>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-muted-foreground">
+                      {intl.formatMessage({
+                        defaultMessage: 'Testing & Quality',
+                        id: 'Home / Development Commands / Testing',
+                      })}
+                    </p>
+                    <div className="space-y-1">
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
+                        pnpm saas backend test
+                      </code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
+                        pnpm run test
+                      </code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
+                        pnpm run lint
+                      </code>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-muted-foreground">
+                      {intl.formatMessage({
+                        defaultMessage: 'Tools',
+                        id: 'Home / Development Commands / Tools',
+                      })}
+                    </p>
+                    <div className="space-y-1">
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
+                        pnpm run storybook
+                      </code>
+                      <p className="text-xs text-muted-foreground">
+                        {intl.formatMessage({
+                          defaultMessage: 'Run Storybook on port 5002',
+                          id: 'Home / Development Commands / Storybook Description',
+                        })}
+                      </p>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
+                        pnpm saas backend shell
+                      </code>
+                      <p className="text-xs text-muted-foreground">
+                        {intl.formatMessage({
+                          defaultMessage: 'Access backend shell for advanced operations',
+                          id: 'Home / Development Commands / Shell Description',
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Shield className="h-5 w-5 text-primary" />
+                    {intl.formatMessage({
+                      defaultMessage: 'Admin Panel',
+                      id: 'Home / Admin Panel / Title',
+                    })}
+                  </CardTitle>
+                  <CardDescription>
+                    {intl.formatMessage({
+                      defaultMessage: 'Access the Django admin interface for managing data and performing administrative tasks',
+                      id: 'Home / Admin Panel / Description',
+                    })}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">
+                      {intl.formatMessage({
+                        defaultMessage: 'Access URL',
+                        id: 'Home / Admin Panel / URL Label',
+                      })}
+                    </p>
+                    <a
+                      href="http://admin.localhost:5001"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
+                    >
+                      <code className="rounded-md bg-muted px-3 py-1.5 text-sm font-mono">http://admin.localhost:5001</code>
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </div>
+
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium">
+                      {intl.formatMessage({
+                        defaultMessage: 'Login Credentials',
+                        id: 'Home / Admin Panel / Credentials Title',
+                      })}
+                    </p>
+                    <dl className="space-y-3">
+                      <div>
+                        <dt className="text-xs font-medium text-muted-foreground mb-1">
+                          {intl.formatMessage({
+                            defaultMessage: 'Email',
+                            id: 'Home / Admin Panel / Email Label',
+                          })}
+                        </dt>
+                        <dd className="flex items-center gap-2">
+                          <code className="rounded-md bg-muted px-2.5 py-1.5 text-sm font-mono">admin@example.com</code>
+                          <span className="text-xs text-muted-foreground">
+                            {intl.formatMessage({
+                              defaultMessage: 'or set ADMIN_EMAIL in .env',
+                              id: 'Home / Admin Panel / Email Note',
+                            })}
+                          </span>
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs font-medium text-muted-foreground mb-1">
+                          {intl.formatMessage({
+                            defaultMessage: 'Password',
+                            id: 'Home / Admin Panel / Password Label',
+                          })}
+                        </dt>
+                        <dd className="flex items-center gap-2">
+                          <code className="rounded-md bg-muted px-2.5 py-1.5 text-sm font-mono">AvPZpabgj9Z8</code>
+                          <span className="text-xs text-muted-foreground">
+                            {intl.formatMessage({
+                              defaultMessage: 'or set ADMIN_DEFAULT_PASSWORD in .env',
+                              id: 'Home / Admin Panel / Password Note',
+                            })}
+                          </span>
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+
+                  <Alert variant="default" className="mt-4">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription className="text-sm">
+                      {intl.formatMessage({
+                        defaultMessage: 'These credentials are for local development only. Always use strong, unique passwords in production!',
+                        id: 'Home / Admin Panel / Security Warning',
+                      })}
+                    </AlertDescription>
+                  </Alert>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Server className="h-5 w-5 text-primary" />
+                    {intl.formatMessage({
+                      defaultMessage: 'Local Services',
+                      id: 'Home / Local Services / Title',
+                    })}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Web App</span>
+                      <a
+                        href="http://localhost:3000"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1 text-primary hover:underline"
+                      >
+                        <code className="text-xs">localhost:3000</code>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Backend API</span>
+                      <a
+                        href="http://localhost:5001"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1 text-primary hover:underline"
+                      >
+                        <code className="text-xs">localhost:5001</code>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Workers Trigger</span>
+                      <a
+                        href="http://localhost:3005"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1 text-primary hover:underline"
+                      >
+                        <code className="text-xs">localhost:3005</code>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Mailcatcher</span>
+                      <a
+                        href="http://localhost:1080"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1 text-primary hover:underline"
+                      >
+                        <code className="text-xs">localhost:1080</code>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Documentation</span>
+                      <a
+                        href="http://localhost:3006"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1 text-primary hover:underline"
+                      >
+                        <code className="text-xs">localhost:3006</code>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Flower (Celery)</span>
+                      <a
+                        href="http://localhost:5555"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1 text-primary hover:underline"
+                      >
+                        <code className="text-xs">localhost:5555</code>
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Info Alert */}
+              <Alert variant="info" className="border-blue-700/20 bg-blue-50 dark:bg-blue-950/20">
+                <AlertCircle className="h-4 w-4 text-blue-700" />
+                <AlertTitle className="text-base font-semibold text-blue-900 dark:text-blue-100">
+                  {intl.formatMessage({
+                    defaultMessage: 'Heads up!',
+                    id: 'Home / Alert / Title',
+                  })}
+                </AlertTitle>
+                <AlertDescription className="mt-2 space-y-3 text-sm text-blue-800 dark:text-blue-200">
+                  <p>
+                    {intl.formatMessage({
+                      defaultMessage:
+                        'Each feature you see here is a module demonstrating the versatility and usability of the SaaS Boilerplate. Please remember, these modules are simply examples. You are encouraged to customize, adjust, and modify each module to best fit your application\'s needs.',
+                      id: 'Home / Alert / Description',
+                    })}
+                  </p>
+                  <p className="font-medium">
+                    {intl.formatMessage({
+                      defaultMessage: 'Remember, the SaaS Boilerplate is your starting point - make it your own!',
+                      id: 'Home / Alert / Call to Action',
+                    })}
+                  </p>
+                </AlertDescription>
+              </Alert>
+            </div>
+          </div>
+
+          {/* Available Features Section - Takes 1 column on large screens */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <h2 className="text-2xl font-semibold tracking-tight">
+                {intl.formatMessage({
+                  defaultMessage: 'Available Features',
+                  id: 'Home / Features / Title',
+                })}
+              </h2>
+            </div>
+            <div className="grid w-full grid-cols-1 gap-4">
+              {dashboardItems.map((item, key) => renderItem(item, key))}
+            </div>
           </div>
         </div>
       </div>
