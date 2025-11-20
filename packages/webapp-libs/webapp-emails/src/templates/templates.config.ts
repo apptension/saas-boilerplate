@@ -2,11 +2,11 @@ import { EmailTemplateDefinition, EmailTemplateType } from '../types';
 import * as AccountActivation from './accountActivation';
 import * as PasswordReset from './passwordReset';
 import * as SubscriptionError from './subscriptionError';
+import * as TenantInvitation from './tenantInvitation';
 import * as TrialExpiresSoon from './trialExpiresSoon';
 import * as UserExport from './userExport';
 import * as UserExportAdmin from './userExportAdmin';
 
-import * as TenantInvitation from './tenantInvitation';
 //<-- INJECT EMAIL TEMPLATE IMPORT -->
 
 export const templates: Record<EmailTemplateType, EmailTemplateDefinition> = {

@@ -62,9 +62,7 @@ describe('Layout: Component', () => {
       it('should not show open menu button', async () => {
         const authPath = RoutesConfig.login;
         const routerProps = createMockRouterProps(authPath);
-        const apolloMocks = append(
-          fillNotificationCreatedSubscriptionQuery(notificationFactory())
-        );
+        const apolloMocks = append(fillNotificationCreatedSubscriptionQuery(notificationFactory()));
 
         render(<Component routeKey={authPath} />, { routerProps, apolloMocks });
         expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
@@ -81,27 +79,21 @@ describe('Layout: Component', () => {
     describe('user is logged out', () => {
       it('should show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        const apolloMocks = append(
-          fillNotificationCreatedSubscriptionQuery(notificationFactory())
-        );
+        const apolloMocks = append(fillNotificationCreatedSubscriptionQuery(notificationFactory()));
         render(<Component />, { routerProps, apolloMocks });
         expect(await screen.findByLabelText(/open menu/i)).toBeInTheDocument();
       });
 
       it('should show privacy menu link', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        const apolloMocks = append(
-          fillNotificationCreatedSubscriptionQuery(notificationFactory())
-        );
+        const apolloMocks = append(fillNotificationCreatedSubscriptionQuery(notificationFactory()));
         render(<Component />, { routerProps, apolloMocks });
         expect(await screen.findByText(/privacy policy/i)).toBeInTheDocument();
       });
 
       it('should not show dashboard menu link', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        const apolloMocks = append(
-          fillNotificationCreatedSubscriptionQuery(notificationFactory())
-        );
+        const apolloMocks = append(fillNotificationCreatedSubscriptionQuery(notificationFactory()));
 
         render(<Component />, { routerProps, apolloMocks });
         expect(screen.queryByText(/dashboard/i)).not.toBeInTheDocument();
@@ -111,18 +103,14 @@ describe('Layout: Component', () => {
     describe('user is logged in', () => {
       it('should show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        const apolloMocks = append(
-          fillNotificationCreatedSubscriptionQuery(notificationFactory())
-        );
+        const apolloMocks = append(fillNotificationCreatedSubscriptionQuery(notificationFactory()));
         render(<Component />, { routerProps, apolloMocks });
         expect(await screen.findByLabelText(/open menu/i)).toBeVisible();
       });
 
       it('should not show menu links initially', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        const apolloMocks = append(
-          fillNotificationCreatedSubscriptionQuery(notificationFactory())
-        );
+        const apolloMocks = append(fillNotificationCreatedSubscriptionQuery(notificationFactory()));
         const { waitForApolloMocks } = render(<Component />, { routerProps, apolloMocks });
         await waitForApolloMocks(0);
         // Sidebar should be closed initially on mobile
@@ -197,9 +185,7 @@ describe('Layout: Component', () => {
 
     it('should show content', async () => {
       const routerProps = createMockRouterProps(homeRoutePath);
-      const apolloMocks = append(
-        fillNotificationCreatedSubscriptionQuery(notificationFactory())
-      );
+      const apolloMocks = append(fillNotificationCreatedSubscriptionQuery(notificationFactory()));
       render(<Component />, { routerProps, apolloMocks });
       expect(await screen.findByTestId('content')).toBeVisible();
     });
@@ -208,9 +194,7 @@ describe('Layout: Component', () => {
       it('should not show menu links', async () => {
         const authPath = RoutesConfig.login;
         const routerProps = createMockRouterProps(authPath);
-        const apolloMocks = append(
-          fillNotificationCreatedSubscriptionQuery(notificationFactory())
-        );
+        const apolloMocks = append(fillNotificationCreatedSubscriptionQuery(notificationFactory()));
 
         render(<Component routeKey={authPath} />, { routerProps, apolloMocks });
         expect(screen.queryByText(/privacy policy/i)).not.toBeInTheDocument();
@@ -220,9 +204,7 @@ describe('Layout: Component', () => {
     describe('user is logged out', () => {
       it('should not show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        const apolloMocks = append(
-          fillNotificationCreatedSubscriptionQuery(notificationFactory())
-        );
+        const apolloMocks = append(fillNotificationCreatedSubscriptionQuery(notificationFactory()));
         render(<Component />, { routerProps, apolloMocks });
 
         expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();
@@ -230,9 +212,7 @@ describe('Layout: Component', () => {
 
       it('should show menu links', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        const apolloMocks = append(
-          fillNotificationCreatedSubscriptionQuery(notificationFactory())
-        );
+        const apolloMocks = append(fillNotificationCreatedSubscriptionQuery(notificationFactory()));
         render(<Component />, { routerProps, apolloMocks });
         expect(await screen.findByText(/privacy policy/i)).toBeInTheDocument();
       });
@@ -241,9 +221,7 @@ describe('Layout: Component', () => {
     describe('user is logged in', () => {
       it('should not show open menu button', async () => {
         const routerProps = createMockRouterProps(homeRoutePath);
-        const apolloMocks = append(
-          fillNotificationCreatedSubscriptionQuery(notificationFactory())
-        );
+        const apolloMocks = append(fillNotificationCreatedSubscriptionQuery(notificationFactory()));
         render(<Component />, { routerProps, apolloMocks });
 
         expect(screen.queryByLabelText(/open menu/i)).not.toBeInTheDocument();

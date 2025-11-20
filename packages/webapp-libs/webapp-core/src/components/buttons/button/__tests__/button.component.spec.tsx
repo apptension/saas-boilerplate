@@ -1,4 +1,4 @@
-import { screen, fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 
 import { render } from '../../../../tests/utils/rendering';
 import { Button, ButtonProps } from '../button.component';

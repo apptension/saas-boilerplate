@@ -16,7 +16,7 @@ export const useToggleIsRead = (input: UpdateNotificationMutationInput) => {
         if (data?.updateNotification?.notificationEdge?.node) {
           const notificationId = data.updateNotification.notificationEdge.node.id;
           const readAt = data.updateNotification.notificationEdge.node.readAt;
-          
+
           // Update the specific notification
           cache.modify({
             id: cache.identify({ __typename: 'NotificationType', id: notificationId }),
@@ -27,7 +27,7 @@ export const useToggleIsRead = (input: UpdateNotificationMutationInput) => {
             },
           });
         }
-        
+
         // Update the global unread count
         cache.modify({
           fields: {

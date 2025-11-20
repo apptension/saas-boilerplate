@@ -26,10 +26,7 @@ export const Layout = ({ children }: LayoutProps) => {
     [pathname]
   );
 
-  const toggleSidebar = useMemo(
-    () => () => setSidebarCollapsed((prev) => !prev),
-    []
-  );
+  const toggleSidebar = useMemo(() => () => setSidebarCollapsed((prev) => !prev), []);
 
   const value = useMemo(
     () => ({

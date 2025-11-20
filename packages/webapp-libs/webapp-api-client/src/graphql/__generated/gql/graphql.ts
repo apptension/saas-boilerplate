@@ -1,5 +1,5 @@
- 
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -9,50 +9,50 @@ export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> =
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
   /**
    * The `BigInt` scalar type represents non-fractional whole numeric values.
    * `BigInt` is not constrained to 32-bit like the `Int` type and thus is a less
    * compatible type.
    */
-  BigInt: { input: any; output: any; }
+  BigInt: { input: any; output: any };
   /**
    * A date-time string at UTC, such as 2007-12-03T10:15:30Z,
    *     compliant with the 'date-time' format outlined in section 5.6 of
    *     the RFC 3339 profile of the ISO 8601 standard for representation
    *     of dates and times using the Gregorian calendar.
    */
-  DateTime: { input: any; output: any; }
+  DateTime: { input: any; output: any };
   /** The `Decimal` scalar type represents a python Decimal. */
-  Decimal: { input: any; output: any; }
+  Decimal: { input: any; output: any };
   /** The 'Dimension' type represents dimensions as whole numeric values between `1` and `4000`. */
-  Dimension: { input: any; output: any; }
+  Dimension: { input: any; output: any };
   /**
    * The `GenericScalar` scalar type represents a generic
    * GraphQL scalar value that could be:
    * String, Boolean, Int, Float, List or Object.
    */
-  GenericScalar: { input: any; output: any; }
+  GenericScalar: { input: any; output: any };
   /** The 'HexColor' type represents color in `rgb:ffffff` string format. */
-  HexColor: { input: any; output: any; }
+  HexColor: { input: any; output: any };
   /**
    * Allows use of a JSON String for input / output from the GraphQL schema.
    *
    * Use of this type is *not recommended* as you lose the benefits of having a defined, static
    * schema (one of the key benefits of GraphQL).
    */
-  JSONString: { input: any; output: any; }
+  JSONString: { input: any; output: any };
   /** The 'Quality' type represents quality as whole numeric values between `1` and `100`. */
-  Quality: { input: any; output: any; }
+  Quality: { input: any; output: any };
   /**
    * Create scalar that ignores normal serialization/deserialization, since
    * that will be handled by the multipart request spec
    */
-  Upload: { input: any; output: any; }
+  Upload: { input: any; output: any };
 };
 
 export type AcceptTenantInvitationMutationInput = {
@@ -109,181 +109,145 @@ export type ApiMutation = {
   verifyOtp?: Maybe<VerifyOtpMutationPayload>;
 };
 
-
 export type ApiMutationAcceptTenantInvitationArgs = {
   input: AcceptTenantInvitationMutationInput;
 };
-
 
 export type ApiMutationCancelActiveSubscriptionArgs = {
   input: CancelActiveSubscriptionMutationInput;
 };
 
-
 export type ApiMutationChangeActiveSubscriptionArgs = {
   input: ChangeActiveSubscriptionMutationInput;
 };
-
 
 export type ApiMutationChangePasswordArgs = {
   input: ChangePasswordMutationInput;
 };
 
-
 export type ApiMutationConfirmArgs = {
   input: ConfirmEmailMutationInput;
 };
-
 
 export type ApiMutationCreateCrudDemoItemArgs = {
   input: CreateCrudDemoItemMutationInput;
 };
 
-
 export type ApiMutationCreateDocumentDemoItemArgs = {
   input: CreateDocumentDemoItemMutationInput;
 };
-
 
 export type ApiMutationCreateFavoriteContentfulDemoItemArgs = {
   input: CreateFavoriteContentfulDemoItemMutationInput;
 };
 
-
 export type ApiMutationCreatePaymentIntentArgs = {
   input: CreatePaymentIntentMutationInput;
 };
-
 
 export type ApiMutationCreateSetupIntentArgs = {
   input: CreateSetupIntentMutationInput;
 };
 
-
 export type ApiMutationCreateTenantArgs = {
   input: CreateTenantMutationInput;
 };
-
 
 export type ApiMutationCreateTenantInvitationArgs = {
   input: CreateTenantInvitationMutationInput;
 };
 
-
 export type ApiMutationDeclineTenantInvitationArgs = {
   input: DeclineTenantInvitationMutationInput;
 };
-
 
 export type ApiMutationDeleteCrudDemoItemArgs = {
   input: DeleteCrudDemoItemMutationInput;
 };
 
-
 export type ApiMutationDeleteDocumentDemoItemArgs = {
   input: DeleteDocumentDemoItemMutationInput;
 };
-
 
 export type ApiMutationDeleteFavoriteContentfulDemoItemArgs = {
   input: DeleteFavoriteContentfulDemoItemMutationInput;
 };
 
-
 export type ApiMutationDeletePaymentMethodArgs = {
   input: DeletePaymentMethodMutationInput;
 };
-
 
 export type ApiMutationDeleteTenantArgs = {
   input: DeleteTenantMutationInput;
 };
 
-
 export type ApiMutationDeleteTenantMembershipArgs = {
   input: DeleteTenantMembershipMutationInput;
 };
-
 
 export type ApiMutationDisableOtpArgs = {
   input: DisableOtpMutationInput;
 };
 
-
 export type ApiMutationGenerateOtpArgs = {
   input: GenerateOtpMutationInput;
 };
-
 
 export type ApiMutationGenerateSaasIdeasArgs = {
   input: GenerateSaasIdeasMutationInput;
 };
 
-
 export type ApiMutationMarkReadAllNotificationsArgs = {
   input: MarkReadAllNotificationsMutationInput;
 };
-
 
 export type ApiMutationPasswordResetArgs = {
   input: PasswordResetMutationInput;
 };
 
-
 export type ApiMutationPasswordResetConfirmArgs = {
   input: PasswordResetConfirmationMutationInput;
 };
-
 
 export type ApiMutationSignUpArgs = {
   input: SingUpMutationInput;
 };
 
-
 export type ApiMutationTokenAuthArgs = {
   input: ObtainTokenMutationInput;
 };
-
 
 export type ApiMutationUpdateCrudDemoItemArgs = {
   input: UpdateCrudDemoItemMutationInput;
 };
 
-
 export type ApiMutationUpdateCurrentUserArgs = {
   input: UpdateCurrentUserMutationInput;
 };
-
 
 export type ApiMutationUpdateDefaultPaymentMethodArgs = {
   input: UpdateDefaultPaymentMethodMutationInput;
 };
 
-
 export type ApiMutationUpdateNotificationArgs = {
   input: UpdateNotificationMutationInput;
 };
-
 
 export type ApiMutationUpdatePaymentIntentArgs = {
   input: UpdatePaymentIntentMutationInput;
 };
 
-
 export type ApiMutationUpdateTenantArgs = {
   input: UpdateTenantMutationInput;
 };
-
 
 export type ApiMutationUpdateTenantMembershipArgs = {
   input: UpdateTenantMembershipMutationInput;
 };
 
-
 export type ApiMutationValidateOtpArgs = {
   input: ValidateOtpMutationInput;
 };
-
 
 export type ApiMutationVerifyOtpArgs = {
   input: VerifyOtpMutationInput;
@@ -305,24 +269,20 @@ export type AppConfig = Entry & {
   termsAndConditions?: Maybe<Scalars['String']['output']>;
 };
 
-
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig) */
 export type AppConfigLinkedFromArgs = {
   allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
-
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig) */
 export type AppConfigNameArgs = {
   locale?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig) */
 export type AppConfigPrivacyPolicyArgs = {
   locale?: InputMaybe<Scalars['String']['input']>;
 };
-
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig) */
 export type AppConfigTermsAndConditionsArgs = {
@@ -370,7 +330,6 @@ export type AppConfigLinkingCollections = {
   entryCollection?: Maybe<EntryCollection>;
 };
 
-
 export type AppConfigLinkingCollectionsEntryCollectionArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   locale?: InputMaybe<Scalars['String']['input']>;
@@ -388,7 +347,7 @@ export enum AppConfigOrder {
   SYS_PUBLISHEDAT_ASC = 'sys_publishedAt_ASC',
   SYS_PUBLISHEDAT_DESC = 'sys_publishedAt_DESC',
   SYS_PUBLISHEDVERSION_ASC = 'sys_publishedVersion_ASC',
-  SYS_PUBLISHEDVERSION_DESC = 'sys_publishedVersion_DESC'
+  SYS_PUBLISHEDVERSION_DESC = 'sys_publishedVersion_DESC',
 }
 
 /** Represents a binary file in a space. An asset can be any file type. */
@@ -407,55 +366,46 @@ export type Asset = {
   width?: Maybe<Scalars['Int']['output']>;
 };
 
-
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetContentTypeArgs = {
   locale?: InputMaybe<Scalars['String']['input']>;
 };
-
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetDescriptionArgs = {
   locale?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetFileNameArgs = {
   locale?: InputMaybe<Scalars['String']['input']>;
 };
-
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetHeightArgs = {
   locale?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetLinkedFromArgs = {
   allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
-
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetSizeArgs = {
   locale?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetTitleArgs = {
   locale?: InputMaybe<Scalars['String']['input']>;
 };
-
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetUrlArgs = {
   locale?: InputMaybe<Scalars['String']['input']>;
   transform?: InputMaybe<ImageTransformOptions>;
 };
-
 
 /** Represents a binary file in a space. An asset can be any file type. */
 export type AssetWidthArgs = {
@@ -545,14 +495,12 @@ export type AssetLinkingCollections = {
   entryCollection?: Maybe<EntryCollection>;
 };
 
-
 export type AssetLinkingCollectionsDemoItemCollectionArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   locale?: InputMaybe<Scalars['String']['input']>;
   preview?: InputMaybe<Scalars['Boolean']['input']>;
   skip?: InputMaybe<Scalars['Int']['input']>;
 };
-
 
 export type AssetLinkingCollectionsEntryCollectionArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -581,7 +529,7 @@ export enum AssetOrder {
   URL_ASC = 'url_ASC',
   URL_DESC = 'url_DESC',
   WIDTH_ASC = 'width_ASC',
-  WIDTH_DESC = 'width_DESC'
+  WIDTH_DESC = 'width_DESC',
 }
 
 export type CancelActiveSubscriptionMutationInput = {
@@ -708,7 +656,6 @@ export type ContentfulDemoItemType = Node & {
   isPublished: Scalars['Boolean']['output'];
   pk?: Maybe<Scalars['String']['output']>;
 };
-
 
 export type ContentfulDemoItemTypeContentfuldemoitemfavoriteSetArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -977,12 +924,10 @@ export type DemoItem = Entry & {
   title?: Maybe<Scalars['String']['output']>;
 };
 
-
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
 export type DemoItemDescriptionArgs = {
   locale?: InputMaybe<Scalars['String']['input']>;
 };
-
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
 export type DemoItemImageArgs = {
@@ -990,12 +935,10 @@ export type DemoItemImageArgs = {
   preview?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
 export type DemoItemLinkedFromArgs = {
   allowedLocales?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
-
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
 export type DemoItemTitleArgs = {
@@ -1037,7 +980,6 @@ export type DemoItemLinkingCollections = {
   entryCollection?: Maybe<EntryCollection>;
 };
 
-
 export type DemoItemLinkingCollectionsEntryCollectionArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   locale?: InputMaybe<Scalars['String']['input']>;
@@ -1055,7 +997,7 @@ export enum DemoItemOrder {
   SYS_PUBLISHEDVERSION_ASC = 'sys_publishedVersion_ASC',
   SYS_PUBLISHEDVERSION_DESC = 'sys_publishedVersion_DESC',
   TITLE_ASC = 'title_ASC',
-  TITLE_DESC = 'title_DESC'
+  TITLE_DESC = 'title_DESC',
 }
 
 export type DisableOtpMutationInput = {
@@ -1243,7 +1185,7 @@ export enum DjstripeChargeFailureCodeChoices {
   /** Upstream order creation failed */
   UPSTREAM_ORDER_CREATION_FAILED = 'UPSTREAM_ORDER_CREATION_FAILED',
   /** URL invalid */
-  URL_INVALID = 'URL_INVALID'
+  URL_INVALID = 'URL_INVALID',
 }
 
 /** An enumeration. */
@@ -1253,7 +1195,7 @@ export enum DjstripeChargeStatusChoices {
   /** Pending */
   PENDING = 'PENDING',
   /** Succeeded */
-  SUCCEEDED = 'SUCCEEDED'
+  SUCCEEDED = 'SUCCEEDED',
 }
 
 /** An enumeration. */
@@ -1273,7 +1215,7 @@ export enum DjstripeInvoiceBillingReasonChoices {
   /** Subscription update */
   SUBSCRIPTION_UPDATE = 'SUBSCRIPTION_UPDATE',
   /** Upcoming */
-  UPCOMING = 'UPCOMING'
+  UPCOMING = 'UPCOMING',
 }
 
 /** An enumeration. */
@@ -1281,7 +1223,7 @@ export enum DjstripeInvoiceCollectionMethodChoices {
   /** Charge automatically */
   CHARGE_AUTOMATICALLY = 'CHARGE_AUTOMATICALLY',
   /** Send invoice */
-  SEND_INVOICE = 'SEND_INVOICE'
+  SEND_INVOICE = 'SEND_INVOICE',
 }
 
 /** An enumeration. */
@@ -1291,7 +1233,7 @@ export enum DjstripeInvoiceCustomerTaxExemptChoices {
   /** None */
   NONE = 'NONE',
   /** Reverse */
-  REVERSE = 'REVERSE'
+  REVERSE = 'REVERSE',
 }
 
 /** An enumeration. */
@@ -1305,7 +1247,7 @@ export enum DjstripeInvoiceStatusChoices {
   /** Uncollectible */
   UNCOLLECTIBLE = 'UNCOLLECTIBLE',
   /** Void */
-  VOID = 'VOID'
+  VOID = 'VOID',
 }
 
 /** An enumeration. */
@@ -1369,7 +1311,7 @@ export enum DjstripePaymentMethodTypeChoices {
   /** ACH Direct Debit */
   US_BANK_ACCOUNT = 'US_BANK_ACCOUNT',
   /** Wechat Pay */
-  WECHAT_PAY = 'WECHAT_PAY'
+  WECHAT_PAY = 'WECHAT_PAY',
 }
 
 /** An enumeration. */
@@ -1381,7 +1323,7 @@ export enum DjstripePlanAggregateUsageChoices {
   /** Max */
   MAX = 'MAX',
   /** Sum */
-  SUM = 'SUM'
+  SUM = 'SUM',
 }
 
 /** An enumeration. */
@@ -1389,7 +1331,7 @@ export enum DjstripePlanBillingSchemeChoices {
   /** Per-unit */
   PER_UNIT = 'PER_UNIT',
   /** Tiered */
-  TIERED = 'TIERED'
+  TIERED = 'TIERED',
 }
 
 /** An enumeration. */
@@ -1401,7 +1343,7 @@ export enum DjstripePlanIntervalChoices {
   /** Week */
   WEEK = 'WEEK',
   /** Year */
-  YEAR = 'YEAR'
+  YEAR = 'YEAR',
 }
 
 /** An enumeration. */
@@ -1409,7 +1351,7 @@ export enum DjstripePlanTiersModeChoices {
   /** Graduated */
   GRADUATED = 'GRADUATED',
   /** Volume-based */
-  VOLUME = 'VOLUME'
+  VOLUME = 'VOLUME',
 }
 
 /** An enumeration. */
@@ -1417,7 +1359,7 @@ export enum DjstripePlanUsageTypeChoices {
   /** Licensed */
   LICENSED = 'LICENSED',
   /** Metered */
-  METERED = 'METERED'
+  METERED = 'METERED',
 }
 
 /** An enumeration. */
@@ -1425,7 +1367,7 @@ export enum DjstripePriceBillingSchemeChoices {
   /** Per-unit */
   PER_UNIT = 'PER_UNIT',
   /** Tiered */
-  TIERED = 'TIERED'
+  TIERED = 'TIERED',
 }
 
 /** An enumeration. */
@@ -1433,7 +1375,7 @@ export enum DjstripePriceTiersModeChoices {
   /** Graduated */
   GRADUATED = 'GRADUATED',
   /** Volume-based */
-  VOLUME = 'VOLUME'
+  VOLUME = 'VOLUME',
 }
 
 /** An enumeration. */
@@ -1441,7 +1383,7 @@ export enum DjstripePriceTypeChoices {
   /** One-time */
   ONE_TIME = 'ONE_TIME',
   /** Recurring */
-  RECURRING = 'RECURRING'
+  RECURRING = 'RECURRING',
 }
 
 /** An enumeration. */
@@ -1449,7 +1391,7 @@ export enum DjstripeProductTypeChoices {
   /** Good */
   GOOD = 'GOOD',
   /** Service */
-  SERVICE = 'SERVICE'
+  SERVICE = 'SERVICE',
 }
 
 /** An enumeration. */
@@ -1459,7 +1401,7 @@ export enum DjstripeSetupIntentCancellationReasonChoices {
   /** Duplicate */
   DUPLICATE = 'DUPLICATE',
   /** Requested by Customer */
-  REQUESTED_BY_CUSTOMER = 'REQUESTED_BY_CUSTOMER'
+  REQUESTED_BY_CUSTOMER = 'REQUESTED_BY_CUSTOMER',
 }
 
 /** An enumeration. */
@@ -1475,7 +1417,7 @@ export enum DjstripeSetupIntentStatusChoices {
   /** Intent created and requires a Payment Method to be attached. */
   REQUIRES_PAYMENT_METHOD = 'REQUIRES_PAYMENT_METHOD',
   /** Setup was successful and the payment method is optimized for future payments. */
-  SUCCEEDED = 'SUCCEEDED'
+  SUCCEEDED = 'SUCCEEDED',
 }
 
 /** An enumeration. */
@@ -1483,7 +1425,7 @@ export enum DjstripeSetupIntentUsageChoices {
   /** Off session */
   OFF_SESSION = 'OFF_SESSION',
   /** On session */
-  ON_SESSION = 'ON_SESSION'
+  ON_SESSION = 'ON_SESSION',
 }
 
 /** An enumeration. */
@@ -1491,7 +1433,7 @@ export enum DjstripeSubscriptionScheduleEndBehaviorChoices {
   /** Cancel */
   CANCEL = 'CANCEL',
   /** Release */
-  RELEASE = 'RELEASE'
+  RELEASE = 'RELEASE',
 }
 
 /** An enumeration. */
@@ -1505,7 +1447,7 @@ export enum DjstripeSubscriptionScheduleStatusChoices {
   /** Not started */
   NOT_STARTED = 'NOT_STARTED',
   /** Released */
-  RELEASED = 'RELEASED'
+  RELEASED = 'RELEASED',
 }
 
 /** An enumeration. */
@@ -1523,7 +1465,7 @@ export enum DjstripeSubscriptionStatusChoices {
   /** Trialing */
   TRIALING = 'TRIALING',
   /** Unpaid */
-  UNPAID = 'UNPAID'
+  UNPAID = 'UNPAID',
 }
 
 export type DocumentDemoItemConnection = {
@@ -1580,7 +1522,7 @@ export enum EntryOrder {
   SYS_PUBLISHEDAT_ASC = 'sys_publishedAt_ASC',
   SYS_PUBLISHEDAT_DESC = 'sys_publishedAt_DESC',
   SYS_PUBLISHEDVERSION_ASC = 'sys_publishedVersion_ASC',
-  SYS_PUBLISHEDVERSION_DESC = 'sys_publishedVersion_DESC'
+  SYS_PUBLISHEDVERSION_DESC = 'sys_publishedVersion_DESC',
 }
 
 export type FileFieldType = {
@@ -1630,7 +1572,7 @@ export enum ImageFormat {
    */
   PNG8 = 'PNG8',
   /** WebP image format. */
-  WEBP = 'WEBP'
+  WEBP = 'WEBP',
 }
 
 export enum ImageResizeFocus {
@@ -1655,7 +1597,7 @@ export enum ImageResizeFocus {
   /** Focus the resizing on the top left. */
   TOP_LEFT = 'TOP_LEFT',
   /** Focus the resizing on the top right. */
-  TOP_RIGHT = 'TOP_RIGHT'
+  TOP_RIGHT = 'TOP_RIGHT',
 }
 
 export enum ImageResizeStrategy {
@@ -1673,7 +1615,7 @@ export enum ImageResizeStrategy {
   /** Resizes the image to the specified dimensions, changing the original aspect ratio if needed. */
   SCALE = 'SCALE',
   /** Creates a thumbnail from the image. */
-  THUMB = 'THUMB'
+  THUMB = 'THUMB',
 }
 
 export type ImageTransformOptions = {
@@ -1872,18 +1814,15 @@ export type Query = {
   tenant?: Maybe<TenantType>;
 };
 
-
 export type Query_NodeArgs = {
   id: Scalars['ID']['input'];
   locale?: InputMaybe<Scalars['String']['input']>;
   preview?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-
 export type QueryActiveSubscriptionArgs = {
   tenantId?: InputMaybe<Scalars['ID']['input']>;
 };
-
 
 export type QueryAllChargesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1893,14 +1832,12 @@ export type QueryAllChargesArgs = {
   tenantId?: InputMaybe<Scalars['ID']['input']>;
 };
 
-
 export type QueryAllContentfulDemoItemFavoritesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
-
 
 export type QueryAllCrudDemoItemsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1910,7 +1847,6 @@ export type QueryAllCrudDemoItemsArgs = {
   tenantId?: InputMaybe<Scalars['ID']['input']>;
 };
 
-
 export type QueryAllDocumentDemoItemsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -1918,14 +1854,12 @@ export type QueryAllDocumentDemoItemsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type QueryAllNotificationsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
-
 
 export type QueryAllPaymentMethodsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1935,14 +1869,12 @@ export type QueryAllPaymentMethodsArgs = {
   tenantId?: InputMaybe<Scalars['ID']['input']>;
 };
 
-
 export type QueryAllSubscriptionPlansArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
 };
-
 
 export type QueryAllTenantsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1951,13 +1883,11 @@ export type QueryAllTenantsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
-
 export type QueryAppConfigArgs = {
   id: Scalars['String']['input'];
   locale?: InputMaybe<Scalars['String']['input']>;
   preview?: InputMaybe<Scalars['Boolean']['input']>;
 };
-
 
 export type QueryAppConfigCollectionArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1968,13 +1898,11 @@ export type QueryAppConfigCollectionArgs = {
   where?: InputMaybe<AppConfigFilter>;
 };
 
-
 export type QueryAssetArgs = {
   id: Scalars['String']['input'];
   locale?: InputMaybe<Scalars['String']['input']>;
   preview?: InputMaybe<Scalars['Boolean']['input']>;
 };
-
 
 export type QueryAssetCollectionArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1985,25 +1913,21 @@ export type QueryAssetCollectionArgs = {
   where?: InputMaybe<AssetFilter>;
 };
 
-
 export type QueryChargeArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
   tenantId?: InputMaybe<Scalars['ID']['input']>;
 };
-
 
 export type QueryCrudDemoItemArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
   tenantId?: InputMaybe<Scalars['ID']['input']>;
 };
 
-
 export type QueryDemoItemArgs = {
   id: Scalars['String']['input'];
   locale?: InputMaybe<Scalars['String']['input']>;
   preview?: InputMaybe<Scalars['Boolean']['input']>;
 };
-
 
 export type QueryDemoItemCollectionArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -2014,7 +1938,6 @@ export type QueryDemoItemCollectionArgs = {
   where?: InputMaybe<DemoItemFilter>;
 };
 
-
 export type QueryEntryCollectionArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   locale?: InputMaybe<Scalars['String']['input']>;
@@ -2024,17 +1947,14 @@ export type QueryEntryCollectionArgs = {
   where?: InputMaybe<EntryFilter>;
 };
 
-
 export type QueryNodeArgs = {
   id: Scalars['ID']['input'];
 };
-
 
 export type QueryPaymentIntentArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
   tenantId?: InputMaybe<Scalars['ID']['input']>;
 };
-
 
 export type QueryTenantArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
@@ -2263,7 +2183,6 @@ export type StripeInvoiceType = Node & {
   webhooksDeliveredAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
-
 export type StripeInvoiceTypeChargesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -2359,7 +2278,6 @@ export type StripePriceType = Node & {
   unitAmountDecimal?: Maybe<Scalars['Decimal']['output']>;
 };
 
-
 export type StripePriceTypeProductsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -2432,7 +2350,6 @@ export type StripeProductType = Node & {
   url?: Maybe<Scalars['String']['output']>;
 };
 
-
 export type StripeProductTypePlanSetArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -2440,7 +2357,6 @@ export type StripeProductTypePlanSetArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
 };
-
 
 export type StripeProductTypePricesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -2590,7 +2506,6 @@ export type SubscriptionPlanType = Node & {
   usageType: DjstripePlanUsageTypeChoices;
 };
 
-
 export type SubscriptionPlanTypeSubscriptionsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -2677,7 +2592,6 @@ export type SubscriptionScheduleType = Node & {
   /** The schedule associated with this subscription. */
   subscriptions: StripeSubscriptionTypeConnection;
 };
-
 
 export type SubscriptionScheduleTypeSubscriptionsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -2785,7 +2699,7 @@ export type TenantType = Node & {
 export enum TenantUserRole {
   ADMIN = 'ADMIN',
   MEMBER = 'MEMBER',
-  OWNER = 'OWNER'
+  OWNER = 'OWNER',
 }
 
 export type UpdateCrudDemoItemMutationInput = {
@@ -2930,7 +2844,29 @@ export type _Node = {
   _id: Scalars['ID']['output'];
 };
 
-export type PageCursorsFragmentFragment = { __typename?: 'PageCursors', around?: Array<{ __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null> | null, first?: { __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null, last?: { __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null, next?: { __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null, previous?: { __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null } & { ' $fragmentName'?: 'PageCursorsFragmentFragment' };
+export type PageCursorsFragmentFragment = {
+  __typename?: 'PageCursors';
+  around?: Array<{
+    __typename?: 'PageCursor';
+    cursor?: string | null;
+    isCurrent?: boolean | null;
+    page?: number | null;
+  } | null> | null;
+  first?: {
+    __typename?: 'PageCursor';
+    cursor?: string | null;
+    isCurrent?: boolean | null;
+    page?: number | null;
+  } | null;
+  last?: { __typename?: 'PageCursor'; cursor?: string | null; isCurrent?: boolean | null; page?: number | null } | null;
+  next?: { __typename?: 'PageCursor'; cursor?: string | null; isCurrent?: boolean | null; page?: number | null } | null;
+  previous?: {
+    __typename?: 'PageCursor';
+    cursor?: string | null;
+    isCurrent?: boolean | null;
+    page?: number | null;
+  } | null;
+} & { ' $fragmentName'?: 'PageCursorsFragmentFragment' };
 
 export type PagedPaginationListTestQueryQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -2939,8 +2875,49 @@ export type PagedPaginationListTestQueryQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
 }>;
 
-
-export type PagedPaginationListTestQueryQuery = { __typename?: 'Query', allCrudDemoItems?: { __typename?: 'CrudDemoItemConnection', edges: Array<{ __typename?: 'CrudDemoItemEdge', node?: { __typename?: 'CrudDemoItemType', id: string } | null } | null>, pageCursors?: { __typename?: 'PageCursors', around?: Array<{ __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null> | null, first?: { __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null, last?: { __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null, next?: { __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null, previous?: { __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null } | null } | null };
+export type PagedPaginationListTestQueryQuery = {
+  __typename?: 'Query';
+  allCrudDemoItems?: {
+    __typename?: 'CrudDemoItemConnection';
+    edges: Array<{
+      __typename?: 'CrudDemoItemEdge';
+      node?: { __typename?: 'CrudDemoItemType'; id: string } | null;
+    } | null>;
+    pageCursors?: {
+      __typename?: 'PageCursors';
+      around?: Array<{
+        __typename?: 'PageCursor';
+        cursor?: string | null;
+        isCurrent?: boolean | null;
+        page?: number | null;
+      } | null> | null;
+      first?: {
+        __typename?: 'PageCursor';
+        cursor?: string | null;
+        isCurrent?: boolean | null;
+        page?: number | null;
+      } | null;
+      last?: {
+        __typename?: 'PageCursor';
+        cursor?: string | null;
+        isCurrent?: boolean | null;
+        page?: number | null;
+      } | null;
+      next?: {
+        __typename?: 'PageCursor';
+        cursor?: string | null;
+        isCurrent?: boolean | null;
+        page?: number | null;
+      } | null;
+      previous?: {
+        __typename?: 'PageCursor';
+        cursor?: string | null;
+        isCurrent?: boolean | null;
+        page?: number | null;
+      } | null;
+    } | null;
+  } | null;
+};
 
 export type PaginationListTestQueryQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -2949,89 +2926,205 @@ export type PaginationListTestQueryQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
 }>;
 
+export type PaginationListTestQueryQuery = {
+  __typename?: 'Query';
+  allNotifications?: {
+    __typename?: 'NotificationConnection';
+    edges: Array<{
+      __typename?: 'NotificationEdge';
+      node?: { __typename?: 'NotificationType'; id: string } | null;
+    } | null>;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      startCursor?: string | null;
+      endCursor?: string | null;
+      hasPreviousPage: boolean;
+      hasNextPage: boolean;
+    };
+  } | null;
+};
 
-export type PaginationListTestQueryQuery = { __typename?: 'Query', allNotifications?: { __typename?: 'NotificationConnection', edges: Array<{ __typename?: 'NotificationEdge', node?: { __typename?: 'NotificationType', id: string } | null } | null>, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasPreviousPage: boolean, hasNextPage: boolean } } | null };
+export type CommonQueryCurrentUserFragmentFragment = {
+  __typename?: 'CurrentUserType';
+  id: string;
+  email: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  roles?: Array<string | null> | null;
+  avatar?: string | null;
+  otpVerified: boolean;
+  otpEnabled: boolean;
+} & { ' $fragmentName'?: 'CommonQueryCurrentUserFragmentFragment' };
 
-export type CommonQueryCurrentUserFragmentFragment = { __typename?: 'CurrentUserType', id: string, email: string, firstName?: string | null, lastName?: string | null, roles?: Array<string | null> | null, avatar?: string | null, otpVerified: boolean, otpEnabled: boolean } & { ' $fragmentName'?: 'CommonQueryCurrentUserFragmentFragment' };
+export type CommonQueryTenantItemFragmentFragment = {
+  __typename?: 'TenantType';
+  id: string;
+  name?: string | null;
+  type?: string | null;
+  membership: { __typename?: 'TenantMembershipType' } & {
+    ' $fragmentRefs'?: { CommonQueryMembershipFragmentFragment: CommonQueryMembershipFragmentFragment };
+  };
+} & { ' $fragmentName'?: 'CommonQueryTenantItemFragmentFragment' };
 
-export type CommonQueryTenantItemFragmentFragment = { __typename?: 'TenantType', id: string, name?: string | null, type?: string | null, membership: (
-    { __typename?: 'TenantMembershipType' }
-    & { ' $fragmentRefs'?: { 'CommonQueryMembershipFragmentFragment': CommonQueryMembershipFragmentFragment } }
-  ) } & { ' $fragmentName'?: 'CommonQueryTenantItemFragmentFragment' };
+export type CommonQueryMembershipFragmentFragment = {
+  __typename?: 'TenantMembershipType';
+  id: string;
+  role?: TenantUserRole | null;
+  invitationAccepted?: boolean | null;
+  inviteeEmailAddress?: string | null;
+  invitationToken?: string | null;
+  userId?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  userEmail?: string | null;
+  avatar?: string | null;
+} & { ' $fragmentName'?: 'CommonQueryMembershipFragmentFragment' };
 
-export type CommonQueryMembershipFragmentFragment = { __typename?: 'TenantMembershipType', id: string, role?: TenantUserRole | null, invitationAccepted?: boolean | null, inviteeEmailAddress?: string | null, invitationToken?: string | null, userId?: string | null, firstName?: string | null, lastName?: string | null, userEmail?: string | null, avatar?: string | null } & { ' $fragmentName'?: 'CommonQueryMembershipFragmentFragment' };
+export type CommonQueryCurrentUserQueryQueryVariables = Exact<{ [key: string]: never }>;
 
-export type CommonQueryCurrentUserQueryQueryVariables = Exact<{ [key: string]: never; }>;
+export type CommonQueryCurrentUserQueryQuery = {
+  __typename?: 'Query';
+  currentUser?:
+    | ({
+        __typename?: 'CurrentUserType';
+        tenants?: Array<
+          | ({ __typename?: 'TenantType' } & {
+              ' $fragmentRefs'?: { CommonQueryTenantItemFragmentFragment: CommonQueryTenantItemFragmentFragment };
+            })
+          | null
+        > | null;
+      } & { ' $fragmentRefs'?: { CommonQueryCurrentUserFragmentFragment: CommonQueryCurrentUserFragmentFragment } })
+    | null;
+};
 
+export type ConfigContentfulAppConfigQueryQueryVariables = Exact<{ [key: string]: never }>;
 
-export type CommonQueryCurrentUserQueryQuery = { __typename?: 'Query', currentUser?: (
-    { __typename?: 'CurrentUserType', tenants?: Array<(
-      { __typename?: 'TenantType' }
-      & { ' $fragmentRefs'?: { 'CommonQueryTenantItemFragmentFragment': CommonQueryTenantItemFragmentFragment } }
-    ) | null> | null }
-    & { ' $fragmentRefs'?: { 'CommonQueryCurrentUserFragmentFragment': CommonQueryCurrentUserFragmentFragment } }
-  ) | null };
-
-export type ConfigContentfulAppConfigQueryQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ConfigContentfulAppConfigQueryQuery = { __typename?: 'Query', appConfigCollection?: { __typename?: 'AppConfigCollection', items: Array<{ __typename?: 'AppConfig', name?: string | null, privacyPolicy?: string | null, termsAndConditions?: string | null } | null> } | null };
+export type ConfigContentfulAppConfigQueryQuery = {
+  __typename?: 'Query';
+  appConfigCollection?: {
+    __typename?: 'AppConfigCollection';
+    items: Array<{
+      __typename?: 'AppConfig';
+      name?: string | null;
+      privacyPolicy?: string | null;
+      termsAndConditions?: string | null;
+    } | null>;
+  } | null;
+};
 
 export type UseFavoriteDemoItemListCreateMutationMutationVariables = Exact<{
   input: CreateFavoriteContentfulDemoItemMutationInput;
 }>;
 
+export type UseFavoriteDemoItemListCreateMutationMutation = {
+  __typename?: 'ApiMutation';
+  createFavoriteContentfulDemoItem?: {
+    __typename?: 'CreateFavoriteContentfulDemoItemMutationPayload';
+    contentfulDemoItemFavoriteEdge?: {
+      __typename?: 'ContentfulDemoItemFavoriteEdge';
+      node?: {
+        __typename?: 'ContentfulDemoItemFavoriteType';
+        id: string;
+        item: { __typename?: 'ContentfulDemoItemType'; pk?: string | null };
+      } | null;
+    } | null;
+  } | null;
+};
 
-export type UseFavoriteDemoItemListCreateMutationMutation = { __typename?: 'ApiMutation', createFavoriteContentfulDemoItem?: { __typename?: 'CreateFavoriteContentfulDemoItemMutationPayload', contentfulDemoItemFavoriteEdge?: { __typename?: 'ContentfulDemoItemFavoriteEdge', node?: { __typename?: 'ContentfulDemoItemFavoriteType', id: string, item: { __typename?: 'ContentfulDemoItemType', pk?: string | null } } | null } | null } | null };
-
-export type UseFavoriteDemoItem_ItemFragment = { __typename?: 'ContentfulDemoItemFavoriteType', id: string, item: { __typename?: 'ContentfulDemoItemType', pk?: string | null } } & { ' $fragmentName'?: 'UseFavoriteDemoItem_ItemFragment' };
+export type UseFavoriteDemoItem_ItemFragment = {
+  __typename?: 'ContentfulDemoItemFavoriteType';
+  id: string;
+  item: { __typename?: 'ContentfulDemoItemType'; pk?: string | null };
+} & { ' $fragmentName'?: 'UseFavoriteDemoItem_ItemFragment' };
 
 export type UseFavoriteDemoItemListDeleteMutationMutationVariables = Exact<{
   input: DeleteFavoriteContentfulDemoItemMutationInput;
 }>;
 
+export type UseFavoriteDemoItemListDeleteMutationMutation = {
+  __typename?: 'ApiMutation';
+  deleteFavoriteContentfulDemoItem?: {
+    __typename?: 'DeleteFavoriteContentfulDemoItemMutationPayload';
+    deletedIds?: Array<string | null> | null;
+  } | null;
+};
 
-export type UseFavoriteDemoItemListDeleteMutationMutation = { __typename?: 'ApiMutation', deleteFavoriteContentfulDemoItem?: { __typename?: 'DeleteFavoriteContentfulDemoItemMutationPayload', deletedIds?: Array<string | null> | null } | null };
+export type UseFavoriteDemoItemListQueryQueryVariables = Exact<{ [key: string]: never }>;
 
-export type UseFavoriteDemoItemListQueryQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type UseFavoriteDemoItemListQueryQuery = { __typename?: 'Query', allContentfulDemoItemFavorites?: { __typename?: 'ContentfulDemoItemFavoriteConnection', edges: Array<{ __typename?: 'ContentfulDemoItemFavoriteEdge', node?: (
-        { __typename?: 'ContentfulDemoItemFavoriteType', id: string }
-        & { ' $fragmentRefs'?: { 'UseFavoriteDemoItem_ItemFragment': UseFavoriteDemoItem_ItemFragment } }
-      ) | null } | null> } | null };
+export type UseFavoriteDemoItemListQueryQuery = {
+  __typename?: 'Query';
+  allContentfulDemoItemFavorites?: {
+    __typename?: 'ContentfulDemoItemFavoriteConnection';
+    edges: Array<{
+      __typename?: 'ContentfulDemoItemFavoriteEdge';
+      node?:
+        | ({ __typename?: 'ContentfulDemoItemFavoriteType'; id: string } & {
+            ' $fragmentRefs'?: { UseFavoriteDemoItem_ItemFragment: UseFavoriteDemoItem_ItemFragment };
+          })
+        | null;
+    } | null>;
+  } | null;
+};
 
 export type DemoItemQueryQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
+export type DemoItemQueryQuery = {
+  __typename?: 'Query';
+  demoItem?: {
+    __typename?: 'DemoItem';
+    title?: string | null;
+    description?: string | null;
+    image?: { __typename?: 'Asset'; url?: string | null; title?: string | null; description?: string | null } | null;
+  } | null;
+};
 
-export type DemoItemQueryQuery = { __typename?: 'Query', demoItem?: { __typename?: 'DemoItem', title?: string | null, description?: string | null, image?: { __typename?: 'Asset', url?: string | null, title?: string | null, description?: string | null } | null } | null };
+export type DemoItemListItemFragmentFragment = {
+  __typename?: 'DemoItem';
+  title?: string | null;
+  image?: { __typename?: 'Asset'; title?: string | null; url?: string | null } | null;
+} & { ' $fragmentName'?: 'DemoItemListItemFragmentFragment' };
 
-export type DemoItemListItemFragmentFragment = { __typename?: 'DemoItem', title?: string | null, image?: { __typename?: 'Asset', title?: string | null, url?: string | null } | null } & { ' $fragmentName'?: 'DemoItemListItemFragmentFragment' };
+export type DemoItemsAllQueryQueryVariables = Exact<{ [key: string]: never }>;
 
-export type DemoItemsAllQueryQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type DemoItemsAllQueryQuery = { __typename?: 'Query', demoItemCollection?: { __typename?: 'DemoItemCollection', items: Array<(
-      { __typename?: 'DemoItem', sys: { __typename?: 'Sys', id: string } }
-      & { ' $fragmentRefs'?: { 'DemoItemListItemFragmentFragment': DemoItemListItemFragmentFragment } }
-    ) | null> } | null };
+export type DemoItemsAllQueryQuery = {
+  __typename?: 'Query';
+  demoItemCollection?: {
+    __typename?: 'DemoItemCollection';
+    items: Array<
+      | ({ __typename?: 'DemoItem'; sys: { __typename?: 'Sys'; id: string } } & {
+          ' $fragmentRefs'?: { DemoItemListItemFragmentFragment: DemoItemListItemFragmentFragment };
+        })
+      | null
+    >;
+  } | null;
+};
 
 export type AddCrudDemoItemMutationMutationVariables = Exact<{
   input: CreateCrudDemoItemMutationInput;
 }>;
 
-
-export type AddCrudDemoItemMutationMutation = { __typename?: 'ApiMutation', createCrudDemoItem?: { __typename?: 'CreateCrudDemoItemMutationPayload', crudDemoItemEdge?: { __typename?: 'CrudDemoItemEdge', node?: { __typename?: 'CrudDemoItemType', id: string, name: string } | null } | null } | null };
+export type AddCrudDemoItemMutationMutation = {
+  __typename?: 'ApiMutation';
+  createCrudDemoItem?: {
+    __typename?: 'CreateCrudDemoItemMutationPayload';
+    crudDemoItemEdge?: {
+      __typename?: 'CrudDemoItemEdge';
+      node?: { __typename?: 'CrudDemoItemType'; id: string; name: string } | null;
+    } | null;
+  } | null;
+};
 
 export type CrudDemoItemDetailsQueryQueryVariables = Exact<{
   id: Scalars['ID']['input'];
   tenantId: Scalars['ID']['input'];
 }>;
 
-
-export type CrudDemoItemDetailsQueryQuery = { __typename?: 'Query', crudDemoItem?: { __typename?: 'CrudDemoItemType', id: string, name: string } | null };
+export type CrudDemoItemDetailsQueryQuery = {
+  __typename?: 'Query';
+  crudDemoItem?: { __typename?: 'CrudDemoItemType'; id: string; name: string } | null;
+};
 
 export type CrudDemoItemListQueryQueryVariables = Exact<{
   tenantId: Scalars['ID']['input'];
@@ -3041,511 +3134,5867 @@ export type CrudDemoItemListQueryQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
 }>;
 
+export type CrudDemoItemListQueryQuery = {
+  __typename?: 'Query';
+  allCrudDemoItems?: {
+    __typename?: 'CrudDemoItemConnection';
+    edges: Array<{
+      __typename?: 'CrudDemoItemEdge';
+      node?:
+        | ({ __typename?: 'CrudDemoItemType'; id: string } & {
+            ' $fragmentRefs'?: { CrudDemoItemListItemFragment: CrudDemoItemListItemFragment };
+          })
+        | null;
+    } | null>;
+    pageCursors?:
+      | ({ __typename?: 'PageCursors' } & {
+          ' $fragmentRefs'?: { PageCursorsFragmentFragment: PageCursorsFragmentFragment };
+        })
+      | null;
+  } | null;
+};
 
-export type CrudDemoItemListQueryQuery = { __typename?: 'Query', allCrudDemoItems?: { __typename?: 'CrudDemoItemConnection', edges: Array<{ __typename?: 'CrudDemoItemEdge', node?: (
-        { __typename?: 'CrudDemoItemType', id: string }
-        & { ' $fragmentRefs'?: { 'CrudDemoItemListItemFragment': CrudDemoItemListItemFragment } }
-      ) | null } | null>, pageCursors?: (
-      { __typename?: 'PageCursors' }
-      & { ' $fragmentRefs'?: { 'PageCursorsFragmentFragment': PageCursorsFragmentFragment } }
-    ) | null } | null };
+export type CrudDemoItemListItemTestQueryQueryVariables = Exact<{ [key: string]: never }>;
 
-export type CrudDemoItemListItemTestQueryQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CrudDemoItemListItemTestQueryQuery = { __typename?: 'Query', item?: (
-    { __typename?: 'CrudDemoItemType' }
-    & { ' $fragmentRefs'?: { 'CrudDemoItemListItemFragment': CrudDemoItemListItemFragment } }
-  ) | null };
+export type CrudDemoItemListItemTestQueryQuery = {
+  __typename?: 'Query';
+  item?:
+    | ({ __typename?: 'CrudDemoItemType' } & {
+        ' $fragmentRefs'?: { CrudDemoItemListItemFragment: CrudDemoItemListItemFragment };
+      })
+    | null;
+};
 
 export type CrudDemoItemListItemDeleteMutationMutationVariables = Exact<{
   input: DeleteCrudDemoItemMutationInput;
 }>;
 
+export type CrudDemoItemListItemDeleteMutationMutation = {
+  __typename?: 'ApiMutation';
+  deleteCrudDemoItem?: {
+    __typename?: 'DeleteCrudDemoItemMutationPayload';
+    deletedIds?: Array<string | null> | null;
+  } | null;
+};
 
-export type CrudDemoItemListItemDeleteMutationMutation = { __typename?: 'ApiMutation', deleteCrudDemoItem?: { __typename?: 'DeleteCrudDemoItemMutationPayload', deletedIds?: Array<string | null> | null } | null };
+export type CrudDemoItemListItemFragment = { __typename?: 'CrudDemoItemType'; id: string; name: string } & {
+  ' $fragmentName'?: 'CrudDemoItemListItemFragment';
+};
 
-export type CrudDemoItemListItemFragment = { __typename?: 'CrudDemoItemType', id: string, name: string } & { ' $fragmentName'?: 'CrudDemoItemListItemFragment' };
+export type CrudDemoItemListItemDefaultStoryQueryQueryVariables = Exact<{ [key: string]: never }>;
 
-export type CrudDemoItemListItemDefaultStoryQueryQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CrudDemoItemListItemDefaultStoryQueryQuery = { __typename?: 'Query', item?: (
-    { __typename?: 'CrudDemoItemType' }
-    & { ' $fragmentRefs'?: { 'CrudDemoItemListItemFragment': CrudDemoItemListItemFragment } }
-  ) | null };
+export type CrudDemoItemListItemDefaultStoryQueryQuery = {
+  __typename?: 'Query';
+  item?:
+    | ({ __typename?: 'CrudDemoItemType' } & {
+        ' $fragmentRefs'?: { CrudDemoItemListItemFragment: CrudDemoItemListItemFragment };
+      })
+    | null;
+};
 
 export type EditCrudDemoItemQueryQueryVariables = Exact<{
   id: Scalars['ID']['input'];
   tenantId: Scalars['ID']['input'];
 }>;
 
-
-export type EditCrudDemoItemQueryQuery = { __typename?: 'Query', crudDemoItem?: { __typename?: 'CrudDemoItemType', id: string, name: string } | null };
+export type EditCrudDemoItemQueryQuery = {
+  __typename?: 'Query';
+  crudDemoItem?: { __typename?: 'CrudDemoItemType'; id: string; name: string } | null;
+};
 
 export type EditCrudDemoItemContentMutationMutationVariables = Exact<{
   input: UpdateCrudDemoItemMutationInput;
 }>;
 
+export type EditCrudDemoItemContentMutationMutation = {
+  __typename?: 'ApiMutation';
+  updateCrudDemoItem?: {
+    __typename?: 'UpdateCrudDemoItemMutationPayload';
+    crudDemoItem?: { __typename?: 'CrudDemoItemType'; id: string; name: string } | null;
+  } | null;
+};
 
-export type EditCrudDemoItemContentMutationMutation = { __typename?: 'ApiMutation', updateCrudDemoItem?: { __typename?: 'UpdateCrudDemoItemMutationPayload', crudDemoItem?: { __typename?: 'CrudDemoItemType', id: string, name: string } | null } | null };
+export type DocumentListItemFragment = {
+  __typename?: 'DocumentDemoItemType';
+  id: string;
+  createdAt: any;
+  file?: { __typename?: 'FileFieldType'; url?: string | null; name?: string | null } | null;
+} & { ' $fragmentName'?: 'DocumentListItemFragment' };
 
-export type DocumentListItemFragment = { __typename?: 'DocumentDemoItemType', id: string, createdAt: any, file?: { __typename?: 'FileFieldType', url?: string | null, name?: string | null } | null } & { ' $fragmentName'?: 'DocumentListItemFragment' };
+export type DocumentsListQueryQueryVariables = Exact<{ [key: string]: never }>;
 
-export type DocumentsListQueryQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type DocumentsListQueryQuery = { __typename?: 'Query', allDocumentDemoItems?: { __typename?: 'DocumentDemoItemConnection', edges: Array<{ __typename?: 'DocumentDemoItemEdge', node?: (
-        { __typename?: 'DocumentDemoItemType', id: string }
-        & { ' $fragmentRefs'?: { 'DocumentListItemFragment': DocumentListItemFragment } }
-      ) | null } | null> } | null };
+export type DocumentsListQueryQuery = {
+  __typename?: 'Query';
+  allDocumentDemoItems?: {
+    __typename?: 'DocumentDemoItemConnection';
+    edges: Array<{
+      __typename?: 'DocumentDemoItemEdge';
+      node?:
+        | ({ __typename?: 'DocumentDemoItemType'; id: string } & {
+            ' $fragmentRefs'?: { DocumentListItemFragment: DocumentListItemFragment };
+          })
+        | null;
+    } | null>;
+  } | null;
+};
 
 export type DocumentsListCreateMutationMutationVariables = Exact<{
   input: CreateDocumentDemoItemMutationInput;
 }>;
 
-
-export type DocumentsListCreateMutationMutation = { __typename?: 'ApiMutation', createDocumentDemoItem?: { __typename?: 'CreateDocumentDemoItemMutationPayload', documentDemoItemEdge?: { __typename?: 'DocumentDemoItemEdge', node?: (
-        { __typename?: 'DocumentDemoItemType', id: string }
-        & { ' $fragmentRefs'?: { 'DocumentListItemFragment': DocumentListItemFragment } }
-      ) | null } | null } | null };
+export type DocumentsListCreateMutationMutation = {
+  __typename?: 'ApiMutation';
+  createDocumentDemoItem?: {
+    __typename?: 'CreateDocumentDemoItemMutationPayload';
+    documentDemoItemEdge?: {
+      __typename?: 'DocumentDemoItemEdge';
+      node?:
+        | ({ __typename?: 'DocumentDemoItemType'; id: string } & {
+            ' $fragmentRefs'?: { DocumentListItemFragment: DocumentListItemFragment };
+          })
+        | null;
+    } | null;
+  } | null;
+};
 
 export type DocumentsDeleteMutationMutationVariables = Exact<{
   input: DeleteDocumentDemoItemMutationInput;
 }>;
 
+export type DocumentsDeleteMutationMutation = {
+  __typename?: 'ApiMutation';
+  deleteDocumentDemoItem?: {
+    __typename?: 'DeleteDocumentDemoItemMutationPayload';
+    deletedIds?: Array<string | null> | null;
+  } | null;
+};
 
-export type DocumentsDeleteMutationMutation = { __typename?: 'ApiMutation', deleteDocumentDemoItem?: { __typename?: 'DeleteDocumentDemoItemMutationPayload', deletedIds?: Array<string | null> | null } | null };
-
-export type StripePaymentIntentFragmentFragment = { __typename?: 'StripePaymentIntentType', id: string, amount: any, clientSecret: string, currency: string, pk?: string | null } & { ' $fragmentName'?: 'StripePaymentIntentFragmentFragment' };
+export type StripePaymentIntentFragmentFragment = {
+  __typename?: 'StripePaymentIntentType';
+  id: string;
+  amount: any;
+  clientSecret: string;
+  currency: string;
+  pk?: string | null;
+} & { ' $fragmentName'?: 'StripePaymentIntentFragmentFragment' };
 
 export type StripeCreatePaymentIntentMutation_MutationVariables = Exact<{
   input: CreatePaymentIntentMutationInput;
 }>;
 
-
-export type StripeCreatePaymentIntentMutation_Mutation = { __typename?: 'ApiMutation', createPaymentIntent?: { __typename?: 'CreatePaymentIntentMutationPayload', paymentIntent?: (
-      { __typename?: 'StripePaymentIntentType', id: string, amount: any, clientSecret: string, currency: string, pk?: string | null }
-      & { ' $fragmentRefs'?: { 'StripePaymentIntentFragmentFragment': StripePaymentIntentFragmentFragment } }
-    ) | null } | null };
+export type StripeCreatePaymentIntentMutation_Mutation = {
+  __typename?: 'ApiMutation';
+  createPaymentIntent?: {
+    __typename?: 'CreatePaymentIntentMutationPayload';
+    paymentIntent?:
+      | ({
+          __typename?: 'StripePaymentIntentType';
+          id: string;
+          amount: any;
+          clientSecret: string;
+          currency: string;
+          pk?: string | null;
+        } & { ' $fragmentRefs'?: { StripePaymentIntentFragmentFragment: StripePaymentIntentFragmentFragment } })
+      | null;
+  } | null;
+};
 
 export type StripeUpdatePaymentIntentMutation_MutationVariables = Exact<{
   input: UpdatePaymentIntentMutationInput;
 }>;
 
+export type StripeUpdatePaymentIntentMutation_Mutation = {
+  __typename?: 'ApiMutation';
+  updatePaymentIntent?: {
+    __typename?: 'UpdatePaymentIntentMutationPayload';
+    paymentIntent?:
+      | ({
+          __typename?: 'StripePaymentIntentType';
+          id: string;
+          amount: any;
+          clientSecret: string;
+          currency: string;
+          pk?: string | null;
+        } & { ' $fragmentRefs'?: { StripePaymentIntentFragmentFragment: StripePaymentIntentFragmentFragment } })
+      | null;
+  } | null;
+};
 
-export type StripeUpdatePaymentIntentMutation_Mutation = { __typename?: 'ApiMutation', updatePaymentIntent?: { __typename?: 'UpdatePaymentIntentMutationPayload', paymentIntent?: (
-      { __typename?: 'StripePaymentIntentType', id: string, amount: any, clientSecret: string, currency: string, pk?: string | null }
-      & { ' $fragmentRefs'?: { 'StripePaymentIntentFragmentFragment': StripePaymentIntentFragmentFragment } }
-    ) | null } | null };
-
-export type StripePaymentMethodFragmentFragment = { __typename?: 'StripePaymentMethodType', id: string, pk?: string | null, type: DjstripePaymentMethodTypeChoices, card?: any | null, billingDetails?: any | null } & { ' $fragmentName'?: 'StripePaymentMethodFragmentFragment' };
+export type StripePaymentMethodFragmentFragment = {
+  __typename?: 'StripePaymentMethodType';
+  id: string;
+  pk?: string | null;
+  type: DjstripePaymentMethodTypeChoices;
+  card?: any | null;
+  billingDetails?: any | null;
+} & { ' $fragmentName'?: 'StripePaymentMethodFragmentFragment' };
 
 export type StripeSubscriptionQueryQueryVariables = Exact<{
   tenantId: Scalars['ID']['input'];
 }>;
 
-
-export type StripeSubscriptionQueryQuery = { __typename?: 'Query', allPaymentMethods?: { __typename?: 'PaymentMethodConnection', edges: Array<{ __typename?: 'PaymentMethodEdge', cursor: string, node?: (
-        { __typename: 'StripePaymentMethodType', id: string, pk?: string | null, type: DjstripePaymentMethodTypeChoices, card?: any | null, billingDetails?: any | null }
-        & { ' $fragmentRefs'?: { 'StripePaymentMethodFragmentFragment': StripePaymentMethodFragmentFragment } }
-      ) | null } | null>, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean } } | null, activeSubscription?: (
-    { __typename: 'SubscriptionScheduleType', id: string }
-    & { ' $fragmentRefs'?: { 'SubscriptionActiveSubscriptionFragmentFragment': SubscriptionActiveSubscriptionFragmentFragment } }
-  ) | null };
+export type StripeSubscriptionQueryQuery = {
+  __typename?: 'Query';
+  allPaymentMethods?: {
+    __typename?: 'PaymentMethodConnection';
+    edges: Array<{
+      __typename?: 'PaymentMethodEdge';
+      cursor: string;
+      node?:
+        | ({
+            __typename: 'StripePaymentMethodType';
+            id: string;
+            pk?: string | null;
+            type: DjstripePaymentMethodTypeChoices;
+            card?: any | null;
+            billingDetails?: any | null;
+          } & { ' $fragmentRefs'?: { StripePaymentMethodFragmentFragment: StripePaymentMethodFragmentFragment } })
+        | null;
+    } | null>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | null; hasNextPage: boolean };
+  } | null;
+  activeSubscription?:
+    | ({ __typename: 'SubscriptionScheduleType'; id: string } & {
+        ' $fragmentRefs'?: {
+          SubscriptionActiveSubscriptionFragmentFragment: SubscriptionActiveSubscriptionFragmentFragment;
+        };
+      })
+    | null;
+};
 
 export type StripeDeletePaymentMethodMutationMutationVariables = Exact<{
   input: DeletePaymentMethodMutationInput;
 }>;
 
-
-export type StripeDeletePaymentMethodMutationMutation = { __typename?: 'ApiMutation', deletePaymentMethod?: { __typename?: 'DeletePaymentMethodMutationPayload', deletedIds?: Array<string | null> | null, activeSubscription?: { __typename?: 'SubscriptionScheduleType', defaultPaymentMethod?: (
-        { __typename?: 'StripePaymentMethodType' }
-        & { ' $fragmentRefs'?: { 'StripePaymentMethodFragmentFragment': StripePaymentMethodFragmentFragment } }
-      ) | null } | null } | null };
+export type StripeDeletePaymentMethodMutationMutation = {
+  __typename?: 'ApiMutation';
+  deletePaymentMethod?: {
+    __typename?: 'DeletePaymentMethodMutationPayload';
+    deletedIds?: Array<string | null> | null;
+    activeSubscription?: {
+      __typename?: 'SubscriptionScheduleType';
+      defaultPaymentMethod?:
+        | ({ __typename?: 'StripePaymentMethodType' } & {
+            ' $fragmentRefs'?: { StripePaymentMethodFragmentFragment: StripePaymentMethodFragmentFragment };
+          })
+        | null;
+    } | null;
+  } | null;
+};
 
 export type StripeUpdateDefaultPaymentMethodMutationMutationVariables = Exact<{
   input: UpdateDefaultPaymentMethodMutationInput;
 }>;
 
+export type StripeUpdateDefaultPaymentMethodMutationMutation = {
+  __typename?: 'ApiMutation';
+  updateDefaultPaymentMethod?: {
+    __typename?: 'UpdateDefaultPaymentMethodMutationPayload';
+    activeSubscription?:
+      | ({ __typename?: 'SubscriptionScheduleType'; id: string } & {
+          ' $fragmentRefs'?: {
+            SubscriptionActiveSubscriptionFragmentFragment: SubscriptionActiveSubscriptionFragmentFragment;
+          };
+        })
+      | null;
+    paymentMethodEdge?: {
+      __typename?: 'PaymentMethodEdge';
+      node?:
+        | ({ __typename?: 'StripePaymentMethodType'; id: string } & {
+            ' $fragmentRefs'?: { StripePaymentMethodFragmentFragment: StripePaymentMethodFragmentFragment };
+          })
+        | null;
+    } | null;
+  } | null;
+};
 
-export type StripeUpdateDefaultPaymentMethodMutationMutation = { __typename?: 'ApiMutation', updateDefaultPaymentMethod?: { __typename?: 'UpdateDefaultPaymentMethodMutationPayload', activeSubscription?: (
-      { __typename?: 'SubscriptionScheduleType', id: string }
-      & { ' $fragmentRefs'?: { 'SubscriptionActiveSubscriptionFragmentFragment': SubscriptionActiveSubscriptionFragmentFragment } }
-    ) | null, paymentMethodEdge?: { __typename?: 'PaymentMethodEdge', node?: (
-        { __typename?: 'StripePaymentMethodType', id: string }
-        & { ' $fragmentRefs'?: { 'StripePaymentMethodFragmentFragment': StripePaymentMethodFragmentFragment } }
-      ) | null } | null } | null };
+export type SubscriptionActiveSubscriptionFragmentFragment = {
+  __typename?: 'SubscriptionScheduleType';
+  canActivateTrial?: boolean | null;
+  phases?: Array<{
+    __typename?: 'SubscriptionSchedulePhaseType';
+    startDate?: any | null;
+    endDate?: string | null;
+    trialEnd?: string | null;
+    item?: {
+      __typename?: 'SubscriptionSchedulePhaseItemType';
+      quantity?: number | null;
+      price?: {
+        __typename?: 'StripePriceType';
+        pk?: string | null;
+        unitAmount?: any | null;
+        id: string;
+        product: { __typename?: 'StripeProductType'; id: string; name: string };
+      } | null;
+    } | null;
+  } | null> | null;
+  subscription?: {
+    __typename?: 'StripeSubscriptionType';
+    startDate?: any | null;
+    trialEnd?: any | null;
+    trialStart?: any | null;
+    id: string;
+  } | null;
+  defaultPaymentMethod?:
+    | ({ __typename?: 'StripePaymentMethodType'; id: string } & {
+        ' $fragmentRefs'?: { StripePaymentMethodFragment_Fragment: StripePaymentMethodFragment_Fragment };
+      })
+    | null;
+} & { ' $fragmentName'?: 'SubscriptionActiveSubscriptionFragmentFragment' };
 
-export type SubscriptionActiveSubscriptionFragmentFragment = { __typename?: 'SubscriptionScheduleType', canActivateTrial?: boolean | null, phases?: Array<{ __typename?: 'SubscriptionSchedulePhaseType', startDate?: any | null, endDate?: string | null, trialEnd?: string | null, item?: { __typename?: 'SubscriptionSchedulePhaseItemType', quantity?: number | null, price?: { __typename?: 'StripePriceType', pk?: string | null, unitAmount?: any | null, id: string, product: { __typename?: 'StripeProductType', id: string, name: string } } | null } | null } | null> | null, subscription?: { __typename?: 'StripeSubscriptionType', startDate?: any | null, trialEnd?: any | null, trialStart?: any | null, id: string } | null, defaultPaymentMethod?: (
-    { __typename?: 'StripePaymentMethodType', id: string }
-    & { ' $fragmentRefs'?: { 'StripePaymentMethodFragment_Fragment': StripePaymentMethodFragment_Fragment } }
-  ) | null } & { ' $fragmentName'?: 'SubscriptionActiveSubscriptionFragmentFragment' };
+export type SubscriptionPlanItemFragmentFragment = {
+  __typename?: 'SubscriptionPlanType';
+  id: string;
+  pk?: string | null;
+  amount?: any | null;
+  product?: { __typename?: 'StripeProductType'; id: string; name: string } | null;
+} & { ' $fragmentName'?: 'SubscriptionPlanItemFragmentFragment' };
 
-export type SubscriptionPlanItemFragmentFragment = { __typename?: 'SubscriptionPlanType', id: string, pk?: string | null, amount?: any | null, product?: { __typename?: 'StripeProductType', id: string, name: string } | null } & { ' $fragmentName'?: 'SubscriptionPlanItemFragmentFragment' };
+export type SubscriptionActiveSubscriptionDetailsFragmentFragment = {
+  __typename?: 'SubscriptionScheduleType';
+  canActivateTrial?: boolean | null;
+  phases?: Array<{
+    __typename?: 'SubscriptionSchedulePhaseType';
+    startDate?: any | null;
+    endDate?: string | null;
+    trialEnd?: string | null;
+    item?: {
+      __typename?: 'SubscriptionSchedulePhaseItemType';
+      quantity?: number | null;
+      price?:
+        | ({ __typename?: 'StripePriceType'; id: string } & {
+            ' $fragmentRefs'?: { SubscriptionPriceItemFragmentFragment: SubscriptionPriceItemFragmentFragment };
+          })
+        | null;
+    } | null;
+  } | null> | null;
+  subscription?: {
+    __typename?: 'StripeSubscriptionType';
+    startDate?: any | null;
+    trialEnd?: any | null;
+    trialStart?: any | null;
+    id: string;
+  } | null;
+  defaultPaymentMethod?:
+    | ({ __typename?: 'StripePaymentMethodType'; id: string } & {
+        ' $fragmentRefs'?: { StripePaymentMethodFragment_Fragment: StripePaymentMethodFragment_Fragment };
+      })
+    | null;
+} & { ' $fragmentName'?: 'SubscriptionActiveSubscriptionDetailsFragmentFragment' };
 
-export type SubscriptionActiveSubscriptionDetailsFragmentFragment = { __typename?: 'SubscriptionScheduleType', canActivateTrial?: boolean | null, phases?: Array<{ __typename?: 'SubscriptionSchedulePhaseType', startDate?: any | null, endDate?: string | null, trialEnd?: string | null, item?: { __typename?: 'SubscriptionSchedulePhaseItemType', quantity?: number | null, price?: (
-        { __typename?: 'StripePriceType', id: string }
-        & { ' $fragmentRefs'?: { 'SubscriptionPriceItemFragmentFragment': SubscriptionPriceItemFragmentFragment } }
-      ) | null } | null } | null> | null, subscription?: { __typename?: 'StripeSubscriptionType', startDate?: any | null, trialEnd?: any | null, trialStart?: any | null, id: string } | null, defaultPaymentMethod?: (
-    { __typename?: 'StripePaymentMethodType', id: string }
-    & { ' $fragmentRefs'?: { 'StripePaymentMethodFragment_Fragment': StripePaymentMethodFragment_Fragment } }
-  ) | null } & { ' $fragmentName'?: 'SubscriptionActiveSubscriptionDetailsFragmentFragment' };
-
-export type StripePaymentMethodFragment_Fragment = { __typename?: 'StripePaymentMethodType', id: string, pk?: string | null, type: DjstripePaymentMethodTypeChoices, card?: any | null, billingDetails?: any | null } & { ' $fragmentName'?: 'StripePaymentMethodFragment_Fragment' };
+export type StripePaymentMethodFragment_Fragment = {
+  __typename?: 'StripePaymentMethodType';
+  id: string;
+  pk?: string | null;
+  type: DjstripePaymentMethodTypeChoices;
+  card?: any | null;
+  billingDetails?: any | null;
+} & { ' $fragmentName'?: 'StripePaymentMethodFragment_Fragment' };
 
 export type SubscriptionActivePlanDetailsQuery_QueryVariables = Exact<{
   tenantId: Scalars['ID']['input'];
 }>;
 
-
-export type SubscriptionActivePlanDetailsQuery_Query = { __typename?: 'Query', activeSubscription?: (
-    { __typename?: 'SubscriptionScheduleType', id: string }
-    & { ' $fragmentRefs'?: { 'SubscriptionActiveSubscriptionFragmentFragment': SubscriptionActiveSubscriptionFragmentFragment } }
-  ) | null };
+export type SubscriptionActivePlanDetailsQuery_Query = {
+  __typename?: 'Query';
+  activeSubscription?:
+    | ({ __typename?: 'SubscriptionScheduleType'; id: string } & {
+        ' $fragmentRefs'?: {
+          SubscriptionActiveSubscriptionFragmentFragment: SubscriptionActiveSubscriptionFragmentFragment;
+        };
+      })
+    | null;
+};
 
 export type SubscriptionCancelActiveSubscriptionMutationMutationVariables = Exact<{
   input: CancelActiveSubscriptionMutationInput;
 }>;
 
-
-export type SubscriptionCancelActiveSubscriptionMutationMutation = { __typename?: 'ApiMutation', cancelActiveSubscription?: { __typename?: 'CancelActiveSubscriptionMutationPayload', subscriptionSchedule?: (
-      { __typename?: 'SubscriptionScheduleType', id: string }
-      & { ' $fragmentRefs'?: { 'SubscriptionActiveSubscriptionFragmentFragment': SubscriptionActiveSubscriptionFragmentFragment } }
-    ) | null } | null };
+export type SubscriptionCancelActiveSubscriptionMutationMutation = {
+  __typename?: 'ApiMutation';
+  cancelActiveSubscription?: {
+    __typename?: 'CancelActiveSubscriptionMutationPayload';
+    subscriptionSchedule?:
+      | ({ __typename?: 'SubscriptionScheduleType'; id: string } & {
+          ' $fragmentRefs'?: {
+            SubscriptionActiveSubscriptionFragmentFragment: SubscriptionActiveSubscriptionFragmentFragment;
+          };
+        })
+      | null;
+  } | null;
+};
 
 export type StripeCreateSetupIntentMutation_MutationVariables = Exact<{
   input: CreateSetupIntentMutationInput;
 }>;
 
+export type StripeCreateSetupIntentMutation_Mutation = {
+  __typename?: 'ApiMutation';
+  createSetupIntent?: {
+    __typename?: 'CreateSetupIntentMutationPayload';
+    setupIntent?:
+      | ({ __typename?: 'StripeSetupIntentType'; id: string } & {
+          ' $fragmentRefs'?: { StripeSetupIntentFragmentFragment: StripeSetupIntentFragmentFragment };
+        })
+      | null;
+  } | null;
+};
 
-export type StripeCreateSetupIntentMutation_Mutation = { __typename?: 'ApiMutation', createSetupIntent?: { __typename?: 'CreateSetupIntentMutationPayload', setupIntent?: (
-      { __typename?: 'StripeSetupIntentType', id: string }
-      & { ' $fragmentRefs'?: { 'StripeSetupIntentFragmentFragment': StripeSetupIntentFragmentFragment } }
-    ) | null } | null };
-
-export type StripeSetupIntentFragmentFragment = { __typename?: 'StripeSetupIntentType', id: string, clientSecret: string } & { ' $fragmentName'?: 'StripeSetupIntentFragmentFragment' };
+export type StripeSetupIntentFragmentFragment = {
+  __typename?: 'StripeSetupIntentType';
+  id: string;
+  clientSecret: string;
+} & { ' $fragmentName'?: 'StripeSetupIntentFragmentFragment' };
 
 export type SubscriptionChangeActiveSubscriptionMutationMutationVariables = Exact<{
   input: ChangeActiveSubscriptionMutationInput;
 }>;
 
+export type SubscriptionChangeActiveSubscriptionMutationMutation = {
+  __typename?: 'ApiMutation';
+  changeActiveSubscription?: {
+    __typename?: 'ChangeActiveSubscriptionMutationPayload';
+    subscriptionSchedule?:
+      | ({ __typename?: 'SubscriptionScheduleType'; id: string } & {
+          ' $fragmentRefs'?: {
+            SubscriptionActiveSubscriptionFragmentFragment: SubscriptionActiveSubscriptionFragmentFragment;
+          };
+        })
+      | null;
+  } | null;
+};
 
-export type SubscriptionChangeActiveSubscriptionMutationMutation = { __typename?: 'ApiMutation', changeActiveSubscription?: { __typename?: 'ChangeActiveSubscriptionMutationPayload', subscriptionSchedule?: (
-      { __typename?: 'SubscriptionScheduleType', id: string }
-      & { ' $fragmentRefs'?: { 'SubscriptionActiveSubscriptionFragmentFragment': SubscriptionActiveSubscriptionFragmentFragment } }
-    ) | null } | null };
+export type SubscriptionPlansAllQueryQueryVariables = Exact<{ [key: string]: never }>;
 
-export type SubscriptionPlansAllQueryQueryVariables = Exact<{ [key: string]: never; }>;
+export type SubscriptionPlansAllQueryQuery = {
+  __typename?: 'Query';
+  allSubscriptionPlans?: {
+    __typename?: 'StripePriceConnection';
+    edges: Array<{
+      __typename?: 'StripePriceEdge';
+      node?:
+        | ({
+            __typename?: 'StripePriceType';
+            id: string;
+            pk?: string | null;
+            unitAmount?: any | null;
+            product: { __typename?: 'StripeProductType'; id: string; name: string };
+          } & { ' $fragmentRefs'?: { SubscriptionPriceItemFragmentFragment: SubscriptionPriceItemFragmentFragment } })
+        | null;
+    } | null>;
+  } | null;
+};
 
-
-export type SubscriptionPlansAllQueryQuery = { __typename?: 'Query', allSubscriptionPlans?: { __typename?: 'StripePriceConnection', edges: Array<{ __typename?: 'StripePriceEdge', node?: (
-        { __typename?: 'StripePriceType', id: string, pk?: string | null, unitAmount?: any | null, product: { __typename?: 'StripeProductType', id: string, name: string } }
-        & { ' $fragmentRefs'?: { 'SubscriptionPriceItemFragmentFragment': SubscriptionPriceItemFragmentFragment } }
-      ) | null } | null> } | null };
-
-export type SubscriptionPriceItemFragmentFragment = { __typename?: 'StripePriceType', id: string, pk?: string | null, unitAmount?: any | null, product: { __typename?: 'StripeProductType', id: string, name: string } } & { ' $fragmentName'?: 'SubscriptionPriceItemFragmentFragment' };
+export type SubscriptionPriceItemFragmentFragment = {
+  __typename?: 'StripePriceType';
+  id: string;
+  pk?: string | null;
+  unitAmount?: any | null;
+  product: { __typename?: 'StripeProductType'; id: string; name: string };
+} & { ' $fragmentName'?: 'SubscriptionPriceItemFragmentFragment' };
 
 export type StripeAllChargesQueryQueryVariables = Exact<{
   tenantId: Scalars['ID']['input'];
 }>;
 
+export type StripeAllChargesQueryQuery = {
+  __typename?: 'Query';
+  allCharges?: {
+    __typename?: 'ChargeConnection';
+    edges: Array<{
+      __typename?: 'ChargeEdge';
+      node?:
+        | ({ __typename?: 'StripeChargeType'; id: string } & {
+            ' $fragmentRefs'?: { StripeChargeFragmentFragment: StripeChargeFragmentFragment };
+          })
+        | null;
+    } | null>;
+  } | null;
+};
 
-export type StripeAllChargesQueryQuery = { __typename?: 'Query', allCharges?: { __typename?: 'ChargeConnection', edges: Array<{ __typename?: 'ChargeEdge', node?: (
-        { __typename?: 'StripeChargeType', id: string }
-        & { ' $fragmentRefs'?: { 'StripeChargeFragmentFragment': StripeChargeFragmentFragment } }
-      ) | null } | null> } | null };
-
-export type StripeChargeFragmentFragment = { __typename?: 'StripeChargeType', id: string, created?: any | null, billingDetails?: any | null, amount: any, paymentMethod?: (
-    { __typename?: 'StripePaymentMethodType', id: string }
-    & { ' $fragmentRefs'?: { 'StripePaymentMethodFragmentFragment': StripePaymentMethodFragmentFragment } }
-  ) | null, invoice?: { __typename?: 'StripeInvoiceType', id: string, subscription?: { __typename?: 'StripeSubscriptionType', plan?: (
-        { __typename?: 'SubscriptionPlanType' }
-        & { ' $fragmentRefs'?: { 'SubscriptionPlanItemFragmentFragment': SubscriptionPlanItemFragmentFragment } }
-      ) | null } | null } | null } & { ' $fragmentName'?: 'StripeChargeFragmentFragment' };
+export type StripeChargeFragmentFragment = {
+  __typename?: 'StripeChargeType';
+  id: string;
+  created?: any | null;
+  billingDetails?: any | null;
+  amount: any;
+  paymentMethod?:
+    | ({ __typename?: 'StripePaymentMethodType'; id: string } & {
+        ' $fragmentRefs'?: { StripePaymentMethodFragmentFragment: StripePaymentMethodFragmentFragment };
+      })
+    | null;
+  invoice?: {
+    __typename?: 'StripeInvoiceType';
+    id: string;
+    subscription?: {
+      __typename?: 'StripeSubscriptionType';
+      plan?:
+        | ({ __typename?: 'SubscriptionPlanType' } & {
+            ' $fragmentRefs'?: { SubscriptionPlanItemFragmentFragment: SubscriptionPlanItemFragmentFragment };
+          })
+        | null;
+    } | null;
+  } | null;
+} & { ' $fragmentName'?: 'StripeChargeFragmentFragment' };
 
 export type GenerateSaasIdeasMutationMutationVariables = Exact<{
   input: GenerateSaasIdeasMutationInput;
 }>;
 
-
-export type GenerateSaasIdeasMutationMutation = { __typename?: 'ApiMutation', generateSaasIdeas?: { __typename?: 'GenerateSaasIdeasMutationPayload', response?: string | null } | null };
+export type GenerateSaasIdeasMutationMutation = {
+  __typename?: 'ApiMutation';
+  generateSaasIdeas?: { __typename?: 'GenerateSaasIdeasMutationPayload'; response?: string | null } | null;
+};
 
 export type NotificationMutationMutationVariables = Exact<{
   input: UpdateNotificationMutationInput;
 }>;
 
-
-export type NotificationMutationMutation = { __typename?: 'ApiMutation', updateNotification?: { __typename?: 'UpdateNotificationMutationPayload', hasUnreadNotifications?: boolean | null, notificationEdge?: { __typename?: 'NotificationEdge', node?: { __typename?: 'NotificationType', id: string, readAt?: any | null } | null } | null } | null };
+export type NotificationMutationMutation = {
+  __typename?: 'ApiMutation';
+  updateNotification?: {
+    __typename?: 'UpdateNotificationMutationPayload';
+    hasUnreadNotifications?: boolean | null;
+    notificationEdge?: {
+      __typename?: 'NotificationEdge';
+      node?: { __typename?: 'NotificationType'; id: string; readAt?: any | null } | null;
+    } | null;
+  } | null;
+};
 
 export type NotificationsListQueryQueryVariables = Exact<{
   count?: InputMaybe<Scalars['Int']['input']>;
   cursor?: InputMaybe<Scalars['String']['input']>;
 }>;
 
+export type NotificationsListQueryQuery = { __typename?: 'Query' } & {
+  ' $fragmentRefs'?: {
+    NotificationsListContentFragmentFragment: NotificationsListContentFragmentFragment;
+    NotificationsButtonContentFragment: NotificationsButtonContentFragment;
+  };
+};
 
-export type NotificationsListQueryQuery = (
-  { __typename?: 'Query' }
-  & { ' $fragmentRefs'?: { 'NotificationsListContentFragmentFragment': NotificationsListContentFragmentFragment;'NotificationsButtonContentFragment': NotificationsButtonContentFragment } }
-);
+export type NotificationCreatedSubscriptionSubscriptionVariables = Exact<{ [key: string]: never }>;
 
-export type NotificationCreatedSubscriptionSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type NotificationCreatedSubscriptionSubscription = {
+  __typename?: 'ApiSubscription';
+  notificationCreated?: {
+    __typename?: 'NotificationCreatedSubscription';
+    notification?:
+      | ({ __typename?: 'NotificationType' } & {
+          ' $fragmentRefs'?: { NotificationsListItemFragmentFragment: NotificationsListItemFragmentFragment };
+        })
+      | null;
+  } | null;
+};
 
+export type NotificationsButtonContentFragment = { __typename?: 'Query'; hasUnreadNotifications?: boolean | null } & {
+  ' $fragmentName'?: 'NotificationsButtonContentFragment';
+};
 
-export type NotificationCreatedSubscriptionSubscription = { __typename?: 'ApiSubscription', notificationCreated?: { __typename?: 'NotificationCreatedSubscription', notification?: (
-      { __typename?: 'NotificationType' }
-      & { ' $fragmentRefs'?: { 'NotificationsListItemFragmentFragment': NotificationsListItemFragmentFragment } }
-    ) | null } | null };
+export type NotificationsListContentFragmentFragment = {
+  __typename?: 'Query';
+  hasUnreadNotifications?: boolean | null;
+  allNotifications?: {
+    __typename?: 'NotificationConnection';
+    edges: Array<{
+      __typename?: 'NotificationEdge';
+      node?:
+        | ({ __typename?: 'NotificationType'; id: string } & {
+            ' $fragmentRefs'?: { NotificationsListItemFragmentFragment: NotificationsListItemFragmentFragment };
+          })
+        | null;
+    } | null>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | null; hasNextPage: boolean };
+  } | null;
+} & { ' $fragmentName'?: 'NotificationsListContentFragmentFragment' };
 
-export type NotificationsButtonContentFragment = { __typename?: 'Query', hasUnreadNotifications?: boolean | null } & { ' $fragmentName'?: 'NotificationsButtonContentFragment' };
-
-export type NotificationsListContentFragmentFragment = { __typename?: 'Query', hasUnreadNotifications?: boolean | null, allNotifications?: { __typename?: 'NotificationConnection', edges: Array<{ __typename?: 'NotificationEdge', node?: (
-        { __typename?: 'NotificationType', id: string }
-        & { ' $fragmentRefs'?: { 'NotificationsListItemFragmentFragment': NotificationsListItemFragmentFragment } }
-      ) | null } | null>, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean } } | null } & { ' $fragmentName'?: 'NotificationsListContentFragmentFragment' };
-
-export type NotificationsListItemFragmentFragment = { __typename?: 'NotificationType', id: string, data?: any | null, createdAt: any, readAt?: any | null, type: string, issuer?: { __typename?: 'UserType', id: string, avatar?: string | null, email: string } | null } & { ' $fragmentName'?: 'NotificationsListItemFragmentFragment' };
+export type NotificationsListItemFragmentFragment = {
+  __typename?: 'NotificationType';
+  id: string;
+  data?: any | null;
+  createdAt: any;
+  readAt?: any | null;
+  type: string;
+  issuer?: { __typename?: 'UserType'; id: string; avatar?: string | null; email: string } | null;
+} & { ' $fragmentName'?: 'NotificationsListItemFragmentFragment' };
 
 export type NotificationsListMarkAsReadMutationMutationVariables = Exact<{
   input: MarkReadAllNotificationsMutationInput;
 }>;
 
-
-export type NotificationsListMarkAsReadMutationMutation = { __typename?: 'ApiMutation', markReadAllNotifications?: { __typename?: 'MarkReadAllNotificationsMutationPayload', ok?: boolean | null } | null };
+export type NotificationsListMarkAsReadMutationMutation = {
+  __typename?: 'ApiMutation';
+  markReadAllNotifications?: { __typename?: 'MarkReadAllNotificationsMutationPayload'; ok?: boolean | null } | null;
+};
 
 export type DeleteTenantMutationMutationVariables = Exact<{
   input: DeleteTenantMutationInput;
 }>;
 
-
-export type DeleteTenantMutationMutation = { __typename?: 'ApiMutation', deleteTenant?: { __typename?: 'DeleteTenantMutationPayload', deletedIds?: Array<string | null> | null, clientMutationId?: string | null } | null };
+export type DeleteTenantMutationMutation = {
+  __typename?: 'ApiMutation';
+  deleteTenant?: {
+    __typename?: 'DeleteTenantMutationPayload';
+    deletedIds?: Array<string | null> | null;
+    clientMutationId?: string | null;
+  } | null;
+};
 
 export type UpdateTenantMembershipMutationMutationVariables = Exact<{
   input: UpdateTenantMembershipMutationInput;
 }>;
 
-
-export type UpdateTenantMembershipMutationMutation = { __typename?: 'ApiMutation', updateTenantMembership?: { __typename?: 'UpdateTenantMembershipMutationPayload', tenantMembership?: (
-      { __typename?: 'TenantMembershipType' }
-      & { ' $fragmentRefs'?: { 'CommonQueryMembershipFragmentFragment': CommonQueryMembershipFragmentFragment } }
-    ) | null } | null };
+export type UpdateTenantMembershipMutationMutation = {
+  __typename?: 'ApiMutation';
+  updateTenantMembership?: {
+    __typename?: 'UpdateTenantMembershipMutationPayload';
+    tenantMembership?:
+      | ({ __typename?: 'TenantMembershipType' } & {
+          ' $fragmentRefs'?: { CommonQueryMembershipFragmentFragment: CommonQueryMembershipFragmentFragment };
+        })
+      | null;
+  } | null;
+};
 
 export type DeleteTenantMembershipMutationMutationVariables = Exact<{
   input: DeleteTenantMembershipMutationInput;
 }>;
 
-
-export type DeleteTenantMembershipMutationMutation = { __typename?: 'ApiMutation', deleteTenantMembership?: { __typename?: 'DeleteTenantMembershipMutationPayload', deletedIds?: Array<string | null> | null, clientMutationId?: string | null } | null };
+export type DeleteTenantMembershipMutationMutation = {
+  __typename?: 'ApiMutation';
+  deleteTenantMembership?: {
+    __typename?: 'DeleteTenantMembershipMutationPayload';
+    deletedIds?: Array<string | null> | null;
+    clientMutationId?: string | null;
+  } | null;
+};
 
 export type TenantMembersListQueryQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
+export type TenantMembersListQueryQuery = {
+  __typename?: 'Query';
+  tenant?: {
+    __typename?: 'TenantType';
+    userMemberships?: Array<{
+      __typename?: 'TenantMembershipType';
+      id: string;
+      role?: TenantUserRole | null;
+      invitationAccepted?: boolean | null;
+      inviteeEmailAddress?: string | null;
+      userId?: string | null;
+      firstName?: string | null;
+      lastName?: string | null;
+      userEmail?: string | null;
+      avatar?: string | null;
+    } | null> | null;
+  } | null;
+};
 
-export type TenantMembersListQueryQuery = { __typename?: 'Query', tenant?: { __typename?: 'TenantType', userMemberships?: Array<{ __typename?: 'TenantMembershipType', id: string, role?: TenantUserRole | null, invitationAccepted?: boolean | null, inviteeEmailAddress?: string | null, userId?: string | null, firstName?: string | null, lastName?: string | null, userEmail?: string | null, avatar?: string | null } | null> | null } | null };
-
-export type TenantFragmentFragment = { __typename?: 'TenantType', id: string, name?: string | null, slug?: string | null, membership: { __typename?: 'TenantMembershipType', role?: TenantUserRole | null, invitationAccepted?: boolean | null } } & { ' $fragmentName'?: 'TenantFragmentFragment' };
+export type TenantFragmentFragment = {
+  __typename?: 'TenantType';
+  id: string;
+  name?: string | null;
+  slug?: string | null;
+  membership: {
+    __typename?: 'TenantMembershipType';
+    role?: TenantUserRole | null;
+    invitationAccepted?: boolean | null;
+  };
+} & { ' $fragmentName'?: 'TenantFragmentFragment' };
 
 export type CurrentTenantQueryQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
-
-export type CurrentTenantQueryQuery = { __typename?: 'Query', tenant?: (
-    { __typename?: 'TenantType' }
-    & { ' $fragmentRefs'?: { 'TenantFragmentFragment': TenantFragmentFragment } }
-  ) | null };
+export type CurrentTenantQueryQuery = {
+  __typename?: 'Query';
+  tenant?:
+    | ({ __typename?: 'TenantType' } & { ' $fragmentRefs'?: { TenantFragmentFragment: TenantFragmentFragment } })
+    | null;
+};
 
 export type AddTenantMutationMutationVariables = Exact<{
   input: CreateTenantMutationInput;
 }>;
 
-
-export type AddTenantMutationMutation = { __typename?: 'ApiMutation', createTenant?: { __typename?: 'CreateTenantMutationPayload', tenantEdge?: { __typename?: 'TenantEdge', node?: { __typename?: 'TenantType', id: string, name?: string | null } | null } | null } | null };
+export type AddTenantMutationMutation = {
+  __typename?: 'ApiMutation';
+  createTenant?: {
+    __typename?: 'CreateTenantMutationPayload';
+    tenantEdge?: {
+      __typename?: 'TenantEdge';
+      node?: { __typename?: 'TenantType'; id: string; name?: string | null } | null;
+    } | null;
+  } | null;
+};
 
 export type AcceptTenantInvitationMutationMutationVariables = Exact<{
   input: AcceptTenantInvitationMutationInput;
 }>;
 
-
-export type AcceptTenantInvitationMutationMutation = { __typename?: 'ApiMutation', acceptTenantInvitation?: { __typename?: 'AcceptTenantInvitationMutationPayload', ok?: boolean | null } | null };
+export type AcceptTenantInvitationMutationMutation = {
+  __typename?: 'ApiMutation';
+  acceptTenantInvitation?: { __typename?: 'AcceptTenantInvitationMutationPayload'; ok?: boolean | null } | null;
+};
 
 export type DeclineTenantInvitationMutationMutationVariables = Exact<{
   input: DeclineTenantInvitationMutationInput;
 }>;
 
-
-export type DeclineTenantInvitationMutationMutation = { __typename?: 'ApiMutation', declineTenantInvitation?: { __typename?: 'DeclineTenantInvitationMutationPayload', ok?: boolean | null } | null };
+export type DeclineTenantInvitationMutationMutation = {
+  __typename?: 'ApiMutation';
+  declineTenantInvitation?: { __typename?: 'DeclineTenantInvitationMutationPayload'; ok?: boolean | null } | null;
+};
 
 export type UpdateTenantMutationMutationVariables = Exact<{
   input: UpdateTenantMutationInput;
 }>;
 
-
-export type UpdateTenantMutationMutation = { __typename?: 'ApiMutation', updateTenant?: { __typename?: 'UpdateTenantMutationPayload', tenant?: { __typename?: 'TenantType', id: string, name?: string | null } | null } | null };
+export type UpdateTenantMutationMutation = {
+  __typename?: 'ApiMutation';
+  updateTenant?: {
+    __typename?: 'UpdateTenantMutationPayload';
+    tenant?: { __typename?: 'TenantType'; id: string; name?: string | null } | null;
+  } | null;
+};
 
 export type CreateTenantInvitationMutationMutationVariables = Exact<{
   input: CreateTenantInvitationMutationInput;
 }>;
 
-
-export type CreateTenantInvitationMutationMutation = { __typename?: 'ApiMutation', createTenantInvitation?: { __typename?: 'CreateTenantInvitationMutationPayload', email?: string | null, role?: TenantUserRole | null } | null };
+export type CreateTenantInvitationMutationMutation = {
+  __typename?: 'ApiMutation';
+  createTenantInvitation?: {
+    __typename?: 'CreateTenantInvitationMutationPayload';
+    email?: string | null;
+    role?: TenantUserRole | null;
+  } | null;
+};
 
 export type AuthConfirmUserEmailMutationMutationVariables = Exact<{
   input: ConfirmEmailMutationInput;
 }>;
 
-
-export type AuthConfirmUserEmailMutationMutation = { __typename?: 'ApiMutation', confirm?: { __typename?: 'ConfirmEmailMutationPayload', ok?: boolean | null } | null };
+export type AuthConfirmUserEmailMutationMutation = {
+  __typename?: 'ApiMutation';
+  confirm?: { __typename?: 'ConfirmEmailMutationPayload'; ok?: boolean | null } | null;
+};
 
 export type AuthChangePasswordMutationMutationVariables = Exact<{
   input: ChangePasswordMutationInput;
 }>;
 
-
-export type AuthChangePasswordMutationMutation = { __typename?: 'ApiMutation', changePassword?: { __typename?: 'ChangePasswordMutationPayload', access?: string | null, refresh?: string | null } | null };
+export type AuthChangePasswordMutationMutation = {
+  __typename?: 'ApiMutation';
+  changePassword?: {
+    __typename?: 'ChangePasswordMutationPayload';
+    access?: string | null;
+    refresh?: string | null;
+  } | null;
+};
 
 export type AuthUpdateUserProfileMutationMutationVariables = Exact<{
   input: UpdateCurrentUserMutationInput;
 }>;
 
-
-export type AuthUpdateUserProfileMutationMutation = { __typename?: 'ApiMutation', updateCurrentUser?: { __typename?: 'UpdateCurrentUserMutationPayload', userProfile?: { __typename?: 'UserProfileType', id: string, user: (
-        { __typename?: 'CurrentUserType' }
-        & { ' $fragmentRefs'?: { 'CommonQueryCurrentUserFragmentFragment': CommonQueryCurrentUserFragmentFragment } }
-      ) } | null } | null };
+export type AuthUpdateUserProfileMutationMutation = {
+  __typename?: 'ApiMutation';
+  updateCurrentUser?: {
+    __typename?: 'UpdateCurrentUserMutationPayload';
+    userProfile?: {
+      __typename?: 'UserProfileType';
+      id: string;
+      user: { __typename?: 'CurrentUserType' } & {
+        ' $fragmentRefs'?: { CommonQueryCurrentUserFragmentFragment: CommonQueryCurrentUserFragmentFragment };
+      };
+    } | null;
+  } | null;
+};
 
 export type LoginFormMutationMutationVariables = Exact<{
   input: ObtainTokenMutationInput;
 }>;
 
-
-export type LoginFormMutationMutation = { __typename?: 'ApiMutation', tokenAuth?: { __typename?: 'ObtainTokenMutationPayload', access?: string | null, refresh?: string | null, otpAuthToken?: string | null } | null };
+export type LoginFormMutationMutation = {
+  __typename?: 'ApiMutation';
+  tokenAuth?: {
+    __typename?: 'ObtainTokenMutationPayload';
+    access?: string | null;
+    refresh?: string | null;
+    otpAuthToken?: string | null;
+  } | null;
+};
 
 export type AuthRequestPasswordResetConfirmMutationMutationVariables = Exact<{
   input: PasswordResetConfirmationMutationInput;
 }>;
 
-
-export type AuthRequestPasswordResetConfirmMutationMutation = { __typename?: 'ApiMutation', passwordResetConfirm?: { __typename?: 'PasswordResetConfirmationMutationPayload', ok?: boolean | null } | null };
+export type AuthRequestPasswordResetConfirmMutationMutation = {
+  __typename?: 'ApiMutation';
+  passwordResetConfirm?: { __typename?: 'PasswordResetConfirmationMutationPayload'; ok?: boolean | null } | null;
+};
 
 export type AuthRequestPasswordResetMutationMutationVariables = Exact<{
   input: PasswordResetMutationInput;
 }>;
 
-
-export type AuthRequestPasswordResetMutationMutation = { __typename?: 'ApiMutation', passwordReset?: { __typename?: 'PasswordResetMutationPayload', ok?: boolean | null } | null };
+export type AuthRequestPasswordResetMutationMutation = {
+  __typename?: 'ApiMutation';
+  passwordReset?: { __typename?: 'PasswordResetMutationPayload'; ok?: boolean | null } | null;
+};
 
 export type AuthSignupMutationMutationVariables = Exact<{
   input: SingUpMutationInput;
 }>;
 
-
-export type AuthSignupMutationMutation = { __typename?: 'ApiMutation', signUp?: { __typename?: 'SingUpMutationPayload', access?: string | null, refresh?: string | null } | null };
+export type AuthSignupMutationMutation = {
+  __typename?: 'ApiMutation';
+  signUp?: { __typename?: 'SingUpMutationPayload'; access?: string | null; refresh?: string | null } | null;
+};
 
 export type GenerateOtpMutationVariables = Exact<{
   input: GenerateOtpMutationInput;
 }>;
 
-
-export type GenerateOtpMutation = { __typename?: 'ApiMutation', generateOtp?: { __typename?: 'GenerateOTPMutationPayload', base32?: string | null, otpauthUrl?: string | null } | null };
+export type GenerateOtpMutation = {
+  __typename?: 'ApiMutation';
+  generateOtp?: {
+    __typename?: 'GenerateOTPMutationPayload';
+    base32?: string | null;
+    otpauthUrl?: string | null;
+  } | null;
+};
 
 export type VerifyOtpMutationVariables = Exact<{
   input: VerifyOtpMutationInput;
 }>;
 
-
-export type VerifyOtpMutation = { __typename?: 'ApiMutation', verifyOtp?: { __typename?: 'VerifyOTPMutationPayload', otpVerified?: boolean | null } | null };
+export type VerifyOtpMutation = {
+  __typename?: 'ApiMutation';
+  verifyOtp?: { __typename?: 'VerifyOTPMutationPayload'; otpVerified?: boolean | null } | null;
+};
 
 export type ValidateOtpMutationVariables = Exact<{
   input: ValidateOtpMutationInput;
 }>;
 
-
-export type ValidateOtpMutation = { __typename?: 'ApiMutation', validateOtp?: { __typename?: 'ValidateOTPMutationPayload', access?: string | null, refresh?: string | null } | null };
+export type ValidateOtpMutation = {
+  __typename?: 'ApiMutation';
+  validateOtp?: { __typename?: 'ValidateOTPMutationPayload'; access?: string | null; refresh?: string | null } | null;
+};
 
 export type DisableOtpMutationVariables = Exact<{
   input: DisableOtpMutationInput;
 }>;
 
+export type DisableOtpMutation = {
+  __typename?: 'ApiMutation';
+  disableOtp?: { __typename?: 'DisableOTPMutationPayload'; ok?: boolean | null } | null;
+};
 
-export type DisableOtpMutation = { __typename?: 'ApiMutation', disableOtp?: { __typename?: 'DisableOTPMutationPayload', ok?: boolean | null } | null };
-
-export const PageCursorsFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"pageCursorsFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PageCursors"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"around"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"first"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"last"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"next"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"previous"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}}]}}]} as unknown as DocumentNode<PageCursorsFragmentFragment, unknown>;
-export const CommonQueryCurrentUserFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CurrentUserType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"otpVerified"}},{"kind":"Field","name":{"kind":"Name","value":"otpEnabled"}}]}}]} as unknown as DocumentNode<CommonQueryCurrentUserFragmentFragment, unknown>;
-export const CommonQueryMembershipFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryMembershipFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantMembershipType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"invitationToken"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}}]} as unknown as DocumentNode<CommonQueryMembershipFragmentFragment, unknown>;
-export const CommonQueryTenantItemFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryTenantItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryMembershipFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryMembershipFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantMembershipType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"invitationToken"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}}]} as unknown as DocumentNode<CommonQueryTenantItemFragmentFragment, unknown>;
-export const UseFavoriteDemoItem_ItemFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useFavoriteDemoItem_item"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ContentfulDemoItemFavoriteType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}}]}}]}}]} as unknown as DocumentNode<UseFavoriteDemoItem_ItemFragment, unknown>;
-export const DemoItemListItemFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"demoItemListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"DemoItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]} as unknown as DocumentNode<DemoItemListItemFragmentFragment, unknown>;
-export const CrudDemoItemListItemFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"crudDemoItemListItem"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CrudDemoItemType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode<CrudDemoItemListItemFragment, unknown>;
-export const DocumentListItemFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"documentListItem"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"DocumentDemoItemType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]} as unknown as DocumentNode<DocumentListItemFragment, unknown>;
-export const StripePaymentIntentFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentIntentFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentIntentType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"clientSecret"}},{"kind":"Field","name":{"kind":"Name","value":"currency"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}}]}}]} as unknown as DocumentNode<StripePaymentIntentFragmentFragment, unknown>;
-export const StripePaymentMethodFragment_FragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment_"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}}]} as unknown as DocumentNode<StripePaymentMethodFragment_Fragment, unknown>;
-export const SubscriptionActiveSubscriptionFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionScheduleType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phases"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"price"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"trialStart"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"canActivateTrial"}},{"kind":"Field","name":{"kind":"Name","value":"defaultPaymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment_"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment_"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}}]} as unknown as DocumentNode<SubscriptionActiveSubscriptionFragmentFragment, unknown>;
-export const SubscriptionPriceItemFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionPriceItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePriceType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}}]}}]} as unknown as DocumentNode<SubscriptionPriceItemFragmentFragment, unknown>;
-export const SubscriptionActiveSubscriptionDetailsFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionActiveSubscriptionDetailsFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionScheduleType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phases"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"price"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionPriceItemFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"trialStart"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"canActivateTrial"}},{"kind":"Field","name":{"kind":"Name","value":"defaultPaymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment_"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionPriceItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePriceType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment_"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}}]} as unknown as DocumentNode<SubscriptionActiveSubscriptionDetailsFragmentFragment, unknown>;
-export const StripeSetupIntentFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripeSetupIntentFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripeSetupIntentType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"clientSecret"}}]}}]} as unknown as DocumentNode<StripeSetupIntentFragmentFragment, unknown>;
-export const StripePaymentMethodFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}}]} as unknown as DocumentNode<StripePaymentMethodFragmentFragment, unknown>;
-export const SubscriptionPlanItemFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionPlanItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionPlanType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"amount"}}]}}]} as unknown as DocumentNode<SubscriptionPlanItemFragmentFragment, unknown>;
-export const StripeChargeFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripeChargeFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripeChargeType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"created"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}},{"kind":"Field","name":{"kind":"Name","value":"paymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"invoice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plan"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionPlanItemFragment"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionPlanItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionPlanType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"amount"}}]}}]} as unknown as DocumentNode<StripeChargeFragmentFragment, unknown>;
-export const NotificationsButtonContentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsButtonContent"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}}]}}]} as unknown as DocumentNode<NotificationsButtonContentFragment, unknown>;
-export const NotificationsListItemFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<NotificationsListItemFragmentFragment, unknown>;
-export const NotificationsListContentFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListContentFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"allNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"count"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"cursor"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListItemFragment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<NotificationsListContentFragmentFragment, unknown>;
-export const TenantFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"tenantFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}}]}}]}}]} as unknown as DocumentNode<TenantFragmentFragment, unknown>;
-export const PagedPaginationListTestQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"pagedPaginationListTestQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"last"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"before"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCrudDemoItems"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"Variable","name":{"kind":"Name","value":"last"}}},{"kind":"Argument","name":{"kind":"Name","value":"before"},"value":{"kind":"Variable","name":{"kind":"Name","value":"before"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageCursors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"around"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"first"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"last"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"next"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"previous"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}}]}}]}}]}}]} as unknown as DocumentNode<PagedPaginationListTestQueryQuery, PagedPaginationListTestQueryQueryVariables>;
-export const PaginationListTestQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"paginationListTestQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"last"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"before"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"Variable","name":{"kind":"Name","value":"last"}}},{"kind":"Argument","name":{"kind":"Name","value":"before"},"value":{"kind":"Variable","name":{"kind":"Name","value":"before"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startCursor"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}}]}}]}}]}}]} as unknown as DocumentNode<PaginationListTestQueryQuery, PaginationListTestQueryQueryVariables>;
-export const CommonQueryCurrentUserQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"commonQueryCurrentUserQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"}},{"kind":"Field","name":{"kind":"Name","value":"tenants"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryTenantItemFragment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryMembershipFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantMembershipType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"invitationToken"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CurrentUserType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"otpVerified"}},{"kind":"Field","name":{"kind":"Name","value":"otpEnabled"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryTenantItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryMembershipFragment"}}]}}]}}]} as unknown as DocumentNode<CommonQueryCurrentUserQueryQuery, CommonQueryCurrentUserQueryQueryVariables>;
-export const ConfigContentfulAppConfigQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"configContentfulAppConfigQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"appConfigCollection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"privacyPolicy"}},{"kind":"Field","name":{"kind":"Name","value":"termsAndConditions"}}]}}]}}]}}]} as unknown as DocumentNode<ConfigContentfulAppConfigQueryQuery, ConfigContentfulAppConfigQueryQueryVariables>;
-export const UseFavoriteDemoItemListCreateMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"useFavoriteDemoItemListCreateMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateFavoriteContentfulDemoItemMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createFavoriteContentfulDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contentfulDemoItemFavoriteEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<UseFavoriteDemoItemListCreateMutationMutation, UseFavoriteDemoItemListCreateMutationMutationVariables>;
-export const UseFavoriteDemoItemListDeleteMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"useFavoriteDemoItemListDeleteMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteFavoriteContentfulDemoItemMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteFavoriteContentfulDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}}]}}]}}]} as unknown as DocumentNode<UseFavoriteDemoItemListDeleteMutationMutation, UseFavoriteDemoItemListDeleteMutationMutationVariables>;
-export const UseFavoriteDemoItemListQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"useFavoriteDemoItemListQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allContentfulDemoItemFavorites"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"100"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"useFavoriteDemoItem_item"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useFavoriteDemoItem_item"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ContentfulDemoItemFavoriteType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}}]}}]}}]} as unknown as DocumentNode<UseFavoriteDemoItemListQueryQuery, UseFavoriteDemoItemListQueryQueryVariables>;
-export const DemoItemQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"demoItemQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"demoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}}]}}]} as unknown as DocumentNode<DemoItemQueryQuery, DemoItemQueryQueryVariables>;
-export const DemoItemsAllQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"demoItemsAllQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"demoItemCollection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sys"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"demoItemListItemFragment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"demoItemListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"DemoItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]} as unknown as DocumentNode<DemoItemsAllQueryQuery, DemoItemsAllQueryQueryVariables>;
-export const AddCrudDemoItemMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addCrudDemoItemMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateCrudDemoItemMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createCrudDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"crudDemoItemEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<AddCrudDemoItemMutationMutation, AddCrudDemoItemMutationMutationVariables>;
-export const CrudDemoItemDetailsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"crudDemoItemDetailsQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"crudDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<CrudDemoItemDetailsQueryQuery, CrudDemoItemDetailsQueryQueryVariables>;
-export const CrudDemoItemListQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CrudDemoItemListQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"last"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"before"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCrudDemoItems"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"Variable","name":{"kind":"Name","value":"last"}}},{"kind":"Argument","name":{"kind":"Name","value":"before"},"value":{"kind":"Variable","name":{"kind":"Name","value":"before"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"crudDemoItemListItem"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageCursors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"pageCursorsFragment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"crudDemoItemListItem"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CrudDemoItemType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"pageCursorsFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PageCursors"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"around"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"first"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"last"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"next"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"previous"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}}]}}]} as unknown as DocumentNode<CrudDemoItemListQueryQuery, CrudDemoItemListQueryQueryVariables>;
-export const CrudDemoItemListItemTestQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"crudDemoItemListItemTestQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"item"},"name":{"kind":"Name","value":"crudDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"StringValue","value":"test-id","block":false}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"crudDemoItemListItem"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"crudDemoItemListItem"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CrudDemoItemType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode<CrudDemoItemListItemTestQueryQuery, CrudDemoItemListItemTestQueryQueryVariables>;
-export const CrudDemoItemListItemDeleteMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"crudDemoItemListItemDeleteMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteCrudDemoItemMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteCrudDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}}]}}]}}]} as unknown as DocumentNode<CrudDemoItemListItemDeleteMutationMutation, CrudDemoItemListItemDeleteMutationMutationVariables>;
-export const CrudDemoItemListItemDefaultStoryQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"crudDemoItemListItemDefaultStoryQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"item"},"name":{"kind":"Name","value":"crudDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"StringValue","value":"test-id","block":false}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"crudDemoItemListItem"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"crudDemoItemListItem"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CrudDemoItemType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode<CrudDemoItemListItemDefaultStoryQueryQuery, CrudDemoItemListItemDefaultStoryQueryQueryVariables>;
-export const EditCrudDemoItemQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"editCrudDemoItemQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"crudDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<EditCrudDemoItemQueryQuery, EditCrudDemoItemQueryQueryVariables>;
-export const EditCrudDemoItemContentMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"editCrudDemoItemContentMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateCrudDemoItemMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateCrudDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"crudDemoItem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<EditCrudDemoItemContentMutationMutation, EditCrudDemoItemContentMutationMutationVariables>;
-export const DocumentsListQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"documentsListQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allDocumentDemoItems"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"documentListItem"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"documentListItem"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"DocumentDemoItemType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]} as unknown as DocumentNode<DocumentsListQueryQuery, DocumentsListQueryQueryVariables>;
-export const DocumentsListCreateMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"documentsListCreateMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateDocumentDemoItemMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createDocumentDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"documentDemoItemEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"documentListItem"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"documentListItem"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"DocumentDemoItemType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"file"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]} as unknown as DocumentNode<DocumentsListCreateMutationMutation, DocumentsListCreateMutationMutationVariables>;
-export const DocumentsDeleteMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"documentsDeleteMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteDocumentDemoItemMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteDocumentDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}}]}}]}}]} as unknown as DocumentNode<DocumentsDeleteMutationMutation, DocumentsDeleteMutationMutationVariables>;
-export const StripeCreatePaymentIntentMutation_Document = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"stripeCreatePaymentIntentMutation_"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreatePaymentIntentMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createPaymentIntent"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"paymentIntent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentIntentFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"clientSecret"}},{"kind":"Field","name":{"kind":"Name","value":"currency"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentIntentFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentIntentType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"clientSecret"}},{"kind":"Field","name":{"kind":"Name","value":"currency"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}}]}}]} as unknown as DocumentNode<StripeCreatePaymentIntentMutation_Mutation, StripeCreatePaymentIntentMutation_MutationVariables>;
-export const StripeUpdatePaymentIntentMutation_Document = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"stripeUpdatePaymentIntentMutation_"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdatePaymentIntentMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updatePaymentIntent"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"paymentIntent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentIntentFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"clientSecret"}},{"kind":"Field","name":{"kind":"Name","value":"currency"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentIntentFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentIntentType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"clientSecret"}},{"kind":"Field","name":{"kind":"Name","value":"currency"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}}]}}]} as unknown as DocumentNode<StripeUpdatePaymentIntentMutation_Mutation, StripeUpdatePaymentIntentMutation_MutationVariables>;
-export const StripeSubscriptionQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"stripeSubscriptionQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allPaymentMethods"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"100"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment"}},{"kind":"Field","name":{"kind":"Name","value":"__typename"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"activeSubscription"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"__typename"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment_"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionScheduleType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phases"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"price"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"trialStart"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"canActivateTrial"}},{"kind":"Field","name":{"kind":"Name","value":"defaultPaymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment_"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<StripeSubscriptionQueryQuery, StripeSubscriptionQueryQueryVariables>;
-export const StripeDeletePaymentMethodMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"stripeDeletePaymentMethodMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeletePaymentMethodMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletePaymentMethod"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}},{"kind":"Field","name":{"kind":"Name","value":"activeSubscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"defaultPaymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}}]} as unknown as DocumentNode<StripeDeletePaymentMethodMutationMutation, StripeDeletePaymentMethodMutationMutationVariables>;
-export const StripeUpdateDefaultPaymentMethodMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"stripeUpdateDefaultPaymentMethodMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateDefaultPaymentMethodMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateDefaultPaymentMethod"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"activeSubscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"paymentMethodEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment_"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionScheduleType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phases"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"price"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"trialStart"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"canActivateTrial"}},{"kind":"Field","name":{"kind":"Name","value":"defaultPaymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment_"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}}]} as unknown as DocumentNode<StripeUpdateDefaultPaymentMethodMutationMutation, StripeUpdateDefaultPaymentMethodMutationMutationVariables>;
-export const SubscriptionActivePlanDetailsQuery_Document = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"subscriptionActivePlanDetailsQuery_"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"activeSubscription"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment_"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionScheduleType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phases"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"price"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"trialStart"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"canActivateTrial"}},{"kind":"Field","name":{"kind":"Name","value":"defaultPaymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment_"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<SubscriptionActivePlanDetailsQuery_Query, SubscriptionActivePlanDetailsQuery_QueryVariables>;
-export const SubscriptionCancelActiveSubscriptionMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"subscriptionCancelActiveSubscriptionMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CancelActiveSubscriptionMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cancelActiveSubscription"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subscriptionSchedule"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment_"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionScheduleType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phases"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"price"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"trialStart"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"canActivateTrial"}},{"kind":"Field","name":{"kind":"Name","value":"defaultPaymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment_"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<SubscriptionCancelActiveSubscriptionMutationMutation, SubscriptionCancelActiveSubscriptionMutationMutationVariables>;
-export const StripeCreateSetupIntentMutation_Document = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"stripeCreateSetupIntentMutation_"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateSetupIntentMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSetupIntent"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"setupIntent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripeSetupIntentFragment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripeSetupIntentFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripeSetupIntentType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"clientSecret"}}]}}]} as unknown as DocumentNode<StripeCreateSetupIntentMutation_Mutation, StripeCreateSetupIntentMutation_MutationVariables>;
-export const SubscriptionChangeActiveSubscriptionMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"subscriptionChangeActiveSubscriptionMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChangeActiveSubscriptionMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"changeActiveSubscription"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subscriptionSchedule"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment_"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionScheduleType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phases"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"price"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"trialStart"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"canActivateTrial"}},{"kind":"Field","name":{"kind":"Name","value":"defaultPaymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment_"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<SubscriptionChangeActiveSubscriptionMutationMutation, SubscriptionChangeActiveSubscriptionMutationMutationVariables>;
-export const SubscriptionPlansAllQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"subscriptionPlansAllQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allSubscriptionPlans"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"100"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionPriceItemFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionPriceItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePriceType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}}]}}]} as unknown as DocumentNode<SubscriptionPlansAllQueryQuery, SubscriptionPlansAllQueryQueryVariables>;
-export const StripeAllChargesQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"stripeAllChargesQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCharges"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripeChargeFragment"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionPlanItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionPlanType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"amount"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripeChargeFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripeChargeType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"created"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}},{"kind":"Field","name":{"kind":"Name","value":"paymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"invoice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plan"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionPlanItemFragment"}}]}}]}}]}}]}}]} as unknown as DocumentNode<StripeAllChargesQueryQuery, StripeAllChargesQueryQueryVariables>;
-export const GenerateSaasIdeasMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"generateSaasIdeasMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GenerateSaasIdeasMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"generateSaasIdeas"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"response"}}]}}]}}]} as unknown as DocumentNode<GenerateSaasIdeasMutationMutation, GenerateSaasIdeasMutationMutationVariables>;
-export const NotificationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"notificationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateNotificationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateNotification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"notificationEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<NotificationMutationMutation, NotificationMutationMutationVariables>;
-export const NotificationsListQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"notificationsListQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"count"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}},"defaultValue":{"kind":"IntValue","value":"20"}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"cursor"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListContentFragment"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsButtonContent"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListContentFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"allNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"count"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"cursor"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListItemFragment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsButtonContent"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}}]}}]} as unknown as DocumentNode<NotificationsListQueryQuery, NotificationsListQueryQueryVariables>;
-export const NotificationCreatedSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"NotificationCreatedSubscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"notificationCreated"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"notification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListItemFragment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<NotificationCreatedSubscriptionSubscription, NotificationCreatedSubscriptionSubscriptionVariables>;
-export const NotificationsListMarkAsReadMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"notificationsListMarkAsReadMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MarkReadAllNotificationsMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"markReadAllNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<NotificationsListMarkAsReadMutationMutation, NotificationsListMarkAsReadMutationMutationVariables>;
-export const DeleteTenantMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteTenantMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteTenantMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteTenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}},{"kind":"Field","name":{"kind":"Name","value":"clientMutationId"}}]}}]}}]} as unknown as DocumentNode<DeleteTenantMutationMutation, DeleteTenantMutationMutationVariables>;
-export const UpdateTenantMembershipMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateTenantMembershipMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateTenantMembershipMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTenantMembership"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenantMembership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryMembershipFragment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryMembershipFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantMembershipType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"invitationToken"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}}]} as unknown as DocumentNode<UpdateTenantMembershipMutationMutation, UpdateTenantMembershipMutationMutationVariables>;
-export const DeleteTenantMembershipMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteTenantMembershipMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteTenantMembershipMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteTenantMembership"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}},{"kind":"Field","name":{"kind":"Name","value":"clientMutationId"}}]}}]}}]} as unknown as DocumentNode<DeleteTenantMembershipMutationMutation, DeleteTenantMembershipMutationMutationVariables>;
-export const TenantMembersListQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"tenantMembersListQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userMemberships"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}}]}}]}}]} as unknown as DocumentNode<TenantMembersListQueryQuery, TenantMembersListQueryQueryVariables>;
-export const CurrentTenantQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"currentTenantQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"tenantFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"tenantFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}}]}}]}}]} as unknown as DocumentNode<CurrentTenantQueryQuery, CurrentTenantQueryQueryVariables>;
-export const AddTenantMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addTenantMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateTenantMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createTenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenantEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<AddTenantMutationMutation, AddTenantMutationMutationVariables>;
-export const AcceptTenantInvitationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"acceptTenantInvitationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AcceptTenantInvitationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"acceptTenantInvitation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<AcceptTenantInvitationMutationMutation, AcceptTenantInvitationMutationMutationVariables>;
-export const DeclineTenantInvitationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"declineTenantInvitationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeclineTenantInvitationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"declineTenantInvitation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<DeclineTenantInvitationMutationMutation, DeclineTenantInvitationMutationMutationVariables>;
-export const UpdateTenantMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateTenantMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateTenantMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenant"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateTenantMutationMutation, UpdateTenantMutationMutationVariables>;
-export const CreateTenantInvitationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createTenantInvitationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateTenantInvitationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createTenantInvitation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"role"}}]}}]}}]} as unknown as DocumentNode<CreateTenantInvitationMutationMutation, CreateTenantInvitationMutationMutationVariables>;
-export const AuthConfirmUserEmailMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authConfirmUserEmailMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ConfirmEmailMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"confirm"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<AuthConfirmUserEmailMutationMutation, AuthConfirmUserEmailMutationMutationVariables>;
-export const AuthChangePasswordMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authChangePasswordMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChangePasswordMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"changePassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access"}},{"kind":"Field","name":{"kind":"Name","value":"refresh"}}]}}]}}]} as unknown as DocumentNode<AuthChangePasswordMutationMutation, AuthChangePasswordMutationMutationVariables>;
-export const AuthUpdateUserProfileMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authUpdateUserProfileMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateCurrentUserMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateCurrentUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userProfile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CurrentUserType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"otpVerified"}},{"kind":"Field","name":{"kind":"Name","value":"otpEnabled"}}]}}]} as unknown as DocumentNode<AuthUpdateUserProfileMutationMutation, AuthUpdateUserProfileMutationMutationVariables>;
-export const LoginFormMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"loginFormMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ObtainTokenMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tokenAuth"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access"}},{"kind":"Field","name":{"kind":"Name","value":"refresh"}},{"kind":"Field","name":{"kind":"Name","value":"otpAuthToken"}}]}}]}}]} as unknown as DocumentNode<LoginFormMutationMutation, LoginFormMutationMutationVariables>;
-export const AuthRequestPasswordResetConfirmMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authRequestPasswordResetConfirmMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PasswordResetConfirmationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"passwordResetConfirm"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<AuthRequestPasswordResetConfirmMutationMutation, AuthRequestPasswordResetConfirmMutationMutationVariables>;
-export const AuthRequestPasswordResetMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authRequestPasswordResetMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PasswordResetMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"passwordReset"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<AuthRequestPasswordResetMutationMutation, AuthRequestPasswordResetMutationMutationVariables>;
-export const AuthSignupMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authSignupMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SingUpMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"signUp"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access"}},{"kind":"Field","name":{"kind":"Name","value":"refresh"}}]}}]}}]} as unknown as DocumentNode<AuthSignupMutationMutation, AuthSignupMutationMutationVariables>;
-export const GenerateOtpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"generateOtp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GenerateOTPMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"generateOtp"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"base32"}},{"kind":"Field","name":{"kind":"Name","value":"otpauthUrl"}}]}}]}}]} as unknown as DocumentNode<GenerateOtpMutation, GenerateOtpMutationVariables>;
-export const VerifyOtpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"verifyOtp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VerifyOTPMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"verifyOtp"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"otpVerified"}}]}}]}}]} as unknown as DocumentNode<VerifyOtpMutation, VerifyOtpMutationVariables>;
-export const ValidateOtpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"validateOtp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ValidateOTPMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"validateOtp"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access"}},{"kind":"Field","name":{"kind":"Name","value":"refresh"}}]}}]}}]} as unknown as DocumentNode<ValidateOtpMutation, ValidateOtpMutationVariables>;
-export const DisableOtpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"disableOtp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DisableOTPMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"disableOtp"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<DisableOtpMutation, DisableOtpMutationVariables>;
+export const PageCursorsFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'pageCursorsFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'PageCursors' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'around' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'first' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'last' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'next' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'previous' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<PageCursorsFragmentFragment, unknown>;
+export const CommonQueryCurrentUserFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'commonQueryCurrentUserFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'CurrentUserType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'roles' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'otpVerified' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'otpEnabled' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CommonQueryCurrentUserFragmentFragment, unknown>;
+export const CommonQueryMembershipFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'commonQueryMembershipFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'TenantMembershipType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invitationAccepted' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inviteeEmailAddress' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invitationToken' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'userId' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'userEmail' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CommonQueryMembershipFragmentFragment, unknown>;
+export const CommonQueryTenantItemFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'commonQueryTenantItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'TenantType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'membership' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'commonQueryMembershipFragment' } }],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'commonQueryMembershipFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'TenantMembershipType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invitationAccepted' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inviteeEmailAddress' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invitationToken' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'userId' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'userEmail' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CommonQueryTenantItemFragmentFragment, unknown>;
+export const UseFavoriteDemoItem_ItemFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'useFavoriteDemoItem_item' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'ContentfulDemoItemFavoriteType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'item' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'pk' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UseFavoriteDemoItem_ItemFragment, unknown>;
+export const DemoItemListItemFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'demoItemListItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'DemoItem' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'image' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DemoItemListItemFragmentFragment, unknown>;
+export const CrudDemoItemListItemFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'crudDemoItemListItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'CrudDemoItemType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CrudDemoItemListItemFragment, unknown>;
+export const DocumentListItemFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'documentListItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'DocumentDemoItemType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'file' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DocumentListItemFragment, unknown>;
+export const StripePaymentIntentFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentIntentFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentIntentType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'clientSecret' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<StripePaymentIntentFragmentFragment, unknown>;
+export const StripePaymentMethodFragment_FragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment_' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<StripePaymentMethodFragment_Fragment, unknown>;
+export const SubscriptionActiveSubscriptionFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionActiveSubscriptionFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'SubscriptionScheduleType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'phases' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'item' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'price' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'product' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                ],
+                              },
+                            },
+                            { kind: 'Field', name: { kind: 'Name', value: 'unitAmount' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'subscription' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialStart' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'canActivateTrial' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'defaultPaymentMethod' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentMethodFragment_' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment_' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SubscriptionActiveSubscriptionFragmentFragment, unknown>;
+export const SubscriptionPriceItemFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionPriceItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePriceType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'product' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'unitAmount' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SubscriptionPriceItemFragmentFragment, unknown>;
+export const SubscriptionActiveSubscriptionDetailsFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionActiveSubscriptionDetailsFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'SubscriptionScheduleType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'phases' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'item' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'price' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'subscriptionPriceItemFragment' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'subscription' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialStart' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'canActivateTrial' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'defaultPaymentMethod' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentMethodFragment_' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionPriceItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePriceType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'product' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'unitAmount' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment_' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SubscriptionActiveSubscriptionDetailsFragmentFragment, unknown>;
+export const StripeSetupIntentFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripeSetupIntentFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripeSetupIntentType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'clientSecret' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<StripeSetupIntentFragmentFragment, unknown>;
+export const StripePaymentMethodFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<StripePaymentMethodFragmentFragment, unknown>;
+export const SubscriptionPlanItemFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionPlanItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'SubscriptionPlanType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'product' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SubscriptionPlanItemFragmentFragment, unknown>;
+export const StripeChargeFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripeChargeFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripeChargeType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'created' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'paymentMethod' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentMethodFragment' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'invoice' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'subscription' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'plan' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'subscriptionPlanItemFragment' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionPlanItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'SubscriptionPlanType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'product' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<StripeChargeFragmentFragment, unknown>;
+export const NotificationsButtonContentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'notificationsButtonContent' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Query' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'hasUnreadNotifications' } }],
+      },
+    },
+  ],
+} as unknown as DocumentNode<NotificationsButtonContentFragment, unknown>;
+export const NotificationsListItemFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'notificationsListItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'NotificationType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'data' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'readAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'issuer' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<NotificationsListItemFragmentFragment, unknown>;
+export const NotificationsListContentFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'notificationsListContentFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Query' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'hasUnreadNotifications' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'allNotifications' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'count' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'after' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'cursor' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'edges' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'notificationsListItemFragment' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'endCursor' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hasNextPage' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'notificationsListItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'NotificationType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'data' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'readAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'issuer' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<NotificationsListContentFragmentFragment, unknown>;
+export const TenantFragmentFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'tenantFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'TenantType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'slug' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'membership' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'invitationAccepted' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TenantFragmentFragment, unknown>;
+export const PagedPaginationListTestQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'pagedPaginationListTestQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'first' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'after' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'last' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'before' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'allCrudDemoItems' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'first' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'after' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'after' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'last' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'last' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'before' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'before' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'edges' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageCursors' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'around' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'first' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'last' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'next' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'previous' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<PagedPaginationListTestQueryQuery, PagedPaginationListTestQueryQueryVariables>;
+export const PaginationListTestQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'paginationListTestQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'first' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'after' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'last' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'before' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'allNotifications' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'first' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'after' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'after' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'last' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'last' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'before' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'before' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'edges' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'startCursor' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'endCursor' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hasPreviousPage' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hasNextPage' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<PaginationListTestQueryQuery, PaginationListTestQueryQueryVariables>;
+export const CommonQueryCurrentUserQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'commonQueryCurrentUserQuery' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'currentUser' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'commonQueryCurrentUserFragment' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'tenants' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'commonQueryTenantItemFragment' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'commonQueryMembershipFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'TenantMembershipType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invitationAccepted' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inviteeEmailAddress' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invitationToken' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'userId' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'userEmail' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'commonQueryCurrentUserFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'CurrentUserType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'roles' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'otpVerified' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'otpEnabled' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'commonQueryTenantItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'TenantType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'membership' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'commonQueryMembershipFragment' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CommonQueryCurrentUserQueryQuery, CommonQueryCurrentUserQueryQueryVariables>;
+export const ConfigContentfulAppConfigQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'configContentfulAppConfigQuery' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'appConfigCollection' },
+            arguments: [
+              { kind: 'Argument', name: { kind: 'Name', value: 'limit' }, value: { kind: 'IntValue', value: '1' } },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'items' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'privacyPolicy' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'termsAndConditions' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ConfigContentfulAppConfigQueryQuery, ConfigContentfulAppConfigQueryQueryVariables>;
+export const UseFavoriteDemoItemListCreateMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'useFavoriteDemoItemListCreateMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'CreateFavoriteContentfulDemoItemMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createFavoriteContentfulDemoItem' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'contentfulDemoItemFavoriteEdge' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'item' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [{ kind: 'Field', name: { kind: 'Name', value: 'pk' } }],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UseFavoriteDemoItemListCreateMutationMutation,
+  UseFavoriteDemoItemListCreateMutationMutationVariables
+>;
+export const UseFavoriteDemoItemListDeleteMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'useFavoriteDemoItemListDeleteMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'DeleteFavoriteContentfulDemoItemMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteFavoriteContentfulDemoItem' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'deletedIds' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UseFavoriteDemoItemListDeleteMutationMutation,
+  UseFavoriteDemoItemListDeleteMutationMutationVariables
+>;
+export const UseFavoriteDemoItemListQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'useFavoriteDemoItemListQuery' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'allContentfulDemoItemFavorites' },
+            arguments: [
+              { kind: 'Argument', name: { kind: 'Name', value: 'first' }, value: { kind: 'IntValue', value: '100' } },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'edges' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'useFavoriteDemoItem_item' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'useFavoriteDemoItem_item' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'ContentfulDemoItemFavoriteType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'item' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'pk' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UseFavoriteDemoItemListQueryQuery, UseFavoriteDemoItemListQueryQueryVariables>;
+export const DemoItemQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'demoItemQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'demoItem' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'image' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DemoItemQueryQuery, DemoItemQueryQueryVariables>;
+export const DemoItemsAllQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'demoItemsAllQuery' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'demoItemCollection' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'items' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'sys' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+                        },
+                      },
+                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'demoItemListItemFragment' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'demoItemListItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'DemoItem' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'image' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DemoItemsAllQueryQuery, DemoItemsAllQueryQueryVariables>;
+export const AddCrudDemoItemMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'addCrudDemoItemMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'CreateCrudDemoItemMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createCrudDemoItem' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'crudDemoItemEdge' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AddCrudDemoItemMutationMutation, AddCrudDemoItemMutationMutationVariables>;
+export const CrudDemoItemDetailsQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'crudDemoItemDetailsQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'crudDemoItem' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'tenantId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CrudDemoItemDetailsQueryQuery, CrudDemoItemDetailsQueryQueryVariables>;
+export const CrudDemoItemListQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'CrudDemoItemListQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'first' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'after' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'last' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'before' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'allCrudDemoItems' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'tenantId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'first' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'after' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'after' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'last' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'last' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'before' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'before' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'edges' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'crudDemoItemListItem' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageCursors' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'pageCursorsFragment' } }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'crudDemoItemListItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'CrudDemoItemType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'pageCursorsFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'PageCursors' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'around' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'first' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'last' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'next' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'previous' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'isCurrent' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CrudDemoItemListQueryQuery, CrudDemoItemListQueryQueryVariables>;
+export const CrudDemoItemListItemTestQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'crudDemoItemListItemTestQuery' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'item' },
+            name: { kind: 'Name', value: 'crudDemoItem' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'StringValue', value: 'test-id', block: false },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'crudDemoItemListItem' } }],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'crudDemoItemListItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'CrudDemoItemType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CrudDemoItemListItemTestQueryQuery, CrudDemoItemListItemTestQueryQueryVariables>;
+export const CrudDemoItemListItemDeleteMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'crudDemoItemListItemDeleteMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'DeleteCrudDemoItemMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteCrudDemoItem' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'deletedIds' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  CrudDemoItemListItemDeleteMutationMutation,
+  CrudDemoItemListItemDeleteMutationMutationVariables
+>;
+export const CrudDemoItemListItemDefaultStoryQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'crudDemoItemListItemDefaultStoryQuery' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            alias: { kind: 'Name', value: 'item' },
+            name: { kind: 'Name', value: 'crudDemoItem' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'StringValue', value: 'test-id', block: false },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'crudDemoItemListItem' } }],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'crudDemoItemListItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'CrudDemoItemType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  CrudDemoItemListItemDefaultStoryQueryQuery,
+  CrudDemoItemListItemDefaultStoryQueryQueryVariables
+>;
+export const EditCrudDemoItemQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'editCrudDemoItemQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'crudDemoItem' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'tenantId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<EditCrudDemoItemQueryQuery, EditCrudDemoItemQueryQueryVariables>;
+export const EditCrudDemoItemContentMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'editCrudDemoItemContentMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'UpdateCrudDemoItemMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateCrudDemoItem' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'crudDemoItem' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<EditCrudDemoItemContentMutationMutation, EditCrudDemoItemContentMutationMutationVariables>;
+export const DocumentsListQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'documentsListQuery' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'allDocumentDemoItems' },
+            arguments: [
+              { kind: 'Argument', name: { kind: 'Name', value: 'first' }, value: { kind: 'IntValue', value: '10' } },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'edges' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'documentListItem' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'documentListItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'DocumentDemoItemType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'file' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DocumentsListQueryQuery, DocumentsListQueryQueryVariables>;
+export const DocumentsListCreateMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'documentsListCreateMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'CreateDocumentDemoItemMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createDocumentDemoItem' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'documentDemoItemEdge' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'documentListItem' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'documentListItem' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'DocumentDemoItemType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'file' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DocumentsListCreateMutationMutation, DocumentsListCreateMutationMutationVariables>;
+export const DocumentsDeleteMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'documentsDeleteMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'DeleteDocumentDemoItemMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteDocumentDemoItem' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'deletedIds' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DocumentsDeleteMutationMutation, DocumentsDeleteMutationMutationVariables>;
+export const StripeCreatePaymentIntentMutation_Document = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'stripeCreatePaymentIntentMutation_' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'CreatePaymentIntentMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createPaymentIntent' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'paymentIntent' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentIntentFragment' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'clientSecret' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentIntentFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentIntentType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'clientSecret' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  StripeCreatePaymentIntentMutation_Mutation,
+  StripeCreatePaymentIntentMutation_MutationVariables
+>;
+export const StripeUpdatePaymentIntentMutation_Document = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'stripeUpdatePaymentIntentMutation_' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'UpdatePaymentIntentMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updatePaymentIntent' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'paymentIntent' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentIntentFragment' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'clientSecret' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentIntentFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentIntentType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'clientSecret' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currency' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  StripeUpdatePaymentIntentMutation_Mutation,
+  StripeUpdatePaymentIntentMutation_MutationVariables
+>;
+export const StripeSubscriptionQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'stripeSubscriptionQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'allPaymentMethods' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'tenantId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+              },
+              { kind: 'Argument', name: { kind: 'Name', value: 'first' }, value: { kind: 'IntValue', value: '100' } },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'edges' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentMethodFragment' } },
+                            { kind: 'Field', name: { kind: 'Name', value: '__typename' } },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'cursor' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'endCursor' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hasNextPage' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'activeSubscription' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'tenantId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'subscriptionActiveSubscriptionFragment' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: '__typename' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment_' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionActiveSubscriptionFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'SubscriptionScheduleType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'phases' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'item' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'price' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'product' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                ],
+                              },
+                            },
+                            { kind: 'Field', name: { kind: 'Name', value: 'unitAmount' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'subscription' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialStart' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'canActivateTrial' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'defaultPaymentMethod' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentMethodFragment_' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<StripeSubscriptionQueryQuery, StripeSubscriptionQueryQueryVariables>;
+export const StripeDeletePaymentMethodMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'stripeDeletePaymentMethodMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'DeletePaymentMethodMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deletePaymentMethod' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'deletedIds' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'activeSubscription' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'defaultPaymentMethod' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentMethodFragment' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  StripeDeletePaymentMethodMutationMutation,
+  StripeDeletePaymentMethodMutationMutationVariables
+>;
+export const StripeUpdateDefaultPaymentMethodMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'stripeUpdateDefaultPaymentMethodMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'UpdateDefaultPaymentMethodMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateDefaultPaymentMethod' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'activeSubscription' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'subscriptionActiveSubscriptionFragment' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'paymentMethodEdge' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentMethodFragment' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment_' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionActiveSubscriptionFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'SubscriptionScheduleType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'phases' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'item' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'price' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'product' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                ],
+                              },
+                            },
+                            { kind: 'Field', name: { kind: 'Name', value: 'unitAmount' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'subscription' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialStart' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'canActivateTrial' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'defaultPaymentMethod' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentMethodFragment_' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  StripeUpdateDefaultPaymentMethodMutationMutation,
+  StripeUpdateDefaultPaymentMethodMutationMutationVariables
+>;
+export const SubscriptionActivePlanDetailsQuery_Document = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'subscriptionActivePlanDetailsQuery_' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'activeSubscription' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'tenantId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'subscriptionActiveSubscriptionFragment' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment_' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionActiveSubscriptionFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'SubscriptionScheduleType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'phases' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'item' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'price' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'product' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                ],
+                              },
+                            },
+                            { kind: 'Field', name: { kind: 'Name', value: 'unitAmount' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'subscription' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialStart' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'canActivateTrial' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'defaultPaymentMethod' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentMethodFragment_' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  SubscriptionActivePlanDetailsQuery_Query,
+  SubscriptionActivePlanDetailsQuery_QueryVariables
+>;
+export const SubscriptionCancelActiveSubscriptionMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'subscriptionCancelActiveSubscriptionMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'CancelActiveSubscriptionMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'cancelActiveSubscription' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'subscriptionSchedule' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'subscriptionActiveSubscriptionFragment' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment_' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionActiveSubscriptionFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'SubscriptionScheduleType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'phases' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'item' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'price' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'product' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                ],
+                              },
+                            },
+                            { kind: 'Field', name: { kind: 'Name', value: 'unitAmount' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'subscription' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialStart' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'canActivateTrial' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'defaultPaymentMethod' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentMethodFragment_' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  SubscriptionCancelActiveSubscriptionMutationMutation,
+  SubscriptionCancelActiveSubscriptionMutationMutationVariables
+>;
+export const StripeCreateSetupIntentMutation_Document = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'stripeCreateSetupIntentMutation_' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'CreateSetupIntentMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createSetupIntent' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'setupIntent' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripeSetupIntentFragment' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripeSetupIntentFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripeSetupIntentType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'clientSecret' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  StripeCreateSetupIntentMutation_Mutation,
+  StripeCreateSetupIntentMutation_MutationVariables
+>;
+export const SubscriptionChangeActiveSubscriptionMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'subscriptionChangeActiveSubscriptionMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ChangeActiveSubscriptionMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'changeActiveSubscription' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'subscriptionSchedule' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'subscriptionActiveSubscriptionFragment' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment_' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionActiveSubscriptionFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'SubscriptionScheduleType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'phases' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'endDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'item' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'price' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'product' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                ],
+                              },
+                            },
+                            { kind: 'Field', name: { kind: 'Name', value: 'unitAmount' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                          ],
+                        },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'subscription' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'startDate' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialEnd' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'trialStart' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'canActivateTrial' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'defaultPaymentMethod' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentMethodFragment_' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  SubscriptionChangeActiveSubscriptionMutationMutation,
+  SubscriptionChangeActiveSubscriptionMutationMutationVariables
+>;
+export const SubscriptionPlansAllQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'subscriptionPlansAllQuery' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'allSubscriptionPlans' },
+            arguments: [
+              { kind: 'Argument', name: { kind: 'Name', value: 'first' }, value: { kind: 'IntValue', value: '100' } },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'edges' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'subscriptionPriceItemFragment' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'product' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                                  { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                                ],
+                              },
+                            },
+                            { kind: 'Field', name: { kind: 'Name', value: 'unitAmount' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionPriceItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePriceType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'product' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'unitAmount' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<SubscriptionPlansAllQueryQuery, SubscriptionPlansAllQueryQueryVariables>;
+export const StripeAllChargesQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'stripeAllChargesQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'allCharges' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'tenantId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'tenantId' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'edges' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripeChargeFragment' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripePaymentMethodFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripePaymentMethodType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'card' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'subscriptionPlanItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'SubscriptionPlanType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'pk' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'product' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'stripeChargeFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'StripeChargeType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'created' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'billingDetails' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'paymentMethod' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'FragmentSpread', name: { kind: 'Name', value: 'stripePaymentMethodFragment' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+              ],
+            },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'invoice' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'subscription' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'plan' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'subscriptionPlanItemFragment' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<StripeAllChargesQueryQuery, StripeAllChargesQueryQueryVariables>;
+export const GenerateSaasIdeasMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'generateSaasIdeasMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'GenerateSaasIdeasMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'generateSaasIdeas' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'response' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GenerateSaasIdeasMutationMutation, GenerateSaasIdeasMutationMutationVariables>;
+export const NotificationMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'notificationMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'UpdateNotificationMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateNotification' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'hasUnreadNotifications' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'notificationEdge' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'readAt' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<NotificationMutationMutation, NotificationMutationMutationVariables>;
+export const NotificationsListQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'notificationsListQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'count' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          defaultValue: { kind: 'IntValue', value: '20' },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'cursor' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'notificationsListContentFragment' } },
+          { kind: 'FragmentSpread', name: { kind: 'Name', value: 'notificationsButtonContent' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'notificationsListItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'NotificationType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'data' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'readAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'issuer' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'notificationsListContentFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Query' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'hasUnreadNotifications' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'allNotifications' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'count' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'after' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'cursor' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'edges' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'notificationsListItemFragment' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'pageInfo' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'endCursor' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'hasNextPage' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'notificationsButtonContent' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Query' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'hasUnreadNotifications' } }],
+      },
+    },
+  ],
+} as unknown as DocumentNode<NotificationsListQueryQuery, NotificationsListQueryQueryVariables>;
+export const NotificationCreatedSubscriptionDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'subscription',
+      name: { kind: 'Name', value: 'NotificationCreatedSubscription' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'notificationCreated' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'notification' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'notificationsListItemFragment' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'notificationsListItemFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'NotificationType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'data' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'readAt' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'issuer' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  NotificationCreatedSubscriptionSubscription,
+  NotificationCreatedSubscriptionSubscriptionVariables
+>;
+export const NotificationsListMarkAsReadMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'notificationsListMarkAsReadMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'MarkReadAllNotificationsMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'markReadAllNotifications' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'ok' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  NotificationsListMarkAsReadMutationMutation,
+  NotificationsListMarkAsReadMutationMutationVariables
+>;
+export const DeleteTenantMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'deleteTenantMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'DeleteTenantMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteTenant' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'deletedIds' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'clientMutationId' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DeleteTenantMutationMutation, DeleteTenantMutationMutationVariables>;
+export const UpdateTenantMembershipMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'updateTenantMembershipMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'UpdateTenantMembershipMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateTenantMembership' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'tenantMembership' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'FragmentSpread', name: { kind: 'Name', value: 'commonQueryMembershipFragment' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'commonQueryMembershipFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'TenantMembershipType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invitationAccepted' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'inviteeEmailAddress' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'invitationToken' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'userId' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'userEmail' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UpdateTenantMembershipMutationMutation, UpdateTenantMembershipMutationMutationVariables>;
+export const DeleteTenantMembershipMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'deleteTenantMembershipMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'DeleteTenantMembershipMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteTenantMembership' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'deletedIds' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'clientMutationId' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DeleteTenantMembershipMutationMutation, DeleteTenantMembershipMutationMutationVariables>;
+export const TenantMembersListQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'tenantMembersListQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tenant' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'userMemberships' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'invitationAccepted' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'inviteeEmailAddress' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'userId' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'userEmail' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<TenantMembersListQueryQuery, TenantMembersListQueryQueryVariables>;
+export const CurrentTenantQueryDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'currentTenantQuery' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tenant' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'FragmentSpread', name: { kind: 'Name', value: 'tenantFragment' } }],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'tenantFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'TenantType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'slug' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'membership' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'invitationAccepted' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CurrentTenantQueryQuery, CurrentTenantQueryQueryVariables>;
+export const AddTenantMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'addTenantMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'CreateTenantMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createTenant' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'tenantEdge' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                            { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AddTenantMutationMutation, AddTenantMutationMutationVariables>;
+export const AcceptTenantInvitationMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'acceptTenantInvitationMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'AcceptTenantInvitationMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'acceptTenantInvitation' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'ok' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AcceptTenantInvitationMutationMutation, AcceptTenantInvitationMutationMutationVariables>;
+export const DeclineTenantInvitationMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'declineTenantInvitationMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'DeclineTenantInvitationMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'declineTenantInvitation' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'ok' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DeclineTenantInvitationMutationMutation, DeclineTenantInvitationMutationMutationVariables>;
+export const UpdateTenantMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'updateTenantMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'UpdateTenantMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateTenant' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'tenant' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<UpdateTenantMutationMutation, UpdateTenantMutationMutationVariables>;
+export const CreateTenantInvitationMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'createTenantInvitationMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'CreateTenantInvitationMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'createTenantInvitation' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'role' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CreateTenantInvitationMutationMutation, CreateTenantInvitationMutationMutationVariables>;
+export const AuthConfirmUserEmailMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'authConfirmUserEmailMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ConfirmEmailMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'confirm' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'ok' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AuthConfirmUserEmailMutationMutation, AuthConfirmUserEmailMutationMutationVariables>;
+export const AuthChangePasswordMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'authChangePasswordMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ChangePasswordMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'changePassword' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'access' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'refresh' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AuthChangePasswordMutationMutation, AuthChangePasswordMutationMutationVariables>;
+export const AuthUpdateUserProfileMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'authUpdateUserProfileMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'UpdateCurrentUserMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateCurrentUser' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'userProfile' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'user' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            { kind: 'FragmentSpread', name: { kind: 'Name', value: 'commonQueryCurrentUserFragment' } },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'commonQueryCurrentUserFragment' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'CurrentUserType' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'roles' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'otpVerified' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'otpEnabled' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AuthUpdateUserProfileMutationMutation, AuthUpdateUserProfileMutationMutationVariables>;
+export const LoginFormMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'loginFormMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ObtainTokenMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'tokenAuth' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'access' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'refresh' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'otpAuthToken' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<LoginFormMutationMutation, LoginFormMutationMutationVariables>;
+export const AuthRequestPasswordResetConfirmMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'authRequestPasswordResetConfirmMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'PasswordResetConfirmationMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'passwordResetConfirm' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'ok' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AuthRequestPasswordResetConfirmMutationMutation,
+  AuthRequestPasswordResetConfirmMutationMutationVariables
+>;
+export const AuthRequestPasswordResetMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'authRequestPasswordResetMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'PasswordResetMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'passwordReset' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'ok' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AuthRequestPasswordResetMutationMutation,
+  AuthRequestPasswordResetMutationMutationVariables
+>;
+export const AuthSignupMutationDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'authSignupMutation' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'SingUpMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'signUp' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'access' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'refresh' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<AuthSignupMutationMutation, AuthSignupMutationMutationVariables>;
+export const GenerateOtpDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'generateOtp' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'GenerateOTPMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'generateOtp' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'base32' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'otpauthUrl' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GenerateOtpMutation, GenerateOtpMutationVariables>;
+export const VerifyOtpDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'verifyOtp' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'VerifyOTPMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'verifyOtp' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'otpVerified' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<VerifyOtpMutation, VerifyOtpMutationVariables>;
+export const ValidateOtpDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'validateOtp' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ValidateOTPMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'validateOtp' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'access' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'refresh' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ValidateOtpMutation, ValidateOtpMutationVariables>;
+export const DisableOtpDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'disableOtp' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'DisableOTPMutationInput' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'disableOtp' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [{ kind: 'Field', name: { kind: 'Name', value: 'ok' } }],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<DisableOtpMutation, DisableOtpMutationVariables>;

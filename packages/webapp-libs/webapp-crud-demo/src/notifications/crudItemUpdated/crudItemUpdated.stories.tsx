@@ -29,7 +29,7 @@ export const Default: StoryObj<typeof meta> = {
       id: 'mock-user-uuid',
       email: 'example@example.com',
       avatar: 'https://picsum.photos/24/24',
-    }
+    },
   },
 
   decorators: [withProviders()],

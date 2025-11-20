@@ -1,8 +1,8 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { getLocalePath } from '@sb/webapp-core/utils';
 import {
-  fillNotificationsListQuery,
   fillNotificationCreatedSubscriptionQuery,
+  fillNotificationsListQuery,
   notificationFactory,
 } from '@sb/webapp-notifications/tests/factories';
 import { screen } from '@testing-library/react';

@@ -1,6 +1,6 @@
 import { NoInfer, QueryHookOptions, TypedDocumentNode, useQuery } from '@apollo/client';
-import { useCallback, useEffect, useState } from 'react';
 import { InputMaybe } from '@sb/webapp-api-client/graphql';
+import { useCallback, useEffect, useState } from 'react';
 
 type CursorsInput = {
   first?: InputMaybe<number> | undefined;

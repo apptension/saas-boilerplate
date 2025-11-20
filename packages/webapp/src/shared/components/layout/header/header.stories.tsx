@@ -1,7 +1,7 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import {
-  fillNotificationsListQuery,
   fillNotificationCreatedSubscriptionQuery,
+  fillNotificationsListQuery,
   notificationFactory,
 } from '@sb/webapp-notifications/tests/factories';
 import { Meta, StoryFn, StoryObj } from '@storybook/react';

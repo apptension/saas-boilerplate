@@ -1,3 +1,3 @@
 export const RoutesConfig = {
-  saasIdeas: 'saas-ideas'
+  saasIdeas: 'saas-ideas',
 };

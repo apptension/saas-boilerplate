@@ -8,14 +8,8 @@ import {
   Subject as UserExportAdminSubject,
 } from './userExportAdmin.component';
 
-const Template: StoryFn<UserExportAdminProps> = (
-  args: UserExportAdminProps
-) => (
-  <EmailStory
-    type={EmailTemplateType.ACCOUNT_ACTIVATION}
-    subject={<UserExportAdminSubject />}
-    emailData={args}
-  >
+const Template: StoryFn<UserExportAdminProps> = (args: UserExportAdminProps) => (
+  <EmailStory type={EmailTemplateType.ACCOUNT_ACTIVATION} subject={<UserExportAdminSubject />} emailData={args}>
     <UserExportAdminEmail {...args} />
   </EmailStory>
 );

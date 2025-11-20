@@ -132,7 +132,12 @@ export const EditCrudDemoItem = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <CrudDemoItemForm onSubmit={onFormSubmit} initialData={crudDemoItem} error={error} loading={loadingMutation} />
+            <CrudDemoItemForm
+              onSubmit={onFormSubmit}
+              initialData={crudDemoItem}
+              error={error}
+              loading={loadingMutation}
+            />
           </CardContent>
         </Card>
       </div>

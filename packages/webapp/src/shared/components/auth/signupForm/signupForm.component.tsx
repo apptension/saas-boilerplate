@@ -1,7 +1,15 @@
+import {
+  Checkbox,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@sb/webapp-core/components/forms';
+import { Alert, AlertDescription } from '@sb/webapp-core/components/ui/alert';
 import { Button } from '@sb/webapp-core/components/ui/button';
 import { Input } from '@sb/webapp-core/components/ui/input';
-import { Alert, AlertDescription } from '@sb/webapp-core/components/ui/alert';
-import { Checkbox, Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -15,9 +23,7 @@ export const SignupForm = () => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
   const {
-    form: {
-      register,
-    },
+    form: { register },
     form,
     hasGenericErrorOnly,
     genericError,
@@ -149,7 +155,7 @@ export const SignupForm = () => {
                 />
               </FormControl>
               <div className="space-y-1.5 leading-none">
-                <FormLabel className="cursor-pointer font-normal !mt-0">
+                <FormLabel className="!mt-0 cursor-pointer font-normal">
                   {intl.formatMessage(
                     {
                       defaultMessage: 'I agree to the {termsLink} and {policyLink}',
@@ -157,7 +163,7 @@ export const SignupForm = () => {
                     },
                     {
                       termsLink: (
-                        <Button variant="link" className="h-auto p-0 text-sm underline inline" asChild>
+                        <Button variant="link" className="inline h-auto p-0 text-sm underline" asChild>
                           <Link to={generateLocalePath(RoutesConfig.termsAndConditions)}>
                             <FormattedMessage
                               id="Auth / Signup / Accept checkbox / T&C link"
@@ -167,7 +173,7 @@ export const SignupForm = () => {
                         </Button>
                       ),
                       policyLink: (
-                        <Button variant="link" className="h-auto p-0 text-sm underline inline" asChild>
+                        <Button variant="link" className="inline h-auto p-0 text-sm underline" asChild>
                           <Link to={generateLocalePath(RoutesConfig.privacyPolicy)}>
                             <FormattedMessage
                               id="Auth / Signup / Accept checkbox / Privacy policy link"

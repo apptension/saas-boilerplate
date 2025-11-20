@@ -15,7 +15,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@sb/webapp-core/compone
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { cn } from '@sb/webapp-core/lib/utils';
-import { ChevronDown, Plus, UserPlus, Building2, User } from 'lucide-react';
+import { Building2, ChevronDown, Plus, User, UserPlus } from 'lucide-react';
 import { groupBy, head, prop } from 'ramda';
 import { FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -65,10 +65,7 @@ export const TenantSwitchSidebar = ({ collapsed = false }: TenantSwitchSidebarPr
       <Building2 className="h-4 w-4" />
     </Button>
   ) : (
-    <Button
-      variant="outline"
-      className="w-full justify-between overflow-hidden text-left font-normal"
-    >
+    <Button variant="outline" className="w-full justify-between overflow-hidden text-left font-normal">
       <div className="flex min-w-0 flex-1 items-center gap-2">
         <Building2 className="h-4 w-4 shrink-0" />
         <span className="truncate">{currentTenant?.name}</span>
@@ -80,7 +77,10 @@ export const TenantSwitchSidebar = ({ collapsed = false }: TenantSwitchSidebarPr
   const content = (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{triggerButton}</DropdownMenuTrigger>
-      <DropdownMenuContent align={collapsed ? 'end' : 'start'} className={cn(collapsed ? 'w-56' : 'w-[var(--radix-dropdown-menu-trigger-width)]')}>
+      <DropdownMenuContent
+        align={collapsed ? 'end' : 'start'}
+        className={cn(collapsed ? 'w-56' : 'w-[var(--radix-dropdown-menu-trigger-width)]')}
+      >
         {/* <DropdownMenuLabel>
           <FormattedMessage defaultMessage="Personal account" id="TenantSwitch / Personal account" />
         </DropdownMenuLabel>
@@ -136,9 +136,7 @@ export const TenantSwitchSidebar = ({ collapsed = false }: TenantSwitchSidebarPr
   if (collapsed) {
     return (
       <Tooltip delayDuration={200}>
-        <TooltipTrigger asChild>
-          {content}
-        </TooltipTrigger>
+        <TooltipTrigger asChild>{content}</TooltipTrigger>
         <TooltipContent side="right">
           <div className="flex flex-col">
             <span className="font-medium">{currentTenant?.name}</span>
@@ -151,4 +149,3 @@ export const TenantSwitchSidebar = ({ collapsed = false }: TenantSwitchSidebarPr
 
   return content;
 };
-

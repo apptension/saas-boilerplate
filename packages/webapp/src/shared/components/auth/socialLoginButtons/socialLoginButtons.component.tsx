@@ -22,12 +22,7 @@ export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProp
 
   return (
     <div className="flex w-full flex-col gap-4" {...props}>
-      <Button
-        variant="outline"
-        size="lg"
-        className="w-full"
-        onClick={handleFacebookLogin}
-      >
+      <Button variant="outline" size="lg" className="w-full" onClick={handleFacebookLogin}>
         <FacebookIcon size={20} className="h-5 w-5" />
         {variant === SignupButtonsVariant.LOGIN ? (
           <FormattedMessage defaultMessage="Log in with Facebook" id="Auth / Login / Facebook login button" />
@@ -36,12 +31,7 @@ export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProp
         )}
       </Button>
 
-      <Button
-        variant="outline"
-        size="lg"
-        className="w-full"
-        onClick={handleGoogleLogin}
-      >
+      <Button variant="outline" size="lg" className="w-full" onClick={handleGoogleLogin}>
         <GoogleIcon size={20} className="h-5 w-5" />
         {variant === SignupButtonsVariant.LOGIN ? (
           <FormattedMessage defaultMessage="Log in with Google" id="Auth / Login / Google login button" />

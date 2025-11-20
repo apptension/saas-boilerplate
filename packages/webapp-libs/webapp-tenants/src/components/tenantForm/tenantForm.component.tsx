@@ -85,7 +85,11 @@ export const TenantForm = ({ initialData, onSubmit, error, loading }: TenantForm
         )}
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <Link to={generateLocalePath(RoutesConfig.home)} variant={ButtonVariant.SECONDARY} className="w-full sm:w-fit">
+          <Link
+            to={generateLocalePath(RoutesConfig.home)}
+            variant={ButtonVariant.SECONDARY}
+            className="w-full sm:w-fit"
+          >
             <FormattedMessage defaultMessage="Cancel" id="Tenant form / Cancel button" />
           </Link>
 

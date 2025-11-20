@@ -3,11 +3,11 @@ import { Paragraph } from '@sb/webapp-core/components/typography';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
-import { CreditCard, ArrowLeft } from 'lucide-react';
 import { Elements } from '@stripe/react-stripe-js';
+import { ArrowLeft, CreditCard } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../config/routes';
 import { stripePromise } from '../../services/stripe';

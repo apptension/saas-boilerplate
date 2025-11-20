@@ -69,14 +69,14 @@ export const SaasIdeas = () => {
       console.log('Extracted response:', response);
       console.log('Response type:', typeof response);
       console.log('Response length:', response?.length);
-      
+
       if (response) {
         // Check if response looks like code (contains common code patterns)
         const looksLikeCode = /(function|const|import|export|def |class |<|>|{|}|;|\(\))/.test(response);
         if (looksLikeCode) {
           console.warn('Response looks like code!', response.substring(0, 500));
         }
-        
+
         setIsTyping(false);
         setTimeout(() => {
           setMessages((prev) => [
@@ -99,7 +99,7 @@ export const SaasIdeas = () => {
   const handleFormSubmit = handleSubmit(async (data) => {
     const keywordsArray = data.keywords.split(',').map((keyword) => keyword.trim());
     console.log('Form submit - keywords:', keywordsArray);
-    
+
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
@@ -256,12 +256,12 @@ export const SaasIdeas = () => {
                     )}
                     <div
                       className={`max-w-[80%] rounded-lg px-4 py-3 ${
-                        message.role === 'user'
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted text-foreground'
+                        message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere">{message.content}</p>
+                      <p className="text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere">
+                        {message.content}
+                      </p>
                     </div>
                     {message.role === 'user' && (
                       <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -277,9 +277,18 @@ export const SaasIdeas = () => {
                     </div>
                     <div className="bg-muted rounded-lg px-4 py-3">
                       <div className="flex gap-1">
-                        <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                        <div
+                          className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                          style={{ animationDelay: '0ms' }}
+                        />
+                        <div
+                          className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                          style={{ animationDelay: '150ms' }}
+                        />
+                        <div
+                          className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                          style={{ animationDelay: '300ms' }}
+                        />
                       </div>
                     </div>
                   </div>

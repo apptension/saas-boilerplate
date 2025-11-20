@@ -1,8 +1,8 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
-import { Separator } from '@sb/webapp-core/components/ui/separator';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Paragraph } from '@sb/webapp-core/components/typography';
-import { User, Lock, Shield, Mail, UserCircle } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+import { Separator } from '@sb/webapp-core/components/ui/separator';
+import { Lock, Mail, Shield, User, UserCircle } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 

@@ -9,11 +9,7 @@ import {
 } from './passwordReset.component';
 
 const Template: StoryFn<PasswordResetProps> = (args: PasswordResetProps) => (
-  <EmailStory
-    type={EmailTemplateType.PASSWORD_RESET}
-    subject={<PasswordResetSubject />}
-    emailData={args}
-  >
+  <EmailStory type={EmailTemplateType.PASSWORD_RESET} subject={<PasswordResetSubject />} emailData={args}>
     <PasswordResetEmail {...args} />
   </EmailStory>
 );

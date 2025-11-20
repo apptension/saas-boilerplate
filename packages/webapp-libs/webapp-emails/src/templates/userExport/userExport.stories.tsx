@@ -2,18 +2,10 @@ import { StoryFn } from '@storybook/react';
 
 import { EmailStory } from '../../emailStory/emailStory.component';
 import { EmailTemplateType } from '../../types';
-import {
-  Template as UserExportEmail,
-  UserExportProps,
-  Subject as UserExportSubject,
-} from './userExport.component';
+import { Template as UserExportEmail, UserExportProps, Subject as UserExportSubject } from './userExport.component';
 
 const Template: StoryFn<UserExportProps> = (args: UserExportProps) => (
-  <EmailStory
-    type={EmailTemplateType.ACCOUNT_ACTIVATION}
-    subject={<UserExportSubject />}
-    emailData={args}
-  >
+  <EmailStory type={EmailTemplateType.ACCOUNT_ACTIVATION} subject={<UserExportSubject />} emailData={args}>
     <UserExportEmail {...args} />
   </EmailStory>
 );

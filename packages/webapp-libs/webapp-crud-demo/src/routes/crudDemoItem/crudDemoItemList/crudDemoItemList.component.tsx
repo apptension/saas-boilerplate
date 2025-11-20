@@ -2,8 +2,8 @@ import { CrudDemoItemListQueryQuery, getFragmentData, gql, pageCursorsFragment }
 import { usePagedPaginatedQuery } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Paragraph } from '@sb/webapp-core/components/typography';
 import { TableFooter } from '@sb/webapp-core/components/table';
+import { Paragraph } from '@sb/webapp-core/components/typography';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';

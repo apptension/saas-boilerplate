@@ -110,9 +110,11 @@ export const TenantInvitationForm = ({ initialData, onSubmit, error, loading }: 
                       </p>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className={cn({
-                            'border-destructive': !!fieldState.error,
-                          })}>
+                          <SelectTrigger
+                            className={cn({
+                              'border-destructive': !!fieldState.error,
+                            })}
+                          >
                             <SelectValue placeholder={rolePlaceholder} />
                           </SelectTrigger>
                         </FormControl>

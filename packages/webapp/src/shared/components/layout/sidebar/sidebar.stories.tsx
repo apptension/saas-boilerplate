@@ -6,7 +6,10 @@ import { withProviders } from '../../../utils/storybook';
 import { LayoutContext } from '../layout.context';
 import { Sidebar } from './sidebar.component';
 
-const Template: StoryFn<{ isLoggedIn?: boolean; isCollapsed?: boolean }> = ({ isLoggedIn = true, isCollapsed = false }) => {
+const Template: StoryFn<{ isLoggedIn?: boolean; isCollapsed?: boolean }> = ({
+  isLoggedIn = true,
+  isCollapsed = false,
+}) => {
   const value = useMemo(
     () => ({
       isSidebarAvailable: true,

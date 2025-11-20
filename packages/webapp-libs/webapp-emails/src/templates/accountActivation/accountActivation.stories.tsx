@@ -8,14 +8,8 @@ import {
   Subject as AccountActivationSubject,
 } from './accountActivation.component';
 
-const Template: StoryFn<AccountActivationProps> = (
-  args: AccountActivationProps
-) => (
-  <EmailStory
-    type={EmailTemplateType.ACCOUNT_ACTIVATION}
-    subject={<AccountActivationSubject />}
-    emailData={args}
-  >
+const Template: StoryFn<AccountActivationProps> = (args: AccountActivationProps) => (
+  <EmailStory type={EmailTemplateType.ACCOUNT_ACTIVATION} subject={<AccountActivationSubject />} emailData={args}>
     <AccountActivationEmail {...args} />
   </EmailStory>
 );

@@ -146,9 +146,7 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
             {hasName ? (
               <>
                 <span className="font-medium">{displayName}</span>
-                {email && (
-                  <span className="text-xs text-muted-foreground">{email}</span>
-                )}
+                {email && <span className="text-xs text-muted-foreground">{email}</span>}
               </>
             ) : (
               <span className="text-muted-foreground">{displayName}</span>

@@ -1,8 +1,9 @@
-import { empty } from 'ramda';
-import throttle from 'lodash.throttle';
 import { renderHook } from '@testing-library/react';
-import { useWindowListener } from '../useWindowListener.hook';
+import throttle from 'lodash.throttle';
+import { empty } from 'ramda';
+
 import { UnknownObject } from '../../../utils/types';
+import { useWindowListener } from '../useWindowListener.hook';
 
 jest.mock('lodash.throttle', () => jest.fn().mockImplementation((fn) => fn));
 

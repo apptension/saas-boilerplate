@@ -1,4 +1,6 @@
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
+import { Link as ButtonLink } from '@sb/webapp-core/components/buttons';
+import { ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { Button } from '@sb/webapp-core/components/ui/button';
 import {
   DropdownMenu,
@@ -10,12 +12,10 @@ import {
 } from '@sb/webapp-core/components/ui/dropdown-menu';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
-import { Themes } from '@sb/webapp-core/providers/themeProvider';
 import { cn } from '@sb/webapp-core/lib/utils';
+import { Themes } from '@sb/webapp-core/providers/themeProvider';
 import { Notifications } from '@sb/webapp-notifications';
-import { Link as ButtonLink } from '@sb/webapp-core/components/buttons';
-import { ButtonVariant } from '@sb/webapp-core/components/buttons';
-import { Moon, Sun, User, LogOut } from 'lucide-react';
+import { LogOut, Moon, Sun, User } from 'lucide-react';
 import { HTMLAttributes } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -41,11 +41,7 @@ export const UserMenu = (props: UserMenuProps) => {
 
   return (
     <div {...props} className={cn('flex items-center gap-2', props.className)}>
-      <Notifications
-        key={currentUser.id ?? 'default'}
-        templates={notificationTemplates}
-        events={events}
-      />
+      <Notifications key={currentUser.id ?? 'default'} templates={notificationTemplates} events={events} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -72,18 +68,12 @@ export const UserMenu = (props: UserMenuProps) => {
                 <span className="truncate text-sm font-medium leading-none">
                   {currentUser.firstName} {currentUser.lastName}
                 </span>
-                <span className="truncate text-xs text-muted-foreground leading-none mt-1">
-                  {currentUser.email}
-                </span>
+                <span className="mt-1 truncate text-xs leading-none text-muted-foreground">{currentUser.email}</span>
               </div>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={toggleTheme}
-            className="cursor-pointer gap-2"
-            onSelect={(e) => e.preventDefault()}
-          >
+          <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer gap-2" onSelect={(e) => e.preventDefault()}>
             {theme === Themes.DARK ? (
               <>
                 <Sun className="h-4 w-4 shrink-0" />
@@ -113,7 +103,10 @@ export const UserMenu = (props: UserMenuProps) => {
             </ButtonLink>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem asChild className="cursor-pointer gap-2 text-destructive focus:text-destructive focus:bg-destructive/10">
+          <DropdownMenuItem
+            asChild
+            className="cursor-pointer gap-2 text-destructive focus:bg-destructive/10 focus:text-destructive"
+          >
             <ButtonLink
               to={generateLocalePath(RoutesConfig.logout)}
               variant={ButtonVariant.GHOST}
@@ -130,4 +123,3 @@ export const UserMenu = (props: UserMenuProps) => {
     </div>
   );
 };
-

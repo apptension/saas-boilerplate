@@ -8,14 +8,8 @@ import {
   Subject as TrialExpiresSoonSubject,
 } from './trialExpiresSoon.component';
 
-const Template: StoryFn<TrialExpiresSoonProps> = (
-  args: TrialExpiresSoonProps
-) => (
-  <EmailStory
-    type={EmailTemplateType.TRIAL_EXPIRES_SOON}
-    subject={<TrialExpiresSoonSubject />}
-    emailData={args}
-  >
+const Template: StoryFn<TrialExpiresSoonProps> = (args: TrialExpiresSoonProps) => (
+  <EmailStory type={EmailTemplateType.TRIAL_EXPIRES_SOON} subject={<TrialExpiresSoonSubject />} emailData={args}>
     <TrialExpiresSoonEmail {...args} />
   </EmailStory>
 );

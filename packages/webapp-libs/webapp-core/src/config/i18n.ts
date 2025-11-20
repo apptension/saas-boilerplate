@@ -17,10 +17,7 @@ export interface TranslationMessage {
   description?: string;
 }
 
-export type TranslationMessagesWithDescriptors = Record<
-  string,
-  TranslationMessage
->;
+export type TranslationMessagesWithDescriptors = Record<string, TranslationMessage>;
 
 export type TranslationMessages = Record<string, string>;
 
@@ -29,9 +26,7 @@ export const formatTranslationMessages = (
   messages: TranslationMessagesWithDescriptors
 ): TranslationMessages => {
   const defaultFormattedMessages =
-    locale !== DEFAULT_LOCALE
-      ? formatTranslationMessages(DEFAULT_LOCALE, enTranslationMessages)
-      : {};
+    locale !== DEFAULT_LOCALE ? formatTranslationMessages(DEFAULT_LOCALE, enTranslationMessages) : {};
 
   return keys(messages).reduce((formattedMessages, key) => {
     const formattedMessage =
@@ -43,12 +38,6 @@ export const formatTranslationMessages = (
 };
 
 export const translationMessages: Record<Locale, TranslationMessages> = {
-  [Locale.ENGLISH]: formatTranslationMessages(
-    Locale.ENGLISH,
-    enTranslationMessages
-  ),
-  [Locale.POLISH]: formatTranslationMessages(
-    Locale.POLISH,
-    plTranslationMessages
-  ),
+  [Locale.ENGLISH]: formatTranslationMessages(Locale.ENGLISH, enTranslationMessages),
+  [Locale.POLISH]: formatTranslationMessages(Locale.POLISH, plTranslationMessages),
 };

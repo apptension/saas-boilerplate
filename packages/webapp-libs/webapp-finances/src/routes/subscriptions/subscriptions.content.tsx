@@ -3,7 +3,7 @@ import { FormattedDate } from '@sb/webapp-core/components/dateTime';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { TabsContent } from '@sb/webapp-core/components/ui/tabs';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
-import { AlarmClock, ArrowRightToLine, CalendarClock, StepForward, CreditCard } from 'lucide-react';
+import { AlarmClock, ArrowRightToLine, CalendarClock, CreditCard, StepForward } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetails } from '../../components/activeSubscriptionContext';
@@ -147,16 +147,14 @@ const SubscriptionsContent = () => {
                   <FormattedMessage defaultMessage="Edit subscription" id="My subscription / Edit subscription" />
                 </Link>
 
-                {activeSubscriptionPlan?.name &&
-                  !activeSubscriptionPlan.isFree &&
-                  !activeSubscriptionIsCancelled && (
-                    <Link
-                      to={generateTenantPath(RoutesConfig.subscriptions.currentSubscription.cancel)}
-                      variant={ButtonVariant.SECONDARY}
-                    >
-                      <FormattedMessage defaultMessage="Cancel subscription" id="My subscription / Cancel subscription" />
-                    </Link>
-                  )}
+                {activeSubscriptionPlan?.name && !activeSubscriptionPlan.isFree && !activeSubscriptionIsCancelled && (
+                  <Link
+                    to={generateTenantPath(RoutesConfig.subscriptions.currentSubscription.cancel)}
+                    variant={ButtonVariant.SECONDARY}
+                  >
+                    <FormattedMessage defaultMessage="Cancel subscription" id="My subscription / Cancel subscription" />
+                  </Link>
+                )}
               </div>
             </div>
           </CardContent>

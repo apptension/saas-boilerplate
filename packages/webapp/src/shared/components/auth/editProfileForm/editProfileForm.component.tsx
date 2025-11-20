@@ -23,11 +23,7 @@ export const EditProfileForm = () => {
 
   return (
     <div className="w-full">
-      <form
-        noValidate
-        onSubmit={handleUpdate}
-        className="flex w-full flex-col gap-6"
-      >
+      <form noValidate onSubmit={handleUpdate} className="flex w-full flex-col gap-6">
         <div className="flex w-full flex-col gap-6 sm:flex-row">
           <div className="flex-1">
             <Input

@@ -7,8 +7,8 @@ import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
-import { RoutesConfig } from '../../config/routes';
 import { TransactionHistory as TransactionHistoryList } from '../../components/stripe/transactionHistory';
+import { RoutesConfig } from '../../config/routes';
 
 export const TransactionHistory = () => {
   const intl = useIntl();

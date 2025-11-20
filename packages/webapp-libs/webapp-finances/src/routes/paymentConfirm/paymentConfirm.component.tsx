@@ -4,8 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/w
 import { RoutesConfig as CoreRoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast/useToast';
-import { CreditCard } from 'lucide-react';
 import { Elements } from '@stripe/react-stripe-js';
+import { CreditCard } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';

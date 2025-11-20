@@ -57,10 +57,8 @@ export const Notification = ({
       }}
     >
       {/* Unread indicator - subtle left border */}
-      {!isRead && (
-        <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />
-      )}
-      
+      {!isRead && <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />}
+
       <div className="flex-shrink-0">
         {hasAvatar ? (
           <img src={avatar} alt="" className="h-10 w-10 rounded-full object-cover ring-2 ring-background" />
@@ -70,13 +68,15 @@ export const Notification = ({
           </div>
         )}
       </div>
-      
+
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="flex items-center justify-between gap-2">
-          <H4 className={cn(
-            'text-sm leading-none truncate',
-            isRead ? 'font-normal text-muted-foreground' : 'font-semibold'
-          )}>
+          <H4
+            className={cn(
+              'text-sm leading-none truncate',
+              isRead ? 'font-normal text-muted-foreground' : 'font-semibold'
+            )}
+          >
             {title}
           </H4>
           <Button
@@ -96,20 +96,13 @@ export const Notification = ({
             )}
           </Button>
         </div>
-        <p className={cn(
-          'text-sm line-clamp-2',
-          isRead ? 'text-muted-foreground' : 'text-foreground'
-        )}>
-          {content}
-        </p>
+        <p className={cn('text-sm line-clamp-2', isRead ? 'text-muted-foreground' : 'text-foreground')}>{content}</p>
         <div className="flex items-center gap-2">
           <Small className="text-xs text-muted-foreground">
             <RelativeDate date={new Date(createdAt as string)} />
           </Small>
         </div>
-        {children && (
-          <div className="mt-2 flex flex-wrap items-start gap-2">{children}</div>
-        )}
+        {children && <div className="mt-2 flex flex-wrap items-start gap-2">{children}</div>}
       </div>
     </div>
   );

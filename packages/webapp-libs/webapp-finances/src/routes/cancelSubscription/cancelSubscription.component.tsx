@@ -6,13 +6,13 @@ import { Paragraph } from '@sb/webapp-core/components/typography';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { Separator } from '@sb/webapp-core/components/ui/separator';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
-import { ArrowLeft, CreditCard, AlertTriangle, Info } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, CreditCard, Info } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link as RouterLink } from 'react-router-dom';
 
-import { RoutesConfig } from '../../config/routes';
 import { useActiveSubscriptionDetails } from '../../components/activeSubscriptionContext';
+import { RoutesConfig } from '../../config/routes';
 import { useActiveSubscriptionDetailsData } from '../../hooks';
 import { useCancelSubscription } from './cancelSubscription.hook';
 
@@ -141,7 +141,10 @@ export const CancelSubscription = () => {
                 {activeSubscriptionPlan?.price !== undefined && (
                   <div className="space-y-1">
                     <div className="text-sm font-medium text-muted-foreground">
-                      <FormattedMessage defaultMessage="Active plan price:" id="Cancel subscription / Active plan price" />
+                      <FormattedMessage
+                        defaultMessage="Active plan price:"
+                        id="Cancel subscription / Active plan price"
+                      />
                     </div>
                     <Paragraph className="text-base font-semibold">
                       ${activeSubscriptionPlan.price.toFixed(2)} USD
@@ -159,7 +162,10 @@ export const CancelSubscription = () => {
                     <Separator />
                     <div className="space-y-1">
                       <div className="text-sm font-medium text-muted-foreground">
-                        <FormattedMessage defaultMessage="Next renewal / expiry:" id="Cancel subscription / Next renewal" />
+                        <FormattedMessage
+                          defaultMessage="Next renewal / expiry:"
+                          id="Cancel subscription / Next renewal"
+                        />
                       </div>
                       <Paragraph className="text-base font-semibold">
                         <FormattedDate value={activeSubscriptionRenewalDate} />

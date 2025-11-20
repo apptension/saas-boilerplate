@@ -8,7 +8,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/w
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { TenantRoleAccess } from '@sb/webapp-tenants/components/tenantRoleAccess';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
-import { AlertCircle, ArrowUpRight, BookOpen, Github, Rocket, Sparkles, Shield, ExternalLink, Server, Code2 } from 'lucide-react';
+import {
+  AlertCircle,
+  ArrowUpRight,
+  BookOpen,
+  Code2,
+  ExternalLink,
+  Github,
+  Rocket,
+  Server,
+  Shield,
+  Sparkles,
+} from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -100,11 +111,11 @@ export const Home = () => {
   const renderItem = (item: DashboardItem, key: number) => (
     <TenantRoleAccess allowedRoles={item.roleAccess} key={key}>
       <Link navLink to={item.link} className="group block h-full">
-        <Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/50">
+        <Card className="h-full transition-all duration-200 hover:border-primary/50 hover:shadow-md">
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
               <CardTitle className="text-lg font-semibold">{item.title}</CardTitle>
-              <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+              <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
             </div>
           </CardHeader>
           <CardContent>
@@ -143,12 +154,7 @@ export const Home = () => {
 
         {/* Quick Actions */}
         <div className="flex flex-wrap gap-3">
-          <Button
-            variant="outline"
-            size="lg"
-            asChild
-            className="gap-2"
-          >
+          <Button variant="outline" size="lg" asChild className="gap-2">
             <a
               href="https://github.com/apptension/saas-boilerplate"
               target="_blank"
@@ -160,12 +166,7 @@ export const Home = () => {
               <ArrowUpRight className="h-3 w-3" />
             </a>
           </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            asChild
-            className="gap-2"
-          >
+          <Button variant="outline" size="lg" asChild className="gap-2">
             <a
               href="https://docs.demo.saas.apptoku.com/"
               target="_blank"
@@ -182,7 +183,7 @@ export const Home = () => {
         {/* Two Column Layout */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Getting Started Section - Takes 2 columns on large screens */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="space-y-6 lg:col-span-2">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <Rocket className="h-5 w-5 text-primary" />
@@ -221,9 +222,7 @@ export const Home = () => {
                       })}
                     </p>
                     <div className="space-y-1">
-                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
-                        pnpm run plop
-                      </code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm run plop</code>
                       <p className="text-xs text-muted-foreground">
                         {intl.formatMessage({
                           defaultMessage: 'Generate components, CRUD modules, hooks, emails, and more',
@@ -244,9 +243,7 @@ export const Home = () => {
                       <code className="block rounded-md bg-muted px-3 py-2 text-sm">
                         pnpm saas backend makemigrations
                       </code>
-                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
-                        pnpm saas backend migrate
-                      </code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm saas backend migrate</code>
                     </div>
                   </div>
 
@@ -258,15 +255,9 @@ export const Home = () => {
                       })}
                     </p>
                     <div className="space-y-1">
-                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
-                        pnpm saas backend test
-                      </code>
-                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
-                        pnpm run test
-                      </code>
-                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
-                        pnpm run lint
-                      </code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm saas backend test</code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm run test</code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm run lint</code>
                     </div>
                   </div>
 
@@ -278,18 +269,14 @@ export const Home = () => {
                       })}
                     </p>
                     <div className="space-y-1">
-                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
-                        pnpm run storybook
-                      </code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm run storybook</code>
                       <p className="text-xs text-muted-foreground">
                         {intl.formatMessage({
                           defaultMessage: 'Run Storybook on port 5002',
                           id: 'Home / Development Commands / Storybook Description',
                         })}
                       </p>
-                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
-                        pnpm saas backend shell
-                      </code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm saas backend shell</code>
                       <p className="text-xs text-muted-foreground">
                         {intl.formatMessage({
                           defaultMessage: 'Access backend shell for advanced operations',
@@ -312,7 +299,8 @@ export const Home = () => {
                   </CardTitle>
                   <CardDescription>
                     {intl.formatMessage({
-                      defaultMessage: 'Access the Django admin interface for managing data and performing administrative tasks',
+                      defaultMessage:
+                        'Access the Django admin interface for managing data and performing administrative tasks',
                       id: 'Home / Admin Panel / Description',
                     })}
                   </CardDescription>
@@ -331,7 +319,9 @@ export const Home = () => {
                       rel="noreferrer"
                       className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
                     >
-                      <code className="rounded-md bg-muted px-3 py-1.5 text-sm font-mono">http://admin.localhost:5001</code>
+                      <code className="rounded-md bg-muted px-3 py-1.5 font-mono text-sm">
+                        http://admin.localhost:5001
+                      </code>
                       <ExternalLink className="h-4 w-4" />
                     </a>
                   </div>
@@ -345,14 +335,14 @@ export const Home = () => {
                     </p>
                     <dl className="space-y-3">
                       <div>
-                        <dt className="text-xs font-medium text-muted-foreground mb-1">
+                        <dt className="mb-1 text-xs font-medium text-muted-foreground">
                           {intl.formatMessage({
                             defaultMessage: 'Email',
                             id: 'Home / Admin Panel / Email Label',
                           })}
                         </dt>
                         <dd className="flex items-center gap-2">
-                          <code className="rounded-md bg-muted px-2.5 py-1.5 text-sm font-mono">admin@example.com</code>
+                          <code className="rounded-md bg-muted px-2.5 py-1.5 font-mono text-sm">admin@example.com</code>
                           <span className="text-xs text-muted-foreground">
                             {intl.formatMessage({
                               defaultMessage: 'or set ADMIN_EMAIL in .env',
@@ -362,14 +352,14 @@ export const Home = () => {
                         </dd>
                       </div>
                       <div>
-                        <dt className="text-xs font-medium text-muted-foreground mb-1">
+                        <dt className="mb-1 text-xs font-medium text-muted-foreground">
                           {intl.formatMessage({
                             defaultMessage: 'Password',
                             id: 'Home / Admin Panel / Password Label',
                           })}
                         </dt>
                         <dd className="flex items-center gap-2">
-                          <code className="rounded-md bg-muted px-2.5 py-1.5 text-sm font-mono">AvPZpabgj9Z8</code>
+                          <code className="rounded-md bg-muted px-2.5 py-1.5 font-mono text-sm">AvPZpabgj9Z8</code>
                           <span className="text-xs text-muted-foreground">
                             {intl.formatMessage({
                               defaultMessage: 'or set ADMIN_DEFAULT_PASSWORD in .env',
@@ -385,7 +375,8 @@ export const Home = () => {
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription className="text-sm">
                       {intl.formatMessage({
-                        defaultMessage: 'These credentials are for local development only. Always use strong, unique passwords in production!',
+                        defaultMessage:
+                          'These credentials are for local development only. Always use strong, unique passwords in production!',
                         id: 'Home / Admin Panel / Security Warning',
                       })}
                     </AlertDescription>
@@ -494,7 +485,7 @@ export const Home = () => {
                   <p>
                     {intl.formatMessage({
                       defaultMessage:
-                        'Each feature you see here is a module demonstrating the versatility and usability of the SaaS Boilerplate. Please remember, these modules are simply examples. You are encouraged to customize, adjust, and modify each module to best fit your application\'s needs.',
+                        "Each feature you see here is a module demonstrating the versatility and usability of the SaaS Boilerplate. Please remember, these modules are simply examples. You are encouraged to customize, adjust, and modify each module to best fit your application's needs.",
                       id: 'Home / Alert / Description',
                     })}
                   </p>

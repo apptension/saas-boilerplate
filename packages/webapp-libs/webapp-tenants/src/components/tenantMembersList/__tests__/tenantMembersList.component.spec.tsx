@@ -2,11 +2,11 @@ import { TenantUserRole } from '@sb/webapp-api-client';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult, makeId } from '@sb/webapp-api-client/tests/utils';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
+import { tenantMembersListQuery } from '@sb/webapp-tenants/components/tenantMembersList/tenantMembersList.graphql';
 
 import { membershipFactory, tenantFactory } from '../../../tests/factories/tenant';
 import { createMockRouterProps, render } from '../../../tests/utils/rendering';
 import { TenantMembersList } from '../tenantMembersList.component';
-import { tenantMembersListQuery } from '@sb/webapp-tenants/components/tenantMembersList/tenantMembersList.graphql';
 
 describe('TenantMembersList: Component', () => {
   const Component = () => <TenantMembersList />;

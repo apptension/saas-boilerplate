@@ -1,17 +1,12 @@
 import { getNodeText, screen } from '@testing-library/react';
 import { useTheme } from 'styled-components';
 
-import { media } from '../../../theme';
 import { render } from '../../../tests/utils/rendering';
-import {
-  ResponsiveThemeProvider,
-  ResponsiveThemeProviderProps,
-} from '../responsiveThemeProvider.component';
+import { media } from '../../../theme';
+import { ResponsiveThemeProvider, ResponsiveThemeProviderProps } from '../responsiveThemeProvider.component';
 
 jest.mock('../../../theme', () => {
-  const requireActual = jest.requireActual(
-    '../../../theme'
-  );
+  const requireActual = jest.requireActual('../../../theme');
   return {
     ...requireActual,
     media: {
@@ -32,9 +27,7 @@ describe('ResponsiveThemeProvider: Component', () => {
   };
 
   beforeEach(() => {
-    (media.getActiveBreakpoint as jest.Mock).mockReturnValue(
-      media.Breakpoint.DESKTOP
-    );
+    (media.getActiveBreakpoint as jest.Mock).mockReturnValue(media.Breakpoint.DESKTOP);
   });
 
   const Component = (props: Partial<ResponsiveThemeProviderProps>) => (

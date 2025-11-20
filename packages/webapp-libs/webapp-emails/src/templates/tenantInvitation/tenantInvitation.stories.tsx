@@ -1,11 +1,11 @@
 import { StoryFn } from '@storybook/react';
 
-import { EmailTemplateType } from '../../types';
 import { EmailStory } from '../../emailStory/emailStory.component';
+import { EmailTemplateType } from '../../types';
 import {
   Template as TenantInvitationEmail,
-  Subject as TenantInvitationSubject,
   TenantInvitationProps,
+  Subject as TenantInvitationSubject,
 } from './tenantInvitation.component';
 
 const Template: StoryFn<TenantInvitationProps> = (args) => (

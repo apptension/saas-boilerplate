@@ -23,11 +23,7 @@ export const ChangePasswordForm = () => {
 
   return (
     <div className="w-full">
-      <form
-        noValidate
-        onSubmit={handleChangePassword}
-        className="flex w-full flex-col gap-6"
-      >
+      <form noValidate onSubmit={handleChangePassword} className="flex w-full flex-col gap-6">
         <div className="w-full">
           <Input
             {...register('oldPassword', {

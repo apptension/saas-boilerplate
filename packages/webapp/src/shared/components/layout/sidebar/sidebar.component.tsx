@@ -4,24 +4,24 @@ import { Button } from '@sb/webapp-core/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@sb/webapp-core/components/ui/tooltip';
 import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
 import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
-import { Themes } from '@sb/webapp-core/providers/themeProvider';
 import { cn } from '@sb/webapp-core/lib/utils';
+import { Themes } from '@sb/webapp-core/providers/themeProvider';
 import { media } from '@sb/webapp-core/theme';
 import { TenantRoleAccess } from '@sb/webapp-tenants/components/tenantRoleAccess';
 import { TenantSwitchSidebar } from '@sb/webapp-tenants/components/tenantSwitch';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import {
+  Building2,
   ChevronLeft,
   ChevronRight,
-  FileText,
-  LayoutDashboard,
-  Wallet,
   CreditCard,
-  Sparkles,
-  FolderOpen,
   Database,
+  FileText,
+  FolderOpen,
+  LayoutDashboard,
   Shield,
-  Building2,
+  Sparkles,
+  Wallet,
   X,
 } from 'lucide-react';
 import { HTMLAttributes, useCallback, useContext } from 'react';
@@ -29,10 +29,10 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useLocation } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { useAuth } from '../../../hooks';
-import { Role } from '../../../../modules/auth/auth.types';
-import { RoleAccess } from '../../roleAccess';
 import { LogoIcon } from '../../../../images/icons';
+import { Role } from '../../../../modules/auth/auth.types';
+import { useAuth } from '../../../hooks';
+import { RoleAccess } from '../../roleAccess';
 import { LayoutContext } from '../layout.context';
 
 export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
@@ -56,7 +56,7 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
       {
         'justify-center px-0 py-2.5': isSidebarCollapsed && isDesktop,
         'gap-3 px-3 py-2.5': !isSidebarCollapsed || !isDesktop,
-      'bg-accent text-accent-foreground': isActive,
+        'bg-accent text-accent-foreground': isActive,
         'text-muted-foreground': !isActive,
       }
     );
@@ -158,16 +158,11 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
     },
   ];
 
-  const renderMenuItem = (item: typeof menuItems[0]) => {
+  const renderMenuItem = (item: (typeof menuItems)[0]) => {
     const Icon = item.icon;
     const active = isActive(item.path);
     const content = (
-      <Link
-        to={item.generatePath()}
-        onClick={closeSidebar}
-        navLink
-        className={menuItemClassName({ isActive: active })}
-      >
+      <Link to={item.generatePath()} onClick={closeSidebar} navLink className={menuItemClassName({ isActive: active })}>
         <Icon className="h-5 w-5 shrink-0" />
         {(!isSidebarCollapsed || !isDesktop) && <span className="truncate">{item.label}</span>}
       </Link>
@@ -217,12 +212,9 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
     <>
       {/* Mobile overlay */}
       <div
-        className={cn(
-          'pointer-events-none fixed inset-0 z-20 bg-black/80 opacity-0 transition-opacity lg:hidden',
-          {
-            'pointer-events-auto opacity-100': isSideMenuOpen,
-          }
-        )}
+        className={cn('pointer-events-none fixed inset-0 z-20 bg-black/80 opacity-0 transition-opacity lg:hidden', {
+          'pointer-events-auto opacity-100': isSideMenuOpen,
+        })}
         onClick={closeSidebar}
         aria-hidden="true"
       />
@@ -233,12 +225,12 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
           variant="ghost"
           size="icon"
           className="fixed left-[280px] top-4 z-30 lg:hidden"
-        onClick={closeSidebar}
-        aria-label={intl.formatMessage({
-          defaultMessage: 'Close menu',
-          id: 'Home / close sidebar icon label',
-        })}
-      >
+          onClick={closeSidebar}
+          aria-label={intl.formatMessage({
+            defaultMessage: 'Close menu',
+            id: 'Home / close sidebar icon label',
+          })}
+        >
           <X className="h-5 w-5" />
         </Button>
       )}
@@ -272,10 +264,12 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                   defaultMessage: 'Go back home',
                 })}
               >
-                <div className={cn('flex items-center justify-center', {
-                  'h-8 w-8': isSidebarCollapsed && isDesktop,
-                  'w-[120px]': !isSidebarCollapsed || !isDesktop,
-                })}>
+                <div
+                  className={cn('flex items-center justify-center', {
+                    'h-8 w-8': isSidebarCollapsed && isDesktop,
+                    'w-[120px]': !isSidebarCollapsed || !isDesktop,
+                  })}
+                >
                   <LogoIcon
                     color={theme === Themes.DARK ? 'white' : 'black'}
                     className={cn('h-auto w-full', {
@@ -290,9 +284,11 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
 
             {/* Tenant Switch */}
             {isLoggedIn && (
-              <div className={cn('px-0', {
-                'flex justify-center': isSidebarCollapsed && isDesktop,
-              })}>
+              <div
+                className={cn('px-0', {
+                  'flex justify-center': isSidebarCollapsed && isDesktop,
+                })}
+              >
                 <TenantSwitchSidebar collapsed={isSidebarCollapsed && isDesktop} />
               </div>
             )}
@@ -305,9 +301,11 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
               {staticPageItems.length > 0 && (
                 <>
                   <div className="my-2 border-t" />
-                  <p className={cn('px-3 py-2 text-xs font-medium text-muted-foreground', {
-                    'hidden': isSidebarCollapsed && isDesktop,
-                  })}>
+                  <p
+                    className={cn('px-3 py-2 text-xs font-medium text-muted-foreground', {
+                      hidden: isSidebarCollapsed && isDesktop,
+                    })}
+                  >
                     <FormattedMessage defaultMessage="Static pages" id="Sidebar / static pages" />
                   </p>
                   {staticPageItems.map((item) => {
@@ -378,7 +376,6 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
                 </Tooltip>
               </div>
             )}
-
           </div>
         </div>
       </aside>

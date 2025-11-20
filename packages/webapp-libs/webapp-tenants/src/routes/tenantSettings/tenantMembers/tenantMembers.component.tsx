@@ -1,7 +1,7 @@
 import { TenantType } from '@sb/webapp-api-client/constants';
 import { Button } from '@sb/webapp-core/components/buttons';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { Alert } from '@sb/webapp-core/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { TabsContent } from '@sb/webapp-core/components/ui/tabs';
 import { RoutesConfig as RootRoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
@@ -37,7 +37,10 @@ export const TenantMembers = () => {
                 <FormattedMessage defaultMessage="Members" id="Tenant Members / Header" />
               </CardTitle>
               <CardDescription>
-                <FormattedMessage defaultMessage="View and manage organization members" id="Tenant Members / Subheader" />
+                <FormattedMessage
+                  defaultMessage="View and manage organization members"
+                  id="Tenant Members / Subheader"
+                />
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -48,9 +51,17 @@ export const TenantMembers = () => {
                     id="Tenant Members / Alert"
                   />
                 </Paragraph>
-                <Button data-testid="tenant-members-create-button" color="primary" size="sm" onClick={handleNewTenantClick}>
+                <Button
+                  data-testid="tenant-members-create-button"
+                  color="primary"
+                  size="sm"
+                  onClick={handleNewTenantClick}
+                >
                   <Plus className="mr-1" size="16" />{' '}
-                  <FormattedMessage defaultMessage="Create new organization" id="TenantSwitch / Create new organization" />
+                  <FormattedMessage
+                    defaultMessage="Create new organization"
+                    id="TenantSwitch / Create new organization"
+                  />
                 </Button>
               </Alert>
             </CardContent>
@@ -65,7 +76,10 @@ export const TenantMembers = () => {
                   <FormattedMessage defaultMessage="Members" id="Tenant Members / Header" />
                 </CardTitle>
                 <CardDescription>
-                  <FormattedMessage defaultMessage="View and manage organization members" id="Tenant Members / Subheader" />
+                  <FormattedMessage
+                    defaultMessage="View and manage organization members"
+                    id="Tenant Members / Subheader"
+                  />
                 </CardDescription>
               </CardHeader>
               <CardContent>

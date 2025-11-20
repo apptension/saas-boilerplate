@@ -46,7 +46,10 @@ const TransactionsHistoryContent = () => {
             ) : (
               <div>
                 <Link to={generateTenantPath(RoutesConfig.subscriptions.transactionHistory.history)} variant="default">
-                  <FormattedMessage defaultMessage="View transaction history" id="My subscription / View history button" />
+                  <FormattedMessage
+                    defaultMessage="View transaction history"
+                    id="My subscription / View history button"
+                  />
                 </Link>
               </div>
             )}

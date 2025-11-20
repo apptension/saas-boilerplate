@@ -100,10 +100,7 @@ export const AddCrudDemoItem = () => {
             </h1>
           </div>
           <Paragraph className="text-lg text-muted-foreground">
-            <FormattedMessage
-              defaultMessage="Create a new CRUD example item"
-              id="AddCrudDemoItem / Description"
-            />
+            <FormattedMessage defaultMessage="Create a new CRUD example item" id="AddCrudDemoItem / Description" />
           </Paragraph>
         </div>
 

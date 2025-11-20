@@ -108,9 +108,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
             {data.name}
           </p>
         </Link>
-        <div className="flex-shrink-0 ml-4">
-          {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
-        </div>
+        <div className="flex-shrink-0 ml-4">{isDesktop ? renderInlineButtons() : renderButtonsMenu()}</div>
       </div>
     </li>
   );
