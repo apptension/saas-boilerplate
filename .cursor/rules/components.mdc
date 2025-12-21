@@ -1,0 +1,77 @@
+---
+description: React component patterns and best practices
+globs: ["**/*.tsx"]
+alwaysApply: false
+---
+
+# Component Patterns
+
+## Functional Components with Types
+
+Always define and export prop types:
+
+```tsx
+export type ComponentNameProps = {
+  requiredProp: string;
+  optionalProp?: boolean;
+  onAction?: () => void;
+};
+
+export const ComponentName = ({ requiredProp, optionalProp = false, onAction }: ComponentNameProps) => {
+  // Component implementation
+};
+```
+
+## UI Components
+
+Use shadcn/ui components from `@sb/webapp-core/components/ui/`:
+
+```tsx
+import { Button } from '@sb/webapp-core/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+import { Dialog, DialogContent, DialogTrigger } from '@sb/webapp-core/components/ui/dialog';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@sb/webapp-core/components/ui/tooltip';
+import { Avatar, AvatarImage, AvatarFallback } from '@sb/webapp-core/components/ui/avatar';
+```
+
+## Tooltip Pattern for Collapsed States
+
+Wrap interactive elements with tooltips when in collapsed state:
+
+```tsx
+{isCollapsed ? (
+  <Tooltip delayDuration={200}>
+    <TooltipTrigger asChild>{content}</TooltipTrigger>
+    <TooltipContent side="right">{label}</TooltipContent>
+  </Tooltip>
+) : (
+  content
+)}
+```
+
+## Context Usage
+
+Use React Context for shared state:
+
+```tsx
+import { useContext } from 'react';
+import { LayoutContext } from '../layout.context';
+
+const { isSidebarCollapsed, toggleSidebar } = useContext(LayoutContext);
+```
+
+## Responsive Behavior
+
+Use the `useMediaQuery` hook:
+
+```tsx
+import { useMediaQuery } from '@sb/webapp-core/hooks';
+import { media } from '@sb/webapp-core/theme';
+
+const { matches: isDesktop } = useMediaQuery({
+  above: media.Breakpoint.TABLET,
+});
+
+// Combine with collapsed state
+const isCollapsedDesktop = isSidebarCollapsed && isDesktop;
+```

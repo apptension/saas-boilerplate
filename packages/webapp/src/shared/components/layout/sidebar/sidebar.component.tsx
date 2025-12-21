@@ -29,11 +29,11 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useLocation } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
-import { LogoIcon } from '../../../../images/icons';
 import { Role } from '../../../../modules/auth/auth.types';
 import { useAuth } from '../../../hooks';
 import { RoleAccess } from '../../roleAccess';
 import { LayoutContext } from '../layout.context';
+import { SidebarLogo } from './sidebarLogo';
 
 export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
   const intl = useIntl();
@@ -255,31 +255,12 @@ export const Sidebar = (props: HTMLAttributes<HTMLDivElement>) => {
           <div className="flex flex-col gap-4 border-b p-4">
             {/* Logo */}
             <div className="flex items-center justify-center">
-              <Link
+              <SidebarLogo
+                isCollapsed={isSidebarCollapsed && isDesktop}
+                logoColor={theme === Themes.DARK ? 'white' : 'black'}
                 to={generateTenantPath(RoutesConfig.home)}
-                onClick={closeSidebar}
-                className="flex items-center justify-center"
-                aria-label={intl.formatMessage({
-                  id: 'Header / Home link aria label',
-                  defaultMessage: 'Go back home',
-                })}
-              >
-                <div
-                  className={cn('flex items-center justify-center', {
-                    'h-8 w-8': isSidebarCollapsed && isDesktop,
-                    'w-[120px]': !isSidebarCollapsed || !isDesktop,
-                  })}
-                >
-                  <LogoIcon
-                    color={theme === Themes.DARK ? 'white' : 'black'}
-                    className={cn('h-auto w-full', {
-                      'h-8 w-8': isSidebarCollapsed && isDesktop,
-                    })}
-                    style={{ maxWidth: '100%' }}
-                    preserveAspectRatio="xMidYMid meet"
-                  />
-                </div>
-              </Link>
+                onLogoClick={closeSidebar}
+              />
             </div>
 
             {/* Tenant Switch */}

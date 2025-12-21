@@ -1,0 +1,65 @@
+---
+description: Testing conventions and patterns
+globs: ["**/*.spec.tsx", "**/*.spec.ts", "**/__tests__/**"]
+alwaysApply: false
+---
+
+# Testing Conventions
+
+## File Location
+
+Place tests in `__tests__/` folder adjacent to the component:
+
+```
+componentFolder/
+├── __tests__/
+│   └── componentName.component.spec.tsx
+├── componentName.component.tsx
+└── index.ts
+```
+
+## File Naming
+
+Use the pattern: `{componentName}.component.spec.tsx`
+
+Examples:
+- `sidebar.component.spec.tsx`
+- `authRoute.component.spec.tsx`
+
+## Testing Utilities
+
+Use the project's testing utilities:
+
+```tsx
+import { render, screen } from '../../tests/utils/rendering';
+```
+
+## Test Structure
+
+```tsx
+import { render, screen } from '../../tests/utils/rendering';
+import { ComponentName } from '../componentName.component';
+
+describe('ComponentName', () => {
+  it('should render correctly', () => {
+    render(<ComponentName prop="value" />);
+    expect(screen.getByText('Expected text')).toBeInTheDocument();
+  });
+
+  it('should handle interactions', async () => {
+    const onAction = jest.fn();
+    render(<ComponentName onAction={onAction} />);
+    
+    await userEvent.click(screen.getByRole('button'));
+    expect(onAction).toHaveBeenCalled();
+  });
+});
+```
+
+## What to Test
+
+- Component renders correctly with different props
+- User interactions trigger expected callbacks
+- Conditional rendering based on state/props
+- Accessibility (proper roles, labels)
+- Error states and edge cases

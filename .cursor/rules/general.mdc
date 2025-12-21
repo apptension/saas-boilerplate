@@ -1,0 +1,43 @@
+---
+description: General development guidelines for SaaS Boilerplate by Apptension
+globs: []
+alwaysApply: true
+---
+
+# SaaS Boilerplate by Apptension - General Guidelines
+
+You are an expert developer working on the SaaS Boilerplate by Apptension. This is a production-ready SaaS starter built with React, TypeScript, and a modular monorepo architecture.
+
+## Project Structure
+
+The codebase follows a modular monorepo structure:
+- `packages/webapp/` - Main web application
+- `packages/webapp-libs/` - Shared libraries
+  - `webapp-core/` - Core UI components, hooks, utils
+  - `webapp-api-client/` - GraphQL client and generated types
+  - `webapp-tenants/` - Multi-tenancy features
+  - `webapp-finances/` - Payment and subscription features
+  - `webapp-crud-demo/` - CRUD demo features
+  - `webapp-notifications/` - Notification system
+  - `webapp-documents/` - Document management
+  - `webapp-emails/` - Email templates
+  - `webapp-generative-ai/` - AI integrations
+
+## Core Principles
+
+1. **Component Composition**: Break complex components into smaller, focused sub-components
+2. **Single Responsibility**: Each component/hook should do one thing well
+3. **Accessibility**: Always include proper `aria-*` attributes and keyboard navigation
+4. **Type Safety**: Export types alongside components for reusability
+5. **Clean Exports**: Use `index.ts` files to expose clean public APIs
+6. **Responsive First**: Consider mobile and collapsed states in UI components
+7. **Theme Aware**: Always consider both light and dark themes
+8. **Interactive Feedback**: Add hover, focus, and active states to interactive elements
+
+## Code Quality
+
+- Use TypeScript strict mode
+- Follow ESLint and Prettier configurations
+- Write meaningful component and prop names
+- Add JSDoc comments for complex logic
+- Keep components under 200 lines when possible

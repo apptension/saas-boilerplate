@@ -1,0 +1,62 @@
+---
+description: Internationalization patterns using react-intl
+globs: ["**/*.tsx"]
+alwaysApply: false
+---
+
+# Internationalization (i18n)
+
+## React-Intl Usage
+
+Use `react-intl` for all user-facing text.
+
+### FormattedMessage for Inline Text
+
+```tsx
+import { FormattedMessage } from 'react-intl';
+
+<FormattedMessage 
+  defaultMessage="Dashboard" 
+  id="Home / dashboard link" 
+/>
+```
+
+### useIntl for Programmatic Access
+
+```tsx
+import { useIntl } from 'react-intl';
+
+const intl = useIntl();
+
+// For aria labels
+const ariaLabel = intl.formatMessage({
+  id: 'Sidebar / Logo link aria label',
+  defaultMessage: 'Go back home',
+});
+
+// For tooltips
+const tooltipLabel = intl.formatMessage({
+  id: 'Sidebar / Logo tooltip',
+  defaultMessage: 'Go to dashboard',
+});
+
+// Usage
+<Link aria-label={ariaLabel}>...</Link>
+```
+
+## Message ID Convention
+
+Use descriptive, hierarchical IDs with the pattern: `"Section / description"`
+
+Examples:
+- `"Home / dashboard link"`
+- `"Sidebar / Logo tooltip"`
+- `"Header / Home link aria label"`
+- `"Profile / Edit button"`
+
+## Best Practices
+
+1. **Never hardcode user-facing text** - Always use FormattedMessage or intl.formatMessage
+2. **Use descriptive IDs** - IDs should indicate where and what the message is
+3. **Provide defaultMessage** - Always include the English default text
+4. **Aria labels** - Use intl.formatMessage for accessibility attributes
