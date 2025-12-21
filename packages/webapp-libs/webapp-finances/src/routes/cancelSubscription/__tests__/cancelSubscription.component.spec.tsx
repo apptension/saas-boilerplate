@@ -139,8 +139,13 @@ describe('CancelSubscription: Component', () => {
         apolloMocks: [tenantMock, requestMock, requestCancelMock],
       });
 
-      await userEvent.click(await screen.findByText(/cancel subscription/i));
-      await userEvent.click(await screen.findByText(/continue/i));
+      // Wait for the page to load and find the cancel button
+      const cancelButton = await screen.findByRole('button', { name: /cancel subscription/i });
+      await userEvent.click(cancelButton);
+
+      // Wait for the dialog to open and find the continue button
+      const continueButton = await screen.findByRole('button', { name: /continue/i });
+      await userEvent.click(continueButton);
 
       expect(requestCancelMock.newData).toHaveBeenCalled();
     });
@@ -166,8 +171,13 @@ describe('CancelSubscription: Component', () => {
         apolloMocks: [tenantMock, requestMock, requestCancelMock],
       });
 
-      await userEvent.click(await screen.findByText(/cancel subscription/i));
-      await userEvent.click(await screen.findByText(/continue/i));
+      // Wait for the page to load and find the cancel button
+      const cancelButton = await screen.findByRole('button', { name: /cancel subscription/i });
+      await userEvent.click(cancelButton);
+
+      // Wait for the dialog to open and find the continue button
+      const continueButton = await screen.findByRole('button', { name: /continue/i });
+      await userEvent.click(continueButton);
 
       const toast = await screen.findByTestId('toast-1');
       expect(toast).toHaveTextContent('You will be moved to free plan with the next billing period');

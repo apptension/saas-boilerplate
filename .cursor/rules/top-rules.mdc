@@ -1,0 +1,241 @@
+---
+description: Top essential rules for Cursor AI-Agent during SaaS Boilerplate development
+globs: []
+alwaysApply: true
+---
+
+# Top Rules for SaaS Boilerplate Development
+
+These are the most critical rules to follow when developing in the SaaS Boilerplate codebase.
+
+## 1. Keep Tests in Sync with UI Changes
+
+When modifying component text, labels, or structure:
+- **ALWAYS update corresponding test files** in the `__tests__/` folder
+- Update snapshot tests with `--updateSnapshot` flag when UI changes are intentional
+- Use `findAllByText` when multiple elements may have the same text
+- Use specific selectors: `getByRole('button', { name: /specific text/i })` instead of generic `getByRole('button')`
+
+```tsx
+// ❌ Too generic - will fail if multiple buttons exist
+screen.getByRole('button');
+
+// ✅ Specific selector
+screen.getByRole('button', { name: /delete organization/i });
+
+// ❌ Will fail if text appears in multiple elements
+screen.findByText(/demo item name/i);
+
+// ✅ Handle multiple matches
+const elements = await screen.findAllByText(/demo item name/i);
+expect(elements.length).toBeGreaterThan(0);
+```
+
+## 2. Async Testing Patterns
+
+Always use async/await properly for UI interactions:
+
+```tsx
+// ✅ Wait for elements after async operations
+const triggerButton = await screen.findByRole('button', { name: /trigger/i });
+await userEvent.click(triggerButton);
+
+// ✅ Wait for dialog/modal content to appear
+const continueButton = await screen.findByRole('button', { name: /continue/i });
+await userEvent.click(continueButton);
+
+// ✅ Wait for toast notifications
+const toast = await screen.findByTestId('toast-1');
+expect(toast).toHaveTextContent('Expected message');
+```
+
+## 3. GraphQL Patterns
+
+Use the established patterns for mutations and queries:
+
+```tsx
+// Mutations with toast feedback
+const [commitMutation, { loading }] = useMutation(myMutation, {
+  onCompleted: () => {
+    toast({ description: successMessage });
+    // Additional logic
+  },
+  onError: (error) => {
+    toast({ description: error.message, variant: 'destructive' });
+  },
+});
+
+// Always include tenantId for multi-tenant operations
+commitMutation({
+  variables: {
+    input: {
+      id: itemId,
+      tenantId: currentTenant.id,
+      ...otherFields,
+    },
+  },
+});
+```
+
+## 4. Multi-Tenancy Awareness
+
+Always consider multi-tenancy when working with tenant-scoped features:
+
+```tsx
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
+
+const { data: currentTenant } = useCurrentTenant();
+const generateTenantPath = useGenerateTenantPath();
+
+// Generate tenant-aware routes
+navigate(generateTenantPath(RoutesConfig.home, { tenantId: currentTenant.id }));
+```
+
+## 5. Component Structure Pattern
+
+Follow the established component structure:
+
+```
+featureName/
+├── __tests__/
+│   └── featureName.component.spec.tsx
+├── index.ts                          # Clean exports
+├── featureName.component.tsx         # Main component
+├── featureName.graphql.ts           # GraphQL operations
+├── featureName.hook.ts              # Custom hooks (if needed)
+└── featureName.stories.tsx          # Storybook (if needed)
+```
+
+## 6. UI Component Conventions
+
+Use shadcn/ui components from `@sb/webapp-core`:
+
+```tsx
+import { Button } from '@sb/webapp-core/components/buttons';
+import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { useToast } from '@sb/webapp-core/toast/useToast';
+```
+
+ConfirmDialog pattern for destructive actions:
+```tsx
+<ConfirmDialog
+  onContinue={handleAction}
+  variant="destructive"
+  title={<FormattedMessage defaultMessage="Are you sure?" id="..." />}
+  description={<FormattedMessage defaultMessage="This cannot be undone." id="..." />}
+>
+  <Button variant="destructive">Delete</Button>
+</ConfirmDialog>
+```
+
+## 7. Internationalization Requirements
+
+ALL user-facing text must use react-intl:
+
+```tsx
+import { FormattedMessage, useIntl } from 'react-intl';
+
+// For JSX content
+<FormattedMessage defaultMessage="Delete organization" id="Feature / Button label" />
+
+// For props/attributes
+const intl = useIntl();
+const label = intl.formatMessage({
+  defaultMessage: 'Delete organization',
+  id: 'Feature / Button label',
+});
+```
+
+Message ID convention: `"Section / Description"` (e.g., `"Tenant General Settings / Delete Button"`)
+
+## 8. Form Handling Pattern
+
+Use react-hook-form with the API form hook:
+
+```tsx
+import { useApiForm } from '@sb/webapp-api-client/hooks';
+
+const {
+  form: {
+    register,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  },
+  form,
+} = useApiForm({
+  defaultValues: {
+    fieldName: '',
+  },
+});
+
+// Register with validation
+const registerField = register('fieldName', {
+  required: {
+    value: true,
+    message: intl.formatMessage({
+      defaultMessage: 'Field is required',
+      id: 'Form / Field required error',
+    }),
+  },
+});
+```
+
+## 9. Styling with Tailwind
+
+Use the `cn()` utility for conditional classes:
+
+```tsx
+import { cn } from '@sb/webapp-core/lib/utils';
+
+className={cn(
+  'flex items-center gap-2',
+  'hover:bg-accent transition-colors',
+  {
+    'bg-primary': isActive,
+    'opacity-50': isDisabled,
+  }
+)}
+```
+
+Design tokens: `primary`, `destructive`, `muted`, `accent`, `border`, `background`, `foreground`
+
+## 10. Before Committing Changes
+
+1. **Run type-check**: `pnpm tsc --noEmit -p packages/webapp/tsconfig.app.json`
+2. **Run affected tests**: `pnpm nx run-many --target=test --projects=<affected-lib>`
+3. **Update snapshots if UI changed intentionally**: Add `--updateSnapshot` flag
+4. **Check for linter errors**: Tests and type-check should pass without errors
+
+## Quick Reference: Common Imports
+
+```tsx
+// Core components
+import { Button } from '@sb/webapp-core/components/buttons';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+
+// Forms
+import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
+
+// Hooks & utilities
+import { useToast } from '@sb/webapp-core/toast/useToast';
+import { cn } from '@sb/webapp-core/lib/utils';
+
+// Multi-tenancy
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
+import { useGenerateTenantPath, useTenantRoles } from '@sb/webapp-tenants/hooks';
+
+// API
+import { useMutation, useQuery } from '@apollo/client';
+import { gql } from '@sb/webapp-api-client/graphql';
+
+// Icons
+import { Settings, User, ChevronRight } from 'lucide-react';
+
+// i18n
+import { FormattedMessage, useIntl } from 'react-intl';
+```

@@ -60,6 +60,7 @@ const prepareMocks = <T extends DocumentNode>(query: T, input: Record<string, an
 
 describe('MembershipEntry: Component', () => {
   const Component = (props: MembershipEntryProps) => <MembershipEntry {...props} />;
+
   it('should commit update mutation', async () => {
     const { membership, commonQueryMock, requestMock } = prepareMocks(updateTenantMembershipMutation, {
       role: TenantUserRole.MEMBER,
@@ -69,9 +70,18 @@ describe('MembershipEntry: Component', () => {
       apolloMocks: [commonQueryMock, requestMock],
     });
 
-    await userEvent.click(await screen.findByRole('button'));
-    await userEvent.click(screen.getByRole('button', { name: /Change role/i }));
-    await userEvent.click(screen.getByRole('button', { name: /Member/i }));
+    // Click the dropdown trigger button
+    const triggerButton = await screen.findByRole('button');
+    await userEvent.click(triggerButton);
+
+    // Wait for and click the "Change role" submenu trigger
+    const changeRoleBtn = await screen.findByRole('button', { name: /Change role/i });
+    await userEvent.click(changeRoleBtn);
+
+    // Wait for and click the "Member" role option
+    const memberRoleBtn = await screen.findByRole('button', { name: /Member/i });
+    await userEvent.click(memberRoleBtn);
+
     expect(requestMock.newData).toHaveBeenCalled();
     const toast = await screen.findByTestId('toast-1');
     expect(toast).toHaveTextContent('🎉 The user role was updated successfully!');
@@ -84,9 +94,18 @@ describe('MembershipEntry: Component', () => {
       apolloMocks: [commonQueryMock, requestMock],
     });
 
-    await userEvent.click(await screen.findByRole('button'));
-    await userEvent.click(screen.getByText(/Delete/i));
-    await userEvent.click(screen.getByText(/Continue/i));
+    // Click the dropdown trigger button
+    const triggerButton = await screen.findByRole('button');
+    await userEvent.click(triggerButton);
+
+    // Wait for and click the "Delete" menu item
+    const deleteMenuItem = await screen.findByText(/Delete/i);
+    await userEvent.click(deleteMenuItem);
+
+    // Wait for and click the "Continue" button in the confirm dialog
+    const continueBtn = await screen.findByRole('button', { name: /Continue/i });
+    await userEvent.click(continueBtn);
+
     expect(requestMock.newData).toHaveBeenCalled();
     expect(refetch).toHaveBeenCalled();
     const toast = await screen.findByTestId('toast-1');

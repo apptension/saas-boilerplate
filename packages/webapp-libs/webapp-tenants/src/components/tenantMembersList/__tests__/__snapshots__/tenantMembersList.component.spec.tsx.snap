@@ -12,25 +12,25 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
         class="[&_tr]:border-b"
       >
         <tr
-          class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+          class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
         >
           <th
-            class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+            class="text-muted-foreground h-12 px-4 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0"
           >
-            Username
+            Name & surname
           </th>
           <th
-            class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+            class="text-muted-foreground h-12 px-4 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0"
           >
             Role
           </th>
           <th
-            class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+            class="text-muted-foreground h-12 px-4 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0"
           >
             Invitation accepted
           </th>
           <th
-            class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+            class="text-muted-foreground h-12 px-4 text-left align-middle font-medium [&:has([role=checkbox])]:pr-0"
           >
             Actions
           </th>
@@ -40,12 +40,38 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
         class="[&_tr:last-child]:border-0"
       >
         <tr
-          class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+          class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
         >
           <td
             class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
           >
-            testFirstName testLastName
+            <div
+              class="flex items-center gap-3"
+            >
+              <span
+                class="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8"
+              >
+                <span
+                  class="bg-muted flex h-full w-full items-center justify-center rounded-full text-xs"
+                >
+                  T
+                </span>
+              </span>
+              <div
+                class="flex flex-col"
+              >
+                <span
+                  class="font-medium"
+                >
+                  testFirstName testLastName
+                </span>
+                <span
+                  class="text-xs text-muted-foreground"
+                >
+                  mock@example.org
+                </span>
+              </div>
+            </div>
           </td>
           <td
             class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
@@ -144,12 +170,33 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
           </td>
         </tr>
         <tr
-          class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+          class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
         >
           <td
             class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
           >
-            Firstname 1 Firstname 1
+            <div
+              class="flex items-center gap-3"
+            >
+              <span
+                class="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8"
+              >
+                <span
+                  class="bg-muted flex h-full w-full items-center justify-center rounded-full text-xs"
+                >
+                  F
+                </span>
+              </span>
+              <div
+                class="flex flex-col"
+              >
+                <span
+                  class="font-medium"
+                >
+                  Firstname 1 Firstname 1
+                </span>
+              </div>
+            </div>
           </td>
           <td
             class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
@@ -248,12 +295,33 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
           </td>
         </tr>
         <tr
-          class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+          class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
         >
           <td
             class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
           >
-            example@example.com
+            <div
+              class="flex items-center gap-3"
+            >
+              <span
+                class="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8"
+              >
+                <span
+                  class="bg-muted flex h-full w-full items-center justify-center rounded-full text-xs"
+                >
+                  U
+                </span>
+              </span>
+              <div
+                class="flex flex-col"
+              >
+                <span
+                  class="text-muted-foreground"
+                >
+                  example@example.com
+                </span>
+              </div>
+            </div>
           </td>
           <td
             class="p-4 align-middle [&:has([role=checkbox])]:pr-0"
