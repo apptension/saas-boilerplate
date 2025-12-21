@@ -21,7 +21,7 @@ describe('DemoItem: Component', () => {
     <Routes>
       <Route
         path={getLocalePath(RoutesConfig.demoItem)}
-        element={<DemoItem routesConfig={{ notFound: '/not-found' }} />}
+        element={<DemoItem routesConfig={{ notFound: '/not-found', list: RoutesConfig.demoItems }} />}
       />
     </Routes>
   );
@@ -40,5 +40,17 @@ describe('DemoItem: Component', () => {
     expect(await screen.findByText('First')).toBeInTheDocument();
     expect(screen.getByText('Something more')).toBeInTheDocument();
     expect(screen.getByAltText(imageTitle)).toBeInTheDocument();
+  });
+
+  it('should render back link to content items', async () => {
+    const routerProps = createMockRouterProps(RoutesConfig.demoItem, { id: 'test-id' });
+    const requestMock = fillDemoItemQuery(demoItem, { id: 'test-id' });
+
+    render(<Component />, {
+      apolloMocks: append(requestMock),
+      routerProps,
+    });
+
+    expect(await screen.findByText(/back to content items/i)).toBeInTheDocument();
   });
 });

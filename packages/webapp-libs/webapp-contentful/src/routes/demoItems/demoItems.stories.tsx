@@ -1,3 +1,5 @@
+import { MockedResponse } from '@apollo/client/testing';
+import { GraphQLError } from 'graphql';
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import {
@@ -7,6 +9,7 @@ import {
   fillUseFavouriteDemoItemListQuery,
 } from '../../tests/factories';
 import { withProviders } from '../../utils/storybook';
+import { demoItemsAllQuery } from './demoItems.graphql';
 import { DemoItems } from './demoItems.component';
 
 const data = [demoItemFactory(), demoItemFactory(), demoItemFactory()];
@@ -65,6 +68,55 @@ export const WithFavorited: StoryObj<typeof meta> = {
               : []
           ),
         ]),
+    }),
+  ],
+};
+
+export const Empty: StoryObj<typeof meta> = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) =>
+        defaultMocks.concat([fillDemoItemsAllQuery([]), fillUseFavouriteDemoItemListQuery([])]),
+    }),
+  ],
+};
+
+const networkErrorMock: MockedResponse = {
+  request: {
+    query: demoItemsAllQuery,
+  },
+  error: new Error('Failed to fetch'),
+  variableMatcher: () => true,
+};
+
+export const NotConfigured: StoryObj<typeof meta> = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) => defaultMocks.concat([networkErrorMock, fillUseFavouriteDemoItemListQuery([])]),
+    }),
+  ],
+};
+
+const graphqlErrorMock: MockedResponse = {
+  request: {
+    query: demoItemsAllQuery,
+  },
+  result: {
+    errors: [new GraphQLError('Access token invalid')],
+  },
+  variableMatcher: () => true,
+};
+
+export const WithError: StoryObj<typeof meta> = {
+  render: Template,
+
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) => defaultMocks.concat([graphqlErrorMock, fillUseFavouriteDemoItemListQuery([])]),
     }),
   ],
 };

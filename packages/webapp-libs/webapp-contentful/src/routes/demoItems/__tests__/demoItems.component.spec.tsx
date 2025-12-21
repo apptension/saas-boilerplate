@@ -55,6 +55,31 @@ describe('DemoItems: Component', () => {
     expect(screen.getByText('Second')).toBeInTheDocument();
   });
 
+  it('should render page title and description', async () => {
+    const routerProps = createMockRouterProps(RoutesConfig.demoItems);
+
+    const { waitForApolloMocks } = render(<Component />, {
+      routerProps,
+      apolloMocks: (defaultMocks) => defaultMocks.concat(getApolloMocks()),
+    });
+    await waitForApolloMocks();
+
+    expect(screen.getByRole('heading', { name: /content items/i })).toBeInTheDocument();
+    expect(screen.getByText(/contentful headless cms/i)).toBeInTheDocument();
+  });
+
+  it('should render items in a card with proper header', async () => {
+    const routerProps = createMockRouterProps(RoutesConfig.demoItems);
+
+    const { waitForApolloMocks } = render(<Component />, {
+      routerProps,
+      apolloMocks: (defaultMocks) => defaultMocks.concat(getApolloMocks()),
+    });
+    await waitForApolloMocks();
+
+    expect(screen.getByText(/items managed in contentful cms/i)).toBeInTheDocument();
+  });
+
   it('should open single demo item page when link is clicked', async () => {
     const routerProps = createMockRouterProps(RoutesConfig.demoItems);
 
