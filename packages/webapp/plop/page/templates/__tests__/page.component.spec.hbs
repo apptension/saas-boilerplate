@@ -1,0 +1,22 @@
+import { screen, waitFor } from '@testing-library/react';
+
+import { render } from '../../../tests/utils/rendering';
+import { {{ pascalCase name }} } from '../{{ camelCase name }}.component';
+
+describe('{{ pascalCase name }}: Component', () => {
+  it('should render page title', async () => {
+    render(<{{ pascalCase name }} />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    });
+  });
+
+  it('should render page content card', async () => {
+    render(<{{ pascalCase name }} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/overview/i)).toBeInTheDocument();
+    });
+  });
+});

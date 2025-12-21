@@ -1,27 +1,14 @@
-import { Story } from '@storybook/react';
-import { Route, Routes } from 'react-router';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { RoutesConfig } from '../../../app/config/routes';
-import { withProviders } from '../../../shared/utils/storybook';
-import { createMockRouterProps } from '../../../tests/utils/rendering';
 import { Edit{{ pascalCase name }} } from './edit{{ pascalCase name }}.component';
 
-const routePath = ['{{ camelCase name }}', 'edit'];
-const defaultItemId = 'test-id';
-
-const Template: Story = () => {
-  return (
-    <Routes>
-      <Route path={RoutesConfig.getLocalePath(routePath)} element={<Edit{{ pascalCase name }} />} />
-    </Routes>
-  );
-};
-
-export default {
-  title: '{{ pascalCase name }} / Edit{{ pascalCase name }}',
+const meta: Meta<typeof Edit{{ pascalCase name }}> = {
+  title: 'Routes/{{ pascalCase name }}/Edit{{ pascalCase name }}',
   component: Edit{{ pascalCase name }},
 };
 
-export const Default = Template.bind({});
+export default meta;
 
-Default.decorators = [withProviders({ routerProps: createMockRouterProps(routePath, { id: defaultItemId }) })];
+type Story = StoryObj<typeof Edit{{ pascalCase name }}>;
+
+export const Default: Story = {};

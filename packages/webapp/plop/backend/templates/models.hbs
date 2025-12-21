@@ -1,0 +1,75 @@
+from django.db import models
+{{#if tenantDependent}}
+from apps.multitenancy.models import TenantDependentModelMixin
+{{/if}}
+
+
+class {{ pascalCase name }}({{#if tenantDependent}}TenantDependentModelMixin{{else}}models.Model{{/if}}):
+    """
+    {{ pascalCase name }} model
+    {{#if tenantDependent}}
+    
+    This model is tenant-dependent, meaning each instance belongs to a specific tenant.
+    {{/if}}
+    """
+    
+{{#if hasFields}}
+{{#each fields}}
+{{#if_eq type "string"}}
+    {{ name }} = models.CharField(max_length={{ maxLength }}, {{#unless required}}blank=True, null=True, {{/unless}}verbose_name='{{ label }}')
+{{/if_eq}}
+{{#if_eq type "text"}}
+    {{ name }} = models.TextField({{#unless required}}blank=True, null=True, {{/unless}}verbose_name='{{ label }}')
+{{/if_eq}}
+{{#if_eq type "number"}}
+    {{ name }} = models.IntegerField({{#unless required}}blank=True, null=True, {{/unless}}verbose_name='{{ label }}')
+{{/if_eq}}
+{{#if_eq type "decimal"}}
+    {{ name }} = models.DecimalField(max_digits=10, decimal_places={{ decimalPlaces }}, {{#unless required}}blank=True, null=True, {{/unless}}verbose_name='{{ label }}')
+{{/if_eq}}
+{{#if_eq type "boolean"}}
+    {{ name }} = models.BooleanField(default=False, verbose_name='{{ label }}')
+{{/if_eq}}
+{{#if_eq type "date"}}
+    {{ name }} = models.DateField({{#unless required}}blank=True, null=True, {{/unless}}verbose_name='{{ label }}')
+{{/if_eq}}
+{{#if_eq type "datetime"}}
+    {{ name }} = models.DateTimeField({{#unless required}}blank=True, null=True, {{/unless}}verbose_name='{{ label }}')
+{{/if_eq}}
+{{#if_eq type "email"}}
+    {{ name }} = models.EmailField({{#unless required}}blank=True, null=True, {{/unless}}verbose_name='{{ label }}')
+{{/if_eq}}
+{{#if_eq type "url"}}
+    {{ name }} = models.URLField({{#unless required}}blank=True, null=True, {{/unless}}verbose_name='{{ label }}')
+{{/if_eq}}
+{{#if_eq type "select"}}
+    {{ name }} = models.CharField(
+        max_length=50,
+        choices=[
+{{#each options}}
+            ('{{ this }}', '{{ this }}'),
+{{/each}}
+        ],
+        {{#unless required}}blank=True, null=True, {{/unless}}
+        verbose_name='{{ label }}'
+    )
+{{/if_eq}}
+{{/each}}
+{{else}}
+    name = models.CharField(max_length=255, verbose_name='Name')
+{{/if}}
+
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Created at')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Updated at')
+
+    class Meta:
+        verbose_name = '{{ pascalCase name }}'
+        verbose_name_plural = '{{ pascalCase pluralName }}'
+        ordering = ['-created_at']
+
+    def __str__(self):
+{{#if hasFields}}
+        return str(self.{{ fields.0.name }})
+{{else}}
+        return self.name
+{{/if}}

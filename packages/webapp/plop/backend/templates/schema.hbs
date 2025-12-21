@@ -1,0 +1,135 @@
+import graphene
+from graphene import relay
+from graphene_django import DjangoObjectType
+
+from common.acl import policies
+from common.graphql import mutations
+from common.graphql.acl import AclGraphQLMixin
+from common.graphql.utils import get_hashid_from_string
+{{#if tenantDependent}}
+from apps.multitenancy.models import Tenant
+{{/if}}
+
+from .models import {{ pascalCase name }}
+from .serializers import {{ pascalCase name }}Serializer, Create{{ pascalCase name }}Serializer, Update{{ pascalCase name }}Serializer
+
+
+class {{ pascalCase name }}Type(AclGraphQLMixin, DjangoObjectType):
+    """
+    GraphQL type for {{ pascalCase name }}
+    """
+    
+    class Meta:
+        model = {{ pascalCase name }}
+        interfaces = (relay.Node,)
+        fields = [
+{{#if hasFields}}
+{{#each fields}}
+            '{{ name }}',
+{{/each}}
+{{else}}
+            'name',
+{{/if}}
+            'created_at',
+            'updated_at',
+        ]
+
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        return queryset
+
+
+class {{ pascalCase name }}Connection(graphene.relay.Connection):
+    """
+    Connection type for {{ pascalCase name }} pagination
+    """
+    
+    class Meta:
+        node = {{ pascalCase name }}Type
+
+
+class Create{{ pascalCase name }}Mutation(mutations.CreateModelMutation):
+    """
+    Mutation to create a new {{ pascalCase name }}
+    """
+    
+    class Meta:
+        serializer_class = Create{{ pascalCase name }}Serializer
+        edge_class = {{ pascalCase name }}Connection.Edge
+
+    @classmethod
+    def get_serializer_context(cls, root, info, **input):
+        context = super().get_serializer_context(root, info, **input)
+{{#if tenantDependent}}
+        tenant_id = input.get('tenant_id')
+        if tenant_id:
+            context['tenant'] = Tenant.objects.get(pk=get_hashid_from_string(tenant_id))
+{{/if}}
+        return context
+
+
+class Update{{ pascalCase name }}Mutation(mutations.UpdateModelMutation):
+    """
+    Mutation to update an existing {{ pascalCase name }}
+    """
+    
+    class Meta:
+        serializer_class = Update{{ pascalCase name }}Serializer
+        edge_class = {{ pascalCase name }}Connection.Edge
+
+
+class Delete{{ pascalCase name }}Mutation(mutations.DeleteModelMutation):
+    """
+    Mutation to delete a {{ pascalCase name }}
+    """
+    
+    class Meta:
+        model = {{ pascalCase name }}
+
+
+class Query(graphene.ObjectType):
+    """
+    GraphQL queries for {{ pascalCase name }}
+    """
+    
+    {{ camelCase name }} = graphene.Field(
+        {{ pascalCase name }}Type,
+        id=graphene.ID(required=True),
+{{#if tenantDependent}}
+        tenant_id=graphene.ID(required=True),
+{{/if}}
+    )
+    
+    all_{{ snakeCase pluralName }} = graphene.relay.ConnectionField(
+        {{ pascalCase name }}Connection,
+{{#if tenantDependent}}
+        tenant_id=graphene.ID(required=True),
+{{/if}}
+    )
+
+    @staticmethod
+    def resolve_{{ camelCase name }}(root, info, id{{#if tenantDependent}}, tenant_id{{/if}}):
+        return {{ pascalCase name }}.objects.filter(
+            pk=get_hashid_from_string(id),
+{{#if tenantDependent}}
+            tenant_id=get_hashid_from_string(tenant_id),
+{{/if}}
+        ).first()
+
+    @staticmethod
+    def resolve_all_{{ snakeCase pluralName }}(root, info{{#if tenantDependent}}, tenant_id{{/if}}, **kwargs):
+        return {{ pascalCase name }}.objects.filter(
+{{#if tenantDependent}}
+            tenant_id=get_hashid_from_string(tenant_id),
+{{/if}}
+        ).order_by('-created_at')
+
+
+class Mutation(graphene.ObjectType):
+    """
+    GraphQL mutations for {{ pascalCase name }}
+    """
+    
+    create_{{ snakeCase name }} = Create{{ pascalCase name }}Mutation.Field()
+    update_{{ snakeCase name }} = Update{{ pascalCase name }}Mutation.Field()
+    delete_{{ snakeCase name }} = Delete{{ pascalCase name }}Mutation.Field()

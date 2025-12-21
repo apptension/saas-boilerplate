@@ -1,0 +1,72 @@
+import { useState, useCallback, useMemo } from 'react';
+
+export type {{ hookBaseName }}State = {
+  value: string;
+  isLoading: boolean;
+  error: string | null;
+};
+
+export type Use{{ hookBaseName }}Options = {
+  initialValue?: string;
+};
+
+export type Use{{ hookBaseName }}Return = {
+  state: {{ hookBaseName }}State;
+  setValue: (value: string) => void;
+  setLoading: (isLoading: boolean) => void;
+  setError: (error: string | null) => void;
+  reset: () => void;
+  isValid: boolean;
+};
+
+const initialState: {{ hookBaseName }}State = {
+  value: '',
+  isLoading: false,
+  error: null,
+};
+
+/**
+ * {{ hookName }} - A state management hook
+ *
+ * @example
+ * ```tsx
+ * const { state, setValue, reset, isValid } = {{ hookName }}({ initialValue: 'Hello' });
+ * ```
+ */
+export const {{ hookName }} = (options: Use{{ hookBaseName }}Options = {}): Use{{ hookBaseName }}Return => {
+  const { initialValue = '' } = options;
+
+  const [state, setState] = useState<{{ hookBaseName }}State>({
+    ...initialState,
+    value: initialValue,
+  });
+
+  const setValue = useCallback((value: string) => {
+    setState((prev) => ({ ...prev, value, error: null }));
+  }, []);
+
+  const setLoading = useCallback((isLoading: boolean) => {
+    setState((prev) => ({ ...prev, isLoading }));
+  }, []);
+
+  const setError = useCallback((error: string | null) => {
+    setState((prev) => ({ ...prev, error, isLoading: false }));
+  }, []);
+
+  const reset = useCallback(() => {
+    setState({ ...initialState, value: initialValue });
+  }, [initialValue]);
+
+  const isValid = useMemo(() => {
+    return state.value.length > 0 && !state.error;
+  }, [state.value, state.error]);
+
+  return {
+    state,
+    setValue,
+    setLoading,
+    setError,
+    reset,
+    isValid,
+  };
+};

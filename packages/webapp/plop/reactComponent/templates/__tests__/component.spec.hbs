@@ -1,16 +1,38 @@
-import { render } from '{{ testUtilsPath }}';
+import { screen } from '@testing-library/react';
+
+import { render } from '../../../tests/utils/rendering';
 import { {{ pascalCase name }}{{#if hasProps}}, {{ pascalCase name }}Props{{/if}} } from '../{{ camelCase name }}.component';
 
 describe('{{ pascalCase name }}: Component', () => {
-  {{#if hasProps}}
-  const defaultProps: {{ pascalCase name }}Props = {};
+{{#if hasProps}}
+  const defaultProps: {{ pascalCase name }}Props = {
+    children: 'Test content',
+  };
 
-  const Component = (props: Partial<{{ pascalCase name }}Props>) => <{{ pascalCase name }} {...defaultProps} {...props} />;
-  {{else}}
+  const Component = (props: Partial<{{ pascalCase name }}Props>) => (
+    <{{ pascalCase name }} {...defaultProps} {...props} />
+  );
+{{else}}
   const Component = () => <{{ pascalCase name }} />;
-  {{/if}}
+{{/if}}
 
   it('should render without errors', () => {
     render(<Component />);
-  })
+
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+  });
+
+{{#if hasProps}}
+  it('should render children content', () => {
+    render(<Component>Custom content</Component>);
+
+    expect(screen.getByText('Custom content')).toBeInTheDocument();
+  });
+
+  it('should apply custom className', () => {
+    const { container } = render(<Component className="custom-class" />);
+
+    expect(container.firstChild).toHaveClass('custom-class');
+  });
+{{/if}}
 });

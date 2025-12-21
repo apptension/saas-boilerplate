@@ -1,0 +1,63 @@
+import { useCallback, useRef } from 'react';
+
+export type Use{{ hookBaseName }}Options<T> = {
+  onExecute?: (args: T) => void;
+  onComplete?: (result: unknown) => void;
+  onError?: (error: Error) => void;
+};
+
+export type Use{{ hookBaseName }}Return<T> = {
+  execute: (args: T) => Promise<void>;
+  isExecuting: boolean;
+  lastError: Error | null;
+};
+
+/**
+ * {{ hookName }} - A hook for memoized callback functions
+ *
+ * @example
+ * ```tsx
+ * const { execute, isExecuting } = {{ hookName }}({
+ *   onComplete: (result) => console.log('Completed:', result),
+ * });
+ *
+ * const handleClick = () => execute({ id: '123' });
+ * ```
+ */
+export const {{ hookName }} = <T = unknown>(
+  options: Use{{ hookBaseName }}Options<T> = {}
+): Use{{ hookBaseName }}Return<T> => {
+  const { onExecute, onComplete, onError } = options;
+
+  const isExecutingRef = useRef(false);
+  const lastErrorRef = useRef<Error | null>(null);
+
+  const execute = useCallback(
+    async (args: T) => {
+      if (isExecutingRef.current) return;
+
+      isExecutingRef.current = true;
+      lastErrorRef.current = null;
+      onExecute?.(args);
+
+      try {
+        // TODO: Replace with your actual operation
+        const result = await Promise.resolve(args);
+        onComplete?.(result);
+      } catch (err) {
+        const error = err instanceof Error ? err : new Error('Unknown error');
+        lastErrorRef.current = error;
+        onError?.(error);
+      } finally {
+        isExecutingRef.current = false;
+      }
+    },
+    [onExecute, onComplete, onError]
+  );
+
+  return {
+    execute,
+    isExecuting: isExecutingRef.current,
+    lastError: lastErrorRef.current,
+  };
+};

@@ -1,18 +1,26 @@
 {{#if hasProps}}
 import { ReactNode } from 'react';
 {{/if}}
+import { cn } from '@sb/webapp-core/lib/utils';
 import { FormattedMessage } from 'react-intl';
 
 {{#if hasProps}}
 export type {{ pascalCase name }}Props = {
   children?: ReactNode;
-}
+  className?: string;
+};
 {{/if}}
 
-export const {{ pascalCase name }} = ({{#if hasProps}}{ children }: {{ pascalCase name }}Props{{/if}}) => {
+export const {{ pascalCase name }} = ({{#if hasProps}}{ children, className }: {{ pascalCase name }}Props{{/if}}) => {
   return (
-    <div>
-      <h1><FormattedMessage defaultMessage="{{ pascalCase name }} component" id="{{ pascalCase name }} / message" /></h1>
+    <div{{#if hasProps}} className={cn('', className)}{{/if}}>
+      <h1>
+        <FormattedMessage
+          defaultMessage="{{ pascalCase name }} component"
+          id="{{ pascalCase name }} / Title"
+        />
+      </h1>
+      {{#if hasProps}}{children}{{/if}}
     </div>
   );
 };

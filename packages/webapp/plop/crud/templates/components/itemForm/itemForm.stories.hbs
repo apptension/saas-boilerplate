@@ -1,23 +1,32 @@
-import { Story } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { withProviders } from '../../../shared/utils/storybook';
-import { {{ pascalCase name }}Form, {{ pascalCase name }}FormProps } from './{{ camelCase name }}Form.component';
+import { {{ pascalCase name }}Form } from './{{ camelCase name }}Form.component';
 
-const Template: Story<{{ pascalCase name }}FormProps> = (args) => <{{ pascalCase name }}Form {...args} />;
-
-export default {
-  title: '{{ pascalCase name }} / {{ pascalCase name }}Form',
+const meta: Meta<typeof {{ pascalCase name }}Form> = {
+  title: 'Routes/{{ pascalCase name }}/{{ pascalCase name }}Form',
   component: {{ pascalCase name }}Form,
-};
-
-export const WithInitialData = Template.bind({});
-WithInitialData.args = {
-  initialData: {
-    name: 'initial name',
+  args: {
+    onSubmit: () => {},
+    loading: false,
   },
 };
-WithInitialData.decorators = [withProviders({})];
 
-export const WithoutData = Template.bind({});
-WithoutData.args = {};
-WithoutData.decorators = [withProviders({})];
+export default meta;
+
+type Story = StoryObj<typeof {{ pascalCase name }}Form>;
+
+export const Default: Story = {};
+
+export const WithInitialData: Story = {
+  args: {
+    initialData: {
+      name: 'Example Item Name',
+    },
+  },
+};
+
+export const Loading: Story = {
+  args: {
+    loading: true,
+  },
+};

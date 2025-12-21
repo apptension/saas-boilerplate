@@ -1,8 +1,0 @@
-export interface {{ pascalCase name }} {
-  id: string;
-  name: string;
-}
-
-export type {{ pascalCase name }}ApiGetResponseData = {{ pascalCase name }};
-export type {{ pascalCase name }}ApiPostRequestData = Omit<{{ pascalCase name }}, 'id'>;
-export type {{ pascalCase name }}ApiPutRequestData = {{ pascalCase name }};

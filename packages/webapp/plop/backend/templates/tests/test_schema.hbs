@@ -1,0 +1,183 @@
+import pytest
+from graphql_relay import to_global_id
+
+from common.tests.utils import ApiClient
+{{#if tenantDependent}}
+from apps.multitenancy.tests.factories import TenantFactory, TenantMembershipFactory
+{{/if}}
+
+from .factories import {{ pascalCase name }}Factory
+
+
+pytestmark = pytest.mark.django_db
+
+
+class TestAll{{ pascalCase pluralName }}Query:
+    """
+    Tests for all{{ pascalCase pluralName }} query
+    """
+
+    ALL_{{ constantCase pluralName }}_QUERY = '''
+        query All{{ pascalCase pluralName }}Query({{#if tenantDependent}}$tenantId: ID!, {{/if}}$first: Int) {
+            all{{ pascalCase pluralName }}({{#if tenantDependent}}tenantId: $tenantId, {{/if}}first: $first) {
+                edges {
+                    node {
+                        id
+{{#if hasFields}}
+{{#each fields}}
+                        {{ name }}
+{{/each}}
+{{else}}
+                        name
+{{/if}}
+                    }
+                }
+            }
+        }
+    '''
+
+    def test_returns_{{ snakeCase pluralName }}_for_tenant(self, api_client: ApiClient):
+{{#if tenantDependent}}
+        tenant = TenantFactory()
+        TenantMembershipFactory(user=api_client.user, tenant=tenant)
+        {{ camelCase name }}1 = {{ pascalCase name }}Factory(tenant=tenant)
+        {{ camelCase name }}2 = {{ pascalCase name }}Factory(tenant=tenant)
+        other_tenant = TenantFactory()
+        {{ pascalCase name }}Factory(tenant=other_tenant)  # Should not be returned
+{{else}}
+        {{ camelCase name }}1 = {{ pascalCase name }}Factory()
+        {{ camelCase name }}2 = {{ pascalCase name }}Factory()
+{{/if}}
+
+        response = api_client.post_graphql(
+            self.ALL_{{ constantCase pluralName }}_QUERY,
+            {
+{{#if tenantDependent}}
+                'tenantId': to_global_id('TenantType', tenant.id),
+{{/if}}
+                'first': 10,
+            },
+        )
+
+        edges = response['data']['all{{ pascalCase pluralName }}']['edges']
+        assert len(edges) == 2
+        ids = [edge['node']['id'] for edge in edges]
+        assert to_global_id('{{ pascalCase name }}Type', {{ camelCase name }}1.id) in ids
+        assert to_global_id('{{ pascalCase name }}Type', {{ camelCase name }}2.id) in ids
+
+
+class TestCreate{{ pascalCase name }}Mutation:
+    """
+    Tests for create{{ pascalCase name }} mutation
+    """
+
+    CREATE_{{ constantCase name }}_MUTATION = '''
+        mutation Create{{ pascalCase name }}Mutation($input: Create{{ pascalCase name }}MutationInput!) {
+            create{{ pascalCase name }}(input: $input) {
+                {{ camelCase name }}Edge {
+                    node {
+                        id
+{{#if hasFields}}
+{{#each fields}}
+                        {{ name }}
+{{/each}}
+{{else}}
+                        name
+{{/if}}
+                    }
+                }
+            }
+        }
+    '''
+
+    def test_creates_{{ snakeCase name }}(self, api_client: ApiClient):
+{{#if tenantDependent}}
+        tenant = TenantFactory()
+        TenantMembershipFactory(user=api_client.user, tenant=tenant)
+{{/if}}
+
+        response = api_client.post_graphql(
+            self.CREATE_{{ constantCase name }}_MUTATION,
+            {
+                'input': {
+{{#if tenantDependent}}
+                    'tenantId': to_global_id('TenantType', tenant.id),
+{{/if}}
+{{#if hasFields}}
+{{#each fields}}
+{{#if required}}
+{{#if_eq type "string"}}
+                    '{{ name }}': 'Test {{ name }}',
+{{/if_eq}}
+{{#if_eq type "number"}}
+                    '{{ name }}': 100,
+{{/if_eq}}
+{{#if_eq type "boolean"}}
+                    '{{ name }}': True,
+{{/if_eq}}
+{{/if}}
+{{/each}}
+{{else}}
+                    'name': 'Test {{ pascalCase name }}',
+{{/if}}
+                },
+            },
+        )
+
+        node = response['data']['create{{ pascalCase name }}']['{{ camelCase name }}Edge']['node']
+        assert node['id'] is not None
+{{#if hasFields}}
+{{#each fields}}
+{{#if required}}
+{{#if_eq type "string"}}
+        assert node['{{ name }}'] == 'Test {{ name }}'
+{{/if_eq}}
+{{#if_eq type "number"}}
+        assert node['{{ name }}'] == 100
+{{/if_eq}}
+{{#if_eq type "boolean"}}
+        assert node['{{ name }}'] is True
+{{/if_eq}}
+{{/if}}
+{{/each}}
+{{else}}
+        assert node['name'] == 'Test {{ pascalCase name }}'
+{{/if}}
+
+
+class TestDelete{{ pascalCase name }}Mutation:
+    """
+    Tests for delete{{ pascalCase name }} mutation
+    """
+
+    DELETE_{{ constantCase name }}_MUTATION = '''
+        mutation Delete{{ pascalCase name }}Mutation($input: Delete{{ pascalCase name }}MutationInput!) {
+            delete{{ pascalCase name }}(input: $input) {
+                deletedIds
+            }
+        }
+    '''
+
+    def test_deletes_{{ snakeCase name }}(self, api_client: ApiClient):
+{{#if tenantDependent}}
+        tenant = TenantFactory()
+        TenantMembershipFactory(user=api_client.user, tenant=tenant)
+        {{ camelCase name }} = {{ pascalCase name }}Factory(tenant=tenant)
+{{else}}
+        {{ camelCase name }} = {{ pascalCase name }}Factory()
+{{/if}}
+
+        response = api_client.post_graphql(
+            self.DELETE_{{ constantCase name }}_MUTATION,
+            {
+                'input': {
+                    'id': to_global_id('{{ pascalCase name }}Type', {{ camelCase name }}.id),
+{{#if tenantDependent}}
+                    'tenantId': to_global_id('TenantType', tenant.id),
+{{/if}}
+                },
+            },
+        )
+
+        deleted_ids = response['data']['delete{{ pascalCase name }}']['deletedIds']
+        assert to_global_id('{{ pascalCase name }}Type', {{ camelCase name }}.id) in deleted_ids

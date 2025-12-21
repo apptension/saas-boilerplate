@@ -1,8 +1,8 @@
 import { gql } from '@sb/webapp-api-client/graphql';
 
 export const {{ camelCase name }}DetailsQuery = gql(/* GraphQL */ `
-  query {{ camelCase name }}DetailsQuery($id: ID!) {
-    {{ camelCase name }}(id: $id) {
+  query {{ pascalCase name }}DetailsQuery($id: ID!, $tenantId: ID!) {
+    {{ camelCase name }}(id: $id, tenantId: $tenantId) {
       id
       name
     }

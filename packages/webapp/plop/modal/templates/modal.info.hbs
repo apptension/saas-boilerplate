@@ -1,0 +1,58 @@
+import { Button } from '@sb/webapp-core/components/buttons';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@sb/webapp-core/components/ui/dialog';
+import { FormattedMessage } from 'react-intl';
+
+export type {{ pascalCase name }}ModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
+  children?: React.ReactNode;
+};
+
+export const {{ pascalCase name }}Modal = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+}: {{ pascalCase name }}ModalProps) => {
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>
+            {title ?? (
+              <FormattedMessage
+                defaultMessage="{{ modalTitle }}"
+                id="{{ pascalCase name }}Modal / Title"
+              />
+            )}
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="py-4">
+          {children ?? (
+            <DialogDescription>
+              <FormattedMessage
+                defaultMessage="Your content goes here. You can pass any React nodes as children to customize this modal."
+                id="{{ pascalCase name }}Modal / Default content"
+              />
+            </DialogDescription>
+          )}
+        </div>
+
+        <DialogFooter>
+          <Button onClick={onClose}>
+            <FormattedMessage defaultMessage="Close" id="{{ pascalCase name }}Modal / Close" />
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};

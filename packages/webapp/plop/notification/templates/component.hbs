@@ -1,27 +1,33 @@
-import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { Notification, NotificationType } from '@sb/webapp-notifications';
+import { Bell } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
-import { useNavigate } from 'react-router-dom';
 
-import { RoutesConfig } from '../../../../app/config/routes';
+export type {{ pascalCase name }}Props = {
+  id: string;
+  data?: Record<string, unknown>;
+};
 
-export type {{ pascalCase name }}Props = NotificationType<{
-  exampleDataProp: string;
-}>;
-
-export const {{ pascalCase name }} = ({ data, ...restProps }: {{ pascalCase name }}Props) => {
-  const generateLocalePath = useGenerateLocalePath();
-  const navigate = useNavigate();
-
+export const {{ pascalCase name }} = ({ id, data }: {{ pascalCase name }}Props) => {
   return (
-    <Notification
-      {...restProps}
-      onClick={() => {
-        const route = generateLocalePath(RoutesConfig.home, {});
-        navigate(route);
-      }}
-      title={<FormattedMessage defaultMessage="Title" id="Notifications / {{ pascalCase name }} / Title" />}
-      content={<FormattedMessage defaultMessage="Content" id="Notifications / {{ pascalCase name }} / Content" />}
-    />
+    <div className="flex items-start gap-3 p-4">
+      <div className="flex-shrink-0">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+          <Bell className="h-5 w-5 text-primary" />
+        </div>
+      </div>
+      <div className="flex-1 space-y-1">
+        <p className="text-sm font-medium">
+          <FormattedMessage
+            defaultMessage="{{ pascalCase name }} notification"
+            id="{{ pascalCase name }} / Title"
+          />
+        </p>
+        <p className="text-sm text-muted-foreground">
+          <FormattedMessage
+            defaultMessage="Your notification content goes here"
+            id="{{ pascalCase name }} / Description"
+          />
+        </p>
+      </div>
+    </div>
   );
 };

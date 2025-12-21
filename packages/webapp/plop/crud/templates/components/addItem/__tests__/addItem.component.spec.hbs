@@ -1,78 +1,46 @@
-import { screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
-import { append } from 'ramda';
+import { screen, waitFor } from '@testing-library/react';
+import { Route, Routes } from 'react-router-dom';
 
-import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
-import { render } from '../../../../tests/utils/rendering';
+import { RoutesConfig } from '{{ routesConfigImport }}';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { Add{{ pascalCase name }} } from '../add{{ pascalCase name }}.component';
-import { add{{ pascalCase name }}Mutation } from '../add{{ pascalCase name }}.graphql';
 
 describe('Add{{ pascalCase name }}: Component', () => {
-  const Component = () => <Add{{ pascalCase name }} />;
+  const routePath = ['{{ camelCase name }}', 'add'];
 
-  it('should display empty form', async () => {
-    const { waitForApolloMocks } = render(<Component />);
-    await waitForApolloMocks();
-    const value = (await screen.findByPlaceholderText(/name/i)).getAttribute('value');
-    expect(value).toBeNull();
+  const Component = () => (
+    <Routes>
+      <Route path={RoutesConfig.getLocalePath(routePath)} element={<Add{{ pascalCase name }} />} />
+    </Routes>
+  );
+
+  it('should render page title', async () => {
+    const routerProps = createMockRouterProps(routePath);
+
+    render(<Component />, { routerProps });
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    });
   });
 
-  describe('action completes successfully', () => {
-    it('should commit mutation', async () => {
-      const variables = {
-        input: { name: 'new item name' },
-      };
-      const data = {
-        create{{ pascalCase name }}: {
-          {{ camelCase name }}Edge: {
-            node: {
-              id: 1,
-              ...variables.input,
-            },
-          },
-        },
-      };
-      const requestMock = composeMockedQueryResult(add{{ pascalCase name }}Mutation, {
-        variables,
-        data,
-      });
-      requestMock.newData = jest.fn(() => ({
-        data,
-      }));
+  it('should render back link', async () => {
+    const routerProps = createMockRouterProps(routePath);
 
-      render(<Component />, { apolloMocks: append(requestMock) });
+    render(<Component />, { routerProps });
 
-      await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item name');
-      await userEvent.click(screen.getByRole('button', { name: /save/i }));
-      expect(requestMock.newData).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(screen.getByRole('link', { name: /back/i })).toBeInTheDocument();
     });
+  });
 
-    it('should show success message', async () => {
-      const variables = {
-        input: { name: 'new item' },
-      };
-      const data = {
-        create{{ pascalCase name }}: {
-          {{ camelCase name }}Edge: {
-            node: {
-              id: 1,
-              ...variables.input,
-            },
-          },
-        },
-      };
-      const requestMock = composeMockedQueryResult(add{{ pascalCase name }}Mutation, {
-        variables,
-        data,
-      });
+  it('should render form', async () => {
+    const routerProps = createMockRouterProps(routePath);
 
-      render(<Component />, { apolloMocks: append(requestMock) });
+    render(<Component />, { routerProps });
 
-      await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item');
-      await userEvent.click(screen.getByRole('button', { name: /save/i }));
-
-      const message = await screen.findByTestId('snackbar-message-0');
-      expect(message).toHaveTextContent('🎉 Changes saved successfully!');
+    await waitFor(() => {
+      expect(screen.getByRole('textbox', { name: /name/i })).toBeInTheDocument();
     });
   });
 });

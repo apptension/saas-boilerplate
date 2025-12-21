@@ -1,0 +1,24 @@
+import { gql } from '@sb/webapp-api-client/graphql';
+
+/**
+ * Query to fetch {{ pascalCase name }} data
+ */
+export const {{ camelCase name }}Query = gql(/* GraphQL */ `
+  query {{ pascalCase name }}Query($id: ID!, $tenantId: ID!) {
+    # TODO: Replace with your actual query
+    example(id: $id, tenantId: $tenantId) {
+      id
+      name
+    }
+  }
+`);
+
+/**
+ * Fragment for {{ pascalCase name }} data
+ */
+export const {{ camelCase name }}Fragment = gql(/* GraphQL */ `
+  fragment {{ camelCase name }}Fragment on ExampleType {
+    id
+    name
+  }
+`);

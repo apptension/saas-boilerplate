@@ -1,0 +1,56 @@
+import factory
+{{#if tenantDependent}}
+from apps.multitenancy.tests.factories import TenantFactory
+{{/if}}
+
+from ..models import {{ pascalCase name }}
+
+
+class {{ pascalCase name }}Factory(factory.django.DjangoModelFactory):
+    """
+    Factory for creating {{ pascalCase name }} instances in tests
+    """
+    
+    class Meta:
+        model = {{ pascalCase name }}
+
+{{#if hasFields}}
+{{#each fields}}
+{{#if_eq type "string"}}
+    {{ name }} = factory.Faker('text', max_nb_chars={{ maxLength }})
+{{/if_eq}}
+{{#if_eq type "text"}}
+    {{ name }} = factory.Faker('paragraph')
+{{/if_eq}}
+{{#if_eq type "number"}}
+    {{ name }} = factory.Faker('pyint', min_value=0, max_value=1000)
+{{/if_eq}}
+{{#if_eq type "decimal"}}
+    {{ name }} = factory.Faker('pydecimal', left_digits=5, right_digits={{ decimalPlaces }}, positive=True)
+{{/if_eq}}
+{{#if_eq type "boolean"}}
+    {{ name }} = factory.Faker('boolean')
+{{/if_eq}}
+{{#if_eq type "date"}}
+    {{ name }} = factory.Faker('date_object')
+{{/if_eq}}
+{{#if_eq type "datetime"}}
+    {{ name }} = factory.Faker('date_time')
+{{/if_eq}}
+{{#if_eq type "email"}}
+    {{ name }} = factory.Faker('email')
+{{/if_eq}}
+{{#if_eq type "url"}}
+    {{ name }} = factory.Faker('url')
+{{/if_eq}}
+{{#if_eq type "select"}}
+    {{ name }} = factory.Faker('random_element', elements=[{{#each options}}'{{ this }}', {{/each}}])
+{{/if_eq}}
+{{/each}}
+{{else}}
+    name = factory.Faker('text', max_nb_chars=100)
+{{/if}}
+
+{{#if tenantDependent}}
+    tenant = factory.SubFactory(TenantFactory)
+{{/if}}

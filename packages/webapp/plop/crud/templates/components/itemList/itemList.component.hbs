@@ -2,8 +2,8 @@ import { {{ pascalCase name }}ListQueryQuery, getFragmentData, gql, pageCursorsF
 import { usePagedPaginatedQuery } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Paragraph } from '@sb/webapp-core/components/typography';
 import { TableFooter } from '@sb/webapp-core/components/table';
+import { Paragraph } from '@sb/webapp-core/components/typography';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
@@ -12,13 +12,13 @@ import { Database, Plus } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { RoutesConfig } from '../../../app/config/routes';
-import { {{ pascalCase name }}ListItem } from './{{ pascalCase name }}ListItem';
+import { RoutesConfig } from '{{ routesConfigImport }}';
+import { {{ pascalCase name }}ListItem } from './{{ camelCase name }}ListItem';
 import { ListSkeleton } from './listSkeleton';
 
-export const {{ pascalCase name }}ListQuery = gql(/* GraphQL */ `
-  query {{ camelCase name }}ListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {
-    all{{ pascalCase name }}s(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {
+export const {{ camelCase name }}ListQuery = gql(/* GraphQL */ `
+  query {{ pascalCase name }}ListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {
+    all{{ pascalCase pluralName }}(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {
       edges {
         node {
           id
@@ -46,28 +46,28 @@ export const {{ pascalCase name }}List = () => {
     {{ pascalCase name }}ListQueryQuery,
     { tenantId: string } & Omit<{{ pascalCase name }}ListSearchParams, 'cursor'>,
     {{ pascalCase name }}ListSearchParams,
-    typeof {{ pascalCase name }}ListQuery
-  >({{ pascalCase name }}ListQuery, {
+    typeof {{ camelCase name }}ListQuery
+  >({{ camelCase name }}ListQuery, {
     hookOptions: {
       variables: {
         tenantId: currentTenant?.id ?? '',
       },
       skip: !currentTenant,
     },
-    dataKey: 'all{{ pascalCase name }}s',
+    dataKey: 'all{{ pascalCase pluralName }}',
   });
-  const pageCursors = getFragmentData(pageCursorsFragment, data?.all{{ pascalCase name }}s?.pageCursors);
+  const pageCursors = getFragmentData(pageCursorsFragment, data?.all{{ pascalCase pluralName }}?.pageCursors);
 
   const renderList = () => {
     if (data) {
-      if (data.all{{ pascalCase name }}s && data.all{{ pascalCase name }}s.edges.length <= 0) return renderEmptyList();
+      if (data.all{{ pascalCase pluralName }} && data.all{{ pascalCase pluralName }}.edges.length <= 0) return renderEmptyList();
 
       return (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Database className="h-5 w-5" />
-              <FormattedMessage id="{{ pascalCase name }}List / Items title" defaultMessage="Items" />
+              <FormattedMessage id="{{ pascalCase name }}List / Items title" defaultMessage="{{ pascalCase name }} Items" />
             </CardTitle>
             <CardDescription>
               <FormattedMessage
@@ -82,7 +82,7 @@ export const {{ pascalCase name }}List = () => {
                 (node) => (
                   <{{ pascalCase name }}ListItem item={node} key={node.id} />
                 ),
-                data.all{{ pascalCase name }}s
+                data.all{{ pascalCase pluralName }}
               )}
             </ul>
           </CardContent>
@@ -104,7 +104,7 @@ export const {{ pascalCase name }}List = () => {
             <p className="text-sm text-muted-foreground mb-4">
               <FormattedMessage
                 id="{{ pascalCase name }}List / Empty description"
-                defaultMessage="Get started by creating your first item"
+                defaultMessage="Get started by creating your first {{ pascalCase name }} item"
               />
             </p>
             <Link
@@ -165,10 +165,10 @@ export const {{ pascalCase name }}List = () => {
         ) : (
           <>
             {renderList()}
-            {data?.all{{ pascalCase name }}s && data.all{{ pascalCase name }}s.edges.length > 0 && (
+            {data?.all{{ pascalCase pluralName }} && data.all{{ pascalCase pluralName }}.edges.length > 0 && (
               <TableFooter
                 pageSize={pageSize}
-                pagination={{
+                pagination=\{{
                   around: pageCursors?.around,
                   first: pageCursors?.first,
                   last: pageCursors?.last,

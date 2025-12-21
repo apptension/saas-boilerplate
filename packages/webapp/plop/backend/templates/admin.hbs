@@ -1,0 +1,51 @@
+from django.contrib import admin
+
+from .models import {{ pascalCase name }}
+
+
+@admin.register({{ pascalCase name }})
+class {{ pascalCase name }}Admin(admin.ModelAdmin):
+    """
+    Django admin configuration for {{ pascalCase name }}
+    """
+    
+    list_display = [
+{{#if hasFields}}
+{{#each fields}}
+        '{{ name }}',
+{{/each}}
+{{else}}
+        'name',
+{{/if}}
+{{#if tenantDependent}}
+        'tenant',
+{{/if}}
+        'created_at',
+        'updated_at',
+    ]
+    
+    list_filter = [
+{{#if tenantDependent}}
+        'tenant',
+{{/if}}
+        'created_at',
+    ]
+    
+    search_fields = [
+{{#if hasFields}}
+{{#each fields}}
+{{#if_eq type "string"}}
+        '{{ name }}',
+{{/if_eq}}
+{{#if_eq type "text"}}
+        '{{ name }}',
+{{/if_eq}}
+{{/each}}
+{{else}}
+        'name',
+{{/if}}
+    ]
+    
+    readonly_fields = ['created_at', 'updated_at']
+    
+    ordering = ['-created_at']

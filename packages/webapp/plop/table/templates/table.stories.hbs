@@ -1,0 +1,70 @@
+import type { Meta, StoryObj } from '@storybook/react';
+
+import { {{ pascalCase name }}Table, {{ pascalCase name }}Item } from './{{ camelCase name }}Table.component';
+
+const mockData: {{ pascalCase name }}Item[] = [
+{{#if hasFields}}
+  {
+    id: '1',
+{{#each fields}}
+    {{ name }}: {{#if_eq type "string"}}'Example 1'{{else}}{{#if_eq type "number"}}100{{else}}{{#if_eq type "boolean"}}true{{else}}'Value 1'{{/if_eq}}{{/if_eq}}{{/if_eq}},
+{{/each}}
+  },
+  {
+    id: '2',
+{{#each fields}}
+    {{ name }}: {{#if_eq type "string"}}'Example 2'{{else}}{{#if_eq type "number"}}200{{else}}{{#if_eq type "boolean"}}false{{else}}'Value 2'{{/if_eq}}{{/if_eq}}{{/if_eq}},
+{{/each}}
+  },
+{{else}}
+  { id: '1', name: 'First Item', createdAt: '2024-01-15' },
+  { id: '2', name: 'Second Item', createdAt: '2024-01-16' },
+  { id: '3', name: 'Third Item', createdAt: '2024-01-17' },
+{{/if}}
+];
+
+const meta: Meta<typeof {{ pascalCase name }}Table> = {
+  title: 'Tables/{{ pascalCase name }}Table',
+  component: {{ pascalCase name }}Table,
+  args: {
+    data: mockData,
+    loading: false,
+  },
+};
+
+export default meta;
+
+type Story = StoryObj<typeof {{ pascalCase name }}Table>;
+
+export const Default: Story = {};
+
+export const Loading: Story = {
+  args: {
+    loading: true,
+  },
+};
+
+export const Empty: Story = {
+  args: {
+    data: [],
+  },
+};
+
+{{#if withRowActions}}
+export const WithActions: Story = {
+  args: {
+    onEdit: (item) => console.log('Edit:', item),
+    onDelete: (item) => console.log('Delete:', item),
+  },
+};
+{{/if}}
+
+{{#if withPagination}}
+export const WithPagination: Story = {
+  args: {
+    totalPages: 5,
+    currentPage: 2,
+    onPageChange: (page) => console.log('Page:', page),
+  },
+};
+{{/if}}

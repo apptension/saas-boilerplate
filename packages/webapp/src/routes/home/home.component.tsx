@@ -222,10 +222,10 @@ export const Home = () => {
                       })}
                     </p>
                     <div className="space-y-1">
-                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm run plop</code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm plop</code>
                       <p className="text-xs text-muted-foreground">
                         {intl.formatMessage({
-                          defaultMessage: 'Generate components, CRUD modules, hooks, emails, and more',
+                          defaultMessage: 'Generate components, CRUD modules, hooks, emails, and more (run from packages/webapp)',
                           id: 'Home / Development Commands / Plop Description',
                         })}
                       </p>
@@ -256,8 +256,8 @@ export const Home = () => {
                     </p>
                     <div className="space-y-1">
                       <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm saas backend test</code>
-                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm run test</code>
-                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm run lint</code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm saas test</code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm saas lint</code>
                     </div>
                   </div>
 
@@ -269,7 +269,9 @@ export const Home = () => {
                       })}
                     </p>
                     <div className="space-y-1">
-                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">pnpm run storybook</code>
+                      <code className="block rounded-md bg-muted px-3 py-2 text-sm">
+                        pnpm nx run webapp:storybook
+                      </code>
                       <p className="text-xs text-muted-foreground">
                         {intl.formatMessage({
                           defaultMessage: 'Run Storybook on port 5002',

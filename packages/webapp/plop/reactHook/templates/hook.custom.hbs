@@ -1,0 +1,23 @@
+export type Use{{ hookBaseName }}Options = {
+  // Add your options here
+};
+
+export type Use{{ hookBaseName }}Return = {
+  // Add your return type here
+};
+
+/**
+ * {{ hookName }} - Custom hook
+ *
+ * @example
+ * ```tsx
+ * const result = {{ hookName }}();
+ * ```
+ */
+export const {{ hookName }} = (options: Use{{ hookBaseName }}Options = {}): Use{{ hookBaseName }}Return => {
+  // TODO: Implement your hook logic
+
+  return {
+    // Return your hook values
+  };
+};

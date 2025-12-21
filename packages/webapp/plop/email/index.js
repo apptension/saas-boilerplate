@@ -7,12 +7,19 @@ module.exports = (plop) => {
   const templates = path.join(emailsNamespace, 'templates', '{{ camelCase name }}');
 
   plop.setGenerator('email', {
-    description: 'Generate an email',
+    description: 'Generate an email template',
     prompts: [
       {
-        type: 'name',
+        type: 'input',
         name: 'name',
-        message: 'Name:',
+        message: 'Email template name (e.g., "WelcomeEmail", "PasswordReset"):',
+        validate: plop.validators.required,
+      },
+      {
+        type: 'input',
+        name: 'subject',
+        message: 'Email subject line:',
+        default: (answers) => `{{ pascalCase name }} - Your Subject Here`,
       },
     ],
     actions: [
@@ -48,6 +55,23 @@ module.exports = (plop) => {
         path: `${emailsNamespace}/templates/templates.config.ts`,
         pattern: /(\/\/<-- INJECT EMAIL TEMPLATE -->)/g,
         template: '[EmailTemplateType.{{ constantCase name }}]: {{ pascalCase name }},\n  $1',
+      },
+      {
+        type: 'logSuccess',
+        message: `
+✅ Email template "{{ pascalCase name }}" created successfully!
+
+📁 Created files:
+   - ${templates}/index.ts
+   - ${templates}/{{ camelCase name }}.component.tsx
+   - ${templates}/{{ camelCase name }}.stories.tsx
+
+🔧 Next steps:
+   1. The email type was added to webapp-emails/src/types.ts
+   2. The template was registered in webapp-emails/src/templates/templates.config.ts
+   3. Customize the email content and styling
+   4. Test the email using Storybook
+`,
       },
     ],
   });

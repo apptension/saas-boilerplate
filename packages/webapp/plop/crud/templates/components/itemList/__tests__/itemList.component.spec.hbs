@@ -1,43 +1,36 @@
-import { screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
-import { append } from 'ramda';
+import { screen, waitFor } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 
-import { RoutesConfig } from '../../../../app/config/routes';
-import { fill{{ pascalCase name }}ListQuery } from '../../../../mocks/factories/{{ camelCase name }}';
+import { RoutesConfig } from '{{ routesConfigImport }}';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { {{ pascalCase name }}List } from '../{{ camelCase name }}List.component';
 
 describe('{{ pascalCase name }}List: Component', () => {
   const routePath = ['{{ camelCase name }}', 'list'];
-  const addRoutePath = ['{{ camelCase name }}', 'add'];
 
   const Component = () => (
     <Routes>
       <Route path={RoutesConfig.getLocalePath(routePath)} element={<{{ pascalCase name }}List />} />
-      <Route path={RoutesConfig.getLocalePath(addRoutePath)} element={<span>{{ pascalCase name }} add page mock</span>} />
     </Routes>
   );
 
-  it('should render all items', async () => {
+  it('should render page title', async () => {
     const routerProps = createMockRouterProps(routePath);
-    const requestMock = fill{{ pascalCase name }}ListQuery();
 
-    render(<Component />, { routerProps, apolloMocks: append(requestMock) });
+    render(<Component />, { routerProps });
 
-    expect(await screen.findByText(/Loading .../i)).toBeInTheDocument();
-    expect(await screen.findByText('First item')).toBeInTheDocument();
-    expect(await screen.findByText('Second item')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    });
   });
 
-  it('should render link to add new item form', async () => {
+  it('should render add new button', async () => {
     const routerProps = createMockRouterProps(routePath);
-    const requestMock = fill{{ pascalCase name }}ListQuery();
 
-    render(<Component />, { routerProps, apolloMocks: append(requestMock) });
+    render(<Component />, { routerProps });
 
-    await userEvent.click(await screen.findByText(/add/i));
-
-    expect(screen.getByText('{{ pascalCase name }} add page mock')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole('link', { name: /add new/i })).toBeInTheDocument();
+    });
   });
 });

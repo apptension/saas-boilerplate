@@ -1,0 +1,29 @@
+import { useState, useCallback } from 'react';
+
+type Use{{ pascalCase name }}Options = {
+  initialValue?: string;
+};
+
+type Use{{ pascalCase name }}Return = {
+  value: string;
+  setValue: (value: string) => void;
+  reset: () => void;
+};
+
+/**
+ * Custom hook for {{ pascalCase name }} component logic
+ */
+export const use{{ pascalCase name }} = (options: Use{{ pascalCase name }}Options = {}): Use{{ pascalCase name }}Return => {
+  const { initialValue = '' } = options;
+  const [value, setValue] = useState(initialValue);
+
+  const reset = useCallback(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  return {
+    value,
+    setValue,
+    reset,
+  };
+};

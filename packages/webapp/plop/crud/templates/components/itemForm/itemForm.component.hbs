@@ -4,8 +4,8 @@ import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/c
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { RoutesConfig } from '../../../app/config/routes';
-import { use{{ pascalCase name }}Form } from './{{ pascalCase name }}Form.hook';
+import { RoutesConfig } from '{{ routesConfigImport }}';
+import { use{{ pascalCase name }}Form } from './{{ camelCase name }}Form.hook';
 
 const MAX_NAME_LENGTH = 255;
 

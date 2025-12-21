@@ -1,0 +1,66 @@
+import { Button } from '@sb/webapp-core/components/buttons';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@sb/webapp-core/components/ui/dialog';
+import { FormattedMessage } from 'react-intl';
+
+export type {{ pascalCase name }}ModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  isLoading?: boolean;
+};
+
+export const {{ pascalCase name }}Modal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  isLoading = false,
+}: {{ pascalCase name }}ModalProps) => {
+  const handleConfirm = () => {
+    onConfirm();
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            <FormattedMessage
+              defaultMessage="{{ modalTitle }}"
+              id="{{ pascalCase name }}Modal / Title"
+            />
+          </DialogTitle>
+          <DialogDescription>
+            <FormattedMessage
+              defaultMessage="{{ modalDescription }}"
+              id="{{ pascalCase name }}Modal / Description"
+            />
+          </DialogDescription>
+        </DialogHeader>
+
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button variant="outline" onClick={onClose} disabled={isLoading}>
+            <FormattedMessage defaultMessage="Cancel" id="{{ pascalCase name }}Modal / Cancel" />
+          </Button>
+          <Button
+            variant={{#if isDestructive}}"destructive"{{else}}"default"{{/if}}
+            onClick={handleConfirm}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <FormattedMessage defaultMessage="Loading..." id="{{ pascalCase name }}Modal / Loading" />
+            ) : (
+              <FormattedMessage defaultMessage="Confirm" id="{{ pascalCase name }}Modal / Confirm" />
+            )}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};

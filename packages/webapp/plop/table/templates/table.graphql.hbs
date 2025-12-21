@@ -1,0 +1,45 @@
+import { gql } from '@sb/webapp-api-client/graphql';
+
+/**
+ * Query to fetch {{ pascalCase name }} table data
+ * TODO: Update this to match your backend schema
+ */
+export const {{ camelCase name }}TableQuery = gql(/* GraphQL */ `
+  query {{ pascalCase name }}TableQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {
+    all{{ pascalCase name }}s(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {
+      edges {
+        node {
+          id
+{{#if hasFields}}
+{{#each fields}}
+          {{ name }}
+{{/each}}
+{{else}}
+          name
+          createdAt
+{{/if}}
+        }
+      }
+      pageCursors {
+        ...pageCursorsFragment
+      }
+    }
+  }
+`);
+
+/**
+ * Fragment for {{ pascalCase name }} table item
+ */
+export const {{ camelCase name }}TableItemFragment = gql(/* GraphQL */ `
+  fragment {{ camelCase name }}TableItem on {{ pascalCase name }}Type {
+    id
+{{#if hasFields}}
+{{#each fields}}
+    {{ name }}
+{{/each}}
+{{else}}
+    name
+    createdAt
+{{/if}}
+  }
+`);

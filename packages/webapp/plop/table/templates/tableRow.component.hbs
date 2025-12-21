@@ -1,0 +1,62 @@
+{{#if withRowActions}}
+import { Button } from '@sb/webapp-core/components/buttons';
+import { Edit, Trash2 } from 'lucide-react';
+{{/if}}
+import { TableCell, TableRow } from '@sb/webapp-core/components/ui/table';
+
+import { {{ pascalCase name }}Item } from './{{ camelCase name }}Table.component';
+
+export type {{ pascalCase name }}TableRowProps = {
+  item: {{ pascalCase name }}Item;
+{{#if withRowActions}}
+  onEdit?: (item: {{ pascalCase name }}Item) => void;
+  onDelete?: (item: {{ pascalCase name }}Item) => void;
+{{/if}}
+};
+
+export const {{ pascalCase name }}TableRow = ({
+  item,
+{{#if withRowActions}}
+  onEdit,
+  onDelete,
+{{/if}}
+}: {{ pascalCase name }}TableRowProps) => {
+  return (
+    <TableRow>
+{{#if hasFields}}
+{{#each fields}}
+      <TableCell>{{#if_eq type "boolean"}}{item.{{ name }} ? 'Yes' : 'No'}{{else}}{item.{{ name }}}{{/if_eq}}</TableCell>
+{{/each}}
+{{else}}
+      <TableCell className="font-medium">{item.name}</TableCell>
+      <TableCell>{item.createdAt}</TableCell>
+{{/if}}
+{{#if withRowActions}}
+      <TableCell>
+        <div className="flex items-center gap-2">
+          {onEdit && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onEdit(item)}
+              className="h-8 w-8"
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+          )}
+          {onDelete && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onDelete(item)}
+              className="h-8 w-8 text-destructive hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      </TableCell>
+{{/if}}
+    </TableRow>
+  );
+};

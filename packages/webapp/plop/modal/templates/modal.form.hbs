@@ -1,0 +1,124 @@
+import { Button } from '@sb/webapp-core/components/buttons';
+import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@sb/webapp-core/components/ui/dialog';
+import { useApiForm } from '@sb/webapp-api-client/hooks';
+import { FormattedMessage, useIntl } from 'react-intl';
+
+export type {{ pascalCase name }}FormData = {
+  // TODO: Define your form fields
+  name: string;
+};
+
+export type {{ pascalCase name }}ModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (data: {{ pascalCase name }}FormData) => void;
+  initialData?: Partial<{{ pascalCase name }}FormData>;
+  isLoading?: boolean;
+};
+
+export const {{ pascalCase name }}Modal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialData,
+  isLoading = false,
+}: {{ pascalCase name }}ModalProps) => {
+  const intl = useIntl();
+
+  const {
+    form: {
+      register,
+      formState: { errors },
+      handleSubmit,
+      reset,
+    },
+    form,
+  } = useApiForm<{{ pascalCase name }}FormData>({
+    defaultValues: {
+      name: initialData?.name ?? '',
+    },
+  });
+
+  const handleFormSubmit = handleSubmit((data) => {
+    onSubmit(data);
+  });
+
+  const handleClose = () => {
+    reset();
+    onClose();
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            <FormattedMessage
+              defaultMessage="{{ modalTitle }}"
+              id="{{ pascalCase name }}Modal / Title"
+            />
+          </DialogTitle>
+          <DialogDescription>
+            <FormattedMessage
+              defaultMessage="Fill in the form below"
+              id="{{ pascalCase name }}Modal / Description"
+            />
+          </DialogDescription>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form onSubmit={handleFormSubmit} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      {...register('name', {
+                        required: {
+                          value: true,
+                          message: intl.formatMessage({
+                            defaultMessage: 'This field is required',
+                            id: '{{ pascalCase name }}Modal / Required error',
+                          }),
+                        },
+                      })}
+                      label={intl.formatMessage({
+                        defaultMessage: 'Name:',
+                        id: '{{ pascalCase name }}Modal / Name label',
+                      })}
+                      error={errors.name?.message}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
+                <FormattedMessage defaultMessage="Cancel" id="{{ pascalCase name }}Modal / Cancel" />
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? (
+                  <FormattedMessage defaultMessage="Saving..." id="{{ pascalCase name }}Modal / Loading" />
+                ) : (
+                  <FormattedMessage defaultMessage="Save" id="{{ pascalCase name }}Modal / Submit" />
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+};

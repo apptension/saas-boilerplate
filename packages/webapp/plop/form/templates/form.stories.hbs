@@ -1,0 +1,39 @@
+import type { Meta, StoryObj } from '@storybook/react';
+
+import { {{ pascalCase name }}Form } from './{{ camelCase name }}Form.component';
+
+const meta: Meta<typeof {{ pascalCase name }}Form> = {
+  title: 'Forms/{{ pascalCase name }}Form',
+  component: {{ pascalCase name }}Form,
+  args: {
+    onSubmit: (data) => console.log('Form submitted:', data),
+    loading: false,
+  },
+};
+
+export default meta;
+
+type Story = StoryObj<typeof {{ pascalCase name }}Form>;
+
+export const Default: Story = {};
+
+export const WithInitialData: Story = {
+  args: {
+    initialData: {
+{{#if hasFields}}
+{{#each fields}}
+      {{ name }}: {{#if_eq type "string"}}'Example value'{{else}}{{#if_eq type "number"}}42{{else}}{{#if_eq type "boolean"}}true{{else}}'Example'{{/if_eq}}{{/if_eq}}{{/if_eq}},
+{{/each}}
+{{else}}
+      name: 'John Doe',
+      email: 'john@example.com',
+{{/if}}
+    },
+  },
+};
+
+export const Loading: Story = {
+  args: {
+    loading: true,
+  },
+};

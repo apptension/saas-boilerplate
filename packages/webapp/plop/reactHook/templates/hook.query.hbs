@@ -1,0 +1,50 @@
+import { useQuery } from '@apollo/client';
+import { gql } from '@sb/webapp-api-client/graphql';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
+
+// TODO: Replace with your actual query
+const {{ hookBaseName }}Query = gql(/* GraphQL */ `
+  query {{ hookBaseName }}Query($tenantId: ID!) {
+    # Replace with your actual query fields
+    example(tenantId: $tenantId) {
+      id
+      name
+    }
+  }
+`);
+
+export type Use{{ hookBaseName }}Options = {
+  skip?: boolean;
+};
+
+/**
+ * {{ hookName }} - A hook for fetching data via GraphQL query
+ *
+ * @example
+ * ```tsx
+ * const { data, loading, error, refetch } = {{ hookName }}();
+ *
+ * if (loading) return <Spinner />;
+ * if (error) return <Error message={error.message} />;
+ *
+ * return <div>{data?.example?.name}</div>;
+ * ```
+ */
+export const {{ hookName }} = (options: Use{{ hookBaseName }}Options = {}) => {
+  const { skip = false } = options;
+  const { data: currentTenant } = useCurrentTenant();
+
+  const { data, loading, error, refetch } = useQuery({{ hookBaseName }}Query, {
+    variables: {
+      tenantId: currentTenant?.id ?? '',
+    },
+    skip: skip || !currentTenant,
+  });
+
+  return {
+    data: data?.example,
+    loading,
+    error,
+    refetch,
+  };
+};

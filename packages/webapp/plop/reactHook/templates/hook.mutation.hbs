@@ -1,0 +1,81 @@
+import { useMutation } from '@apollo/client';
+import { gql } from '@sb/webapp-api-client/graphql';
+import { useToast } from '@sb/webapp-core/toast/useToast';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
+import { useIntl } from 'react-intl';
+
+// TODO: Replace with your actual mutation
+const {{ hookBaseName }}Mutation = gql(/* GraphQL */ `
+  mutation {{ hookBaseName }}Mutation($input: ExampleMutationInput!) {
+    # Replace with your actual mutation
+    exampleMutation(input: $input) {
+      example {
+        id
+        name
+      }
+    }
+  }
+`);
+
+export type {{ hookBaseName }}Input = {
+  name: string;
+};
+
+export type Use{{ hookBaseName }}Options = {
+  onSuccess?: () => void;
+  onError?: (error: Error) => void;
+};
+
+/**
+ * {{ hookName }} - A hook for GraphQL mutations with toast notifications
+ *
+ * @example
+ * ```tsx
+ * const { execute, loading } = {{ hookName }}({
+ *   onSuccess: () => navigate('/list'),
+ * });
+ *
+ * const handleSubmit = (data) => execute({ name: data.name });
+ * ```
+ */
+export const {{ hookName }} = (options: Use{{ hookBaseName }}Options = {}) => {
+  const { onSuccess, onError } = options;
+  const { data: currentTenant } = useCurrentTenant();
+  const { toast } = useToast();
+  const intl = useIntl();
+
+  const successMessage = intl.formatMessage({
+    defaultMessage: 'Operation completed successfully!',
+    id: '{{ hookName }} / Success message',
+  });
+
+  const [mutate, { loading, error }] = useMutation({{ hookBaseName }}Mutation, {
+    onCompleted: () => {
+      toast({ description: successMessage, variant: 'success' });
+      onSuccess?.();
+    },
+    onError: (error) => {
+      toast({ description: error.message, variant: 'destructive' });
+      onError?.(error);
+    },
+  });
+
+  const execute = (input: {{ hookBaseName }}Input) => {
+    if (!currentTenant) return;
+
+    mutate({
+      variables: {
+        input: {
+          ...input,
+          tenantId: currentTenant.id,
+        },
+      },
+    });
+  };
+
+  return {
+    execute,
+    loading,
+    error,
+  };
+};

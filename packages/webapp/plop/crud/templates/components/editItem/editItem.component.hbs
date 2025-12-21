@@ -12,9 +12,9 @@ import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 
-import { RoutesConfig } from '../../../app/config/routes';
-import { {{ pascalCase name }}Form } from '../{{ pascalCase name }}Form/{{ pascalCase name }}Form.component';
-import { {{ pascalCase name }}FormFields } from '../{{ pascalCase name }}Form/{{ pascalCase name }}Form.component';
+import { RoutesConfig } from '{{ routesConfigImport }}';
+import { {{ pascalCase name }}Form } from '../{{ camelCase name }}Form';
+import { {{ pascalCase name }}FormFields } from '../{{ camelCase name }}Form/{{ camelCase name }}Form.component';
 import { edit{{ pascalCase name }}Mutation, edit{{ pascalCase name }}Query } from './edit{{ pascalCase name }}.graphql';
 
 type Params = { id: string };
@@ -78,7 +78,7 @@ export const Edit{{ pascalCase name }} = () => {
     );
   }
 
-  if (!{{ camelCase name }}) return <Navigate to={generateLocalePath(RoutesConfig.{{ camelCase name }}.index)} />;
+  if (!{{ camelCase name }}) return <Navigate to={generateLocalePath(RoutesConfig.{{ camelCase name }}.list)} />;
 
   const onFormSubmit = (formData: {{ pascalCase name }}FormFields) => {
     if (!currentTenant) return;

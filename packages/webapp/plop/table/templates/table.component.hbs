@@ -1,0 +1,198 @@
+{{#if withSearch}}
+import { useState } from 'react';
+{{/if}}
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+{{#if withSearch}}
+import { Input } from '@sb/webapp-core/components/forms';
+{{/if}}
+{{#if withPagination}}
+import { TableFooter } from '@sb/webapp-core/components/table';
+{{/if}}
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@sb/webapp-core/components/ui/table';
+import { Database{{#if withSearch}}, Search{{/if}} } from 'lucide-react';
+import { FormattedMessage, useIntl } from 'react-intl';
+
+import { {{ pascalCase name }}TableRow } from './{{ camelCase name }}TableRow.component';
+import { {{ pascalCase name }}TableSkeleton } from './{{ camelCase name }}TableSkeleton.component';
+
+export type {{ pascalCase name }}Item = {
+  id: string;
+{{#if hasFields}}
+{{#each fields}}
+  {{ name }}{{#unless required}}?{{/unless}}: {{#if_eq type "number"}}number{{else}}{{#if_eq type "decimal"}}number{{else}}{{#if_eq type "boolean"}}boolean{{else}}string{{/if_eq}}{{/if_eq}}{{/if_eq}};
+{{/each}}
+{{else}}
+  name: string;
+  createdAt: string;
+{{/if}}
+};
+
+export type {{ pascalCase name }}TableProps = {
+  data: {{ pascalCase name }}Item[];
+  loading?: boolean;
+{{#if withPagination}}
+  pageSize?: number;
+  onPageChange?: (page: number) => void;
+  totalPages?: number;
+  currentPage?: number;
+{{/if}}
+{{#if withRowActions}}
+  onEdit?: (item: {{ pascalCase name }}Item) => void;
+  onDelete?: (item: {{ pascalCase name }}Item) => void;
+{{/if}}
+};
+
+export const {{ pascalCase name }}Table = ({
+  data,
+  loading = false,
+{{#if withPagination}}
+  pageSize = 10,
+  onPageChange,
+  totalPages = 1,
+  currentPage = 1,
+{{/if}}
+{{#if withRowActions}}
+  onEdit,
+  onDelete,
+{{/if}}
+}: {{ pascalCase name }}TableProps) => {
+  const intl = useIntl();
+{{#if withSearch}}
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredData = data.filter((item) => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+{{#if hasFields}}
+{{#each fields}}
+{{#if_eq type "string"}}
+      item.{{ name }}?.toLowerCase().includes(query) ||
+{{/if_eq}}
+{{/each}}
+{{else}}
+      item.name.toLowerCase().includes(query) ||
+{{/if}}
+      false
+    );
+  });
+{{else}}
+  const filteredData = data;
+{{/if}}
+
+  if (loading) {
+    return <{{ pascalCase name }}TableSkeleton />;
+  }
+
+  if (data.length === 0) {
+    return (
+      <Card>
+        <CardContent className="py-16">
+          <div className="flex flex-col items-center justify-center text-center">
+            <Database className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">
+              <FormattedMessage defaultMessage="No items yet" id="{{ pascalCase name }}Table / Empty title" />
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              <FormattedMessage
+                defaultMessage="Items will appear here once they are added"
+                id="{{ pascalCase name }}Table / Empty description"
+              />
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              <FormattedMessage defaultMessage="{{ pascalCase name }}s" id="{{ pascalCase name }}Table / Title" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Manage your {{ pascalCase name }} items"
+                id="{{ pascalCase name }}Table / Description"
+              />
+            </CardDescription>
+          </div>
+{{#if withSearch}}
+          <div className="relative w-64">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder={intl.formatMessage({
+                defaultMessage: 'Search...',
+                id: '{{ pascalCase name }}Table / Search placeholder',
+              })}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+{{/if}}
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+{{#if hasFields}}
+{{#each fields}}
+              <TableHead>
+                <FormattedMessage defaultMessage="{{ label }}" id="{{ ../pascalCase ../name }}Table / {{ name }} header" />
+              </TableHead>
+{{/each}}
+{{else}}
+              <TableHead>
+                <FormattedMessage defaultMessage="Name" id="{{ pascalCase name }}Table / name header" />
+              </TableHead>
+              <TableHead>
+                <FormattedMessage defaultMessage="Created" id="{{ pascalCase name }}Table / created header" />
+              </TableHead>
+{{/if}}
+{{#if withRowActions}}
+              <TableHead className="w-[100px]">
+                <FormattedMessage defaultMessage="Actions" id="{{ pascalCase name }}Table / actions header" />
+              </TableHead>
+{{/if}}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredData.map((item) => (
+              <{{ pascalCase name }}TableRow
+                key={item.id}
+                item={item}
+{{#if withRowActions}}
+                onEdit={onEdit}
+                onDelete={onDelete}
+{{/if}}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+{{#if withPagination}}
+      {totalPages > 1 && (
+        <div className="border-t p-4">
+          <TableFooter
+            pageSize={pageSize}
+            pagination=\{{
+              around: [],
+              first: currentPage > 1 ? { cursor: '1', page: 1, isCurrent: false } : null,
+              last: currentPage < totalPages ? { cursor: String(totalPages), page: totalPages, isCurrent: false } : null,
+              next: currentPage < totalPages ? { cursor: String(currentPage + 1), page: currentPage + 1, isCurrent: false } : null,
+              previous: currentPage > 1 ? { cursor: String(currentPage - 1), page: currentPage - 1, isCurrent: false } : null,
+              onPageClick: (page) => onPageChange?.(page),
+            }}
+          />
+        </div>
+      )}
+{{/if}}
+    </Card>
+  );
+};

@@ -1,0 +1,109 @@
+import { createContext, ReactNode, useRef, useSyncExternalStore, useCallback } from 'react';
+
+import { {{ pascalCase name }}State, {{ pascalCase name }}ContextValue, default{{ pascalCase name }}State } from './{{ camelCase name }}.types';
+
+{{#if withPersistence}}
+const STORAGE_KEY = '{{ camelCase name }}_state';
+
+function loadFromStorage(): {{ pascalCase name }}State | null {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveToStorage(state: {{ pascalCase name }}State): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // Storage might be full or disabled
+  }
+}
+{{/if}}
+
+type Store = {
+  getState: () => {{ pascalCase name }}State;
+  setState: (updates: Partial<{{ pascalCase name }}State>) => void;
+  subscribe: (listener: () => void) => () => void;
+{{#if withReset}}
+  reset: () => void;
+{{/if}}
+};
+
+function createStore(initialState: {{ pascalCase name }}State): Store {
+  let state = initialState;
+  const listeners = new Set<() => void>();
+
+  return {
+    getState: () => state,
+    setState: (updates) => {
+      state = { ...state, ...updates };
+{{#if withPersistence}}
+      saveToStorage(state);
+{{/if}}
+      listeners.forEach((listener) => listener());
+    },
+    subscribe: (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+{{#if withReset}}
+    reset: () => {
+      state = default{{ pascalCase name }}State;
+{{#if withPersistence}}
+      localStorage.removeItem(STORAGE_KEY);
+{{/if}}
+      listeners.forEach((listener) => listener());
+    },
+{{/if}}
+  };
+}
+
+export const {{ pascalCase name }}Context = createContext<{{ pascalCase name }}ContextValue | undefined>(undefined);
+
+export type {{ pascalCase name }}ProviderProps = {
+  children: ReactNode;
+  initialState?: Partial<{{ pascalCase name }}State>;
+};
+
+export const {{ pascalCase name }}Provider = ({ children, initialState }: {{ pascalCase name }}ProviderProps) => {
+  const storeRef = useRef<Store | null>(null);
+
+  if (!storeRef.current) {
+{{#if withPersistence}}
+    const stored = loadFromStorage();
+    storeRef.current = createStore(stored ?? { ...default{{ pascalCase name }}State, ...initialState });
+{{else}}
+    storeRef.current = createStore({ ...default{{ pascalCase name }}State, ...initialState });
+{{/if}}
+  }
+
+  const store = storeRef.current;
+
+  const state = useSyncExternalStore(
+    store.subscribe,
+    store.getState,
+    store.getState
+  );
+
+  const setState = useCallback(
+    (updates: Partial<{{ pascalCase name }}State>) => store.setState(updates),
+    [store]
+  );
+
+{{#if withReset}}
+  const reset = useCallback(() => store.reset(), [store]);
+{{/if}}
+
+  const value: {{ pascalCase name }}ContextValue = {
+    state,
+    setState,
+{{#if withReset}}
+    reset,
+{{/if}}
+  };
+
+  return <{{ pascalCase name }}Context.Provider value={value}>{children}</{{ pascalCase name }}Context.Provider>;
+};

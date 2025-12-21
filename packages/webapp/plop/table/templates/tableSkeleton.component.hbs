@@ -1,0 +1,62 @@
+import { Card, CardContent, CardHeader } from '@sb/webapp-core/components/ui/card';
+import { Skeleton } from '@sb/webapp-core/components/ui/skeleton';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@sb/webapp-core/components/ui/table';
+
+export const {{ pascalCase name }}TableSkeleton = () => {
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+{{#if withSearch}}
+          <Skeleton className="h-10 w-64" />
+{{/if}}
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+{{#if hasFields}}
+{{#each fields}}
+              <TableHead><Skeleton className="h-4 w-20" /></TableHead>
+{{/each}}
+{{else}}
+              <TableHead><Skeleton className="h-4 w-20" /></TableHead>
+              <TableHead><Skeleton className="h-4 w-20" /></TableHead>
+{{/if}}
+{{#if withRowActions}}
+              <TableHead><Skeleton className="h-4 w-16" /></TableHead>
+{{/if}}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <TableRow key={index}>
+{{#if hasFields}}
+{{#each fields}}
+                <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+{{/each}}
+{{else}}
+                <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+{{/if}}
+{{#if withRowActions}}
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Skeleton className="h-8 w-8" />
+                    <Skeleton className="h-8 w-8" />
+                  </div>
+                </TableCell>
+{{/if}}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+};
