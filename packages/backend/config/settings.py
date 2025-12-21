@@ -46,7 +46,6 @@ THIRD_PARTY_APPS = [
     "django_extensions",
     'django_celery_results',
     'django_celery_beat',
-    "djstripe",
     "django_hosts",
     "drf_yasg",
     "rest_framework",
@@ -60,8 +59,6 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "apps.content",
-    "apps.demo",
-    "apps.finances",
     "apps.users",
     "apps.notifications",
     "apps.websockets",
@@ -310,28 +307,6 @@ AWS_REGION = env("AWS_REGION", default=None)
 
 LAMBDA_TASKS_BASE_HANDLER = env("LAMBDA_TASKS_BASE_HANDLER", default="common.tasks.LambdaTask")
 LAMBDA_TASKS_LOCAL_URL = env("LAMBDA_TASKS_LOCAL_URL", default=None)
-
-STRIPE_LIVE_SECRET_KEY = env("STRIPE_LIVE_SECRET_KEY", default="sk_<CHANGE_ME>")
-STRIPE_TEST_SECRET_KEY = env("STRIPE_TEST_SECRET_KEY", default="sk_test_<CHANGE_ME>")
-STRIPE_LIVE_MODE = env.bool("STRIPE_LIVE_MODE", default=False)
-DJSTRIPE_WEBHOOK_SECRET = env("DJSTRIPE_WEBHOOK_SECRET", default="")
-DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
-
-
-def tenant_request_callback(request):
-    return request.tenant
-
-
-DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = tenant_request_callback
-DJSTRIPE_SUBSCRIBER_MODEL = "multitenancy.Tenant"
-# Disable stripe checks for keys on django application start
-STRIPE_CHECKS_ENABLED = env.bool("STRIPE_CHECKS_ENABLED", default=True)
-if not STRIPE_CHECKS_ENABLED:
-    SILENCED_SYSTEM_CHECKS.append("djstripe.C001")
-
-STRIPE_ENABLED = '<CHANGE_ME>' not in STRIPE_LIVE_SECRET_KEY or '<CHANGE_ME>' not in STRIPE_TEST_SECRET_KEY
-
-SUBSCRIPTION_TRIAL_PERIOD_DAYS = env("SUBSCRIPTION_TRIAL_PERIOD_DAYS", default=7)
 
 GRAPHENE = {
     "SCHEMA": "config.schema.schema",

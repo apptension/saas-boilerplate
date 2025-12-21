@@ -1,4 +1,4 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 
-urlpatterns = [path("finances/", include("apps.finances.urls_admin")), path("", admin.site.urls)]
+urlpatterns = [path("", admin.site.urls)]

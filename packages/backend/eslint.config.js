@@ -8,7 +8,6 @@ module.exports = [
       'node_modules/**/*',
       'cdk.out/**/*',
       '__pypackages__/**/*',
-      'apps/finances/static/djstripe/*',
     ],
   },
 ];

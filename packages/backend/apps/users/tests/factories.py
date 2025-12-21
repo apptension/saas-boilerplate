@@ -5,11 +5,9 @@ import mimetypes
 from django.contrib.auth import hashers
 from django.contrib.auth.models import Group
 from django.core.files.uploadedfile import SimpleUploadedFile, UploadedFile
-from djstripe.models import Customer
 
 from common.acl.helpers import CommonGroups
 from apps.multitenancy.models import Tenant
-from apps.multitenancy.tests.factories import TenantFactory
 
 
 class GroupFactory(factory.django.DjangoModelFactory):
@@ -101,10 +99,3 @@ def image_factory(name: str, params: Optional[ImageFactoryParams] = None) -> Upl
         content=image_field._make_data(params or {}),
         content_type=mimetypes.guess_type(name)[0],
     )
-
-
-class StripeCustomerFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Customer
-
-    subscriber = factory.SubFactory(TenantFactory)

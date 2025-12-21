@@ -12,28 +12,6 @@ from ....models import User
 from utils import hashid
 
 
-class CrudDemoItemDataExport(UserDataExportable):
-    export_key = "crud_demo_items"
-
-    @classmethod
-    def export(cls, user: User) -> list[str]:
-        return [
-            json.dumps(
-                {
-                    "id": hashid.encode(item.id),
-                    "name": item.name,
-                }
-            )
-            for item in user.cruddemoitem_set.all()
-        ]
-
-
-class DocumentDemoItemFileExport(UserFilesExportable):
-    @classmethod
-    def export(cls, user: User) -> list[str]:
-        return [document.file.name for document in user.documents.all()]
-
-
 class UserDataExport(UserDataExportable):
     export_key = "user"
     schema_class = User
@@ -58,8 +36,8 @@ class UserDataExport(UserDataExportable):
 
 
 class ExportUserArchive:
-    _DATA_EXPORTS: list[UserDataExportable] = [UserDataExport, CrudDemoItemDataExport]
-    _FILES_EXPORTS: list[UserFilesExportable] = [DocumentDemoItemFileExport]
+    _DATA_EXPORTS: list[UserDataExportable] = [UserDataExport]
+    _FILES_EXPORTS: list[UserFilesExportable] = []
 
     def __init__(self, user: User):
         self._user = user

@@ -10,8 +10,6 @@ from common.acl import policies
 from common.graphql import mutations, exceptions
 from common.graphql.acl.decorators import permission_classes
 from common.graphql.acl.wrappers import PERMISSION_DENIED_MESSAGE
-from apps.finances.services import subscriptions
-from apps.finances.serializers import CancelTenantActiveSubscriptionSerializer
 from . import models
 from . import serializers
 from .tokens import tenant_invitation_token
@@ -140,7 +138,7 @@ class DeleteTenantMutation(mutations.DeleteModelMutation):
     @classmethod
     def mutate_and_get_payload(cls, root, info, id, **kwargs):
         """
-        Perform deletion of a tenant and subscription cancellation.
+        Perform deletion of a tenant.
 
         Returns:
             DeleteTenantMutation: The mutation object with list of deleted_ids.
@@ -152,11 +150,6 @@ class DeleteTenantMutation(mutations.DeleteModelMutation):
 
         if tenant.type == ConstantsTenantType.DEFAULT:
             raise exceptions.GraphQlValidationError("Cannot delete default type tenant.")
-
-        schedule = subscriptions.get_schedule(tenant)
-        cancel_subscription_serializer = CancelTenantActiveSubscriptionSerializer(instance=schedule, data={})
-        if cancel_subscription_serializer.is_valid():
-            cancel_subscription_serializer.save()
 
         tenant.delete()
         return cls(deleted_ids=[id])

@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('multitenancy', '0004_auto_20240318_1003'),
+        ('multitenancy', '0003_alter_tenantmembership_unique_together_and_more'),
     ]
 
     operations = [
