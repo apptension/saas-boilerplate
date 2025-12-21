@@ -72,7 +72,7 @@ describe('{{ pascalCase name }}Form: Component', () => {
   });
 
   it('should populate form with initial data', async () => {
-    render(<Component initialData={{ name: 'Initial Name' }} />);
+    render(<Component initialData=\{{ name: 'Initial Name' }} />);
 
     const nameInput = screen.getByRole('textbox', { name: /name/i });
     expect(nameInput).toHaveValue('Initial Name');
