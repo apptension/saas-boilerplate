@@ -1,26 +1,50 @@
-import { Meta, StoryFn, StoryObj } from '@storybook/react';
-import { append } from 'ramda';
+import { Meta, StoryObj } from '@storybook/react';
+import { append, times } from 'ramda';
 
-import { fillDocumentsListQuery } from '../../tests/factories';
+import { documentFactory, fillDocumentsListQuery } from '../../tests/factories';
 import { withProviders } from '../../utils/storybook';
 import { Documents } from './documents.component';
 
-const Template: StoryFn = () => {
-  return <Documents />;
-};
-
-const meta: Meta = {
+const meta: Meta<typeof Documents> = {
   title: 'Routes/Documents',
   component: Documents,
-  decorators: [
-    withProviders({
-      apolloMocks: append(fillDocumentsListQuery()),
-    }),
-  ],
+  parameters: {
+    layout: 'fullscreen',
+  },
 };
 
 export default meta;
 
-export const Default: StoryObj<typeof meta> = {
-  render: Template,
+type Story = StoryObj<typeof Documents>;
+
+export const Default: Story = {
+  decorators: [
+    withProviders({
+      apolloMocks: append(fillDocumentsListQuery(times(() => documentFactory(), 3))),
+    }),
+  ],
+};
+
+export const Empty: Story = {
+  decorators: [
+    withProviders({
+      apolloMocks: append(fillDocumentsListQuery([])),
+    }),
+  ],
+};
+
+export const ManyDocuments: Story = {
+  decorators: [
+    withProviders({
+      apolloMocks: append(fillDocumentsListQuery(times(() => documentFactory(), 8))),
+    }),
+  ],
+};
+
+export const MaxDocuments: Story = {
+  decorators: [
+    withProviders({
+      apolloMocks: append(fillDocumentsListQuery(times(() => documentFactory(), 10))),
+    }),
+  ],
 };

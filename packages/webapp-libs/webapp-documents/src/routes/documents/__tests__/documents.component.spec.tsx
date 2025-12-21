@@ -28,7 +28,7 @@ describe('Documents: Component', () => {
 
     render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest) });
 
-    expect(await screen.findByText('No documents')).toBeInTheDocument();
+    expect(await screen.findByText('No documents yet')).toBeInTheDocument();
   });
 
   it('should render maximum size state', async () => {

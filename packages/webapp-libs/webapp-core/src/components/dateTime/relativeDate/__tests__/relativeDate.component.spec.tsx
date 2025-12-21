@@ -26,4 +26,18 @@ describe('RelativeDate: Component', () => {
     expect(await screen.findByText(date.getFullYear(), { exact: false })).toBeInTheDocument();
     expect(screen.queryByText('7 days ago')).not.toBeInTheDocument();
   });
+
+  it('should handle invalid dates gracefully', async () => {
+    const invalidDate = new Date('invalid');
+    render(<Component date={invalidDate} />);
+
+    expect(await screen.findByText('Unknown date')).toBeInTheDocument();
+  });
+
+  it('should handle date with undefined string', async () => {
+    const invalidDate = new Date(undefined as unknown as string);
+    render(<Component date={invalidDate} />);
+
+    expect(await screen.findByText('Unknown date')).toBeInTheDocument();
+  });
 });
