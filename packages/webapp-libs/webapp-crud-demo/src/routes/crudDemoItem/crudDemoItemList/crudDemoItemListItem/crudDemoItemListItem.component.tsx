@@ -31,7 +31,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
 
   const successMessage = intl.formatMessage({
     id: 'CrudDemoItem form / Delete CrudDemoItem / Success message',
-    defaultMessage: '🎉 Item deleted successfully!',
+    defaultMessage: 'Item deleted successfully!',
   });
 
   const [commitDeleteMutation, { loading }] = useMutation(crudDemoItemListItemDeleteMutation, {
@@ -45,7 +45,7 @@ export const CrudDemoItemListItem = ({ item }: CrudDemoItemListItemProps) => {
     onCompleted: (data) => {
       const ids = data?.deleteCrudDemoItem?.deletedIds;
       trackEvent('crud', 'delete', ids?.join(', '));
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
     },
   });
 

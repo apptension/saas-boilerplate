@@ -25,7 +25,7 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
 
   const successMessage = intl.formatMessage({
     id: 'Auth / Two-factor / Disable success',
-    defaultMessage: '🎉 Two-Factor Auth Disabled Successfully!',
+    defaultMessage: 'Two-Factor Auth disabled successfully!',
   });
 
   const disable2FA = async () => {
@@ -35,7 +35,7 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
     if (!isDeleted) return;
 
     trackEvent('auth', 'otp-disabled');
-    toast({ description: successMessage });
+    toast({ description: successMessage, variant: 'info' });
     reload();
   };
 

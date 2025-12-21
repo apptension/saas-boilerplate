@@ -32,12 +32,12 @@ export const TenantInvitation = () => {
 
   const acceptSuccessMessage = intl.formatMessage({
     id: 'Tenant Invitation / Accept / Success message',
-    defaultMessage: '🎉 Invitation accepted!',
+    defaultMessage: 'Invitation accepted!',
   });
 
   const declineSuccessMessage = intl.formatMessage({
     id: 'Tenant Invitation / Decline / Success message',
-    defaultMessage: '🎉 Invitation declined!',
+    defaultMessage: 'Invitation declined.',
   });
 
   const tenant = tenants.find(
@@ -50,7 +50,7 @@ export const TenantInvitation = () => {
     onCompleted: () => {
       reloadCommonQuery();
       trackEvent('tenantInvitation', 'accept', tenant?.id);
-      toast({ description: acceptSuccessMessage });
+      toast({ description: acceptSuccessMessage, variant: 'success' });
       if (tenant) navigate(generateTenantPath(RoutesConfig.home, { tenantId: tenant?.id }));
     },
   });
@@ -71,7 +71,7 @@ export const TenantInvitation = () => {
     onCompleted: () => {
       reloadCommonQuery();
       trackEvent('tenantInvitation', 'decline', tenant?.id);
-      toast({ description: declineSuccessMessage });
+      toast({ description: declineSuccessMessage, variant: 'info' });
       navigate(generateLocalePath(RoutesConfig.home));
     },
   });

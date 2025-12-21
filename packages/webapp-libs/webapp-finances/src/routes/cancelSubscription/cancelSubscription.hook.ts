@@ -24,7 +24,7 @@ export const useCancelSubscription = () => {
 
   const [commitCancelActiveSubscriptionMutation] = useMutation(subscriptionCancelMutation, {
     onCompleted: () => {
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'info' });
 
       trackEvent('subscription', 'cancel');
 

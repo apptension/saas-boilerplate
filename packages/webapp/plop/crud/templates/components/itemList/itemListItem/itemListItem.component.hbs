@@ -29,7 +29,7 @@ export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}Lis
 
   const successMessage = intl.formatMessage({
     id: '{{ pascalCase name }} form / Success message',
-    defaultMessage: '🎉 Item deleted successfully!',
+    defaultMessage: 'Item deleted successfully!',
   });
 
   const [commitDeleteMutation, { loading }] = useMutation({{ camelCase name }}ListItemDeleteMutation, {
@@ -43,7 +43,7 @@ export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}Lis
     onCompleted: (data) => {
       const ids = data?.delete{{ camelCase name }}?.deletedIds;
       trackEvent('crud', 'delete', ids?.join(', '));
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
     },
   });
 

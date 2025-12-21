@@ -73,7 +73,7 @@ export const EditPaymentMethod = () => {
               <EditPaymentMethodForm
                 onSuccess={() => {
                   navigate(generateTenantPath(RoutesConfig.subscriptions.index));
-                  toast({ description: successMessage });
+                  toast({ description: successMessage, variant: 'success' });
                 }}
               />
             </Elements>

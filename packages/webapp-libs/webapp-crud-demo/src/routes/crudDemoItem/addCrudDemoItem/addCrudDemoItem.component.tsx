@@ -40,7 +40,7 @@ export const AddCrudDemoItem = () => {
 
   const successMessage = intl.formatMessage({
     id: 'CrudDemoItem form / AddCrudDemoItem / Success message',
-    defaultMessage: '🎉 Item added successfully!',
+    defaultMessage: 'Item added successfully!',
   });
 
   const [commitCrudDemoItemFormMutation, { error, loading: loadingMutation }] = useMutation(addCrudDemoItemMutation, {
@@ -58,7 +58,7 @@ export const AddCrudDemoItem = () => {
 
       trackEvent('crud', 'add', id);
 
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
 
       navigate(generateLocalePath(RoutesConfig.crudDemoItem.list));
     },

@@ -27,36 +27,78 @@ const meta: Meta<Props> = {
 export default meta;
 
 export const Default: Story = {
-  args: { toasts: [{ description: 'first message' }, { description: 'second message', variant: 'destructive' }] },
+  args: { toasts: [{ description: 'This is a default notification' }] },
 };
 
-export const ErrorState: Story = {
-  args: { toasts: [{ description: 'Error state', variant: 'destructive' }] },
+export const Success: Story = {
+  args: { toasts: [{ description: 'Your changes have been saved successfully!', variant: 'success' }] },
 };
 
-export const LongMessages: Story = {
+export const Destructive: Story = {
+  args: { toasts: [{ description: 'An error occurred while processing your request.', variant: 'destructive' }] },
+};
+
+export const Warning: Story = {
+  args: { toasts: [{ description: 'Your session will expire in 5 minutes.', variant: 'warning' }] },
+};
+
+export const Info: Story = {
+  args: { toasts: [{ description: 'A new version of the app is available.', variant: 'info' }] },
+};
+
+export const AllVariants: Story = {
   args: {
     toasts: [
-      { description: 'very long message example very long message' },
-      {
-        description:
-          'even longer message example even longer message example even longer message example even longer message example',
-      },
+      { description: 'This is a default notification', variant: 'default' },
+      { description: 'Your changes have been saved successfully!', variant: 'success' },
+      { description: 'An error occurred while processing your request.', variant: 'destructive' },
+      { description: 'Your session will expire in 5 minutes.', variant: 'warning' },
+      { description: 'A new version of the app is available.', variant: 'info' },
     ],
   },
 };
 
 export const WithTitle: Story = {
-  args: { toasts: [{ description: 'Description message', title: 'Title message' }] },
+  args: {
+    toasts: [
+      { title: 'Success', description: 'Your profile has been updated.', variant: 'success' },
+      { title: 'Error', description: 'Failed to save changes.', variant: 'destructive' },
+      { title: 'Warning', description: 'Please review your settings.', variant: 'warning' },
+      { title: 'Information', description: 'New features are now available.', variant: 'info' },
+    ],
+  },
+};
+
+export const LongMessages: Story = {
+  args: {
+    toasts: [
+      {
+        description: 'This is a longer message that demonstrates how the toast handles multi-line content gracefully.',
+        variant: 'success',
+      },
+      {
+        description:
+          'This is an even longer error message that spans multiple lines to show how the toast component handles extensive content without breaking the layout or causing visual issues.',
+        variant: 'destructive',
+      },
+    ],
+  },
 };
 
 export const WithAction: Story = {
   args: {
     toasts: [
       {
-        description: 'Description message',
-        title: 'Title message',
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
+        description: 'Your session is about to expire.',
+        title: 'Session Warning',
+        variant: 'warning',
+        action: <ToastAction altText="Extend session">Extend</ToastAction>,
+      },
+      {
+        description: 'Failed to save document.',
+        title: 'Save Error',
+        variant: 'destructive',
+        action: <ToastAction altText="Try again">Retry</ToastAction>,
       },
     ],
   },

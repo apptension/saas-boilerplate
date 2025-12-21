@@ -123,7 +123,7 @@ describe('TenantInvitation: Component', () => {
       const toast = await screen.findByTestId('toast-1');
 
       expect(trackEvent).toHaveBeenCalledWith('tenantInvitation', 'accept', targetTenant.id);
-      expect(toast).toHaveTextContent('🎉 Invitation accepted!');
+      expect(toast).toHaveTextContent('Invitation accepted!');
     });
 
     it('should send decline mutation on button click', async () => {
@@ -181,7 +181,7 @@ describe('TenantInvitation: Component', () => {
       const toast = await screen.findByTestId('toast-1');
 
       expect(trackEvent).toHaveBeenCalledWith('tenantInvitation', 'decline', targetTenant.id);
-      expect(toast).toHaveTextContent('🎉 Invitation declined!');
+      expect(toast).toHaveTextContent('Invitation declined.');
     });
   });
 });

@@ -69,7 +69,7 @@ export const PaymentConfirm = () => {
               <StripePaymentForm
                 onSuccess={() => {
                   navigate(generateLocalePath(CoreRoutesConfig.home));
-                  toast({ description: successMessage });
+                  toast({ description: successMessage, variant: 'success' });
                 }}
               />
             </Elements>

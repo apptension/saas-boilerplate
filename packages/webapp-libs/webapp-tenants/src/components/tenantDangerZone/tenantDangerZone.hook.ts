@@ -21,7 +21,7 @@ export const useTenantDelete = () => {
 
   const successDeleteMessage = intl.formatMessage({
     id: 'Tenant form / DeleteTenant / Success message',
-    defaultMessage: '🎉 Organization deleted successfully!',
+    defaultMessage: 'Organization deleted successfully!',
   });
 
   const failDeleteMessage = intl.formatMessage({
@@ -34,7 +34,7 @@ export const useTenantDelete = () => {
       const id = data.deleteTenant?.deletedIds?.[0]?.toString();
       reloadCommonQuery();
       trackEvent('tenant', 'delete', id);
-      toast({ description: successDeleteMessage });
+      toast({ description: successDeleteMessage, variant: 'success' });
       navigate(generateLocalePath(RoutesConfig.home), { replace: true });
     },
     onError: () => {

@@ -21,7 +21,7 @@ export const TenantGeneralSettings = () => {
 
   const successMessage = intl.formatMessage({
     id: 'Tenant form / UpdateTenant / Success message',
-    defaultMessage: '🎉 Organization updated successfully!',
+    defaultMessage: 'Organization updated successfully!',
   });
 
   const failMessage = intl.formatMessage({
@@ -36,7 +36,7 @@ export const TenantGeneralSettings = () => {
       const id = data.updateTenant?.tenant?.id;
       reloadCommonQuery();
       trackEvent('tenant', 'edit', id);
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
     },
     onError: () => {
       toast({ description: failMessage, variant: 'destructive' });

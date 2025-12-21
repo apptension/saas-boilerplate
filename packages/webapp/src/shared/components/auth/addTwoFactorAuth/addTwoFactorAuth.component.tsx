@@ -45,7 +45,7 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
 
   const successMessage = intl.formatMessage({
     id: 'Auth / Add Two-factor / Success message',
-    defaultMessage: '🎉 Two-Factor Auth Enabled Successfully!',
+    defaultMessage: 'Two-Factor Auth enabled successfully!',
   });
 
   const [commitVerifyOtpMutation] = useMutation(verifyOtpMutation, {
@@ -70,7 +70,7 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
 
     reload();
     closeModal();
-    toast({ description: successMessage });
+    toast({ description: successMessage, variant: 'success' });
   };
 
   useEffect(() => {

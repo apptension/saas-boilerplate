@@ -36,7 +36,7 @@ export const AddTenantForm = () => {
 
   const successMessage = intl.formatMessage({
     id: 'Tenant form / AddTenant / Success message',
-    defaultMessage: '🎉 Organization added successfully!',
+    defaultMessage: 'Organization added successfully!',
   });
 
   const [commitTenantFormMutation, { error, loading: loadingMutation }] = useMutation(addTenantMutation, {
@@ -46,7 +46,7 @@ export const AddTenantForm = () => {
 
       trackEvent('tenant', 'add', id);
 
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
 
       navigate(generateTenantPath(RoutesConfig.home, { tenantId: id! }));
     },

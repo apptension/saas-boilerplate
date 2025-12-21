@@ -133,7 +133,7 @@ describe('EditCrudDemoItem: Component', () => {
 
       const toast = await screen.findByTestId('toast-1');
       expect(trackEvent).toHaveBeenCalledWith('crud', 'edit', defaultItemId);
-      expect(toast).toHaveTextContent('🎉 Changes saved successfully!');
+      expect(toast).toHaveTextContent('Changes saved successfully!');
     });
   });
 });

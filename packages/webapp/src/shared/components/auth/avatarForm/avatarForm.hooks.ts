@@ -52,6 +52,7 @@ export const useAvatarForm = () => {
           defaultMessage: 'Avatar successfully changed.',
           id: 'Auth / Avatar Form / Success message',
         }),
+        variant: 'success',
       });
     },
     onError: (error) => {

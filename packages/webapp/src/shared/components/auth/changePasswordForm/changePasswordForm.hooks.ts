@@ -49,6 +49,7 @@ export const useChangePasswordForm = () => {
           defaultMessage: 'Password successfully changed.',
           id: 'Auth / Change password / Success message',
         }),
+        variant: 'success',
       });
     },
     onError: (error) => {

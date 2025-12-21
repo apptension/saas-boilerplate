@@ -40,7 +40,7 @@ export const Add{{ pascalCase name }} = () => {
 
   const successMessage = intl.formatMessage({
     id: '{{ pascalCase name }} form / Add{{ pascalCase name }} / Success message',
-    defaultMessage: '🎉 Item added successfully!',
+    defaultMessage: 'Item added successfully!',
   });
 
   const [commit{{ pascalCase name }}FormMutation, { error, loading: loadingMutation }] = useMutation(add{{ pascalCase name }}Mutation, {
@@ -58,7 +58,7 @@ export const Add{{ pascalCase name }} = () => {
 
       trackEvent('crud', 'add', id);
 
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
 
       navigate(generateLocalePath(RoutesConfig.{{ camelCase name }}.list));
     },

@@ -40,7 +40,7 @@ export const useMarkAllAsRead = (message: string) => {
         });
       },
     });
-    toast({ description: message });
+    toast({ description: message, variant: 'success' });
   };
 };
 

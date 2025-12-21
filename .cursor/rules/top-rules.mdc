@@ -57,7 +57,7 @@ Use the established patterns for mutations and queries:
 // Mutations with toast feedback
 const [commitMutation, { loading }] = useMutation(myMutation, {
   onCompleted: () => {
-    toast({ description: successMessage });
+    toast({ description: successMessage, variant: 'success' });
     // Additional logic
   },
   onError: (error) => {
@@ -131,9 +131,39 @@ ConfirmDialog pattern for destructive actions:
 </ConfirmDialog>
 ```
 
-## 7. Internationalization Requirements
+## 7. Toast Notifications
 
-ALL user-facing text must use react-intl:
+Use the correct variant for each toast type. **Never use emojis** - icons are added automatically based on variant:
+
+```tsx
+import { useToast } from '@sb/webapp-core/toast/useToast';
+
+const { toast } = useToast();
+
+// ✅ Success operations (green with checkmark icon)
+toast({ description: 'Item saved successfully!', variant: 'success' });
+
+// ✅ Errors (red with alert icon)
+toast({ description: 'Failed to save item.', variant: 'destructive' });
+
+// ✅ Warnings (amber with warning icon)
+toast({ description: 'Your session will expire soon.', variant: 'warning' });
+
+// ✅ Informational (blue with info icon)
+toast({ description: 'Changes will take effect tomorrow.', variant: 'info' });
+
+// ❌ Don't use emojis - icons are automatic
+toast({ description: '🎉 Item saved!' }); // Wrong!
+
+// ❌ Don't forget variant for success messages
+toast({ description: 'Item saved!' }); // Missing variant!
+```
+
+Available variants: `success`, `destructive`, `warning`, `info`, `default`
+
+## 8. Internationalization Requirements
+
+ALL user-facing text must use react-intl. **Don't include emojis in translatable messages** - use appropriate toast variants for visual feedback instead:
 
 ```tsx
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -151,7 +181,7 @@ const label = intl.formatMessage({
 
 Message ID convention: `"Section / Description"` (e.g., `"Tenant General Settings / Delete Button"`)
 
-## 8. Form Handling Pattern
+## 9. Form Handling Pattern
 
 Use react-hook-form with the API form hook:
 
@@ -184,7 +214,7 @@ const registerField = register('fieldName', {
 });
 ```
 
-## 9. Styling with Tailwind
+## 10. Styling with Tailwind
 
 Use the `cn()` utility for conditional classes:
 
@@ -203,7 +233,7 @@ className={cn(
 
 Design tokens: `primary`, `destructive`, `muted`, `accent`, `border`, `background`, `foreground`
 
-## 10. Before Committing Changes
+## 11. Before Committing Changes
 
 1. **Run type-check**: `pnpm tsc --noEmit -p packages/webapp/tsconfig.app.json`
 2. **Run affected tests**: `pnpm nx run-many --target=test --projects=<affected-lib>`

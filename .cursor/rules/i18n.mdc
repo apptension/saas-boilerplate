@@ -60,3 +60,19 @@ Examples:
 2. **Use descriptive IDs** - IDs should indicate where and what the message is
 3. **Provide defaultMessage** - Always include the English default text
 4. **Aria labels** - Use intl.formatMessage for accessibility attributes
+5. **No emojis in messages** - Use toast variants (`success`, `warning`, etc.) for visual feedback instead of emojis
+
+```tsx
+// ❌ Don't use emojis in translatable messages
+const message = intl.formatMessage({
+  defaultMessage: '🎉 Item saved successfully!',
+  id: 'Feature / Success',
+});
+
+// ✅ Use clean text with appropriate toast variant
+const message = intl.formatMessage({
+  defaultMessage: 'Item saved successfully!',
+  id: 'Feature / Success',
+});
+toast({ description: message, variant: 'success' }); // Icon added automatically
+```

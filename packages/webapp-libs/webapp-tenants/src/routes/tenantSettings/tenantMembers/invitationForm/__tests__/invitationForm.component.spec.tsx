@@ -91,7 +91,7 @@ describe('InvitationForm: Component', () => {
       const toast = await screen.findByTestId('toast-1');
 
       expect(trackEvent).toHaveBeenCalledWith('tenantInvitation', 'invite', tenants[0].id);
-      expect(toast).toHaveTextContent('🎉 User invited successfully!');
+      expect(toast).toHaveTextContent('User invited successfully!');
     });
   });
 });

@@ -33,7 +33,7 @@ export const useEditSubscription = () => {
     onCompleted: () => {
       trackEvent('subscription', 'change-plan');
 
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
       navigate(generateTenantPath(RoutesConfig.subscriptions.index));
     },
   });

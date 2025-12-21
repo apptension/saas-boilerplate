@@ -14,12 +14,22 @@ export const ToastClose = React.forwardRef<
     <ToastPrimitives.Close
       ref={ref}
       className={cn(
-        'text-foreground/50 hover:text-foreground absolute right-2 top-2 rounded-md p-1 opacity-0 transition-opacity focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600',
+        'absolute right-3 top-3 rounded-md p-1 opacity-70 transition-all hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2',
+        // Default variant
+        'text-muted-foreground hover:text-foreground hover:bg-muted focus:ring-ring',
+        // Success variant
+        'group-[.success]:text-green-600 group-[.success]:hover:text-green-700 group-[.success]:hover:bg-green-100 group-[.success]:focus:ring-green-500 dark:group-[.success]:text-green-400 dark:group-[.success]:hover:text-green-300 dark:group-[.success]:hover:bg-green-900',
+        // Destructive variant
+        'group-[.destructive]:text-red-600 group-[.destructive]:hover:text-red-700 group-[.destructive]:hover:bg-red-100 group-[.destructive]:focus:ring-red-500 dark:group-[.destructive]:text-red-400 dark:group-[.destructive]:hover:text-red-300 dark:group-[.destructive]:hover:bg-red-900',
+        // Warning variant
+        'group-[.warning]:text-amber-600 group-[.warning]:hover:text-amber-700 group-[.warning]:hover:bg-amber-100 group-[.warning]:focus:ring-amber-500 dark:group-[.warning]:text-amber-400 dark:group-[.warning]:hover:text-amber-300 dark:group-[.warning]:hover:bg-amber-900',
+        // Info variant
+        'group-[.info]:text-blue-600 group-[.info]:hover:text-blue-700 group-[.info]:hover:bg-blue-100 group-[.info]:focus:ring-blue-500 dark:group-[.info]:text-blue-400 dark:group-[.info]:hover:text-blue-300 dark:group-[.info]:hover:bg-blue-900',
         className
       )}
       toast-close=""
       aria-label={intl.formatMessage({
-        defaultMessage: 'Dismiss',
+        defaultMessage: 'Dismiss notification',
         id: 'Toast message / Dismiss',
       })}
       {...props}

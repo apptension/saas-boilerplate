@@ -34,7 +34,7 @@ export const Edit{{ pascalCase name }} = () => {
 
   const successMessage = intl.formatMessage({
     id: '{{ pascalCase name }} form / Edit{{ pascalCase name }} / Success message',
-    defaultMessage: '🎉 Changes saved successfully!',
+    defaultMessage: 'Changes saved successfully!',
   });
 
   const generateLocalePath = useGenerateLocalePath();
@@ -44,7 +44,7 @@ export const Edit{{ pascalCase name }} = () => {
 
       trackEvent('crud', 'edit', id);
 
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
 
       navigate(generateLocalePath(RoutesConfig.{{ camelCase name }}.list));
     },

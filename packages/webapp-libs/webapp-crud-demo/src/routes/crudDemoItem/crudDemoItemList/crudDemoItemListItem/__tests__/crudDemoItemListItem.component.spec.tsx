@@ -198,6 +198,6 @@ describe('CrudDemoItemListItem: Component', () => {
     const toast = await screen.findByTestId('toast-1');
 
     expect(trackEvent).toHaveBeenCalledWith('crud', 'delete', item.id);
-    expect(toast).toHaveTextContent('🎉 Item deleted successfully!');
+    expect(toast).toHaveTextContent('Item deleted successfully!');
   });
 });

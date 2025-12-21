@@ -30,6 +30,7 @@ export const useEditProfileForm = () => {
           defaultMessage: 'Personal data successfully changed.',
           id: 'Auth / Update profile/ Success message',
         }),
+        variant: 'success',
       });
     },
     onError: (error) => {

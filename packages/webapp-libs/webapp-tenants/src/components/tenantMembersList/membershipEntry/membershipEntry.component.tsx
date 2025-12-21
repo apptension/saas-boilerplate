@@ -47,7 +47,7 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
 
   const updateSuccessMessage = intl.formatMessage({
     id: 'Membership Entry / UpdateRole / Success message',
-    defaultMessage: '🎉 The user role was updated successfully!',
+    defaultMessage: 'The user role was updated successfully!',
   });
 
   const updateFailMessage = intl.formatMessage({
@@ -57,7 +57,7 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
 
   const deleteSuccessMessage = intl.formatMessage({
     id: 'Membership Entry / DeleteMembership / Success message',
-    defaultMessage: '🎉 User was deleted successfully!',
+    defaultMessage: 'User was removed successfully!',
   });
 
   const deleteFailMessage = intl.formatMessage({
@@ -67,7 +67,7 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
 
   const [commitUpdateMutation, { loading }] = useMutation(updateTenantMembershipMutation, {
     onCompleted: () => {
-      toast({ description: updateSuccessMessage });
+      toast({ description: updateSuccessMessage, variant: 'success' });
     },
     onError: () => {
       toast({ description: updateFailMessage, variant: 'destructive' });
@@ -76,7 +76,7 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
 
   const [commitDeleteMutation] = useMutation(deleteTenantMembershipMutation, {
     onCompleted: () => {
-      toast({ description: deleteSuccessMessage });
+      toast({ description: deleteSuccessMessage, variant: 'success' });
       onAfterUpdate?.();
     },
     onError: () => {

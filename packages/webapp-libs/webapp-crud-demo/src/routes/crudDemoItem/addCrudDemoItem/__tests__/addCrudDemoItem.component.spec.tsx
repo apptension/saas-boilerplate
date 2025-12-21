@@ -116,7 +116,7 @@ describe('AddCrudDemoItem: Component', () => {
       const toast = await screen.findByTestId('toast-1');
 
       expect(trackEvent).toHaveBeenCalledWith('crud', 'add', 1);
-      expect(toast).toHaveTextContent('🎉 Item added successfully!');
+      expect(toast).toHaveTextContent('Item added successfully!');
     });
   });
 });

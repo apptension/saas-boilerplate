@@ -84,7 +84,7 @@ describe('MembershipEntry: Component', () => {
 
     expect(requestMock.newData).toHaveBeenCalled();
     const toast = await screen.findByTestId('toast-1');
-    expect(toast).toHaveTextContent('🎉 The user role was updated successfully!');
+    expect(toast).toHaveTextContent('The user role was updated successfully!');
   });
 
   it('should commit delete mutation', async () => {
@@ -109,6 +109,6 @@ describe('MembershipEntry: Component', () => {
     expect(requestMock.newData).toHaveBeenCalled();
     expect(refetch).toHaveBeenCalled();
     const toast = await screen.findByTestId('toast-1');
-    expect(toast).toHaveTextContent('🎉 User was deleted successfully!');
+    expect(toast).toHaveTextContent('User was removed successfully!');
   });
 });

@@ -121,6 +121,6 @@ describe('TenantDangerSettings: Component', () => {
 
     expect(requestMock.newData).toHaveBeenCalled();
     const toast = await screen.findByTestId('toast-1');
-    expect(toast).toHaveTextContent('🎉 Organization deleted successfully!');
+    expect(toast).toHaveTextContent('Organization deleted successfully!');
   });
 });

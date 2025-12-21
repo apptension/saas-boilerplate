@@ -24,9 +24,10 @@ export const usePasswordResetConfirmForm = (user: string, token: string) => {
 
       toast({
         description: intl.formatMessage({
-          defaultMessage: '🎉 Password reset successfully!',
+          defaultMessage: 'Password reset successfully!',
           id: 'Auth / Reset password confirm / Success message',
         }),
+        variant: 'success',
       });
     },
     onError: (error) => {

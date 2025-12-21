@@ -15,7 +15,7 @@ export const InvitationForm = () => {
 
   const successMessage = intl.formatMessage({
     id: 'Tenant Members / Invitation form / Success message',
-    defaultMessage: '🎉 User invited successfully!',
+    defaultMessage: 'User invited successfully!',
   });
 
   const [commitTenantInvitationMutation, { error, loading: loadingMutation }] = useMutation(createTenantInvitation, {
@@ -29,7 +29,7 @@ export const InvitationForm = () => {
     ],
     onCompleted: () => {
       trackEvent('tenantInvitation', 'invite', currentTenant.data?.id);
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
     },
   });
 

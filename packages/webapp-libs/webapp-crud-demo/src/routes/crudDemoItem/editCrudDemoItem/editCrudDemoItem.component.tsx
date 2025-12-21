@@ -34,7 +34,7 @@ export const EditCrudDemoItem = () => {
 
   const successMessage = intl.formatMessage({
     id: 'CrudDemoItem form / EditCrudDemoItem / Success message',
-    defaultMessage: '🎉 Changes saved successfully!',
+    defaultMessage: 'Changes saved successfully!',
   });
 
   const generateLocalePath = useGenerateLocalePath();
@@ -44,7 +44,7 @@ export const EditCrudDemoItem = () => {
 
       trackEvent('crud', 'edit', id);
 
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
 
       navigate(generateLocalePath(RoutesConfig.crudDemoItem.list));
     },
