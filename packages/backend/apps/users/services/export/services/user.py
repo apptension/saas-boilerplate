@@ -27,7 +27,7 @@ class _ProcessUserDataExport:
     @staticmethod
     def _get_user(user_id: str) -> Optional[User]:
         try:
-            user = User.objects.prefetch_related('profile').get(id=user_id)
+            user = User.objects.prefetch_related('profile', 'cruddemoitem_set', 'documents').get(id=user_id)
             return user
         except User.DoesNotExist:
             return None

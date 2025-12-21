@@ -34,6 +34,7 @@ urlpatterns = [
             [
                 path('graphql/', DRFAuthenticatedGraphQLView.as_view(graphiql=settings.DEBUG)),
                 path("content/", include("apps.content.urls")),
+                path("demo/", include("apps.demo.urls")),
                 path("", include("apps.users.urls")),
             ]
         ),

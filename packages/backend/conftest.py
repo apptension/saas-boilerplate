@@ -18,6 +18,7 @@ pytest_plugins = [
     'tests.aws_fixtures',
     'common.tests.fixtures',
     'apps.users.tests.fixtures',
+    'apps.demo.tests.fixtures',
     'apps.content.tests.fixtures',
     'apps.notifications.tests.fixtures',
     'apps.integrations.tests.fixtures',

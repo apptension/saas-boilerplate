@@ -59,6 +59,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "apps.content",
+    "apps.demo",
     "apps.users",
     "apps.notifications",
     "apps.websockets",
