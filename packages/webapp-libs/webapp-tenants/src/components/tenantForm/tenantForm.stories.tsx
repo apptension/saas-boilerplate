@@ -27,3 +27,20 @@ export const WithInitialData: StoryObj<typeof meta> = {
 export const WithoutData: StoryObj<typeof meta> = {
   decorators: [withProviders({})],
 };
+
+export const CreateMode: StoryObj<typeof meta> = {
+  args: {
+    submitLabel: 'Create organization',
+  },
+  decorators: [withProviders({})],
+};
+
+export const HiddenCancel: StoryObj<typeof meta> = {
+  args: {
+    hideCancel: true,
+    initialData: {
+      name: 'Test organization',
+    },
+  },
+  decorators: [withProviders({})],
+};

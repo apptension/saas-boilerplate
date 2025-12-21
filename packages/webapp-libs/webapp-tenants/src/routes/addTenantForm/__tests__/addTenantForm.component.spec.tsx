@@ -75,7 +75,7 @@ describe('AddTenantForm: Component', () => {
       render(<Component />, { apolloMocks: [commonQueryMock, requestMock, refetchMock] });
 
       await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item name');
-      await userEvent.click(screen.getByRole('button', { name: /save/i }));
+      await userEvent.click(screen.getByRole('button', { name: /create organization/i }));
       expect(requestMock.newData).toHaveBeenCalled();
       expect(refetchMock.newData).toHaveBeenCalled();
 
