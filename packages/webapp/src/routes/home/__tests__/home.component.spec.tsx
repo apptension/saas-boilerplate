@@ -39,12 +39,15 @@ describe('Home: Component', () => {
     // Check for "Available Features" heading
     expect(await screen.findByText('Available Features')).toBeInTheDocument();
     // Check for feature cards (owner should see all 6)
+    // Note: Some text like "Documents", "CRUD Items" appears in both stat cards and feature cards
     expect(await screen.findByText('Payments')).toBeInTheDocument();
     expect(await screen.findByText('Subscriptions')).toBeInTheDocument();
     expect(await screen.findByText('Open AI integration')).toBeInTheDocument();
     expect(await screen.findByText('Content items')).toBeInTheDocument();
-    expect(await screen.findByText('Documents')).toBeInTheDocument();
-    expect(await screen.findByText('CRUD')).toBeInTheDocument();
+    const documentsElements = await screen.findAllByText('Documents');
+    expect(documentsElements.length).toBeGreaterThan(0);
+    const crudElements = await screen.findAllByText(/^CRUD/);
+    expect(crudElements.length).toBeGreaterThan(0);
   });
 
   it('should display dashboard items for member', async () => {
@@ -71,7 +74,10 @@ describe('Home: Component', () => {
     expect(screen.queryByText('Subscriptions')).not.toBeInTheDocument();
     expect(await screen.findByText('Open AI integration')).toBeInTheDocument();
     expect(await screen.findByText('Content items')).toBeInTheDocument();
-    expect(await screen.findByText('Documents')).toBeInTheDocument();
-    expect(await screen.findByText('CRUD')).toBeInTheDocument();
+    // Note: "Documents" and "CRUD" text appears in both stat cards and feature cards
+    const documentsElements = await screen.findAllByText('Documents');
+    expect(documentsElements.length).toBeGreaterThan(0);
+    const crudElements = await screen.findAllByText(/^CRUD/);
+    expect(crudElements.length).toBeGreaterThan(0);
   });
 });
