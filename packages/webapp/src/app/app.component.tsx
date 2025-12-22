@@ -80,6 +80,7 @@ export const App = () => {
             <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem routesConfig={RoutesConfig} />} />
             <Route path={RoutesConfig.documents} element={<Documents />} />
             <Route path={RoutesConfig.saasIdeas} element={<SaasIdeas />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
 
           <Route element={<AuthRoute />}>
