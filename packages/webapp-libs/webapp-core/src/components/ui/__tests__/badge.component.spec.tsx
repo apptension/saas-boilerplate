@@ -50,3 +50,4 @@ describe('Badge: Component', () => {
     expect(badge).toHaveClass('custom-class');
   });
 });
+
