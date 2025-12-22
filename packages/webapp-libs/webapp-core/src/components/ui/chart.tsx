@@ -158,9 +158,9 @@ export const StatCard = ({ title, value, description, icon, trend, className, ac
       className
     )}
   >
-    {/* Subtle gradient accent */}
+    {/* Subtle gradient accent in background */}
     <div
-      className="absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-10 blur-2xl transition-opacity group-hover:opacity-20"
+      className="absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-15 blur-2xl transition-opacity group-hover:opacity-25"
       style={{ backgroundColor: accentColor || chartColors.brandGreen }}
     />
 
@@ -169,8 +169,8 @@ export const StatCard = ({ title, value, description, icon, trend, className, ac
         <p className="text-sm font-medium text-muted-foreground">{title}</p>
         {icon && (
           <div
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50"
-            style={{ color: accentColor }}
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-black dark:text-black"
+            style={{ backgroundColor: accentColor || chartColors.brandGreen }}
           >
             {icon}
           </div>
