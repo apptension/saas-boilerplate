@@ -7,21 +7,138 @@ import ProjectName from '../../shared/components/ProjectName.component';
 backend environment. It's a great way to test email functionality and ensure that everything is working as expected
 before deploying to production.
 
+## How It Works
+
+Mailcatcher runs as a Docker container alongside your other backend services. It provides:
+
+- **SMTP Server** on port `1025` - Receives emails from the backend
+- **Web Interface** on port `1080` - View and inspect captured emails
+
+When properly configured, all emails sent from the backend will be intercepted by Mailcatcher instead of being sent
+to real email addresses.
+
+## Local Development Email Options
+
+For local development, you have two options for handling emails:
+
+| Backend | Where emails appear | Best for |
+|---------|---------------------|----------|
+| `console.EmailBackend` | Celery worker logs | Quick debugging, simpler setup |
+| `smtp.EmailBackend` | Mailcatcher web UI | Reviewing email formatting, testing multiple emails |
+
+### Option 1: Console Backend (Simpler)
+
+This is the simplest option - emails are printed directly to the Celery worker logs.
+
+Add to your `packages/backend/.env` file:
+
+```bash title="packages/backend/.env"
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+EMAIL_FROM_ADDRESS=noreply@localhost
+```
+
+View emails in the Celery logs:
+
+```bash
+docker compose logs celery_default
+```
+
+:::info
+With the console backend, the Mailcatcher container still runs but won't receive any emails.
+:::
+
+### Option 2: Mailcatcher (Recommended)
+
+This option sends emails to Mailcatcher's web interface, providing a better experience for reviewing email content
+and formatting.
+
+Add to your `packages/backend/.env` file:
+
+```bash title="packages/backend/.env"
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=mailcatcher
+EMAIL_PORT=1025
+EMAIL_FROM_ADDRESS=noreply@localhost
+```
+
+After adding these variables, restart the backend services:
+
+```bash
+pnpm saas down
+pnpm saas up
+```
+
 ## Usage
 
 The <ProjectName/> includes Mailcatcher as part of its development tools, so it will start automatically along with
 all backend services. To access Mailcatcher, simply go to [`localhost:1080`](http://localhost:1080) in your web browser.
 This will take you to the Mailcatcher web interface, where you can view all emails sent from your local environment.
 
+### Testing Email Delivery
 
-[//]: # (:::info)
+Once configured with the SMTP backend, you can test email delivery by:
 
-[//]: # ()
-[//]: # (Note that in order for Mailcatcher to work properly, your emails need to be pre-rendered.)
+1. Triggering any action that sends an email (e.g., user registration, password reset)
+2. Opening the Mailcatcher interface at [`localhost:1080`](http://localhost:1080)
+3. Viewing the captured email in the inbox
 
-[//]: # (We have provided detailed instructions on how to do this in our documentation)
+### Sending Test Emails from Storybook
 
-[//]: # ([here]&#40;/working-with-sb/emails/build-emails&#41;.)
+You can also send test emails directly from Storybook. The email templates have a built-in "Send Email" button that
+dispatches the email to Mailcatcher, allowing you to preview the final rendered email.
 
-[//]: # ()
-[//]: # (:::)
+## Troubleshooting
+
+### Emails not appearing in Mailcatcher
+
+If emails are not showing up in the Mailcatcher interface:
+
+1. **Check your email backend** - Make sure you're using `smtp.EmailBackend`, not `console.EmailBackend`.
+   With the console backend, emails appear in Celery logs instead of Mailcatcher.
+
+2. **Check your environment variables** - Ensure you've configured the `EMAIL_BACKEND`, `EMAIL_HOST`, `EMAIL_PORT`,
+   and `EMAIL_FROM_ADDRESS` variables in `packages/backend/.env`
+
+3. **Restart the backend services** - After changing `.env` files, you must restart the services:
+   ```bash
+   pnpm saas down
+   pnpm saas up
+   ```
+
+4. **Verify Mailcatcher is running** - Check that the container is running:
+   ```bash
+   docker ps | grep mailcatcher
+   ```
+
+5. **Check Celery worker logs** - Emails are sent asynchronously via Celery. Check the worker logs for errors:
+   ```bash
+   docker compose logs celery_default
+   ```
+
+6. **Verify the email renderer is built** - The email templates need to be pre-built. Run:
+   ```bash
+   pnpm nx run webapp-emails:build
+   ```
+
+### Mailcatcher container not starting
+
+If the Mailcatcher container fails to start:
+
+1. Check if port 1080 or 1025 is already in use by another application
+2. Try removing and recreating the containers:
+   ```bash
+   pnpm saas down
+   docker volume prune  # Optional: removes unused volumes
+   pnpm saas up
+   ```
+
+## Production vs Local Development
+
+| Environment | Email Backend | Destination |
+|-------------|---------------|-------------|
+| Local (Console) | `django.core.mail.backends.console.EmailBackend` | Celery worker logs |
+| Local (Mailcatcher) | `django.core.mail.backends.smtp.EmailBackend` | Mailcatcher web UI |
+| Production (AWS) | `django_ses.SESBackend` | AWS SES → Real email addresses |
+
+In production, emails are sent through [AWS SES](https://aws.amazon.com/ses/), which requires proper domain verification
+and configuration. Both console and Mailcatcher backends are intended for local development use only.

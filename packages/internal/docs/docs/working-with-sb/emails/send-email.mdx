@@ -22,6 +22,26 @@ import BackendEmailEnvVars from '../../shared/partials/env-vars/_backend_email.m
 
 <BackendEmailEnvVars />
 
+:::tip Local Development Setup
+For local development, you have two options:
+
+**Option 1: Console Backend** - Emails appear in Celery worker logs (`docker compose logs celery_default`)
+```bash
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+EMAIL_FROM_ADDRESS=noreply@localhost
+```
+
+**Option 2: Mailcatcher** - Emails appear in web UI at [`localhost:1080`](http://localhost:1080)
+```bash
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=mailcatcher
+EMAIL_PORT=1025
+EMAIL_FROM_ADDRESS=noreply@localhost
+```
+
+See the [Mailcatcher documentation](/working-with-sb/dev-tools/mailcatcher) for more details.
+:::
+
 ## Email Serializer
 
 In the SaaS Boilerplate, email data is serialized using the Django REST Framework serializers.
@@ -47,7 +67,8 @@ When an email is sent, the email data is first validated using the serializer to
 
 To create a new email class, you can subclass the `common.emails.Email` class and define the necessary properties and methods.
 In the SaaS Boilerplate, the `Email` class is a subclass of the `common.tasks.Task` class, which emits the email event to be handled by async workers.
-The email handler then uses the [AWS SES](https://docs.aws.amazon.com/ses/index.html) to send the email.
+In production, the email handler uses [AWS SES](https://docs.aws.amazon.com/ses/index.html) to send the email. For local development,
+emails are sent to [Mailcatcher](/working-with-sb/dev-tools/mailcatcher) when properly configured.
 
 For example, the following code defines a new email class that sends the account activation email:
 
