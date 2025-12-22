@@ -66,7 +66,7 @@ describe('Sidebar: Component', () => {
     it('should not show link to admin page', async () => {
       const { waitForApolloMocks } = render(<Component />);
       await waitForApolloMocks();
-      expect(screen.queryByText(/admin/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/admin panel/i)).not.toBeInTheDocument();
     });
   });
 
@@ -97,7 +97,7 @@ describe('Sidebar: Component', () => {
         const apolloMocks = getApolloMocks();
         const { waitForApolloMocks } = render(<Component />, { apolloMocks });
         await waitForApolloMocks();
-        expect(screen.queryByText(/admin/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/admin panel/i)).not.toBeInTheDocument();
       });
 
       describe('on desktop', () => {
@@ -127,7 +127,7 @@ describe('Sidebar: Component', () => {
       it('should show link to admin page', async () => {
         const apolloMocks = getApolloMocks(Role.ADMIN);
         render(<Component />, { apolloMocks });
-        expect(await screen.findByText(/admin/i)).toBeInTheDocument();
+        expect(await screen.findByText(/admin panel/i)).toBeInTheDocument();
       });
     });
   });
