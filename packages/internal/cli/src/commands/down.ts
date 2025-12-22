@@ -4,7 +4,7 @@ import { assertDockerIsRunning } from '../lib/docker';
 import { BaseCommand } from '../baseCommand';
 
 export default class Down extends BaseCommand<typeof Down> {
-  static description = 'Starts both backend and frontend';
+  static description = 'Stops backend and frontend services';
 
   static examples = [`$ <%= config.bin %> <%= command.id %>`];
 
