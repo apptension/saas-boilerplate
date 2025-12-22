@@ -15,6 +15,7 @@ import {
   Code2,
   ExternalLink,
   Github,
+  LayoutDashboard,
   Rocket,
   Server,
   Shield,
@@ -139,7 +140,7 @@ export const Home = () => {
         {/* Hero Section */}
         <div className="space-y-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-primary" />
+            <LayoutDashboard className="h-6 w-6 text-primary" />
             <h1 className="text-3xl font-bold tracking-tight">
               <FormattedMessage defaultMessage="Dashboard" id="Home / header" />
             </h1>
