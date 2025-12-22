@@ -169,6 +169,19 @@ class CreateTenantInvitationMutation(mutations.SerializerMutation):
         serializer_class = serializers.CreateTenantInvitationSerializer
 
 
+class ResendTenantInvitationMutation(mutations.SerializerMutation):
+    ok = graphene.Boolean()
+
+    class Meta:
+        serializer_class = serializers.ResendTenantInvitationSerializer
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        if "id" in input:
+            _, input["id"] = from_global_id(input["id"])
+        return super().mutate_and_get_payload(root, info, **input)
+
+
 class DeleteTenantMembershipMutation(mutations.DeleteModelMutation):
     class Input:
         id = graphene.String()
@@ -268,6 +281,7 @@ class TenantOwnerMutation(graphene.ObjectType):
     update_tenant = UpdateTenantMutation.Field()
     delete_tenant = DeleteTenantMutation.Field()
     create_tenant_invitation = CreateTenantInvitationMutation.Field()
+    resend_tenant_invitation = ResendTenantInvitationMutation.Field()
     update_tenant_membership = UpdateTenantMembershipMutation.Field()
 
 

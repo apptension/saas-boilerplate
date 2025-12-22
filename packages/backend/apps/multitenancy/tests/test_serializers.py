@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 from ..models import TenantMembership
 from ..constants import TenantUserRole, TenantType
-from ..serializers import CreateTenantInvitationSerializer
+from ..serializers import CreateTenantInvitationSerializer, ResendTenantInvitationSerializer
 
 
 pytestmark = pytest.mark.django_db
@@ -91,3 +91,91 @@ class TestCreateTenantInvitationSerializer:
 
         assert not serializer.is_valid()
         assert 'Invitation already exists' in serializer.errors['non_field_errors'][0]
+
+
+class TestResendTenantInvitationSerializer:
+    def test_resend_invitation_for_existing_user(self, mocker, user, user_factory, tenant_factory):
+        mocker.patch("apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token")
+        mock_send_email = mocker.patch("apps.multitenancy.serializers.TenantInvitationEmail")
+        mock_send_notification = mocker.patch(
+            "apps.multitenancy.serializers.send_tenant_invitation_notification"
+        )
+        creator = user_factory()
+
+        tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)
+        membership = TenantMembership.objects.create(
+            user=user, tenant=tenant, role=TenantUserRole.MEMBER, is_accepted=False, creator=creator
+        )
+
+        data = {
+            "id": membership.id,
+            "tenant_id": str(tenant.id),
+        }
+        serializer = ResendTenantInvitationSerializer(data=data, context={'request': Mock(tenant=tenant, user=creator)})
+        assert serializer.is_valid()
+
+        result = serializer.create(serializer.validated_data)
+
+        assert result['ok']
+        mock_send_email.assert_called_once()
+        mock_send_notification.assert_called_once()
+
+    def test_resend_invitation_for_invitee_email(self, mocker, user_factory, tenant_factory):
+        mocker.patch("apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token")
+        mock_send_email = mocker.patch("apps.multitenancy.serializers.TenantInvitationEmail")
+        mock_send_notification = mocker.patch(
+            "apps.multitenancy.serializers.send_tenant_invitation_notification"
+        )
+        creator = user_factory()
+
+        tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)
+        membership = TenantMembership.objects.create(
+            invitee_email_address="test@example.com",
+            tenant=tenant,
+            role=TenantUserRole.MEMBER,
+            is_accepted=False,
+            creator=creator,
+        )
+
+        data = {
+            "id": membership.id,
+            "tenant_id": str(tenant.id),
+        }
+        serializer = ResendTenantInvitationSerializer(data=data, context={'request': Mock(tenant=tenant, user=creator)})
+        assert serializer.is_valid()
+
+        result = serializer.create(serializer.validated_data)
+
+        assert result['ok']
+        mock_send_email.assert_called_once()
+        # For invitee emails without user, notification is not sent
+        mock_send_notification.assert_not_called()
+
+    def test_resend_invitation_not_found(self, user_factory, tenant_factory):
+        creator = user_factory()
+        tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)
+
+        data = {
+            "id": "nonexistent-id",
+            "tenant_id": str(tenant.id),
+        }
+        serializer = ResendTenantInvitationSerializer(data=data, context={'request': Mock(tenant=tenant, user=creator)})
+
+        # Should fail validation because the membership doesn't exist
+        assert not serializer.is_valid()
+
+    def test_resend_invitation_already_accepted(self, user, user_factory, tenant_factory):
+        creator = user_factory()
+        tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)
+        membership = TenantMembership.objects.create(
+            user=user, tenant=tenant, role=TenantUserRole.MEMBER, is_accepted=True, creator=creator
+        )
+
+        data = {
+            "id": membership.id,
+            "tenant_id": str(tenant.id),
+        }
+        serializer = ResendTenantInvitationSerializer(data=data, context={'request': Mock(tenant=tenant, user=creator)})
+
+        # Should fail because it's already accepted
+        assert not serializer.is_valid()

@@ -139,6 +139,52 @@ class CreateTenantInvitationSerializer(serializers.Serializer):
         return {"ok": True, **validated_data}
 
 
+class ResendTenantInvitationSerializer(serializers.Serializer):
+    """
+    Serializer for resending an invitation email to a pending membership.
+
+    This serializer finds an existing not-accepted membership and resends the invitation email
+    with a fresh token.
+    """
+
+    id = hidrest.HashidSerializerCharField(source_field="multitenancy.TenantMembership.id", write_only=True)
+    tenant_id = serializers.CharField(write_only=True)
+    ok = serializers.BooleanField(read_only=True)
+
+    def validate(self, attrs):
+        membership_id = attrs["id"]
+        tenant = self.context["request"].tenant
+
+        membership = (
+            models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, tenant=tenant).first()
+        )
+
+        if not membership:
+            raise exceptions.NotFound(_("Pending invitation not found."))
+
+        attrs["membership"] = membership
+        return super().validate(attrs)
+
+    def create(self, validated_data):
+        from .notifications import TenantInvitationEmail, send_tenant_invitation_notification
+
+        membership = validated_data["membership"]
+        email = membership.user.email if membership.user else membership.invitee_email_address
+
+        token = tenant_invitation_token.make_token(user_email=email, tenant_membership=membership)
+        global_tenant_membership_id = to_global_id("TenantMembershipType", membership.id)
+
+        TenantInvitationEmail(
+            to=email,
+            data={'tenant_membership_id': global_tenant_membership_id, 'token': token},
+        ).send()
+
+        if membership.user:
+            send_tenant_invitation_notification(membership, global_tenant_membership_id, token)
+
+        return {"ok": True}
+
+
 class UpdateTenantMembershipSerializer(serializers.ModelSerializer):
     """
     Serializer for update a tenant membership.

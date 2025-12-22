@@ -1,1 +1,1 @@
-export * from './invotationForm.component';
+export * from './invitationForm.component';

@@ -63,3 +63,80 @@ describe('ComponentName', () => {
 - Conditional rendering based on state/props
 - Accessibility (proper roles, labels)
 - Error states and edge cases
+
+## Testing GraphQL Mutations
+
+Use the `composeMockedQueryResult` helper and mock the mutation properly:
+
+```tsx
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { myMutation } from '../component.graphql';
+
+const prepareMocks = (mutation, input = {}) => {
+  const mockedId = '1';
+  const mockedTenantId = '2';
+  
+  const data = {
+    mutationName: { ok: true },
+  };
+  const variables = {
+    input: {
+      id: mockedId,
+      tenantId: mockedTenantId,
+      ...input,
+    },
+  };
+  
+  const requestMock = composeMockedQueryResult(mutation, {
+    variables,
+    data,
+  });
+
+  // Track if mutation was called
+  requestMock.newData = jest.fn(() => ({ data }));
+
+  return { requestMock, /* other mocks */ };
+};
+```
+
+## Testing Mutation Calls with Toast Notifications
+
+```tsx
+it('should call mutation and show success toast', async () => {
+  const { requestMock, commonQueryMock } = prepareMocks(myMutation);
+
+  render(<Component />, {
+    apolloMocks: [commonQueryMock, requestMock],
+  });
+
+  const actionButton = await screen.findByRole('button', { name: /action/i });
+  await userEvent.click(actionButton);
+
+  expect(requestMock.newData).toHaveBeenCalled();
+  
+  const toast = await screen.findByTestId('toast-1');
+  expect(toast).toHaveTextContent('Success message');
+});
+```
+
+## Testing Conditional UI Elements
+
+```tsx
+it('should show action button only when condition is met', async () => {
+  const membership = membershipFactory({ invitationAccepted: false });
+  
+  render(<Component membership={membership} />, { apolloMocks });
+  
+  // Button should be visible
+  expect(screen.getByRole('button', { name: /resend/i })).toBeInTheDocument();
+});
+
+it('should not show action button when condition is not met', async () => {
+  const membership = membershipFactory({ invitationAccepted: true });
+  
+  render(<Component membership={membership} />, { apolloMocks });
+  
+  // Button should NOT be visible
+  expect(screen.queryByRole('button', { name: /resend/i })).not.toBeInTheDocument();
+});
+```

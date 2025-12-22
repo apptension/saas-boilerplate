@@ -19,15 +19,19 @@ import { Skeleton as SkeletonComponent } from '@sb/webapp-core/components/ui/ske
 import { TableCell, TableRow } from '@sb/webapp-core/components/ui/table';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useToast } from '@sb/webapp-core/toast';
-import { GripHorizontal, Hourglass, UserCheck } from 'lucide-react';
-import { indexBy, isNil, prop, trim } from 'ramda';
+import { GripHorizontal, Hourglass, RefreshCw, UserCheck } from 'lucide-react';
+import { indexBy, prop, trim } from 'ramda';
 import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { useGenerateTenantPath, useTenantRoles } from '../../../hooks';
 import { useCurrentTenant } from '../../../providers';
-import { deleteTenantMembershipMutation, updateTenantMembershipMutation } from './membershipEntry.graphql';
+import {
+  deleteTenantMembershipMutation,
+  resendTenantInvitationMutation,
+  updateTenantMembershipMutation,
+} from './membershipEntry.graphql';
 
 export type MembershipEntryProps = {
   className?: string;
@@ -65,6 +69,16 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
     defaultMessage: 'Unable to delete the user.',
   });
 
+  const resendSuccessMessage = intl.formatMessage({
+    id: 'Membership Entry / ResendInvitation / Success message',
+    defaultMessage: 'Invitation was resent successfully!',
+  });
+
+  const resendFailMessage = intl.formatMessage({
+    id: 'Membership Entry / ResendInvitation / Fail message',
+    defaultMessage: 'Unable to resend the invitation.',
+  });
+
   const [commitUpdateMutation, { loading }] = useMutation(updateTenantMembershipMutation, {
     onCompleted: () => {
       toast({ description: updateSuccessMessage, variant: 'success' });
@@ -81,6 +95,15 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
     },
     onError: () => {
       toast({ description: deleteFailMessage, variant: 'destructive' });
+    },
+  });
+
+  const [commitResendMutation, { loading: resendLoading }] = useMutation(resendTenantInvitationMutation, {
+    onCompleted: () => {
+      toast({ description: resendSuccessMessage, variant: 'success' });
+    },
+    onError: () => {
+      toast({ description: resendFailMessage, variant: 'destructive' });
     },
   });
 
@@ -118,6 +141,19 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
     if (!currentTenant) return;
 
     commitDeleteMutation({
+      variables: {
+        input: {
+          id: membership.id,
+          tenantId: currentTenant.id,
+        },
+      },
+    });
+  };
+
+  const resendInvitation = () => {
+    if (!currentTenant) return;
+
+    commitResendMutation({
       variables: {
         input: {
           id: membership.id,
@@ -169,9 +205,21 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
             <FormattedMessage id="Tenant Membersip Entry / Yes" defaultMessage="Yes" />
           </div>
         ) : (
-          <div className="flex items-center">
-            <Hourglass className="mr-2 w-4 h-4" />
-            <FormattedMessage id="Tenant Membersip Entry / Yes" defaultMessage="No" />
+          <div className="flex items-center gap-3">
+            <div className="flex items-center">
+              <Hourglass className="mr-2 w-4 h-4" />
+              <FormattedMessage id="Tenant Membersip Entry / No" defaultMessage="No" />
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-6 px-2 text-xs"
+              onClick={resendInvitation}
+              disabled={resendLoading}
+            >
+              <RefreshCw className={`h-3 w-3 mr-1 ${resendLoading ? 'animate-spin' : ''}`} />
+              <FormattedMessage id="Tenant Membersip Entry / Resend" defaultMessage="Resend" />
+            </Button>
           </div>
         )}
       </TableCell>

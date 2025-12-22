@@ -9,7 +9,7 @@ import { tenantMembersListQuery } from '../../../../../components/tenantMembersL
 import { tenantFactory } from '../../../../../tests/factories/tenant';
 import { render } from '../../../../../tests/utils/rendering';
 import { createTenantInvitation } from '../invitationForm.graphql';
-import { InvitationForm } from '../invotationForm.component';
+import { InvitationForm } from '../invitationForm.component';
 
 jest.mock('@sb/webapp-core/services/analytics');
 

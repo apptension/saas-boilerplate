@@ -762,6 +762,7 @@ type ApiMutation {
   "Mutation to delete a tenant from the system."
   deleteTenant(input: DeleteTenantMutationInput!): DeleteTenantMutationPayload
   createTenantInvitation(input: CreateTenantInvitationMutationInput!): CreateTenantInvitationMutationPayload
+  resendTenantInvitation(input: ResendTenantInvitationMutationInput!): ResendTenantInvitationMutationPayload
   updateTenantMembership(input: UpdateTenantMembershipMutationInput!): UpdateTenantMembershipMutationPayload
   createTenant(input: CreateTenantMutationInput!): CreateTenantMutationPayload
   acceptTenantInvitation(input: AcceptTenantInvitationMutationInput!): AcceptTenantInvitationMutationPayload
@@ -810,6 +811,10 @@ type CreateTenantInvitationMutationPayload {
   email: String
   role: TenantUserRole
   tenantId: String
+  ok: Boolean
+  clientMutationId: String
+}
+type ResendTenantInvitationMutationPayload {
   ok: Boolean
   clientMutationId: String
 }
@@ -1495,6 +1500,11 @@ input DeleteTenantMutationInput {
 input CreateTenantInvitationMutationInput {
   email: String!
   role: TenantUserRole!
+  tenantId: String!
+  clientMutationId: String
+}
+input ResendTenantInvitationMutationInput {
+  id: String!
   tenantId: String!
   clientMutationId: String
 }

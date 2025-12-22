@@ -75,3 +75,85 @@ const { matches: isDesktop } = useMediaQuery({
 // Combine with collapsed state
 const isCollapsedDesktop = isSidebarCollapsed && isDesktop;
 ```
+
+## Inline Action Buttons
+
+For small inline action buttons (like resend, refresh, retry):
+
+```tsx
+import { RefreshCw } from 'lucide-react';
+
+<Button
+  variant="outline"
+  size="sm"
+  className="h-6 px-2 text-xs"
+  onClick={handleAction}
+  disabled={loading}
+>
+  <RefreshCw className={`h-3 w-3 mr-1 ${loading ? 'animate-spin' : ''}`} />
+  <FormattedMessage id="Feature / Action" defaultMessage="Resend" />
+</Button>
+```
+
+Key points:
+- Use `variant="outline"` for visibility with border
+- Use `size="sm"` with custom `className="h-6 px-2 text-xs"` for compact size
+- Add spinning animation on loading: `${loading ? 'animate-spin' : ''}`
+- Disable button during loading: `disabled={loading}`
+
+## Conditional Rendering with Actions
+
+Show different UI based on state with optional actions:
+
+```tsx
+{condition ? (
+  <div className="flex items-center">
+    <CheckIcon className="mr-2 w-4 h-4" />
+    <FormattedMessage id="Feature / Yes" defaultMessage="Yes" />
+  </div>
+) : (
+  <div className="flex items-center gap-2">
+    <PendingIcon className="mr-2 w-4 h-4" />
+    <FormattedMessage id="Feature / No" defaultMessage="No" />
+    <ActionButton onClick={handleAction} loading={loading} />
+  </div>
+)}
+```
+
+## Multiple Mutations in One Component
+
+When a component needs multiple mutations:
+
+```tsx
+const [commitUpdateMutation, { loading: updateLoading }] = useMutation(updateMutation, {
+  onCompleted: () => toast({ description: updateSuccessMessage, variant: 'success' }),
+  onError: () => toast({ description: updateFailMessage, variant: 'destructive' }),
+});
+
+const [commitDeleteMutation] = useMutation(deleteMutation, {
+  onCompleted: () => {
+    toast({ description: deleteSuccessMessage, variant: 'success' });
+    onAfterUpdate?.();
+  },
+  onError: () => toast({ description: deleteFailMessage, variant: 'destructive' }),
+});
+
+const [commitResendMutation, { loading: resendLoading }] = useMutation(resendMutation, {
+  onCompleted: () => toast({ description: resendSuccessMessage, variant: 'success' }),
+  onError: () => toast({ description: resendFailMessage, variant: 'destructive' }),
+});
+```
+
+Define all i18n messages at the top of the component:
+
+```tsx
+const updateSuccessMessage = intl.formatMessage({
+  id: 'Feature / Update / Success',
+  defaultMessage: 'Updated successfully!',
+});
+
+const resendSuccessMessage = intl.formatMessage({
+  id: 'Feature / Resend / Success',
+  defaultMessage: 'Resent successfully!',
+});
+```

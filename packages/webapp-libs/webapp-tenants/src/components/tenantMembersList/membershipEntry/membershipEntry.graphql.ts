@@ -18,3 +18,11 @@ export const deleteTenantMembershipMutation = gql(/* GraphQL */ `
     }
   }
 `);
+
+export const resendTenantInvitationMutation = gql(/* GraphQL */ `
+  mutation resendTenantInvitationMutation($input: ResendTenantInvitationMutationInput!) {
+    resendTenantInvitation(input: $input) {
+      ok
+    }
+  }
+`);

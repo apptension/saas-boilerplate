@@ -233,12 +233,33 @@ className={cn(
 
 Design tokens: `primary`, `destructive`, `muted`, `accent`, `border`, `background`, `foreground`
 
-## 11. Before Committing Changes
+## 11. Adding New GraphQL Mutations
+
+When adding a new mutation, update all three layers:
+
+### Backend (`packages/backend/apps/<app>/`)
+1. Add serializer in `serializers.py`
+2. Add mutation class in `schema.py`
+3. Register mutation in appropriate mutation class (TenantOwnerMutation, etc.)
+4. Add tests in `tests/test_serializers.py`
+
+### GraphQL Schema (`packages/webapp-libs/webapp-api-client/graphql/schema/api.graphql`)
+1. Add input type: `input MyMutationInput { ... }`
+2. Add payload type: `type MyMutationPayload { ok: Boolean, clientMutationId: String }`
+3. Add mutation to `ApiMutation`: `myMutation(input: MyMutationInput!): MyMutationPayload`
+
+### Frontend (`packages/webapp-libs/webapp-<lib>/`)
+1. Add mutation in `*.graphql.ts` file
+2. Run codegen: `pnpm nx run webapp-api-client:graphql:generate-types`
+3. Use mutation in component with `useMutation` hook
+
+## 12. Before Committing Changes
 
 1. **Run type-check**: `pnpm tsc --noEmit -p packages/webapp/tsconfig.app.json`
 2. **Run affected tests**: `pnpm nx run-many --target=test --projects=<affected-lib>`
 3. **Update snapshots if UI changed intentionally**: Add `--updateSnapshot` flag
 4. **Check for linter errors**: Tests and type-check should pass without errors
+5. **Run GraphQL codegen if schema changed**: `pnpm nx run webapp-api-client:graphql:generate-types`
 
 ## Quick Reference: Common Imports
 

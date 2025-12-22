@@ -8,7 +8,11 @@ import { DocumentNode } from 'graphql';
 import { membershipFactory, tenantFactory } from '../../../../tests/factories/tenant';
 import { render } from '../../../../tests/utils/rendering';
 import { MembershipEntry, MembershipEntryProps } from '../membershipEntry.component';
-import { deleteTenantMembershipMutation, updateTenantMembershipMutation } from '../membershipEntry.graphql';
+import {
+  deleteTenantMembershipMutation,
+  resendTenantInvitationMutation,
+  updateTenantMembershipMutation,
+} from '../membershipEntry.graphql';
 
 const prepareMocks = <T extends DocumentNode>(query: T, input: Record<string, any> = {}) => {
   const mockedMembershipId = '1';
@@ -110,5 +114,75 @@ describe('MembershipEntry: Component', () => {
     expect(refetch).toHaveBeenCalled();
     const toast = await screen.findByTestId('toast-1');
     expect(toast).toHaveTextContent('User was removed successfully!');
+  });
+
+  it('should show resend button for pending invitations and commit resend mutation', async () => {
+    const mockedMembershipId = '1';
+    const mockedTenantId = '2';
+    const membership = membershipFactory({
+      role: TenantUserRole.MEMBER,
+      id: mockedMembershipId,
+      invitationAccepted: false,
+      inviteeEmailAddress: 'test@example.com',
+    });
+    const user = currentUserFactory({
+      roles: [TenantUserRole.OWNER],
+      tenants: [
+        tenantFactory({
+          name: 'name',
+          id: mockedTenantId,
+        }),
+      ],
+    });
+    const commonQueryMock = fillCommonQueryWithUser(user);
+    const data = {
+      resendTenantInvitation: {
+        ok: true,
+      },
+    };
+    const variables = {
+      input: {
+        id: mockedMembershipId,
+        tenantId: mockedTenantId,
+      },
+    };
+    const requestMock = composeMockedQueryResult(resendTenantInvitationMutation, {
+      variables,
+      data,
+    });
+
+    requestMock.newData = jest.fn(() => ({
+      data,
+    }));
+
+    render(<Component membership={membership} />, {
+      apolloMocks: [commonQueryMock, requestMock],
+    });
+
+    // Check that "No" is displayed and resend button is visible
+    expect(screen.getByText(/No/i)).toBeInTheDocument();
+
+    // Click the resend button
+    const resendButton = await screen.findByRole('button', { name: /Resend/i });
+    await userEvent.click(resendButton);
+
+    expect(requestMock.newData).toHaveBeenCalled();
+    const toast = await screen.findByTestId('toast-1');
+    expect(toast).toHaveTextContent('Invitation was resent successfully!');
+  });
+
+  it('should not show resend button for accepted invitations', async () => {
+    const { membership, commonQueryMock } = prepareMocks(updateTenantMembershipMutation);
+    // The default membershipFactory has invitationAccepted: true
+
+    render(<Component membership={membership} />, {
+      apolloMocks: [commonQueryMock],
+    });
+
+    // Check that "Yes" is displayed
+    expect(screen.getByText(/Yes/i)).toBeInTheDocument();
+
+    // Resend button should not be present
+    expect(screen.queryByRole('button', { name: /Resend/i })).not.toBeInTheDocument();
   });
 });
