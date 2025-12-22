@@ -45,8 +45,8 @@ describe('AddTwoFactorAuth: Component', () => {
       apolloMocks: (apolloMocks) => apolloMocks.concat(otpMocks, refreshQueryMock),
     });
 
-    const input = await screen.findByPlaceholderText(/Authentication Code/i);
-    const submitButton = screen.getByText(/Verify & Activate/i);
+    const input = await screen.findByPlaceholderText(/000000/i);
+    const submitButton = screen.getByText(/Activate 2FA/i);
 
     await userEvent.type(input, token);
     await userEvent.click(submitButton);
@@ -76,8 +76,8 @@ describe('AddTwoFactorAuth: Component', () => {
       apolloMocks: (apolloMocks) => apolloMocks.concat(otpMocks),
     });
 
-    const input = await screen.findByPlaceholderText(/Authentication Code/i);
-    const submitButton = screen.getByText(/Verify & Activate/i);
+    const input = await screen.findByPlaceholderText(/000000/i);
+    const submitButton = screen.getByText(/Activate 2FA/i);
 
     await userEvent.type(input, token);
     await userEvent.click(submitButton);

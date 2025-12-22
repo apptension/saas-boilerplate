@@ -386,9 +386,9 @@ export const Home = () => {
                     title="Data Count"
                     formatter={(value, name) => `${value ?? 0} ${name === 'CRUD Items' ? 'items' : name === 'Documents' ? 'files' : 'total'}`}
                   />
-                  <Bar dataKey="value" radius={[0, 6, 6, 0]} name="Count" maxBarSize={40} fill="url(#gradientBar)">
-                    {dataDistribution.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill="url(#gradientBar)" />
+                  <Bar dataKey="value" radius={[0, 6, 6, 0]} name="Count" maxBarSize={40}>
+                    {dataDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -470,49 +470,47 @@ export const Home = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Button variant="outline" size="lg" asChild className="justify-start gap-2">
-                    <a
-                      href="https://github.com/apptension/saas-boilerplate"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center"
-                    >
-                      <Github className="h-4 w-4" />
-                      <span>GitHub Repository</span>
-                      <ArrowUpRight className="ml-auto h-3 w-3" />
-                    </a>
-                  </Button>
-                  <Button variant="outline" size="lg" asChild className="justify-start gap-2">
-                    <a
-                      href="https://docs.demo.saas.apptoku.com/"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center"
-                    >
-                      <BookOpen className="h-4 w-4" />
-                      <span>Documentation</span>
-                      <ArrowUpRight className="ml-auto h-3 w-3" />
-                    </a>
-                  </Button>
-                  <Button variant="outline" size="lg" asChild className="justify-start gap-2">
-                    <Link to={generateTenantPath(RoutesConfig.crudDemoItem.list)}>
-                      <Database className="h-4 w-4" />
-                      <span>
-                        <FormattedMessage defaultMessage="Manage CRUD Items" id="Dashboard / Manage CRUD" />
-                      </span>
-                      <ArrowUpRight className="ml-auto h-3 w-3" />
-                    </Link>
-                  </Button>
-                  <Button variant="outline" size="lg" asChild className="justify-start gap-2">
-                    <Link to={generateTenantPath(RoutesConfig.tenant.settings.members)}>
-                      <Users className="h-4 w-4" />
-                      <span>
-                        <FormattedMessage defaultMessage="Team Settings" id="Dashboard / Team Settings" />
-                      </span>
-                      <ArrowUpRight className="ml-auto h-3 w-3" />
-                    </Link>
-                  </Button>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <a
+                    href="https://github.com/apptension/saas-boilerplate"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 rounded-md border px-3 py-2.5 text-sm font-medium transition-colors hover:bg-accent hover:no-underline [&]:no-underline"
+                  >
+                    <Github className="h-4 w-4 shrink-0" />
+                    <span className="flex-1 truncate">GitHub Repository</span>
+                    <ArrowUpRight className="h-3 w-3 shrink-0 text-muted-foreground" />
+                  </a>
+                  <a
+                    href="https://docs.demo.saas.apptoku.com/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 rounded-md border px-3 py-2.5 text-sm font-medium transition-colors hover:bg-accent hover:no-underline [&]:no-underline"
+                  >
+                    <BookOpen className="h-4 w-4 shrink-0" />
+                    <span className="flex-1 truncate">Documentation</span>
+                    <ArrowUpRight className="h-3 w-3 shrink-0 text-muted-foreground" />
+                  </a>
+                  <Link
+                    to={generateTenantPath(RoutesConfig.crudDemoItem.list)}
+                    className="flex items-center gap-2 rounded-md border px-3 py-2.5 text-sm font-medium transition-colors hover:bg-accent hover:no-underline [&]:no-underline"
+                  >
+                    <Database className="h-4 w-4 shrink-0" />
+                    <span className="flex-1 truncate">
+                      <FormattedMessage defaultMessage="Manage CRUD Items" id="Dashboard / Manage CRUD" />
+                    </span>
+                    <ArrowUpRight className="h-3 w-3 shrink-0 text-muted-foreground" />
+                  </Link>
+                  <Link
+                    to={generateTenantPath(RoutesConfig.tenant.settings.members)}
+                    className="flex items-center gap-2 rounded-md border px-3 py-2.5 text-sm font-medium transition-colors hover:bg-accent hover:no-underline [&]:no-underline"
+                  >
+                    <Users className="h-4 w-4 shrink-0" />
+                    <span className="flex-1 truncate">
+                      <FormattedMessage defaultMessage="Team Settings" id="Dashboard / Team Settings" />
+                    </span>
+                    <ArrowUpRight className="h-3 w-3 shrink-0 text-muted-foreground" />
+                  </Link>
                 </div>
               </CardContent>
             </Card>
