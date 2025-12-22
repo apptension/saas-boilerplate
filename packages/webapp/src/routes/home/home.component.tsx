@@ -122,18 +122,18 @@ export const Home = () => {
     const members = memberships.filter((m) => m?.role === TenantUserRole.MEMBER).length;
 
     return [
-      { name: 'Owners', value: owners, color: chartColors.indigo },
-      { name: 'Admins', value: admins, color: chartColors.emerald },
-      { name: 'Members', value: members, color: chartColors.violet },
+      { name: 'Owners', value: owners, color: chartColors.brandGreen },
+      { name: 'Admins', value: admins, color: chartColors.brandYellowGreen },
+      { name: 'Members', value: members, color: chartColors.brandYellow },
     ].filter((r) => r.value > 0);
   }, [statsData]);
 
   // Data types distribution for bar chart
   const dataDistribution = useMemo(() => {
     return [
-      { name: 'CRUD Items', value: stats.crudItems, fill: chartColors.indigo },
-      { name: 'Documents', value: stats.documents, fill: chartColors.emerald },
-      { name: 'Notifications', value: stats.notifications, fill: chartColors.violet },
+      { name: 'CRUD Items', value: stats.crudItems, fill: chartColors.brandGreen },
+      { name: 'Documents', value: stats.documents, fill: chartColors.brandLimeGreen },
+      { name: 'Notifications', value: stats.notifications, fill: chartColors.brandYellow },
     ];
   }, [stats]);
 
@@ -256,7 +256,7 @@ export const Home = () => {
                   id: 'Dashboard / CRUD Items description',
                 })}
                 icon={<Database className="h-5 w-5" />}
-                accentColor={chartColors.indigo}
+                accentColor={chartColors.brandGreen}
               />
               <StatCard
                 title={intl.formatMessage({ defaultMessage: 'Documents', id: 'Dashboard / Documents' })}
@@ -266,7 +266,7 @@ export const Home = () => {
                   id: 'Dashboard / Documents description',
                 })}
                 icon={<FileText className="h-5 w-5" />}
-                accentColor={chartColors.emerald}
+                accentColor={chartColors.brandLimeGreen}
               />
               <StatCard
                 title={intl.formatMessage({ defaultMessage: 'Team Members', id: 'Dashboard / Team Members' })}
@@ -283,7 +283,7 @@ export const Home = () => {
                       })
                 }
                 icon={<Users className="h-5 w-5" />}
-                accentColor={chartColors.violet}
+                accentColor={chartColors.brandYellowGreen}
               />
               <StatCard
                 title={intl.formatMessage({ defaultMessage: 'Notifications', id: 'Dashboard / Notifications' })}
@@ -300,7 +300,7 @@ export const Home = () => {
                       })
                 }
                 icon={<Bell className="h-5 w-5" />}
-                accentColor={chartColors.orange}
+                accentColor={chartColors.brandYellow}
               />
             </>
           )}
@@ -338,12 +338,12 @@ export const Home = () => {
                   <Area
                     type="monotone"
                     dataKey="count"
-                    stroke={chartColors.indigo}
+                    stroke={chartColors.brandGreen}
                     fill="url(#gradientPrimary)"
                     strokeWidth={2.5}
                     name="Activities"
                     dot={false}
-                    activeDot={{ r: 6, strokeWidth: 2, fill: 'white', stroke: chartColors.indigo }}
+                    activeDot={{ r: 6, strokeWidth: 2, fill: 'white', stroke: chartColors.brandGreen }}
                   />
                 </AreaChart>
               </ResponsiveContainer>

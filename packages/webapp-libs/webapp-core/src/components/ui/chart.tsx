@@ -38,52 +38,58 @@ export {
   YAxis,
 };
 
-// Chart color palette matching shadcn design tokens
+// Chart color palette based on brand gradient: #FFFE25 → #42F272
 export const chartColors = {
   primary: 'hsl(var(--primary))',
   secondary: 'hsl(var(--secondary))',
   accent: 'hsl(var(--accent))',
   muted: 'hsl(var(--muted))',
   destructive: 'hsl(var(--destructive))',
-  // Beautiful gradient palette
-  blue: '#3b82f6',
-  indigo: '#6366f1',
-  violet: '#8b5cf6',
-  purple: '#a855f7',
-  pink: '#ec4899',
-  rose: '#f43f5e',
-  orange: '#f97316',
-  amber: '#f59e0b',
-  emerald: '#10b981',
-  teal: '#14b8a6',
-  cyan: '#06b6d4',
-  sky: '#0ea5e9',
-  // Chart-specific semantic colors
-  chart1: '#6366f1', // Indigo
-  chart2: '#10b981', // Emerald
-  chart3: '#8b5cf6', // Violet
-  chart4: '#f97316', // Orange
-  chart5: '#ec4899', // Pink
+  // Brand gradient colors (from yellow #FFFE25 to green #42F272)
+  brandYellow: '#FFFE25',
+  brandYellowGreen: '#A0FA4B',
+  brandLimeGreen: '#71F85D',
+  brandGreen: '#42F272',
+  // Extended palette derived from brand
+  lime: '#84F052',
+  chartreuse: '#B8FC38',
+  spring: '#5CF566',
+  mint: '#4DE87A',
+  // Chart-specific colors using brand palette
+  chart1: '#42F272', // Brand green (primary)
+  chart2: '#FFFE25', // Brand yellow
+  chart3: '#71F85D', // Brand lime green
+  chart4: '#A0FA4B', // Brand yellow-green
+  chart5: '#5CF566', // Spring green
 };
 
-// Gradient definitions for area charts
+// Gradient definitions for area charts using brand colors
 export const ChartGradients = () => (
   <defs>
+    {/* Brand gradient: Yellow to Green (horizontal) */}
+    <linearGradient id="gradientBrand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stopColor={chartColors.brandYellow} stopOpacity={1} />
+      <stop offset="100%" stopColor={chartColors.brandGreen} stopOpacity={1} />
+    </linearGradient>
+    {/* Primary area gradient (green fade) */}
     <linearGradient id="gradientPrimary" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor={chartColors.indigo} stopOpacity={0.4} />
-      <stop offset="100%" stopColor={chartColors.indigo} stopOpacity={0.05} />
+      <stop offset="0%" stopColor={chartColors.brandGreen} stopOpacity={0.4} />
+      <stop offset="100%" stopColor={chartColors.brandGreen} stopOpacity={0.05} />
     </linearGradient>
+    {/* Secondary area gradient (yellow fade) */}
     <linearGradient id="gradientSecondary" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor={chartColors.emerald} stopOpacity={0.4} />
-      <stop offset="100%" stopColor={chartColors.emerald} stopOpacity={0.05} />
+      <stop offset="0%" stopColor={chartColors.brandYellow} stopOpacity={0.4} />
+      <stop offset="100%" stopColor={chartColors.brandYellow} stopOpacity={0.05} />
     </linearGradient>
+    {/* Accent area gradient (lime green fade) */}
     <linearGradient id="gradientAccent" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor={chartColors.violet} stopOpacity={0.4} />
-      <stop offset="100%" stopColor={chartColors.violet} stopOpacity={0.05} />
+      <stop offset="0%" stopColor={chartColors.brandLimeGreen} stopOpacity={0.4} />
+      <stop offset="100%" stopColor={chartColors.brandLimeGreen} stopOpacity={0.05} />
     </linearGradient>
-    <linearGradient id="gradientOrange" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor={chartColors.orange} stopOpacity={0.4} />
-      <stop offset="100%" stopColor={chartColors.orange} stopOpacity={0.05} />
+    {/* Mixed brand gradient (vertical yellow to green) */}
+    <linearGradient id="gradientMixed" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stopColor={chartColors.brandYellow} stopOpacity={0.5} />
+      <stop offset="100%" stopColor={chartColors.brandGreen} stopOpacity={0.1} />
     </linearGradient>
   </defs>
 );
@@ -155,7 +161,7 @@ export const StatCard = ({ title, value, description, icon, trend, className, ac
     {/* Subtle gradient accent */}
     <div
       className="absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-10 blur-2xl transition-opacity group-hover:opacity-20"
-      style={{ backgroundColor: accentColor || chartColors.indigo }}
+      style={{ backgroundColor: accentColor || chartColors.brandGreen }}
     />
 
     <div className="relative">
