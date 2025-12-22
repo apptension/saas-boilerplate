@@ -6,24 +6,112 @@ slug: /
 import DocCardList from '@theme/DocCardList';
 import ProjectName from './shared/components/ProjectName.component';
 import DisplayLocalUseInfo from './shared/components/DisplayLocalUseInfo.component';
-import LocalUseInfo from './shared/partials/_local-use-info.mdx'
+import LocalUseInfo from './shared/partials/_local-use-info.mdx';
+import { Rocket, Zap, Layers, ArrowRight, ExternalLink } from './shared/components/Icon.component';
 
-Welcome to the <ProjectName/> documentation! Our goal is to provide you with all the information you need to get up and running with the <ProjectName/> quickly and easily.
+<div className="hero-banner">
+  <h1 className="hero-banner__title">
+    Build Your SaaS <span className="text-gradient">Faster</span>
+  </h1>
+  <p className="hero-banner__subtitle">
+    A production-ready, fully-featured starter kit for building modern SaaS applications. 
+    Skip months of boilerplate work and focus on what makes your product unique.
+  </p>
+  <div className="hero-banner__actions">
+    <a href="/getting-started" className="hero-banner__button hero-banner__button--primary"><span>Get Started</span> <ArrowRight size={14} /></a>
+    <a href="/introduction" className="hero-banner__button hero-banner__button--secondary"><span>Learn More</span></a>
+  </div>
+</div>
 
-Whether you're just getting started with building your first SaaS product or you're a seasoned developer looking for a more efficient way to build high-performing and scalable applications, the <ProjectName/> has everything you need to succeed.
+---
 
-Our documentation is organized into five main sections:
+## Quick Start
 
-- [Getting started](/getting-started): This section contains instructions on how to set up and run a new project based on the <ProjectName/>, as well as how to run an existing instance of it.
+Get up and running in minutes with our CLI tool:
 
-- [Working with <ProjectName/>](/working-with-sb): This section provides a detailed description of what's under the hood of the <ProjectName/>'s features and best practices.
+```bash
+pnpm create saas-boilerplate my-project
+```
 
-- [What is <ProjectName/>](/introduction): This section provides a high-level overview of the <ProjectName/> project and its architecture.
+Or explore the documentation to learn more about the <ProjectName /> and its features.
 
-- [API Reference](/api-reference): Our API reference section contains documentation on the commands used in the <ProjectName/> projects.
+---
 
-<DisplayLocalUseInfo>
-    <LocalUseInfo />
-</DisplayLocalUseInfo>
+## Documentation Sections
+
+Our documentation is organized into focused sections to help you find what you need:
 
 <DocCardList />
+
+<DisplayLocalUseInfo>
+  <LocalUseInfo />
+</DisplayLocalUseInfo>
+
+---
+
+## Why SaaS Boilerplate?
+
+<div className="feature-grid feature-grid--3-cols">
+  <div className="feature-card">
+    <div className="feature-card__icon"><Rocket size={20} /></div>
+    <h3 className="feature-card__title">Production Ready</h3>
+    <p className="feature-card__description">
+      Built with best practices, security-first approach, and scalable architecture ready for real users.
+    </p>
+  </div>
+  <div className="feature-card">
+    <div className="feature-card__icon"><Zap size={20} /></div>
+    <h3 className="feature-card__title">Save Months of Work</h3>
+    <p className="feature-card__description">
+      Authentication, payments, multi-tenancy, and more - all pre-built and tested.
+    </p>
+  </div>
+  <div className="feature-card">
+    <div className="feature-card__icon"><Layers size={20} /></div>
+    <h3 className="feature-card__title">Modern Stack</h3>
+    <p className="feature-card__description">
+      React, TypeScript, GraphQL, Django, and AWS - technologies that scale with your business.
+    </p>
+  </div>
+</div>
+
+---
+
+## Core Technologies
+
+<div className="tech-stack">
+  <span className="tech-stack__item">React 18</span>
+  <span className="tech-stack__item">TypeScript</span>
+  <span className="tech-stack__item">GraphQL</span>
+  <span className="tech-stack__item">Django</span>
+  <span className="tech-stack__item">AWS CDK</span>
+  <span className="tech-stack__item">Docker</span>
+  <span className="tech-stack__item">Stripe</span>
+  <span className="tech-stack__item">Contentful</span>
+</div>
+
+---
+
+## Built-in Features
+
+Everything you need to launch and scale your SaaS:
+
+| Feature | Description |
+|---------|-------------|
+| **Authentication** | Email/password, social login, 2FA, email verification |
+| **Multi-tenancy** | Team workspaces with role-based access control |
+| **Payments** | Stripe integration with subscriptions and one-time payments |
+| **Notifications** | Real-time in-app notifications |
+| **Email System** | Transactional emails with templates |
+| **CI/CD Pipeline** | Automated deployments to AWS |
+| **Admin Panel** | Django admin with custom actions |
+| **GraphQL API** | Type-safe API with code generation |
+
+---
+
+## Ready to Start Building?
+
+<div className="hero-banner__actions" style={{justifyContent: 'flex-start', marginTop: '1rem'}}>
+  <a href="/getting-started/run-project/run-new-project" className="hero-banner__button hero-banner__button--primary"><span>Start a New Project</span> <ArrowRight size={14} /></a>
+  <a href="https://github.com/apptension/saas-boilerplate" target="_blank" className="hero-banner__button hero-banner__button--secondary"><span>View on GitHub</span> <ExternalLink size={14} /></a>
+</div>

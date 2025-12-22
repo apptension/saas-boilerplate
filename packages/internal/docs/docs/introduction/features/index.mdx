@@ -1,7 +1,182 @@
 ---
-title: SaaS Boilerplate features
+title: Features Overview
+description: Explore all the built-in features of SaaS Boilerplate
 ---
 
 import DocCardList from '@theme/DocCardList';
+import ProjectName from '../../shared/components/ProjectName.component';
+import { 
+  Shield, 
+  Users, 
+  CreditCard, 
+  Mail, 
+  Bell, 
+  Bot,
+  Building2,
+  GitBranch,
+  Server,
+  Code2,
+  FileText,
+  Settings,
+  FolderOpen,
+  Layers
+} from '../../shared/components/Icon.component';
+
+# Features Overview
+
+<ProjectName /> comes packed with everything you need to build, launch, and scale a modern SaaS application. Each feature is production-tested and follows best practices.
+
+---
+
+## Core Features at a Glance
+
+<div className="feature-grid feature-grid--3-cols">
+  <a href="/introduction/features/auth" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Shield size={18} /></div>
+      <h3 className="feature-card__title">Authentication</h3>
+      <p className="feature-card__description">
+        Complete auth system with email/password, social login, 2FA, and role-based access control.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/multi-tenancy" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Users size={18} /></div>
+      <h3 className="feature-card__title">Multi-tenancy</h3>
+      <p className="feature-card__description">
+        Team workspaces with invitations, member management, and tenant-scoped data isolation.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/payments" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><CreditCard size={18} /></div>
+      <h3 className="feature-card__title">Payments</h3>
+      <p className="feature-card__description">
+        Stripe integration with subscriptions, one-time payments, and webhook handling.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/emails" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Mail size={18} /></div>
+      <h3 className="feature-card__title">Email System</h3>
+      <p className="feature-card__description">
+        Transactional emails with React-based templates and local development preview.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/notifications" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Bell size={18} /></div>
+      <h3 className="feature-card__title">Notifications</h3>
+      <p className="feature-card__description">
+        Real-time in-app notifications with WebSocket support and notification center UI.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/openai" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Bot size={18} /></div>
+      <h3 className="feature-card__title">AI Integration</h3>
+      <p className="feature-card__description">
+        OpenAI integration ready for building AI-powered features into your SaaS.
+      </p>
+    </div>
+  </a>
+</div>
+
+---
+
+## Infrastructure & DevOps
+
+<div className="feature-grid feature-grid--2-cols">
+  <a href="/introduction/features/iac" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Building2 size={18} /></div>
+      <h3 className="feature-card__title">Infrastructure as Code</h3>
+      <p className="feature-card__description">
+        AWS CDK-based infrastructure definitions for reproducible, version-controlled deployments.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/cicd" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><GitBranch size={18} /></div>
+      <h3 className="feature-card__title">CI/CD Pipeline</h3>
+      <p className="feature-card__description">
+        Automated testing, building, and deployment with GitHub Actions or BitBucket Pipelines.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/workers" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Server size={18} /></div>
+      <h3 className="feature-card__title">Async Workers</h3>
+      <p className="feature-card__description">
+        Celery-based background job processing for emails, webhooks, and heavy computations.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/graphql" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Code2 size={18} /></div>
+      <h3 className="feature-card__title">GraphQL API</h3>
+      <p className="feature-card__description">
+        Type-safe API with automatic TypeScript code generation and Apollo Client integration.
+      </p>
+    </div>
+  </a>
+</div>
+
+---
+
+## Additional Features
+
+<div className="feature-grid feature-grid--2-cols">
+  <a href="/introduction/features/cms" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><FileText size={18} /></div>
+      <h3 className="feature-card__title">CMS Integration</h3>
+      <p className="feature-card__description">
+        Contentful integration for managing marketing content, blog posts, and more.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/admin" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Settings size={18} /></div>
+      <h3 className="feature-card__title">Admin Panel</h3>
+      <p className="feature-card__description">
+        Django admin with custom actions for user management and system administration.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/assets" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><FolderOpen size={18} /></div>
+      <h3 className="feature-card__title">Asset Management</h3>
+      <p className="feature-card__description">
+        S3-based file storage with secure upload/download and CDN distribution.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/crud" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Layers size={18} /></div>
+      <h3 className="feature-card__title">CRUD Generator</h3>
+      <p className="feature-card__description">
+        Plop-based generators for quickly scaffolding new features and components.
+      </p>
+    </div>
+  </a>
+</div>
+
+---
+
+## Detailed Feature Documentation
+
+Dive deep into each feature with our comprehensive guides:
 
 <DocCardList />

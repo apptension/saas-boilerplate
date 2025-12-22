@@ -18,9 +18,10 @@ if (process.env.GTM_CONTAINER_ID) {
     },
   };
 }
+
 module.exports = {
   title: 'SaaS Boilerplate by Apptension',
-  tagline: 'SaaS Boilerplate is not a boiler on a plate',
+  tagline: 'Build production-ready SaaS applications faster with our comprehensive starter kit',
   url: 'https://docs.demo.saas.apptoku.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -28,26 +29,87 @@ module.exports = {
   favicon: 'img/favicon.png',
   organizationName: 'Apptension',
   projectName: 'saas-boilerplate',
+
+  // SEO & Social
+  headTags: [
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'keywords',
+        content: 'SaaS, boilerplate, React, TypeScript, AWS, Django, GraphQL, starter kit, multi-tenancy',
+      },
+    },
+    {
+      tagName: 'meta',
+      attributes: {
+        property: 'og:image',
+        content: '/img/logo.svg',
+      },
+    },
+  ],
+
   themeConfig: {
+    // Metadata
+    metadata: [
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'og:type', content: 'website' },
+      { name: 'og:site_name', content: 'SaaS Boilerplate Documentation' },
+    ],
+
+    // Announcement bar for important updates
+    announcementBar: {
+      id: 'announcement-v4',
+      content:
+        '⭐ If you find SaaS Boilerplate useful, give us a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/apptension/saas-boilerplate">GitHub</a>!',
+      backgroundColor: 'var(--ifm-color-primary)',
+      textColor: '#ffffff',
+      isCloseable: true,
+    },
+
+    // Documentation settings
     docs: {
       sidebar: {
         autoCollapseCategories: false,
+        hideable: true,
       },
     },
+
+    // Navbar
     navbar: {
-      title: 'SaaS Boilerplate by Apptension',
+      title: 'SaaS Boilerplate',
+      hideOnScroll: false,
       logo: {
         alt: 'SaaS Boilerplate by Apptension',
         src: 'img/logo.svg',
         srcDark: 'img/logoDark.svg',
+        width: 32,
+        height: 32,
       },
       items: [
+        {
+          type: 'docSidebar',
+          sidebarId: 'gettingStartedSidebar',
+          position: 'left',
+          label: 'Getting Started',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'workingWithSidebar',
+          position: 'left',
+          label: 'Guides',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'apiReferenceSidebar',
+          position: 'left',
+          label: 'API Reference',
+        },
         {
           type: 'search',
           position: 'right',
         },
         {
-          label: 'SaaS Boilerplate website',
+          label: 'Website',
           href: 'https://apptension.com/saas-boilerplate?utm_source=docs&utm_medium=referral&utm_campaign=SaaS%20Boilerplate&utm_term=SaaS%20Boilerplate',
           position: 'right',
         },
@@ -59,21 +121,92 @@ module.exports = {
         },
       ],
     },
+
+    // Footer
     footer: {
       style: 'dark',
-      links: [],
-      copyright: `Copyright © ${new Date().getFullYear()} SaaS Boilerplate by <a href="https://apptension.com?utm_source=docs&utm_medium=referral&utm_campaign=SaaS%20Boilerplate&utm_term=SaaS%20Boilerplate" target="_blank">Apptension</a>.`,
+      links: [
+        {
+          title: 'Documentation',
+          items: [
+            {
+              label: 'Getting Started',
+              to: '/getting-started',
+            },
+            {
+              label: 'Working with SB',
+              to: '/working-with-sb',
+            },
+            {
+              label: 'API Reference',
+              to: '/api-reference',
+            },
+          ],
+        },
+        {
+          title: 'Features',
+          items: [
+            {
+              label: 'Authentication',
+              to: '/introduction/features/auth',
+            },
+            {
+              label: 'Payments',
+              to: '/introduction/features/payments',
+            },
+            {
+              label: 'Multi-tenancy',
+              to: '/introduction/features/multi-tenancy',
+            },
+          ],
+        },
+        {
+          title: 'Community',
+          items: [
+            {
+              label: 'GitHub',
+              href: 'https://github.com/apptension/saas-boilerplate',
+            },
+            {
+              label: 'Apptension',
+              href: 'https://apptension.com?utm_source=docs&utm_medium=referral&utm_campaign=SaaS%20Boilerplate&utm_term=SaaS%20Boilerplate',
+            },
+          ],
+        },
+      ],
+      copyright: `Copyright © ${new Date().getFullYear()} SaaS Boilerplate by <a href="https://apptension.com?utm_source=docs&utm_medium=referral&utm_campaign=SaaS%20Boilerplate&utm_term=SaaS%20Boilerplate" target="_blank">Apptension</a>. Built with Docusaurus.`,
     },
+
+    // Color mode
     colorMode: {
       defaultMode: 'dark',
+      disableSwitch: false,
       respectPrefersColorScheme: true,
     },
+
+    // Table of contents
+    tableOfContents: {
+      minHeadingLevel: 2,
+      maxHeadingLevel: 4,
+    },
+
+    // Prism syntax highlighting
+    prism: {
+      theme: require('prism-react-renderer').themes.github,
+      darkTheme: require('prism-react-renderer').themes.vsDark,
+      additionalLanguages: ['bash', 'python', 'json', 'graphql', 'yaml', 'typescript', 'tsx'],
+    },
+
     ...algoliaSearch,
   },
+
   customFields: {
     projectName: 'SaaS Boilerplate',
     displayLocalUseInfo: process.env.SB_DISPLAY_LOCAL_USE_INFO || false,
+    description:
+      'A comprehensive production-ready SaaS starter kit with React, TypeScript, Django, GraphQL, and AWS infrastructure.',
   },
+
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -81,6 +214,7 @@ module.exports = {
         docs: {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
+          breadcrumbs: true,
         },
         theme: {
           customCss: [require.resolve('./src/css/custom.css')],
@@ -89,6 +223,7 @@ module.exports = {
       },
     ],
   ],
+
   plugins: [
     [
       'docusaurus-plugin-typedoc',

@@ -1,8 +1,92 @@
 ---
 title: Working with SaaS Boilerplate
+description: Guides and best practices for building with SaaS Boilerplate
 pagination_next: null
 ---
 
 import DocCardList from '@theme/DocCardList';
+import ProjectName from '../shared/components/ProjectName.component';
+import { FileText, Zap, Bell, Mail } from '../shared/components/Icon.component';
+
+# Working with SaaS Boilerplate
+
+This section contains comprehensive guides for building features, understanding the architecture, and following best practices when working with <ProjectName />.
+
+---
+
+## Popular Guides
+
+<div className="feature-grid feature-grid--2-cols">
+  <a href="/working-with-sb/graphql/web-app/form-with-mutation" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><FileText size={18} /></div>
+      <h3 className="feature-card__title">Build Forms with Mutations</h3>
+      <p className="feature-card__description">
+        Create type-safe forms that communicate with your GraphQL API.
+      </p>
+    </div>
+  </a>
+  <a href="/working-with-sb/graphql/backend/adding-new-mutation" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Zap size={18} /></div>
+      <h3 className="feature-card__title">Add Backend Mutations</h3>
+      <p className="feature-card__description">
+        Extend your API with new GraphQL mutations and queries.
+      </p>
+    </div>
+  </a>
+  <a href="/working-with-sb/notifications/create-notification" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Bell size={18} /></div>
+      <h3 className="feature-card__title">Create Notifications</h3>
+      <p className="feature-card__description">
+        Implement real-time in-app notifications for your users.
+      </p>
+    </div>
+  </a>
+  <a href="/working-with-sb/emails/create-email-template" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Mail size={18} /></div>
+      <h3 className="feature-card__title">Email Templates</h3>
+      <p className="feature-card__description">
+        Design and send beautiful transactional emails with React.
+      </p>
+    </div>
+  </a>
+</div>
+
+---
+
+## Guide Categories
+
+### Development Guides
+
+Learn how to build and extend features:
+
+- **[Generic guides](/working-with-sb/guides)** — Component creation, routing, and backend models
+- **[GraphQL](/working-with-sb/graphql)** — API development, queries, mutations, and fragments
+- **[Project structure](/working-with-sb/project-structure)** — Understand and extend the monorepo
+
+### Feature Modules
+
+Deep dives into built-in features:
+
+- **[Notifications](/working-with-sb/notifications)** — Real-time notification system
+- **[Users & Auth](/working-with-sb/users)** — Authentication, profiles, and roles
+- **[Payments](/working-with-sb/payments)** — Stripe integration and billing
+- **[Emails](/working-with-sb/emails)** — Transactional email system
+- **[Contentful](/working-with-sb/contentful)** — CMS integration
+
+### Infrastructure
+
+Backend and DevOps guides:
+
+- **[Async workers](/working-with-sb/async-workers)** — Background job processing
+- **[Testing](/working-with-sb/tests)** — Frontend and backend testing strategies
+- **[DevTools](/working-with-sb/dev-tools)** — Development utilities and debugging
+
+---
+
+## All Guides
 
 <DocCardList />

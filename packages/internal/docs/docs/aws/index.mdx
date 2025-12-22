@@ -1,8 +1,97 @@
 ---
-title: AWS
+title: Amazon Web Services
+description: Deploy and manage your SaaS application on AWS
 pagination_next: null
 ---
 
 import DocCardList from '@theme/DocCardList';
+import ProjectName from '../shared/components/ProjectName.component';
+import { Rocket, GitBranch, Building2, Wrench } from '../shared/components/Icon.component';
+
+# Amazon Web Services
+
+<ProjectName /> is designed to deploy seamlessly to AWS using infrastructure as code. This section covers everything you need to know about deploying and managing your application on AWS.
+
+---
+
+## Deployment Overview
+
+<div className="feature-grid feature-grid--2-cols">
+  <a href="/aws/deploy-to-aws" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Rocket size={18} /></div>
+      <h3 className="feature-card__title">Deploy to AWS</h3>
+      <p className="feature-card__description">
+        Step-by-step guide to deploying your application to AWS for the first time.
+      </p>
+    </div>
+  </a>
+  <a href="/aws/cicd" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><GitBranch size={18} /></div>
+      <h3 className="feature-card__title">CI/CD Pipeline</h3>
+      <p className="feature-card__description">
+        Automated deployments, testing, and continuous integration configuration.
+      </p>
+    </div>
+  </a>
+  <a href="/aws/architecture" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Building2 size={18} /></div>
+      <h3 className="feature-card__title">Architecture</h3>
+      <p className="feature-card__description">
+        Understanding the AWS infrastructure and system architecture.
+      </p>
+    </div>
+  </a>
+  <a href="/aws/troubleshooting" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Wrench size={18} /></div>
+      <h3 className="feature-card__title">Troubleshooting</h3>
+      <p className="feature-card__description">
+        Common issues and solutions for AWS deployments.
+      </p>
+    </div>
+  </a>
+</div>
+
+---
+
+## AWS Services Used
+
+The boilerplate leverages these AWS services:
+
+| Service | Purpose |
+|---------|---------|
+| **ECS Fargate** | Container orchestration for backend and workers |
+| **RDS PostgreSQL** | Managed database for persistent data |
+| **ElastiCache Redis** | Caching and session storage |
+| **S3** | Static file hosting and asset storage |
+| **CloudFront** | CDN for frontend assets and API caching |
+| **Route 53** | DNS management and domain routing |
+| **Secrets Manager** | Secure storage for credentials |
+| **CloudWatch** | Logging, monitoring, and alerts |
+| **CodePipeline** | CI/CD automation |
+
+---
+
+## Deployment Checklist
+
+Before deploying to production, ensure you have:
+
+- [ ] AWS account with appropriate permissions
+- [ ] Configured AWS CLI credentials
+- [ ] Set up a hosted zone in Route 53
+- [ ] Created environment-specific configuration
+- [ ] Reviewed security settings
+- [ ] Set up monitoring and alerting
+
+:::caution Fresh AWS Account
+If you're using a new AWS account, you may need to request service quota increases for some services. See our [troubleshooting guide](/aws/troubleshooting) for details.
+:::
+
+---
+
+## All AWS Documentation
 
 <DocCardList />

@@ -1,8 +1,81 @@
 ---
-title: Api reference
+title: API Reference
+description: Complete API documentation for SaaS Boilerplate packages
 pagination_next: null
 ---
 
 import DocCardList from '@theme/DocCardList';
+import ProjectName from '../shared/components/ProjectName.component';
+import { Server, Globe, Layers, Code2 } from '../shared/components/Icon.component';
+
+# API Reference
+
+Comprehensive documentation for all <ProjectName /> packages, commands, and configurations.
+
+---
+
+## Package Documentation
+
+<div className="feature-grid feature-grid--2-cols">
+  <a href="/api-reference/backend" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Server size={18} /></div>
+      <h3 className="feature-card__title">Backend</h3>
+      <p className="feature-card__description">
+        Django backend commands, models, serializers, and GraphQL schema documentation.
+      </p>
+    </div>
+  </a>
+  <a href="/api-reference/webapp" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Globe size={18} /></div>
+      <h3 className="feature-card__title">Webapp</h3>
+      <p className="feature-card__description">
+        React application components, providers, hooks, and routing configuration.
+      </p>
+    </div>
+  </a>
+  <a href="/api-reference/webapp-core/generated" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Layers size={18} /></div>
+      <h3 className="feature-card__title">Webapp Core</h3>
+      <p className="feature-card__description">
+        Core UI components, utilities, hooks, and theming system.
+      </p>
+    </div>
+  </a>
+  <a href="/api-reference/webapp-api-client/generated" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Code2 size={18} /></div>
+      <h3 className="feature-card__title">API Client</h3>
+      <p className="feature-card__description">
+        GraphQL client, Apollo configuration, and generated types.
+      </p>
+    </div>
+  </a>
+</div>
+
+---
+
+## Quick Reference
+
+### Common Commands
+
+| Package | Command | Description |
+|---------|---------|-------------|
+| **Backend** | `pnpm saas up` | Start all backend services |
+| **Backend** | `pnpm saas down` | Stop all backend services |
+| **Webapp** | `pnpm nx start webapp` | Start development server |
+| **Webapp** | `pnpm nx test webapp` | Run frontend tests |
+| **API Client** | `pnpm nx run webapp-api-client:graphql:generate-types` | Generate GraphQL types |
+| **Docs** | `pnpm nx start docs` | Start documentation server |
+
+### Environment Configuration
+
+See the [Environment Variables](/api-reference/env) documentation for a complete list of configuration options.
+
+---
+
+## Full Documentation
 
 <DocCardList />
