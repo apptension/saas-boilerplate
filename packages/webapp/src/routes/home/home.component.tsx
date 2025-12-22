@@ -316,7 +316,7 @@ export const Home = () => {
               id: 'Dashboard / Activity description',
             })}
             action={
-              <div className="flex items-center gap-1.5 rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
+              <div className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#FFFE25] to-[#42F272] px-2.5 py-1 text-xs font-medium text-black">
                 <TrendingUp className="h-3.5 w-3.5" />
                 <span>Live</span>
               </div>
@@ -332,18 +332,19 @@ export const Home = () => {
                   <XAxis dataKey="day" {...axisDefaults} tickLine={false} axisLine={false} dy={10} />
                   <YAxis {...axisDefaults} tickLine={false} axisLine={false} allowDecimals={false} dx={-10} />
                   <ChartTooltip
-                    labelFormatter={(label) => `Day: ${label}`}
-                    formatter={(value) => String(value ?? 0)}
+                    title="Activity"
+                    labelFormatter={(label) => label}
+                    formatter={(value) => `${value ?? 0} events`}
                   />
                   <Area
                     type="monotone"
                     dataKey="count"
-                    stroke={chartColors.brandGreen}
-                    fill="url(#gradientPrimary)"
-                    strokeWidth={2.5}
+                    stroke="url(#gradientBrand)"
+                    fill="url(#gradientMixed)"
+                    strokeWidth={3}
                     name="Activities"
                     dot={false}
-                    activeDot={{ r: 6, strokeWidth: 2, fill: 'white', stroke: chartColors.brandGreen }}
+                    activeDot={{ r: 6, strokeWidth: 2, fill: chartColors.brandGreen, stroke: 'white' }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -370,6 +371,7 @@ export const Home = () => {
             ) : hasDataDistribution ? (
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart data={dataDistribution} layout="vertical" margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <ChartGradients />
                   <CartesianGrid horizontal={false} {...gridDefaults} />
                   <XAxis type="number" {...axisDefaults} tickLine={false} axisLine={false} allowDecimals={false} />
                   <YAxis
@@ -380,10 +382,13 @@ export const Home = () => {
                     axisLine={false}
                     width={100}
                   />
-                  <ChartTooltip formatter={(value) => String(value ?? 0)} />
-                  <Bar dataKey="value" radius={[0, 6, 6, 0]} name="Count" maxBarSize={40}>
-                    {dataDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                  <ChartTooltip
+                    title="Data Count"
+                    formatter={(value, name) => `${value ?? 0} ${name === 'CRUD Items' ? 'items' : name === 'Documents' ? 'files' : 'total'}`}
+                  />
+                  <Bar dataKey="value" radius={[0, 6, 6, 0]} name="Count" maxBarSize={40} fill="url(#gradientBar)">
+                    {dataDistribution.map((_, index) => (
+                      <Cell key={`cell-${index}`} fill="url(#gradientBar)" />
                     ))}
                   </Bar>
                 </BarChart>
@@ -416,6 +421,7 @@ export const Home = () => {
                 <>
                   <ResponsiveContainer width="100%" height={180}>
                     <PieChart>
+                      <ChartGradients />
                       <Pie
                         data={roleDistribution}
                         cx="50%"
@@ -430,7 +436,10 @@ export const Home = () => {
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
-                      <ChartTooltip formatter={(value) => String(value ?? 0)} />
+                      <ChartTooltip
+                        title="Team Roles"
+                        formatter={(value) => `${value ?? 0} member${(value ?? 0) !== 1 ? 's' : ''}`}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="mt-4 space-y-2">

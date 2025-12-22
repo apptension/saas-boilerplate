@@ -16,6 +16,9 @@ const badgeVariants = cva(
         warning: 'border-transparent bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100',
         info: 'border-transparent bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100',
         muted: 'border-transparent bg-muted text-muted-foreground',
+        // Brand gradient variant: #FFFE25 → #42F272
+        gradient:
+          'border-transparent bg-gradient-to-r from-[#FFFE25] to-[#42F272] text-black hover:opacity-90',
       },
     },
     defaultVariants: {
