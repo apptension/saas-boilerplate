@@ -10,66 +10,62 @@ The component will be named `ExampleComponent`, and it will display an `Example 
 
 ## Create Component Skeleton
 
-First, create a component main file and a separate styles file under `packages/webapp/src/shared/components/exampleComponent/`.
+First, create a component main file under `packages/webapp/src/shared/components/exampleComponent/`.
 The component file should look like this:
 
-```jsx title="packages/webapp/src/shared/components/exampleComponent/example.component.tsx" showLineNumbers
+```tsx title="packages/webapp/src/shared/components/exampleComponent/exampleComponent.component.tsx" showLineNumbers
 import { FormattedMessage } from 'react-intl';
 
-import { Container } from './example.styles';
+import { cn } from '@sb/webapp-core/lib/utils';
+import { H1 } from '@sb/webapp-core/components/typography';
 
-export const ExampleComponent = () => {
+export type ExampleComponentProps = {
+  className?: string;
+};
+
+export const ExampleComponent = ({ className }: ExampleComponentProps) => {
   return (
-    <Container>
-      <h1>
+    <div className={cn('flex flex-col gap-4 p-4', className)}>
+      <H1>
         <FormattedMessage defaultMessage="Example component message" id="ExampleComponent / Header message" />
-      </h1>
-    </Container>
+      </H1>
+    </div>
   );
 };
 ```
 
 :::info
 
-In this example, we are using the `react-intl` package to localize the message. It is recommended to use only localized copy in the entire project from the start of the development. The component styles file should look like this:
-
-:::
-
-
-```jsx title="packages/webapp/src/shared/components/exampleComponent/example.styles.ts" showLineNumbers
-import { typography } from '@sb/webapp-core/theme';
-import styled from 'styled-components';
-
-export const Container = styled.div`
-  ${typography.heading5};
-`;
-```
-
-:::info
-
-In this example, we are using the `typography` object from the `@sb/webapp-core/theme` package, which contains all project-wide theme parts like sizes, colors, and fonts.
+In this example, we are using:
+- **`react-intl`** for localization - it's recommended to use only localized copy from the start of development
+- **Tailwind CSS** utility classes for styling
+- **`cn()` utility** from `@sb/webapp-core/lib/utils` for conditional class merging
+- **Typography components** from `@sb/webapp-core/components/typography` for consistent text styling
 
 :::
 
 <BarrelExportsPartial />
 
-```jsx title="packages/webapp/src/shared/components/exampleComponent/index.ts" showLineNumbers
-export { ExampleComponent } from './example.component';
+```tsx title="packages/webapp/src/shared/components/exampleComponent/index.ts" showLineNumbers
+export { ExampleComponent } from './exampleComponent.component';
+export type { ExampleComponentProps } from './exampleComponent.component';
 ```
 
 ## Create a test for the Component
 
 Create a directory `__tests__` in the component folder that will contain all tests along with the following file:
 
-```jsx title="packages/webapp/src/shared/components/exampleComponent/__tests__/example.component.spec.tsx" showLineNumbers
+```tsx title="packages/webapp/src/shared/components/exampleComponent/__tests__/exampleComponent.component.spec.tsx" showLineNumbers
+import { screen } from '@testing-library/react';
+
 import { render } from '../../../../tests/utils/rendering';
 import { ExampleComponent } from '../exampleComponent.component';
 
 describe('ExampleComponent: Component', () => {
-  const Component = () => <ExampleComponent />;
+  it('should render without errors', async () => {
+    render(<ExampleComponent />);
 
-  it('should render without errors', () => {
-    render(<Component />);
+    expect(await screen.findByText(/example component message/i)).toBeInTheDocument();
   });
 });
 ```
@@ -86,20 +82,21 @@ application components, please visit the
 The last step of creating the component structure will be to create a Storybook file so that the newly created
 component will be displayed along with all other components in Storybook tool.
 
-```jsx title="packages/webapp/src/shared/components/exampleComponent/example.stories.tsx" showLineNumbers
-import { Story } from '@storybook/react';
-import { ExampleComponent } from './example.component';
+```tsx title="packages/webapp/src/shared/components/exampleComponent/exampleComponent.stories.tsx" showLineNumbers
+import { Meta, StoryObj } from '@storybook/react';
 
-const Template: Story = () => {
-  return <ExampleComponent />;
-};
+import { ExampleComponent } from './exampleComponent.component';
 
-export default {
+type Story = StoryObj<typeof ExampleComponent>;
+
+const meta: Meta<typeof ExampleComponent> = {
   title: 'Shared/ExampleComponent',
   component: ExampleComponent,
 };
 
-export const Default = Template.bind({});
+export default meta;
+
+export const Default: Story = {};
 ```
 
 ## Display component on application home page

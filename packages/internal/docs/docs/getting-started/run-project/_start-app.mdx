@@ -15,13 +15,21 @@ Project includes a set of backend services that can be run using docker compose:
 pnpm nx run core:docker-compose:up
 ```
 
-or a shorter version:
+This will run docker containers for all the backend services in the detached mode.
+
+#### Start everything at once
+
+Alternatively, you can use the CLI shorthand to start both backend and frontend with a single command:
 
 ```bash
 pnpm saas up
 ```
 
-This will run docker containers for all the backend services in the detached mode.
+This will:
+- Build email templates
+- Start all backend services via docker compose
+- Wait for the backend to be ready
+- Automatically start the webapp development server
 
 Backend is running on `http://localhost:5001`.
 

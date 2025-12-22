@@ -49,10 +49,14 @@ this approach has the potential to separate the presentation and business logic,
 easier to maintain.
 
 ```ts title="packages/webapp/src/routes/productForm/productForm.hooks.ts" showLineNumbers
-export const useCreateProductForm = () => {
-  const form = useApiForm<ProductFields>();
+import { useApiForm } from '@sb/webapp-api-client/hooks';
 
- const handleSubmit = form.handleSubmit(async (data: ProductFields) => {
+import { ProductFormFields } from './productForm.types';
+
+export const useCreateProductForm = () => {
+  const form = useApiForm<ProductFormFields>();
+
+ const handleSubmit = form.handleSubmit(async (data: ProductFormFields) => {
    // You'll commit mutation here
  });
 
@@ -189,12 +193,14 @@ export const createProductMutation = gql(/* GraphQL */ `
 ```ts title="packages/webapp/src/routes/productForm/productForm.hooks.ts" showLineNumbers
 // highlight-start
 import { useMutation } from '@apollo/client';
+import { useApiForm } from '@sb/webapp-api-client/hooks';
 
-import { createProductMutation } from './productForm.graphql'
+import { createProductMutation } from './productForm.graphql';
+import { ProductFormFields } from './productForm.types';
 // highlight-end
 
 export const useCreateProductForm = () => {
-  const form = useApiForm<ProductFields>();
+  const form = useApiForm<ProductFormFields>();
 
 // highlight-start
   const [commitMutation] = useMutation(createProductMutation, {

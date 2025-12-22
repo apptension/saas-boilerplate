@@ -52,14 +52,14 @@ To update types in the webapp application code, two steps need to be taken:
 
 ### Example Usage of the Generated Types
 
-Once the types have been generated, they can be used in the webapp code. For example, suppose you woulid like to have a
+Once the types have been generated, they can be used in the webapp code. For example, suppose you would like to have a
 query that fetches data from the API:
 
 ```typescript title=posts.graphql.ts showLineNumbers
 import { gql } from '@sb/webapp-api-client/graphql';
 
 export const getPostsQuery = gql(/* GraphQL */`
-  query getPostsQuery() {
+  query getPostsQuery {
     posts {
       id
       title

@@ -1,6 +1,6 @@
 ---
 title: How to add a new social login method?
-description: Social authentication and authorization with pyhon-social-auth
+description: Social authentication and authorization with python-social-auth
 ---
 import ProjectName from '../../shared/components/ProjectName.component';
 
@@ -62,39 +62,57 @@ export enum OAuthProvider {
 2. Use the defined enum value in the `SocialLoginButtons` component, defined in
 `packages/webapp/src/shared/components/auth/socialLoginButtons/socialLoginButtons.component.tsx`:
 
-```jsx title="packages/webapp/src/shared/components/auth/socialLoginButtons/socialLoginButtons.component.tsx" showLineNumbers
-...
+```tsx title="packages/webapp/src/shared/components/auth/socialLoginButtons/socialLoginButtons.component.tsx" showLineNumbers
+import { useOAuthLogin } from '@sb/webapp-api-client/api/auth';
+import { Button } from '@sb/webapp-core/components/ui/button';
+import { HTMLAttributes } from 'react';
+import { FormattedMessage } from 'react-intl';
+
+import { FacebookIcon, GoogleIcon } from '../../../../images/icons';
+import { OAuthProvider } from '../../../../modules/auth/auth.types';
+
+export enum SignupButtonsVariant {
+  LOGIN,
+  SIGNUP,
+}
+
+export type SocialLoginButtonsProps = HTMLAttributes<HTMLDivElement> & {
+  variant: SignupButtonsVariant;
+};
+
 export const SocialLoginButtons = ({ variant, ...props }: SocialLoginButtonsProps) => {
   const oAuthLogin = useOAuthLogin();
+  const handleGoogleLogin = () => oAuthLogin(OAuthProvider.Google);
   const handleFacebookLogin = () => oAuthLogin(OAuthProvider.Facebook);
   // highlight-next-line
   const handleCustomLogin = () => oAuthLogin(OAuthProvider.CustomOAuth);
 
   return (
-    <Container {...props}>
-      <FacebookButton onClick={handleFacebookLogin}>
+    <div className="flex w-full flex-col gap-4" {...props}>
+      <Button variant="outline" size="lg" className="w-full" onClick={handleFacebookLogin}>
+        <FacebookIcon size={20} className="h-5 w-5" />
         {variant === SignupButtonsVariant.LOGIN ? (
           <FormattedMessage defaultMessage="Log in with Facebook" id="Auth / Login / Facebook login button" />
         ) : (
           <FormattedMessage defaultMessage="Sign up with Facebook" id="Auth / Signup / Facebook signup button" />
         )}
-      </FacebookButton>
+      </Button>
 
-      // highlight-start
-      <CustomButton onClick={handleCustomLogin}>
+      {/* highlight-start */}
+      <Button variant="outline" size="lg" className="w-full" onClick={handleCustomLogin}>
+        {/* Add your custom provider icon here */}
         {variant === SignupButtonsVariant.LOGIN ? (
-          <FormattedMessage defaultMessage="Log in with Custom provider" id="Auth / Login / Custom login button" />
+          <FormattedMessage defaultMessage="Log in with Custom" id="Auth / Login / Custom login button" />
         ) : (
-          <FormattedMessage defaultMessage="Sign up with Custom provider" id="Auth / Signup / Custom signup button" />
+          <FormattedMessage defaultMessage="Sign up with Custom" id="Auth / Signup / Custom signup button" />
         )}
-      </CustomButton>
-      // highlight-end
-    </Container>
+      </Button>
+      {/* highlight-end */}
+    </div>
   );
 };
 ```
 
-::::note
-Note that you must define the `<CustomButton />` component in
-`packages/webapp/src/shared/components/auth/socialLoginButtons/socialLoginButtons.styles.tsx` before you can use it.
-::::
+:::tip
+You can create a custom icon for your OAuth provider by following the [Icons documentation](/working-with-sb/dev-tools/plop#icon-generator) and adding it to the button.
+:::
