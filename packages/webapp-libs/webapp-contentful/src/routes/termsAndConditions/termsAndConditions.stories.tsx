@@ -1,77 +1,65 @@
+import { MockedResponse } from '@apollo/client/testing';
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
-import { append } from 'ramda';
+import { GraphQLError } from 'graphql';
 
+import { configContentfulAppQuery } from '../../config';
 import { appConfigFactory, fillContentfulAppConfigQuery } from '../../tests/factories';
 import { withProviders } from '../../utils/storybook';
 import { TermsAndConditions } from './termsAndConditions.component';
 
-const requestMock = fillContentfulAppConfigQuery({
-  items: [
-    appConfigFactory({
-      termsAndConditions: `
-# Terms and conditions
+const sampleContent = `
+# Terms and Conditions
 
-## Est in sacras miracula movere aether ensem
+## 1. Introduction
 
-Lorem markdownum ipse silvae, quo [natus
-capillos](http://ergovenus.net/agrostot) namque heros contagia Timoli. Opto
-carent te est *nequeam* vulgi extrema, speculo manu! Humana undis esse?
+Welcome to our service. These Terms and Conditions govern your use of our platform and services. By accessing or using our service, you agree to be bound by these terms.
 
-1. Poscit et iustamque adfuit Thisbe est latentia
-2. Tenet sed famulis artes hoc iuvenem arbore
-3. Procorum laevaque pater
-4. Que petit in superos levatae
+## 2. Definitions
 
-## Turba forsitan scilicet rapitur eget ut similis
+- **"Service"** refers to the application, website, and any related services provided.
+- **"User"** refers to any individual who accesses or uses the Service.
+- **"Content"** refers to any text, images, or other materials uploaded to the Service.
 
-Et nares fortibus! **Danda pectore** Sisyphio, tamen silva addunt nostri hinc
-**consistere** vota: adversa opes [teneris ardor](http://prius-ipsumque.org/),
-oraque, est. **Ille sum utque** litus deus, conpagibus videres. Saxo aura
-Sarpedonis inque, alveus et.
+## 3. User Accounts
 
-- Tangunt reliquerat pietate simul
-- Latus terra
-- Auro erat erat fallacia corpora
-- Si sibila animae et intrare sortemque socerumque
+### 3.1 Registration
+To access certain features of the Service, you must register for an account. You agree to:
+- Provide accurate and complete information
+- Maintain the security of your account credentials
+- Promptly update any changes to your information
 
-## Aurum est excepit mensas
+### 3.2 Account Responsibilities
+You are responsible for all activities that occur under your account. Please notify us immediately if you suspect any unauthorized use.
 
-Solacia relicta in radiantia iamque, ira Aegyptia pater. Deo cum irascitur,
-memorque pinus, claro Liber, omnia lacus munere.
+## 4. Acceptable Use
 
-1. Et ossa arboris superator ipse mutata intravit
-2. Potentum tenet
-3. Vicina ubi cadunt iuvenis ad apes fata
-4. Vos hanc dedecus
-5. Tibi miracula orbe cognitus fieri praecordiaque et
+You agree not to:
+1. Use the Service for any illegal purposes
+2. Violate any applicable laws or regulations
+3. Infringe on the rights of others
+4. Upload malicious code or content
+5. Attempt to gain unauthorized access to the Service
 
-## Corpora dant
+## 5. Intellectual Property
 
-Metuenti post omnibus antra, utinamque de frigidus nunc parvumque temptat **in**
-utraque ferarum. *Cuspide magna* mihi Lucifer exitus, tumidaque cum cedemus
-tempore inguina deseret pectora profers; superbia et dicta sua. Precari
-speciosam multaque cupidine alios persequerer compos Lapithae his oborto frena
-deprenduntur auram tenebrisque. Orbem ego pectora lingua ultra traduxit meo
-pulsavere ferre, animal. Ibi pectora texerat precor, facta hunc *adunca aetas*
-obsita, se stant digiti, me unde.
+All content, trademarks, and other intellectual property on the Service are owned by us or our licensors. You may not use, copy, or distribute any content without permission.
 
-1. Summis gratentur iactavit a decidit tyranni secutus
-2. Quibus saepe polluit dea Phocus capillis cristati
-3. Sed quem aequora
-4. Rediit fluctus sed peccare Erycina cuperem ferrum
-5. Nescit de monte gramen incaluit prosilit
+## 6. Limitation of Liability
 
-Canescunt candescere favet tum glandes queri audierat caespite medios; aquae
-magis *prius* in trahunt, ut. Onus volumine et mitte fornace **in** iterant
-obusta cum Oribasos armorum et tulit **nec** aegre fuisses materno, **luna**.
-Cum huc palantesque tamen desiluit inexperrectus, toto, patitur!
-    `,
-    }),
-  ],
-  limit: 1,
-  skip: 0,
-  total: 1,
-});
+To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service.
+
+## 7. Changes to Terms
+
+We reserve the right to modify these Terms at any time. We will notify users of any material changes via email or through the Service.
+
+## 8. Contact
+
+If you have any questions about these Terms, please contact us at legal@example.com.
+
+---
+
+*Last updated: January 2024*
+`;
 
 const Template: StoryFn = () => {
   return <TermsAndConditions />;
@@ -80,11 +68,96 @@ const Template: StoryFn = () => {
 const meta: Meta = {
   title: 'Routes/TermsAndConditions',
   component: TermsAndConditions,
-  decorators: [withProviders({ apolloMocks: append(requestMock) })],
 };
 
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {
   render: Template,
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) =>
+        defaultMocks.concat([
+          fillContentfulAppConfigQuery({
+            items: [appConfigFactory({ termsAndConditions: sampleContent })],
+            limit: 1,
+            skip: 0,
+            total: 1,
+          }),
+        ]),
+    }),
+  ],
+};
+
+export const Loading: StoryObj<typeof meta> = {
+  render: Template,
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) =>
+        defaultMocks.concat([
+          {
+            ...fillContentfulAppConfigQuery({
+              items: [appConfigFactory({ termsAndConditions: sampleContent })],
+              limit: 1,
+              skip: 0,
+              total: 1,
+            }),
+            delay: Infinity,
+          },
+        ]),
+    }),
+  ],
+};
+
+export const EmptyContent: StoryObj<typeof meta> = {
+  render: Template,
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) =>
+        defaultMocks.concat([
+          fillContentfulAppConfigQuery({
+            items: [appConfigFactory({ termsAndConditions: null })],
+            limit: 1,
+            skip: 0,
+            total: 1,
+          }),
+        ]),
+    }),
+  ],
+};
+
+const networkErrorMock: MockedResponse = {
+  request: {
+    query: configContentfulAppQuery,
+  },
+  error: new Error('Failed to fetch'),
+  variableMatcher: () => true,
+};
+
+export const NotConfigured: StoryObj<typeof meta> = {
+  render: Template,
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) => defaultMocks.concat([networkErrorMock]),
+    }),
+  ],
+};
+
+const graphqlErrorMock: MockedResponse = {
+  request: {
+    query: configContentfulAppQuery,
+  },
+  result: {
+    errors: [new GraphQLError('Unable to fetch content from Contentful')],
+  },
+  variableMatcher: () => true,
+};
+
+export const WithError: StoryObj<typeof meta> = {
+  render: Template,
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) => defaultMocks.concat([graphqlErrorMock]),
+    }),
+  ],
 };
