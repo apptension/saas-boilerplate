@@ -26,3 +26,4 @@ const TechStack: React.FC<TechStackProps> = ({ items }) => {
 
 export default TechStack;
 
+
