@@ -1,0 +1,85 @@
+---
+title: Developer Tools
+slug: /working-with-sb/dev-tools
+---
+
+import DocCardList from '@theme/DocCardList';
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Developer Tools
+
+<ProjectName /> includes several tools to improve your development workflow.
+
+---
+
+## Available Tools
+
+| Tool | Purpose | Guide |
+|------|---------|-------|
+| **Plop** | Generate components, emails, and more | [Code Generation](/working-with-sb/dev-tools/plop) |
+| **Mailcatcher** | Preview emails locally | [Email Preview](/working-with-sb/dev-tools/mailcatcher) |
+| **Sentry** | Error monitoring and tracking | [Error Monitoring](/working-with-sb/dev-tools/sentry) |
+| **Version Matrix** | Track deployed versions | [Version Matrix](/working-with-sb/dev-tools/version-matrix) |
+| **Storybook** | UI component development | [Quick Start](/getting-started) |
+
+---
+
+## Quick Access
+
+| Service | URL |
+|---------|-----|
+| **Web App** | http://localhost:3000 |
+| **Admin Panel** | http://admin.localhost:5001 |
+| **Mailcatcher** | http://localhost:1080 |
+| **Storybook** | `pnpm nx storybook webapp` |
+
+---
+
+## Plop Generators
+
+Generate boilerplate code quickly:
+
+```bash
+cd packages/webapp
+pnpm run plop
+```
+
+Available generators:
+- **Component** — React component with tests and Storybook
+- **Route** — New page with routing setup
+- **Email** — Email template with Subject and Body
+
+---
+
+## Storybook
+
+Develop and preview UI components in isolation:
+
+```bash
+# Start webapp Storybook
+pnpm nx storybook webapp
+
+# Start email Storybook
+pnpm nx storybook webapp-emails
+```
+
+---
+
+## SSH into Containers
+
+Access running containers for debugging:
+
+```bash
+# Backend shell
+pnpm saas backend shell
+
+# Run Django management commands
+pnpm saas backend manage migrate
+```
+
+---
+
+## All Guides
+
+<DocCardList />
+

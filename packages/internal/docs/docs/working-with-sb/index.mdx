@@ -1,20 +1,24 @@
 ---
-title: Working with SaaS Boilerplate
-description: Guides and best practices for building with SaaS Boilerplate
+title: How-To Guides
+description: Step-by-step guides for building with SaaS Boilerplate
 pagination_next: null
 ---
 
 import DocCardList from '@theme/DocCardList';
 import ProjectName from '../shared/components/ProjectName.component';
-import { FileText, Zap, Bell, Mail } from '../shared/components/Icon.component';
+import { FileText, Zap, Bell, Mail, Rocket } from '../shared/components/Icon.component';
 
-# Working with SaaS Boilerplate
+# How-To Guides
 
-This section contains comprehensive guides for building features, understanding the architecture, and following best practices when working with <ProjectName />.
+This section contains step-by-step tutorials for building features, customizing functionality, and following best practices with <ProjectName />.
+
+:::tip Before You Begin
+Make sure you've completed the [Quick Start](/getting-started) guide and have your project running locally before following these guides.
+:::
 
 ---
 
-## Popular Guides
+## Most Popular
 
 <div className="feature-grid feature-grid--2-cols">
   <a href="/working-with-sb/graphql/web-app/form-with-mutation" className="feature-card__link">
@@ -59,34 +63,82 @@ This section contains comprehensive guides for building features, understanding 
 
 ## Guide Categories
 
-### Development Guides
+### 🔧 Development Basics
 
-Learn how to build and extend features:
+Core skills for working with the codebase:
 
-- **[Generic guides](/working-with-sb/guides)** — Component creation, routing, and backend models
-- **[GraphQL](/working-with-sb/graphql)** — API development, queries, mutations, and fragments
-- **[Project structure](/working-with-sb/project-structure)** — Understand and extend the monorepo
+| Guide | What You'll Learn |
+|-------|-------------------|
+| [Create React Component](/working-with-sb/guides/web-app/create-react-component) | Component structure, tests, Storybook |
+| [Add a Route](/working-with-sb/guides/web-app/new-route) | Create new pages with routing |
+| [Create Backend Model](/working-with-sb/guides/backend/backend-model) | Django models and migrations |
+| [shadcn/ui Components](/working-with-sb/shadcn) | Use and customize the component library |
 
-### Feature Modules
+### 🔌 GraphQL API
 
-Deep dives into built-in features:
+Build type-safe APIs:
 
-- **[Notifications](/working-with-sb/notifications)** — Real-time notification system
-- **[Users & Auth](/working-with-sb/users)** — Authentication, profiles, and roles
-- **[Payments](/working-with-sb/payments)** — Stripe integration and billing
-- **[Emails](/working-with-sb/emails)** — Transactional email system
-- **[Contentful](/working-with-sb/contentful)** — CMS integration
+| Guide | What You'll Learn |
+|-------|-------------------|
+| [Form with Mutation](/working-with-sb/graphql/web-app/form-with-mutation) | React forms that save to backend |
+| [Add Backend Mutation](/working-with-sb/graphql/backend/adding-new-mutation) | Create, update, delete operations |
+| [Component with Query](/working-with-sb/graphql/web-app/component-with-query) | Fetch and display data |
+| [Update TypeScript Types](/working-with-sb/graphql/web-app/update-schema) | Regenerate types after API changes |
 
-### Infrastructure
+### ✨ Feature Customization
 
-Backend and DevOps guides:
+Extend built-in features:
 
-- **[Async workers](/working-with-sb/async-workers)** — Background job processing
-- **[Testing](/working-with-sb/tests)** — Frontend and backend testing strategies
-- **[DevTools](/working-with-sb/dev-tools)** — Development utilities and debugging
+| Feature | Guides |
+|---------|--------|
+| **Users & Auth** | [Add Profile Field](/working-with-sb/users/create-profile-field) · [Create Role](/working-with-sb/users/create-role) · [Add OAuth](/working-with-sb/users/create-oauth-method) |
+| **Payments** | [One-Time Payment](/working-with-sb/payments/one-time-payment-form) · [Overview](/working-with-sb/payments) |
+| **Notifications** | [Create Notification](/working-with-sb/notifications/create-notification) |
+| **Emails** | [Create Template](/working-with-sb/emails/create-email-template) · [Send Email](/working-with-sb/emails/send-email) |
+
+### ⚙️ Backend & Infrastructure
+
+| Guide | What You'll Learn |
+|-------|-------------------|
+| [Run Async Job (Celery)](/working-with-sb/async-workers/run-async-job-celery) | Background task processing |
+| [Run Async Job (Lambda)](/working-with-sb/async-workers/run-async-job-lambda) | Serverless functions |
+| [Sync Contentful](/working-with-sb/contentful/sync-data) | CMS data synchronization |
+
+### 🧪 Testing
+
+| Guide | What You'll Learn |
+|-------|-------------------|
+| [Frontend Testing](/working-with-sb/tests/webapp) | React component testing patterns |
+| [Backend Testing](/working-with-sb/tests/backend) | Django and API testing |
+
+### 🛠️ Developer Tools
+
+| Tool | Purpose |
+|------|---------|
+| [Mailcatcher](/working-with-sb/dev-tools/mailcatcher) | Preview emails locally |
+| [Plop Generator](/working-with-sb/dev-tools/plop) | Scaffold new features |
+| [Version Matrix](/working-with-sb/dev-tools/version-matrix) | Track deployed versions |
+| [Sentry](/working-with-sb/dev-tools/sentry) | Error monitoring |
+
+---
+
+## Quick Reference
+
+Need to find something fast?
+
+| I want to... | Go to... |
+|--------------|----------|
+| Create a new feature | [Create React Component](/working-with-sb/guides/web-app/create-react-component) |
+| Save form data to backend | [Form with Mutation](/working-with-sb/graphql/web-app/form-with-mutation) |
+| Add a new API endpoint | [Add Backend Mutation](/working-with-sb/graphql/backend/adding-new-mutation) |
+| Send an email | [Send Email](/working-with-sb/emails/send-email) |
+| Add a background job | [Async Workers](/working-with-sb/async-workers/run-async-job-celery) |
+| Write tests | [Testing](/working-with-sb/tests/webapp) |
 
 ---
 
 ## All Guides
+
+Browse all available guides:
 
 <DocCardList />

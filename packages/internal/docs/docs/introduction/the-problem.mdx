@@ -1,65 +1,89 @@
 ---
-title: The problem
-description: Why you need SaaS Boilerplate for your development projects
+title: Why SaaS Boilerplate?
+description: The problems SaaS Boilerplate solves for development teams
 ---
 
 import SBDescriptionPartial from '../shared/partials/_sb_description.mdx';
+import ProjectName from '../shared/components/ProjectName.component';
 
-In the fast-paced world of software development, time is of the essence. For product and development teams striving to
-bring their SaaS applications to market efficiently, the challenges can be numerous and daunting. Without the aid of a
-powerful tool like SaaS Boilerplate, teams may find themselves grappling with a host of issues that hamper their
-progress and hinder their ability to deliver high-quality products on time.
+# Why SaaS Boilerplate?
 
-Below you can find some common problems that product and development teams can face when embarking on SaaS application
-development without the benefits of SaaS Boilerplate:
+Building a SaaS application from scratch is **expensive and time-consuming**. Most teams spend months building features that every SaaS needs—authentication, payments, email systems—before they can even start on their unique value proposition.
 
-#### Increased development time
+<ProjectName /> eliminates this problem by providing production-ready implementations of common SaaS functionality, letting you focus on what makes your product unique.
 
-Developing a SaaS application from scratch without a boilerplate codebase can be time-consuming. Teams would need to
-write code for common functionality, such as payments, subscriptions, and CRUD operations, which could significantly
-slow down the development process.
+---
 
-#### Lack of reusability
+## The Problem: Building SaaS is Hard
 
-Without a boilerplate, teams would need to reinvent the wheel for each SaaS application they build. They would have to
-write custom code for common components, resulting in a lack of reusability and increased development effort for
-subsequent projects.
+Without a solid foundation, development teams face these common challenges:
 
-#### Infrastructure setup complexity
+| Challenge | Without Boilerplate | With SaaS Boilerplate |
+|-----------|--------------------|-----------------------|
+| **Development Time** | 6-12 months for core features | Start building your features on day one |
+| **Authentication** | Weeks implementing login, 2FA, social auth | Ready to use, fully customizable |
+| **Payments** | Complex Stripe integration from scratch | Pre-built subscription & payment handling |
+| **Infrastructure** | Manual AWS setup, CI/CD pipelines | One-command deployment with AWS CDK |
+| **Scalability** | Design your own scaling solution | Auto-scaling built-in |
 
-Setting up the infrastructure for a SaaS application can be a complex task. Without a ready-to-use infrastructure
-provided by the boilerplate, teams would need to spend time configuring and deploying infrastructure components
-manually, leading to potential errors or misconfigurations.
+---
 
-#### Absence of continuous integration and continuous deployment (CI/CD)
+## Common Pain Points We Solve
 
-CI/CD is a crucial aspect of modern software development. Without a boilerplate that includes CI/CD capabilities, teams
-would need to set up these processes from scratch, which can be time-consuming and error-prone.
+### ⏱️ Increased Development Time
+Building common functionality (auth, payments, CRUD, emails) from scratch can take **3-6 months**. That's time not spent on your actual product.
 
-#### Limited scalability
+### 🔄 Reinventing the Wheel
+Every new project means writing the same auth flows, payment integrations, and admin panels. <ProjectName /> lets you reuse battle-tested code.
 
-Scaling a SaaS application to handle increasing user loads can be challenging without a boilerplate that offers auto
-scaling features. Teams would need to design and implement their own scaling mechanisms, which may not be as efficient
-or reliable.
+### 🏗️ Infrastructure Complexity
+Setting up AWS, configuring CI/CD, managing environments—it's error-prone and time-consuming. We provide infrastructure as code that works out of the box.
 
-#### Reduced focus on core business
+### 📈 Scaling Challenges
+When your app grows, can your infrastructure handle it? Our auto-scaling configuration is proven in production.
 
-Without the time-saving benefits of a boilerplate, development teams would need to spend more time on non-core
-functionality, such as infrastructure setup and generic feature implementation. This can detract from their ability to
-focus on the unique value proposition and core business features of the application.
+### 🎯 Lost Focus on Core Business
+The more time spent on generic features, the less time for your unique value proposition.
 
+---
 
-### What is SaaS Boilerplate?
+## How SaaS Boilerplate Helps
 
 <SBDescriptionPartial />
 
-### Why use SaaS Boilerplate?
+---
 
-- Application is business agnostic - business logic is abstracted away which empowers engineers to extend them or to
-remove them completely without breaking the application.
+## Key Benefits
 
-- Enables the team to rapidly build and ship new bespoke features or to extend already existing ones.
+✅ **Business Agnostic** — Core logic is abstracted. Extend or remove features without breaking the application.
 
-- Contains ready to use infrastructure components that are common in most of the web applications.
+✅ **Rapid Development** — Ship new features quickly by building on solid foundations.
 
-- It’s safe and can handle standard medium size application load using auto-scaling feature
+✅ **Production Ready** — Infrastructure components are tested and ready to deploy.
+
+✅ **Scalable by Default** — Handle growing user loads with built-in auto-scaling.
+
+✅ **Best Practices Built-in** — Security, testing, and code quality standards from day one.
+
+---
+
+## Ready to Get Started?
+
+<div className="feature-grid feature-grid--2-cols">
+  <a href="/getting-started" className="feature-card__link">
+    <div className="feature-card">
+      <h3 className="feature-card__title">🚀 Quick Start</h3>
+      <p className="feature-card__description">
+        Set up your project in 15 minutes and start building.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features" className="feature-card__link">
+    <div className="feature-card">
+      <h3 className="feature-card__title">✨ Explore Features</h3>
+      <p className="feature-card__description">
+        See all the built-in capabilities at your disposal.
+      </p>
+    </div>
+  </a>
+</div>

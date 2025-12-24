@@ -1,17 +1,75 @@
 ---
-title: Payments (Stripe integration)
+title: Payments & Subscriptions
 slug: /working-with-sb/payments
 ---
 
 import DocCardList from '@theme/DocCardList';
 import ProjectName from '../../shared/components/ProjectName.component';
 
-In this section, we will cover the technical details of the payments and subscriptions feature.
+# Payments & Subscriptions Guides
 
-:::info
-This is a comprehensive technical section of the documentation for the Stripe integration feature in <ProjectName/>.
-If you are looking for a high-level description of this feature, please refer to
-[this article](../../introduction/features/payments).
+Learn how to customize and extend Stripe integration in <ProjectName />.
+
+:::tip Feature Overview
+Looking for a high-level description of payments? See [Payments Feature](/introduction/features/payments).
 :::
+
+---
+
+## What's Included
+
+The built-in Stripe integration provides:
+
+- ✅ Payment method management (cards)
+- ✅ Subscription plans (Free, Monthly, Yearly)
+- ✅ One-time payments
+- ✅ Transaction history
+- ✅ Webhook handling
+- ✅ Customer portal integration
+
+---
+
+## Available Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Create One-Time Payment Form](/working-with-sb/payments/one-time-payment-form) | Build custom payment flows for single transactions |
+
+---
+
+## Key Files
+
+| Location | Purpose |
+|----------|---------|
+| `packages/backend/apps/finances/` | Backend Stripe integration, webhooks |
+| `packages/webapp-libs/webapp-finances/` | Frontend payment components |
+
+---
+
+## Configuration
+
+Stripe is configured via environment variables:
+
+| Variable | Description |
+|----------|-------------|
+| `STRIPE_LIVE_SECRET_KEY` | Stripe API secret key (production) |
+| `STRIPE_TEST_SECRET_KEY` | Stripe API secret key (testing) |
+| `STRIPE_LIVE_MODE` | Set to `True` for production |
+| `DJSTRIPE_WEBHOOK_SECRET` | Webhook signing secret |
+
+:::info Local Development
+In development, use Stripe test mode keys. Use the [Stripe CLI](https://stripe.com/docs/stripe-cli) to forward webhooks to your local environment.
+:::
+
+---
+
+## Related Guides
+
+- [Multi-tenancy](/introduction/features/multi-tenancy) — Subscriptions are tenant-scoped
+- [Async Workers](/working-with-sb/async-workers/run-async-job-celery) — Webhook processing runs asynchronously
+
+---
+
+## All Guides
 
 <DocCardList />

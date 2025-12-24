@@ -122,11 +122,40 @@ return (
 ...
 ```
 
-## Generating components
+## Generating Components Automatically
 
-:::tip
+:::tip Faster Method
 
-The example component structure can be generated automatically using `plop` command.
-Check the `webapp` [API reference](../../../api-reference/webapp/commands#pnpm-run-plop) for more information.
+The component structure above can be generated automatically using `plop`:
+
+```bash
+cd packages/webapp
+pnpm run plop
+```
+
+Select "Component" and follow the prompts. This creates all files with correct naming and structure.
+
+See the [Plop guide](/working-with-sb/dev-tools/plop) for more information.
 
 :::
+
+---
+
+## Key Points
+
+- ✅ Use `FormattedMessage` for all user-facing text
+- ✅ Use Tailwind CSS with the `cn()` utility for styling
+- ✅ Export component and types from `index.ts`
+- ✅ Create tests in `__tests__/` folder
+- ✅ Add Storybook stories for visual testing
+
+---
+
+## Related Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Add a Route](/working-with-sb/guides/web-app/new-route) | Create a page for your component |
+| [Form with Mutation](/working-with-sb/graphql/web-app/form-with-mutation) | Add data fetching/saving |
+| [Testing](/working-with-sb/tests/webapp) | Write comprehensive tests |
+| [shadcn/ui](/working-with-sb/shadcn) | Use pre-built UI components |

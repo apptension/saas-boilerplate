@@ -1,5 +1,251 @@
-# System architecture
+---
+title: System Architecture
+description: Detailed overview of the AWS infrastructure
+---
 
-import SystemArchitecture from '../../shared/partials/architecture/_system_architecture.mdx';
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import ImgThemed from '../../shared/components/ImgThemed.component';
+import ProjectName from '../../shared/components/ProjectName.component';
 
-<SystemArchitecture />
+# System Architecture
+
+This page provides a detailed look at the AWS infrastructure that powers <ProjectName />.
+
+---
+
+## Architecture Diagram
+
+<p align="center">
+  <ImgThemed srcDark={useBaseUrl("img/system-diagram-v4-dark.png")} src={useBaseUrl("img/system-diagram-v4.png")} alt="System Diagram" />
+</p>
+
+---
+
+## Request Flow
+
+### Web Application Requests
+
+```
+User → CloudFront (CDN) → S3 (Static files)
+```
+
+1. User visits `app.example.com`
+2. Request hits CloudFront edge location
+3. If cached, response returned immediately
+4. If not cached, CloudFront fetches from S3
+5. Static HTML/JS/CSS returned to user
+
+### API Requests
+
+```
+User → CloudFront → ALB → ECS (Backend) → RDS/Redis
+```
+
+1. Frontend makes API call to `api.example.com`
+2. Request goes through CloudFront (caching for GET requests)
+3. Forwarded to Application Load Balancer
+4. ALB routes to healthy ECS task
+5. Django processes request
+6. Database queries via RDS
+7. Cache checks via Redis
+8. Response returned to user
+
+### Background Job Flow
+
+```
+Backend → Redis (Broker) → Celery Worker → RDS/External APIs
+```
+
+1. API endpoint triggers async task
+2. Task message published to Redis
+3. Celery worker picks up message
+4. Worker executes task (emails, processing, etc.)
+5. Results stored in database
+
+---
+
+## Component Details
+
+### Frontend (S3 + CloudFront)
+
+| Aspect | Details |
+|--------|---------|
+| **Technology** | React (Vite build) |
+| **Hosting** | S3 static website |
+| **CDN** | CloudFront with global edge locations |
+| **Caching** | Aggressive caching for static assets |
+| **SSL** | ACM certificate, HTTPS enforced |
+
+**Benefits:**
+- Global low-latency delivery
+- Automatic scaling
+- Cost-effective for static content
+- No server management
+
+### Backend API (ECS Fargate)
+
+| Aspect | Details |
+|--------|---------|
+| **Technology** | Django + Gunicorn |
+| **Container** | Docker on Fargate |
+| **Scaling** | Horizontal (add more tasks) |
+| **Load Balancing** | Application Load Balancer |
+| **Health Checks** | HTTP health endpoint |
+
+**Task Configuration (Default):**
+- CPU: 0.5 vCPU
+- Memory: 1 GB
+- Desired count: 1 (adjustable)
+
+### Database (RDS PostgreSQL)
+
+| Aspect | Details |
+|--------|---------|
+| **Engine** | PostgreSQL 14+ |
+| **Instance** | db.t3.small (default) |
+| **Storage** | GP2 SSD, auto-scaling |
+| **Backups** | Daily automated, 7-day retention |
+| **Encryption** | At rest and in transit |
+
+**High Availability (Production):**
+- Multi-AZ deployment
+- Automatic failover
+- Read replicas available
+
+### Cache (ElastiCache Redis)
+
+| Aspect | Details |
+|--------|---------|
+| **Engine** | Redis 6+ |
+| **Instance** | cache.t3.micro (default) |
+| **Use Cases** | Django cache, Celery broker, sessions |
+| **Cluster Mode** | Disabled (single node default) |
+
+### Background Workers
+
+| Type | Service | Use Case |
+|------|---------|----------|
+| **Celery Workers** | ECS Fargate | Long-running tasks, emails, processing |
+| **Celery Beat** | ECS Fargate | Scheduled tasks, cron jobs |
+| **Lambda Functions** | AWS Lambda | Quick async tasks, webhooks |
+
+---
+
+## Networking
+
+### VPC Configuration
+
+```
+VPC (10.0.0.0/16)
+├── Public Subnets (2 AZs)
+│   ├── NAT Gateway
+│   ├── Application Load Balancer
+│   └── Internet Gateway
+│
+└── Private Subnets (2 AZs)
+    ├── ECS Tasks (Backend, Workers)
+    ├── RDS Database
+    └── ElastiCache Redis
+```
+
+### Security Groups
+
+| Group | Inbound | Outbound |
+|-------|---------|----------|
+| **ALB** | 80, 443 from internet | ECS security group |
+| **ECS** | From ALB only | All (via NAT) |
+| **RDS** | 5432 from ECS | None |
+| **Redis** | 6379 from ECS | None |
+
+---
+
+## Secrets Management
+
+### AWS Secrets Manager
+- Docker Hub credentials
+- Database master password
+- Third-party API keys
+
+### AWS Systems Manager Parameter Store
+- Application configuration
+- Feature flags
+- Environment-specific settings
+
+---
+
+## Monitoring & Logging
+
+### CloudWatch
+
+| Resource | Metrics |
+|----------|---------|
+| **ECS** | CPU, Memory, Task count |
+| **RDS** | Connections, CPU, Storage |
+| **ALB** | Request count, Latency, 5xx errors |
+| **Lambda** | Invocations, Duration, Errors |
+
+### Log Groups
+
+| Log Group | Contains |
+|-----------|----------|
+| `/ecs/[project]-[stage]-api` | Backend API logs |
+| `/ecs/[project]-[stage]-celery-*` | Celery worker logs |
+| `/aws/lambda/[project]-[stage]-*` | Lambda function logs |
+
+---
+
+## Scaling Considerations
+
+### Horizontal Scaling
+
+| Component | How to Scale |
+|-----------|--------------|
+| **ECS Backend** | Increase desired task count |
+| **ECS Workers** | Increase desired task count |
+| **Lambda** | Automatic (concurrent executions) |
+
+### Vertical Scaling
+
+| Component | How to Scale |
+|-----------|--------------|
+| **ECS Tasks** | Increase CPU/memory in task definition |
+| **RDS** | Change instance class |
+| **ElastiCache** | Change node type |
+
+### Auto Scaling
+
+ECS supports target tracking auto scaling:
+- Scale based on CPU utilization
+- Scale based on memory utilization
+- Scale based on ALB request count
+
+---
+
+## Disaster Recovery
+
+### Backup Strategy
+
+| Component | Backup Method | Retention |
+|-----------|---------------|-----------|
+| **RDS** | Automated snapshots | 7 days (default) |
+| **S3** | Versioning enabled | Configurable |
+| **Code** | Git repository | Unlimited |
+| **Secrets** | Parameter Store history | 100 versions |
+
+### Recovery Procedures
+
+1. **Database Recovery:**
+   - Restore from snapshot to new instance
+   - Update connection strings
+   - Deploy infrastructure
+
+2. **Application Recovery:**
+   - Redeploy from git
+   - Infrastructure is code (CDK)
+   - Secrets in Parameter Store
+
+---
+
+## Cost Optimization
+
+See [Cost Estimation](/aws/architecture/costs) for detailed cost breakdown and optimization tips.

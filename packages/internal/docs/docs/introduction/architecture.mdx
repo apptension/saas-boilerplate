@@ -1,28 +1,96 @@
 ---
 title: Architecture
-description: System architecture description
+description: System architecture and project structure
 ---
 
 import ProjectName from '../shared/components/ProjectName.component';
 import SystemArchitecture from '../shared/partials/architecture/_system_architecture.mdx';
 import CiCdArchitecture from '../shared/partials/architecture/_cicd_architecture.mdx';
 
-## Services included in <ProjectName/>
+# Architecture
 
-<ProjectName/> comes with a set of pre-configured services that are ready to be deployed on
-[AWS](https://aws.amazon.com/) cloud infrastructure.
+<ProjectName/> follows a modern, scalable architecture designed for production SaaS applications. This page covers the overall system design, project structure, and how components interact.
 
-The project follows a monorepo repository layout and utilizes the [NX](https://nx.dev/) build system. A CLI is
-also included with predefined commands, which should not be changed unless you know what you are doing. Most of these
-commands are used in CodeBuild jobs in the CI pipeline.
+---
 
-All services are located in the `packages` directory at the root of the repository. Standard installation of the
-<ProjectName/> contains following services:
+## Project Structure
 
-- React web application
-- Django backend and admin panel
-- Serverless asynchronous workers
+The project uses a **monorepo** layout powered by [NX](https://nx.dev/), with all code organized in the `packages/` directory:
+
+```
+packages/
+├── webapp/              # React frontend application
+├── webapp-libs/         # Shared frontend libraries
+│   ├── webapp-core/     # Core UI components, hooks, utilities
+│   ├── webapp-api-client/  # GraphQL client & generated types
+│   ├── webapp-tenants/  # Multi-tenancy features
+│   ├── webapp-finances/ # Payment & subscription features
+│   └── ...              # Additional feature libraries
+├── backend/             # Django API & admin panel
+├── workers/             # Serverless async workers (Lambda)
+└── internal/
+    ├── cli/             # `pnpm saas` command-line tool
+    └── docs/            # This documentation site
+```
+
+:::tip Navigation
+Use NX commands to work with specific packages:
+```bash
+pnpm nx start webapp        # Start frontend
+pnpm nx test webapp-core    # Test a library
+pnpm nx run-many --target=lint  # Lint all packages
+```
+:::
+
+---
+
+## Core Services
+
+<ProjectName/> includes three main services that work together:
+
+| Service | Technology | Description |
+|---------|------------|-------------|
+| **Web Application** | React, TypeScript, Vite | User-facing frontend with GraphQL integration |
+| **Backend API** | Django, Graphene, PostgreSQL | GraphQL API, authentication, business logic |
+| **Async Workers** | Python, AWS Lambda | Background jobs, email sending, webhooks |
+
+### Web Application
+
+The React frontend is a single-page application that communicates with the backend via GraphQL. Key characteristics:
+
+- **Component Library**: shadcn/ui components in `webapp-core`
+- **State Management**: Apollo Client for server state
+- **Routing**: React Router with tenant-aware paths
+- **Styling**: Tailwind CSS with custom design tokens
+
+### Backend API
+
+The Django backend provides a GraphQL API and admin interface:
+
+- **API**: Graphene-Django for GraphQL endpoints
+- **Authentication**: JWT tokens with refresh token rotation
+- **Database**: PostgreSQL with Django ORM
+- **Admin**: Django admin panel at `admin.localhost:5001`
+
+### Async Workers
+
+Background processing for tasks that shouldn't block the request/response cycle:
+
+- **Local**: Celery workers with Redis broker
+- **Production**: AWS Lambda functions triggered by EventBridge
+
+---
 
 <SystemArchitecture />
 
+---
+
 <CiCdArchitecture />
+
+---
+
+## Related Documentation
+
+- **[Stack Description](/introduction/stack-description)** — Detailed technology versions
+- **[AWS Deployment](/aws)** — Deploy this architecture to production
+- **[Infrastructure as Code](/introduction/features/iac)** — How AWS resources are defined

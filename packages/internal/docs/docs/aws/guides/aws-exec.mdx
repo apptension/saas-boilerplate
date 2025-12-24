@@ -1,21 +1,256 @@
-# SSH into backend container
+---
+title: SSH into Containers
+description: Access running containers for debugging and maintenance
+---
 
-AWS Exec is new functionality that allows users to either run an interactive shell or a single command against a container
-inside a task deployed on either Amazon EC2 or AWS Fargate.
-You can find more information about AWS Exec [here](https://aws.amazon.com/blogs/containers/new-using-amazon-ecs-exec-access-your-containers-fargate-ec2/).
+import ProjectName from '../../shared/components/ProjectName.component';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# SSH into Running Containers
+
+Sometimes you need direct access to a running container for debugging, running one-off commands, or investigating issues. AWS ECS Exec allows you to start an interactive shell inside your containers.
+
+---
+
+## Quick Start
+
+For the backend container:
+
+```bash
+pnpm saas aws set-env qa
+pnpm saas backend remote-shell
+```
+
+This opens a bash shell inside the running backend container.
+
+---
 
 ## Prerequisites
 
-Using AWS Exec requires additional `SSM Session Manager` plugin for `AWS CLI`.
-Installation guide is available [here](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html).
+### Install Session Manager Plugin
 
-### Usage
+AWS ECS Exec uses the Session Manager plugin for secure connections.
 
-AWS Exec does not create new, separate task like ssh bastion do, but connect with existing, running container.
-That's why we need specify `CLUSTER_NAME`, `TASK_ID` and `CONTAINER_NAME` in our commands.
+<Tabs>
+<TabItem value="mac" label="macOS">
 
-Example command allowing run interactive shell inside selected container:
+```bash
+brew install --cask session-manager-plugin
 
-```shell
-aws-vault exec <SELECTED_AWS_VAULT_PROFILE> -- aws ecs execute-command --cluster <CLUSTER_NAME> --region <REGION> --task <TASK_ID> --container <CONTAINER_NAME> --command "/bin/bash" --interactive
+# Verify installation
+session-manager-plugin --version
+```
+
+</TabItem>
+<TabItem value="linux" label="Linux">
+
+```bash
+# Debian/Ubuntu
+curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+sudo dpkg -i session-manager-plugin.deb
+
+# Verify installation
+session-manager-plugin --version
+```
+
+</TabItem>
+<TabItem value="windows" label="Windows">
+
+Download from: [Session Manager Plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
+
+</TabItem>
+</Tabs>
+
+---
+
+## Using the CLI Command
+
+The easiest way to access containers:
+
+```bash
+# Backend API container
+pnpm saas backend remote-shell
+
+# This automatically:
+# 1. Finds a running backend task
+# 2. Connects using ECS Exec
+# 3. Opens a bash shell
+```
+
+---
+
+## Manual Access
+
+If you need more control, use the AWS CLI directly:
+
+### Step 1: Get Cluster and Task Information
+
+```bash
+# List clusters
+aws ecs list-clusters
+
+# List tasks in a cluster
+aws ecs list-tasks --cluster saas-qa
+
+# Get task details
+aws ecs describe-tasks --cluster saas-qa --tasks <TASK_ID>
+```
+
+### Step 2: Connect to Container
+
+```bash
+aws ecs execute-command \
+  --cluster saas-qa \
+  --task <TASK_ID> \
+  --container api \
+  --command "/bin/bash" \
+  --interactive
+```
+
+Replace:
+- `saas-qa` with your cluster name
+- `<TASK_ID>` with the actual task ID
+- `api` with the container name
+
+---
+
+## Common Use Cases
+
+### Run Django Management Commands
+
+```bash
+pnpm saas backend remote-shell
+
+# Inside the container:
+./manage.py shell
+./manage.py migrate --list
+./manage.py createsuperuser
+./manage.py collectstatic
+```
+
+### Check Environment Variables
+
+```bash
+# List all environment variables
+env | sort
+
+# Check specific variable
+echo $DJANGO_SECRET_KEY
+```
+
+### Inspect Logs
+
+```bash
+# View recent application logs
+tail -f /var/log/app.log
+
+# Check Python packages
+pip list
+```
+
+### Debug Database Connection
+
+```bash
+# Test database connection
+./manage.py dbshell
+
+# Or use Python
+python -c "import django; django.setup(); from django.db import connection; connection.ensure_connection(); print('DB OK')"
+```
+
+### Check Celery Status
+
+```bash
+# Connect to Celery worker container
+# (from local machine)
+aws ecs execute-command \
+  --cluster saas-qa \
+  --task <CELERY_TASK_ID> \
+  --container celery-worker \
+  --command "/bin/bash" \
+  --interactive
+
+# Inside container:
+celery -A config inspect active
+celery -A config inspect stats
+```
+
+---
+
+## Container Names
+
+Each ECS service has specific container names:
+
+| Service | Container Name |
+|---------|---------------|
+| Backend API | `api` |
+| Celery Worker | `celery-worker` or `celery-default` |
+| Celery Beat | `celery-beat` |
+
+---
+
+## Troubleshooting
+
+### "Session Manager plugin not found"
+
+Install the Session Manager plugin:
+```bash
+brew install --cask session-manager-plugin  # macOS
+```
+
+### "TargetNotConnectedException"
+
+The task might not have ECS Exec enabled. Check:
+
+1. Task definition has `enableExecuteCommand: true`
+2. Task IAM role has required permissions
+3. Task is in `RUNNING` state
+
+### "Unable to find task"
+
+The cluster name or task ID might be wrong:
+```bash
+# List all running tasks
+aws ecs list-tasks --cluster saas-qa --desired-status RUNNING
+```
+
+### Connection drops immediately
+
+The container might be crashing. Check:
+1. CloudWatch logs for the container
+2. ECS → Tasks → Stopped tasks for crash reasons
+
+---
+
+## Security Considerations
+
+- ECS Exec sessions are logged in CloudWatch
+- Access requires IAM permissions
+- Use sparingly—prefer logs and monitoring for debugging
+- Never modify production data without backups
+
+---
+
+## Alternatives
+
+### For Database Access
+
+Use the database shell command:
+```bash
+pnpm saas db shell
+```
+
+### For Workers
+
+```bash
+pnpm saas workers shell  # Local development only
+```
+
+### For Viewing Logs
+
+Check CloudWatch Logs instead of SSHing:
+```bash
+pnpm saas aws login
+# Navigate to CloudWatch → Log groups
 ```

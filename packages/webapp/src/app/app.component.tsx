@@ -76,7 +76,7 @@ export const App = () => {
               <Route path={RoutesConfig.subscriptions.transactionHistory.history} element={<TransactionHistory />} />
             </Route>
             <Route path={RoutesConfig.demoItems} element={<DemoItems />} />
-            <Route path={RoutesConfig.demoItem} element={<DemoItem routesConfig={RoutesConfig} />} />
+            <Route path={RoutesConfig.demoItem} element={<DemoItem routesConfig={{ notFound: RoutesConfig.notFound, list: RoutesConfig.demoItems }} />} />
             <Route path={RoutesConfig.crudDemoItem.index} element={<CrudDemoItem routesConfig={RoutesConfig} />} />
             <Route path={RoutesConfig.documents} element={<Documents />} />
             <Route path={RoutesConfig.saasIdeas} element={<SaasIdeas />} />

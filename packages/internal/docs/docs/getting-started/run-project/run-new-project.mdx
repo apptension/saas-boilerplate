@@ -1,6 +1,6 @@
 ---
-title: Run new project
-description: Setup a fresh project with SaaS Boilerplate
+title: Start a New Project
+description: Set up a fresh project with SaaS Boilerplate in minutes
 pagination_next: working-with-sb/index
 ---
 
@@ -12,70 +12,114 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
 
-## Fresh project setup
+# Start a New Project
 
-This guide should be followed right after initializing an empty repository with <ProjectName/> project. If you'd like to start with an already existing project, please visit [Launch existing project](./run-existing-project).
+This guide walks you through creating a fresh <ProjectName/> project from scratch. By the end, you'll have a fully functional SaaS application running locally.
+
+:::tip Estimated Time
+**10-15 minutes** for first-time setup (depending on your internet speed for Docker image downloads).
+:::
+
+Already have a project? See [Join an Existing Project](./run-existing-project) instead.
+
+---
 
 <Requirements />
 
-### Setup using CLI starter kit
+---
 
-You can use a special CLI tool to run a new local instance of the <ProjectName/> as soon as possible. It will clone the repository and take care of setting up the environment. Run the following command in the directory where you would like to create a new project:
+## Step 1: Create Your Project
+
+The fastest way to get started is with our CLI tool. Open your terminal and run:
 
 <Tabs>
-  <TabItem value="npm" label="npm" default>
+  <TabItem value="pnpm" label="pnpm" default>
     <CodeBlock>
-      npm init saas-boilerplate PATH
+      pnpm create saas-boilerplate my-saas-app
     </CodeBlock>
   </TabItem>
-  <TabItem value="pnpm" label="pnpm">
+  <TabItem value="npm" label="npm">
     <CodeBlock>
-      pnpm create saas-boilerplate PATH
+      npm init saas-boilerplate my-saas-app
     </CodeBlock>
   </TabItem>
   <TabItem value="yarn" label="yarn">
     <CodeBlock>
-      yarn create saas-boilerplate PATH
+      yarn create saas-boilerplate my-saas-app
     </CodeBlock>
   </TabItem>
 </Tabs>
 
-:::info
+Replace `my-saas-app` with your desired project name.
 
-Where `PATH` is a directory name where to initialize project.
-
-**The init directory needs to be empty!**
-
+:::info What this does
+The CLI will:
+1. Clone the SaaS Boilerplate repository
+2. Install all dependencies
+3. Create default environment files
+4. Set up your local database
+5. Guide you through initial configuration
 :::
 
-After the initialization process is complete, you will be able to start the app as described in the [Start the app](#start-the-app) section of the documentation.
+:::caution
+The target directory must be **empty** or non-existent. The CLI will create it for you.
+:::
 
-### Manual setup
+Once complete, navigate into your project:
+
+```bash
+cd my-saas-app
+```
+
+Then skip to [Step 3: Start the Application](#start-the-app).
+
+---
+
+## Step 2: Manual Setup (Alternative)
+
+If you prefer to set up manually or the CLI doesn't work for your environment, follow these steps:
 
 <InstallDeps />
 
-#### Adjust `.env.shared` files
-Root and almost all packages allow configuration through environmental variables. For local machines, those need to be present in so-called `.env` files. These are, of course, ignored in GIT to avoid secret values being committed and shared with everyone. We prepared a set of defaults in the form of `.env.shared` files located in the same directories that will be enough to run the project locally, but a few need to be adjusted before you start the project for the first time.
+### Configure Environment Variables
 
-:::caution
+The project uses `.env` files for configuration. Default values are provided in `.env.shared` files, but you need to customize a few settings.
 
-Never store any secret values in those files!
-
+:::caution Security
+Never commit `.env` files to Git! Only `.env.shared` files (with non-secret defaults) should be committed.
 :::
 
-##### `.env.shared` (in project root)
+#### Root Configuration (`.env.shared`)
 
-| Name           | Example | Description                                                                         |
-|----------------|---------|-------------------------------------------------------------------------------------|
-| `PROJECT_NAME` | `myapp` | The name of your project (best if 3-5 characters to avoid AWS names being too long) |
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `PROJECT_NAME` | `myapp` | Short project identifier (3-5 chars recommended to avoid AWS name length limits) |
 
-##### `./packages/backend/.env.shared`
+#### Backend Configuration (`packages/backend/.env.shared`)
 
-| Name                     | Example                            | Description                                                                                        |
-|--------------------------|------------------------------------|----------------------------------------------------------------------------------------------------|
-| `DJANGO_SECRET_KEY`      | `Zs639zRcb5!9om2@tW2H6XG#Znj^TB^I` | 50-character random string; [docs](https://docs.djangoproject.com/en/3.1/ref/settings/#secret-key) |
-| `HASHID_FIELD_SALT`      | `t5$^r*xsMRXn1xjzhRSl8I5Hb3BUW$4U` | 50-character random string; [docs](https://django-hashid-field.readthedocs.io/en/latest/)          |
-| `ADMIN_EMAIL`            | `admin@example.com`                | Will be used to create the first super admin user                                                  |
-| `ADMIN_DEFAULT_PASSWORD` | `AvPZpabgj9Z8`                     | Will be used to create the first super admin user                                                  |
+| Variable | Example | Description |
+|----------|---------|-------------|
+| `DJANGO_SECRET_KEY` | `Zs639zRcb5!9om2@tW2H6XG#Znj^TB^I` | **Required.** 50-character random string for cryptographic signing |
+| `HASHID_FIELD_SALT` | `t5$^r*xsMRXn1xjzhRSl8I5Hb3BUW$4U` | **Required.** 50-character random string for ID hashing |
+| `ADMIN_EMAIL` | `admin@example.com` | Email for the initial superadmin account |
+| `ADMIN_DEFAULT_PASSWORD` | `AvPZpabgj9Z8` | Password for the initial superadmin account |
+
+:::tip Generate Secret Keys
+You can generate secure random strings using Python:
+
+```bash
+python3 -c "import secrets; print(secrets.token_urlsafe(50)[:50])"
+```
+
+Or using Node.js:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(50).toString('base64').slice(0,50))"
+```
+
+Or use an online generator like [RandomKeygen](https://randomkeygen.com/).
+:::
+
+---
 
 <StartApp />

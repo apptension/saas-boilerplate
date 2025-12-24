@@ -29,6 +29,10 @@ To update types in the webapp application code, two steps need to be taken:
     ```bash
     pnpm nx run webapp:graphql:download-schema
     ```
+    
+    :::tip
+    Make sure your backend is running before downloading the schema, as the command introspects the live GraphQL endpoint.
+    :::
     This command will introspect
     and save both schemas (main back-end API and Contentful API) to files located at
     ```
@@ -89,3 +93,78 @@ function Posts() {
 ```
 
 In the example above `data` returned from `useQuery` has correct types.
+
+---
+
+## Quick Reference
+
+```bash
+# Full update (download + generate) - run from project root
+pnpm nx run webapp:graphql:download-schema && pnpm nx run webapp:graphql:generate-types
+
+# Or use the combined command
+pnpm nx run webapp-api-client:graphql:generate-types
+```
+
+---
+
+## Troubleshooting
+
+<details>
+<summary><strong>Error: Unable to download schema</strong></summary>
+
+Ensure the backend is running:
+```bash
+pnpm saas up
+# or
+pnpm nx run core:docker-compose:up
+```
+
+The GraphQL endpoint should be accessible at `http://localhost:5001/api/graphql/`.
+
+</details>
+
+<details>
+<summary><strong>Types not updating after changes</strong></summary>
+
+1. Make sure you've saved your `.graphql.ts` files
+2. Run both commands in order:
+   ```bash
+   pnpm nx run webapp:graphql:download-schema
+   pnpm nx run webapp:graphql:generate-types
+   ```
+3. Restart your TypeScript server in your IDE (VS Code: Cmd+Shift+P → "TypeScript: Restart TS Server")
+
+</details>
+
+<details>
+<summary><strong>Contentful types not generating</strong></summary>
+
+Ensure your Contentful environment variables are configured in `.env`:
+```
+VITE_CONTENTFUL_SPACE=your-space-id
+VITE_CONTENTFUL_TOKEN=your-access-token
+```
+
+</details>
+
+---
+
+## When to Run This
+
+Run these commands whenever you:
+
+- Add or modify GraphQL queries/mutations in `.graphql.ts` files
+- Add new fields to backend Django models
+- Create new backend mutations or queries
+- Update Contentful content types
+
+---
+
+## Related Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Add Backend Mutation](/working-with-sb/graphql/backend/adding-new-mutation) | Create new API endpoints |
+| [Form with Mutation](/working-with-sb/graphql/web-app/form-with-mutation) | Use generated types in forms |
+| [Component with Query](/working-with-sb/graphql/web-app/component-with-query) | Fetch data with typed queries |

@@ -67,7 +67,13 @@ Comprehensive documentation for all <ProjectName /> packages, commands, and conf
 | **All** | `pnpm saas down` | Stop backend and frontend services |
 | **Webapp** | `pnpm nx start webapp` | Start development server |
 | **Webapp** | `pnpm nx test webapp` | Run frontend tests |
-| **API Client** | `pnpm nx run webapp-api-client:graphql:generate-types` | Generate GraphQL types |
+| **Webapp** | `pnpm nx run webapp:type-check` | TypeScript type checking |
+| **Backend** | `pnpm saas backend shell` | Django shell access |
+| **Backend** | `pnpm saas backend test` | Run backend tests |
+| **Backend** | `pnpm saas backend makemigrations` | Create database migrations |
+| **Backend** | `pnpm saas backend migrate` | Apply database migrations |
+| **API Client** | `pnpm nx run webapp:graphql:generate-types` | Generate GraphQL types |
+| **API Client** | `pnpm nx run webapp:graphql:download-schema` | Download GraphQL schema |
 | **Docs** | `pnpm nx start docs` | Start documentation server |
 
 ### Environment Configuration

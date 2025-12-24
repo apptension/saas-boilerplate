@@ -34,6 +34,7 @@ import {
   ExternalLink,
   Github,
   Check,
+  CheckCircle,
   X,
   AlertCircle,
   Info,
@@ -45,6 +46,7 @@ import {
   Wrench,
   Cog,
   Play,
+  Clock,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -103,6 +105,8 @@ const iconMap: Record<string, LucideIcon> = {
   wrench: Wrench,
   cog: Cog,
   play: Play,
+  clock: Clock,
+  'check-circle': CheckCircle,
 };
 
 interface IconProps {
@@ -172,6 +176,7 @@ export {
   ExternalLink,
   Github,
   Check,
+  CheckCircle,
   X,
   AlertCircle,
   Info,
@@ -183,6 +188,9 @@ export {
   Wrench,
   Cog,
   Play,
+  Clock,
 };
+
+
 
 

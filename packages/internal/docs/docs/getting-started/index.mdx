@@ -1,5 +1,5 @@
 ---
-title: Getting Started
+title: Quick Start
 description: Set up and run your SaaS Boilerplate project in minutes
 pagination_next: null
 ---
@@ -8,9 +8,9 @@ import DocCardList from '@theme/DocCardList';
 import ProjectName from '../shared/components/ProjectName.component';
 import { Rocket, FolderOpen } from '../shared/components/Icon.component';
 
-# Getting Started
+# Quick Start
 
-Get up and running with <ProjectName /> in just a few minutes. Choose your path based on whether you're starting fresh or joining an existing project.
+Get up and running with <ProjectName /> in just a few minutes. Choose your path based on your situation.
 
 ---
 
@@ -22,53 +22,103 @@ Get up and running with <ProjectName /> in just a few minutes. Choose your path 
       <div className="feature-card__icon"><Rocket size={18} /></div>
       <h3 className="feature-card__title">Start a New Project</h3>
       <p className="feature-card__description">
-        Initialize a fresh project from scratch. Perfect for starting your new SaaS venture.
+        Create a fresh SaaS application from scratch. Perfect for new ventures.
       </p>
+      <span className="feature-card__meta">~15 min setup</span>
     </div>
   </a>
   <a href="/getting-started/run-project/run-existing-project" className="feature-card__link">
     <div className="feature-card">
       <div className="feature-card__icon"><FolderOpen size={18} /></div>
-      <h3 className="feature-card__title">Run Existing Project</h3>
+      <h3 className="feature-card__title">Join an Existing Project</h3>
       <p className="feature-card__description">
-        Join an existing team or continue working on a project already using SaaS Boilerplate.
+        Set up your local environment for a project your team is already working on.
       </p>
+      <span className="feature-card__meta">~10 min setup</span>
     </div>
   </a>
 </div>
 
 ---
 
-## Quick Start
+## Quick Start (TL;DR)
 
-The fastest way to get started is with our CLI tool:
+For experienced developers who want to jump right in:
 
 ```bash
-pnpm create saas-boilerplate my-saas-project
+# Create a new project
+pnpm create saas-boilerplate my-saas-app
+cd my-saas-app
+
+# Start everything
+pnpm saas up
 ```
 
-This will:
-- Clone the repository
-- Install all dependencies
-- Set up your environment
-- Guide you through initial configuration
+Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
-:::tip Estimated Time
-Most developers are up and running in **under 15 minutes**.
+:::tip What You Get
+A fully functional SaaS application with authentication, payments, multi-tenancy, and more — all running locally.
 :::
 
 ---
 
-## What You'll Need
+## Prerequisites
 
-Before you begin, make sure you have these prerequisites installed:
+Make sure you have these installed before starting:
 
-| Requirement | Version | Purpose |
-|-------------|---------|---------|
-| **Node.js** | 18+ LTS | Frontend build & tooling |
-| **pnpm** | 9+ | Package management |
-| **Docker** | Latest | Backend services |
-| **Python** | 3.11 | Backend runtime (optional for local development) |
+| Tool | Version | Check Command | Install |
+|------|---------|---------------|---------|
+| **Node.js** | 18+ | `node -v` | [nodejs.org](https://nodejs.org) |
+| **pnpm** | 9+ | `pnpm --version` | [pnpm.io](https://pnpm.io/installation) |
+| **Docker** | Latest | `docker --version` | [docker.com](https://docs.docker.com/get-docker) |
+
+<details>
+<summary><strong>Windows Users</strong></summary>
+
+You must install [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install) (Windows Subsystem for Linux) and run all commands inside WSL.
+
+</details>
+
+<details>
+<summary><strong>Optional: Python (for backend development outside Docker)</strong></summary>
+
+If you want IDE autocomplete for Python code or run backend tests locally:
+- Python 3.11 (`python3 --version`)
+- PDM 2.3+ (`pdm --version`)
+
+Most developers don't need this since the backend runs in Docker.
+
+</details>
+
+---
+
+## What's Running Locally
+
+After setup, you'll have these services available:
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Web App** | [localhost:3000](http://localhost:3000) | Your SaaS frontend |
+| **Backend API** | [localhost:5001](http://localhost:5001) | Django + GraphQL API |
+| **Admin Panel** | [admin.localhost:5001](http://admin.localhost:5001) | Django admin interface |
+| **Mailcatcher** | [localhost:1080](http://localhost:1080) | Catches all emails locally |
+| **Docs** | [localhost:3006](http://localhost:3006) | This documentation |
+
+---
+
+## Common Commands
+
+After setup, these are the commands you'll use most:
+
+| Command | Description |
+|---------|-------------|
+| `pnpm saas up` | Start all services (backend + frontend) |
+| `pnpm saas down` | Stop all services |
+| `pnpm nx start webapp` | Start only the frontend |
+| `pnpm nx test webapp` | Run frontend tests |
+| `pnpm saas backend shell` | Open Django shell |
+
+See the [API Reference](/api-reference) for a complete list.
 
 ---
 
@@ -80,6 +130,17 @@ Before you begin, make sure you have these prerequisites installed:
 
 ## Need Help?
 
-- Check out our [troubleshooting guide](/aws/troubleshooting) for common issues
-- Browse the [Working with SaaS Boilerplate](/working-with-sb) guides
-- Open an issue on [GitHub](https://github.com/apptension/saas-boilerplate/issues)
+<div className="feature-grid feature-grid--3-cols">
+  <div className="feature-card feature-card--compact">
+    <h4>📖 Troubleshooting</h4>
+    <p>Common setup issues are covered in the <a href="/getting-started/run-project/run-new-project#troubleshooting">detailed guides</a>.</p>
+  </div>
+  <div className="feature-card feature-card--compact">
+    <h4>💬 GitHub Issues</h4>
+    <p>Search or open an issue on <a href="https://github.com/apptension/saas-boilerplate/issues">GitHub</a>.</p>
+  </div>
+  <div className="feature-card feature-card--compact">
+    <h4>📚 Guides</h4>
+    <p>Learn how to build with the <a href="/working-with-sb">How-To Guides</a>.</p>
+  </div>
+</div>

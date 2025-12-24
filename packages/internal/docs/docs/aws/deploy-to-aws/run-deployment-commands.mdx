@@ -1,46 +1,303 @@
 ---
-description: Steps required to deploy SaaS Boilerplate apps on AWS
+title: Deploy Your App
+description: Build and deploy your application to AWS
 ---
 
 import ProjectName from '../../shared/components/ProjectName.component';
 
-# Step 6: Deploy the app
+# Step 6: Deploy Your App
 
-## Switch context to proper environment stage
+This is the moment you've been working toward! This step builds your application and deploys it to the AWS infrastructure you created.
 
-Run the following command that will switch context to specific environment stage.
+**Estimated time: 20-30 minutes**
 
-```shell
-pnpm saas aws set-env [STAGE_NAME]
+---
+
+## What You'll Accomplish
+
+- ✅ Build Docker images for backend and workers
+- ✅ Build the webapp static assets
+- ✅ Push images to ECR (AWS Container Registry)
+- ✅ Deploy services to ECS Fargate
+- ✅ Run database migrations
+- ✅ See your live application!
+
+---
+
+## Deployment Methods
+
+You have two options for deploying:
+
+| Method | Best For | Description |
+|--------|----------|-------------|
+| **Manual deployment** | First deployment, testing | Deploy directly from your machine |
+| **CI/CD pipeline** | Ongoing development | Automated deployment on git push |
+
+For your first deployment, use **manual deployment**. You'll set up CI/CD afterward.
+
+---
+
+## Step 6.1: Ensure Correct Environment
+
+```bash
+pnpm saas aws set-env qa
+
+# Verify
+pnpm saas aws get-env
+# Expected: qa
 ```
 
-## Deploy application's code
+---
 
-This step is optional because it usually should be run through CI/CD pipeline. We didn't want to limit you so we also
-prepared a way to deploy the app fully from your local machine. There are two steps – building artifacts and deploying
-them to specific AWS services.
+## Step 6.2: Build All Artifacts
 
-You can build & deploy all services (Webapp, Backend, Workers etc) at once or just a single service.
-If you want all services run commands below in project's main directory,
-while for single service you need to go to that specific service directory.
+Build Docker images and static assets:
 
-### Build artifacts
-
-Run following command to build artifacts out of code on your local machine:
-
-```sh
+```bash
 pnpm saas build
 ```
 
-### Deploy artifacts to the newly created env
+This command:
+1. Builds the backend Docker image
+2. Builds the workers package
+3. Builds the webapp (React app)
+4. Tags images for ECR
 
-Run following command to deploy artifacts, built in previous command, to AWS:
+**Expected output:**
+```
+Building backend...
+Building workers...
+Building webapp...
+✅ All builds completed successfully
+```
 
-```sh
+:::info Build Time
+First builds take longer (5-10 minutes) as Docker downloads base images. Subsequent builds are faster due to caching.
+:::
+
+---
+
+## Step 6.3: Deploy to AWS
+
+Deploy all built artifacts to AWS:
+
+```bash
 pnpm saas deploy
 ```
 
-## Open the app
+This command:
+1. Pushes Docker images to ECR
+2. Runs database migrations
+3. Deploys backend to ECS
+4. Deploys workers (Lambda functions)
+5. Uploads webapp to S3 and invalidates CloudFront
 
-If you followed the guide and everything went right, your app should be deployed and each service should be available
-under configured domains.
+**Expected output:**
+```
+Pushing backend image to ECR...
+Deploying backend API...
+Running database migrations...
+Deploying workers...
+Deploying webapp to S3...
+Invalidating CloudFront cache...
+✅ Deployment complete!
+```
+
+---
+
+## Step 6.4: Wait for Services to Start
+
+After deployment, ECS needs time to:
+1. Pull the Docker images
+2. Start the containers
+3. Pass health checks
+4. Register with the load balancer
+
+This typically takes 2-5 minutes.
+
+### Monitor in AWS Console
+
+```bash
+pnpm saas aws login
+```
+
+Navigate to:
+1. **ECS → Clusters → saas-qa** (your cluster)
+2. Click on the **Services** tab
+3. Watch for services to reach `Running` status
+
+---
+
+## Deploying Individual Services
+
+If you need to deploy a specific service (e.g., after a bug fix):
+
+### Backend Only
+
+```bash
+pnpm saas backend build
+pnpm saas backend deploy api
+```
+
+### Workers Only
+
+```bash
+pnpm saas workers build
+pnpm saas workers deploy
+```
+
+### Webapp Only
+
+```bash
+pnpm saas webapp build
+pnpm saas webapp deploy
+```
+
+### Database Migrations Only
+
+```bash
+pnpm saas backend deploy migrations
+```
+
+---
+
+## What Gets Deployed Where
+
+| Component | AWS Service | URL |
+|-----------|-------------|-----|
+| **Web Application** | S3 + CloudFront | `https://app.qa.example.com` |
+| **Backend API** | ECS Fargate + ALB | `https://api.qa.example.com` |
+| **Admin Panel** | ECS Fargate + ALB | `https://admin.qa.example.com/admin` |
+| **Celery Workers** | ECS Fargate | (no public URL) |
+| **Async Workers** | AWS Lambda | (triggered internally) |
+| **Celery Flower** | ECS Fargate | `https://flower.qa.example.com` |
+
+---
+
+## Verification
+
+### Check Your App is Running
+
+Open your browser and visit:
+
+1. **Web Application**: `https://app.qa.example.com`
+   - Should show the login/signup page
+   - If using basic auth, enter the credentials from Step 3
+
+2. **API Health Check**: `https://api.qa.example.com/api/healthcheck/`
+   - Should return `{"status": "ok"}`
+
+3. **Admin Panel**: `https://admin.qa.example.com/admin`
+   - Login with `ADMIN_EMAIL` and `ADMIN_DEFAULT_PASSWORD` from Step 5
+
+4. **Celery Flower** (optional): `https://flower.qa.example.com`
+   - Login with `FLOWER_BASIC_AUTH` credentials
+   - Shows Celery worker status
+
+### Checklist
+
+- [ ] Web app loads at `app.qa.example.com`
+- [ ] Can create a new user account
+- [ ] Admin panel accessible at `admin.qa.example.com/admin`
+- [ ] API returns 200 at `/api/healthcheck/`
+- [ ] No errors in CloudWatch logs
+
+---
+
+## Checking Logs
+
+If something isn't working, check the logs:
+
+### CloudWatch Logs
+
+1. Open AWS Console: `pnpm saas aws login`
+2. Go to **CloudWatch → Log groups**
+3. Find logs for your services:
+   - `/ecs/saas-qa-api` - Backend API logs
+   - `/ecs/saas-qa-celery-*` - Celery worker logs
+
+### ECS Service Events
+
+1. Go to **ECS → Clusters → saas-qa**
+2. Click on a service (e.g., `api`)
+3. Check the **Events** tab for deployment issues
+
+---
+
+## Troubleshooting
+
+### "502 Bad Gateway" or "503 Service Unavailable"
+
+The backend hasn't finished starting. Wait 2-5 minutes for:
+- ECS tasks to start
+- Health checks to pass
+- Load balancer to register targets
+
+Check ECS console to see task status.
+
+### "ERR_NAME_NOT_RESOLVED" (Domain not found)
+
+DNS hasn't propagated yet. Wait 5-30 minutes, then try again.
+- Check Route 53 for the DNS records
+- Use `dig app.qa.example.com` to verify
+
+### Webapp Shows Blank Page
+
+1. Open browser developer tools (F12)
+2. Check the Console tab for JavaScript errors
+3. Check Network tab for failed API calls
+4. Verify `api.qa.example.com` is accessible
+
+### Database Connection Errors in Logs
+
+- Verify backend secrets are set correctly
+- Check RDS security group allows connections from ECS
+- Database takes time to become available after infrastructure deployment
+
+### "Image not found" or ECR Errors
+
+The Docker image wasn't pushed correctly:
+```bash
+# Re-build and deploy
+pnpm saas backend build
+pnpm saas backend deploy api
+```
+
+### Migration Errors
+
+If migrations fail:
+```bash
+# Check migration status
+pnpm saas backend remote-shell
+# Inside the container:
+./manage.py migrate --list
+```
+
+---
+
+## First Steps After Deployment
+
+Once your app is running:
+
+1. **Change the admin password**
+   - Login to admin panel
+   - Go to Users → Admin user → Change password
+
+2. **Verify email sending** (if configured)
+   - Create a new user account
+   - Check if verification email arrives
+
+3. **Test basic functionality**
+   - Create a tenant
+   - Test the CRUD demo
+   - Check notifications work
+
+---
+
+## Next Step
+
+Congratulations! 🎉 Your app is live on AWS!
+
+Let's verify everything and set up automated deployments.
+
+**[Continue to Step 7: Verify & Next Steps →](/aws/deploy-to-aws/verify-deployment)**

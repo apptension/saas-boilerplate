@@ -1,168 +1,309 @@
 ---
-description: Steps required to deploy SaaS Boilerplate on AWS
+title: Create Environment Stage
+description: Initialize your deployment environment in AWS
 ---
 
 import ProjectName from '../../shared/components/ProjectName.component';
 
-# Step 3: Initialize an environment stage
+# Step 3: Create Environment Stage
 
-<ProjectName /> provides the ability to deploy various versions of your
-application, such as QA, staging, or production. You have the flexibility to
-determine their naming conventions and the number of environments required. The
-only exception is the `local` environment, which is a specialized preconfigured
-environment utilized for running
-<ProjectName /> on local machine.
+This step initializes your deployment environment (e.g., `qa`, `staging`, `production`) in AWS. You'll bootstrap the CDK and set configuration variables that define how your environment will be deployed.
 
-All environments can either be deployed to a single AWS account or to separate ones, depending on your cloud governance
-policies and preferences.
+**Estimated time: 20-30 minutes**
 
-In essence, they are defined through different environmental variables. To manage these variables, the <ProjectName/>
-leverages AWS Systems Manager Parameter Store and a tool called [`chamber`](https://github.com/segmentio/chamber).
-With these tools, managing environment variables is easy and secure.
+---
 
-:::caution
+## What You'll Accomplish
 
-Before deploying the infrastructure to AWS, you must set all required environmental variables!
+- ✅ Bootstrap AWS CDK in your account
+- ✅ Set deployment configuration variables
+- ✅ Configure domain subdomains for your services
+- ✅ Prepare AWS for infrastructure deployment
 
+---
+
+## Understanding Environment Stages
+
+<ProjectName /> supports multiple isolated environments, each with its own:
+- Database
+- Application instances
+- Configuration
+- Domain subdomains
+
+| Stage | Purpose | Example Domain |
+|-------|---------|----------------|
+| `qa` | Development/testing | `app.qa.example.com` |
+| `staging` | Pre-production testing | `app.staging.example.com` |
+| `production` | Live production | `app.example.com` or `app.production.example.com` |
+
+:::tip Start with QA
+For your first deployment, we recommend creating a `qa` environment. This lets you learn the process before deploying production.
 :::
 
-## Install chamber CLI
+---
 
-Follow the [official instructions](https://github.com/segmentio/chamber#installing) on how to install chamber.
+## Step 3.1: Bootstrap CDK
 
-## Bootstrap CDK
+AWS CDK needs to prepare your account with resources it uses for deployments (S3 buckets, IAM roles, etc.). This only needs to be done once per AWS account/region.
 
-In <ProjectName/>, AWS CDK is used to define infrastructure as a code. It also needs to create a KMS key with alias
-`parameter_store_key` that `chamber` is using to manage secure values.
-
-Before you deploy anything to AWS you need to run following initialization command:
-
-```shell
+```bash
+# Make sure you're in the project root directory
 pnpm saas infra bootstrap
 ```
 
-If you're deploying a second environment stage to the
-same AWS account as the previous one you will receive an information that bootstrap has already been run.
+This command:
+- Creates CDK bootstrap resources in your AWS account
+- Creates a KMS key for encrypting secrets (used by Chamber)
+- Sets up the foundation for all future deployments
 
-## Set required env variables in SSM Parameter Store
-
-Open a shell terminal with proper AWS credentials available. If you followed a
-[previous step](./configure-aws-credentials) you can run following command to do it:
-
-```shell
-pnpm saas aws set-env [STAGE_NAME]
+**Expected output:**
+```
+✅  Environment aws://123456789012/eu-west-1 bootstrapped.
 ```
 
-Let's assume your stage is named `qa` and the project is named `saas`.
-Here's a list of all required env variables that you should set and a command that you should use to set them.
+:::info Already Bootstrapped?
+If you see a message saying bootstrap was already run, that's fine. Each AWS account only needs to be bootstrapped once per region.
+:::
 
-### Set project name
+---
 
-Each stage can have a different project name if you want but recommended approach is to use the same across all stages.
+## Step 3.2: Set Your Environment Context
 
-```shell
+Switch to the environment stage you want to configure:
+
+```bash
+# Replace [STAGE_NAME] with your stage (e.g., qa, staging, production)
+pnpm saas aws set-env qa
+```
+
+This command:
+- Sets environment variables for the current terminal session
+- Configures subsequent commands to target the specified environment
+- If using aws-vault, prompts for credentials/MFA
+
+:::caution Terminal Session
+This environment context only applies to the current terminal. If you open a new terminal, run this command again.
+:::
+
+---
+
+## Step 3.3: Set Required Configuration Variables
+
+Now configure the environment variables that define your deployment. These are stored securely in AWS Systems Manager Parameter Store.
+
+### Project Name
+
+Set the project name (should match `.env` file):
+
+```bash
 pnpm saas aws set-var PROJECT_NAME saas
 ```
 
-### Configure domains
-
-For this step you'll need the hosted zone parameters that you acquired in the previous step of this guide.
-
-```shell
-pnpm saas aws set-var SB_HOSTED_ZONE_ID XYZ
-pnpm saas aws set-var SB_HOSTED_ZONE_NAME example.com
-pnpm saas aws set-var SB_DOMAIN_ADMIN_PANEL admin.qa.example.com
-pnpm saas aws set-var SB_DOMAIN_FLOWER flower.qa.example.com
-pnpm saas aws set-var SB_DOMAIN_API api.qa.example.com
-pnpm saas aws set-var SB_DOMAIN_CDN cdn.qa.example.com
-pnpm saas aws set-var SB_DOMAIN_DOCS docs.qa.example.com
-pnpm saas aws set-var SB_DOMAIN_WEB_APP app.qa.example.com
-```
-
-:::info
-`SB_HOSTED_ZONE_ID` and `SB_HOSTED_ZONE_NAME` can be skipped if you are using externally managed DNS. In that case,
-certificates for CloudFront distribution and Load Balancer should be already generated, and their ARNs provided in
-`SB_CLOUDFRONT_CERTIFICATE_ARN` and `SB_LOAD_BALANCER_CERTIFICATE_ARN` parameters. As the last step,
-CNAME DNS records pointing to CloudFront distribution and Load Balancer need to be manually added.
+:::tip Project Name Guidelines
+- Use lowercase letters only
+- Keep it short (used as prefix for AWS resources)
+- No spaces or special characters
+- Example: `saas`, `myapp`, `acme`
 :::
 
-### \[Optional\] Configure production domain
+### Domain Configuration
 
-<ProjectName /> creates a certificate that supports `*.[ENV_STAGE].example.com` domains, like
-`app.production.example.com`. You most likely don't want such domain and need straight up `app.example.com` for your
-production environment. Set a following variable to override the default behaviour:
+Use the Hosted Zone details from Step 2:
 
+```bash
+# Replace with your actual values
+pnpm saas aws set-var SB_HOSTED_ZONE_ID Z0123456789ABCDEFGHIJ
+pnpm saas aws set-var SB_HOSTED_ZONE_NAME example.com
 ```
+
+Now set the domains for each service. Replace `example.com` and `qa` with your domain and stage name:
+
+```bash
+# Web application
+pnpm saas aws set-var SB_DOMAIN_WEB_APP app.qa.example.com
+
+# Backend API
+pnpm saas aws set-var SB_DOMAIN_API api.qa.example.com
+
+# Admin panel
+pnpm saas aws set-var SB_DOMAIN_ADMIN_PANEL admin.qa.example.com
+
+# CDN for static assets
+pnpm saas aws set-var SB_DOMAIN_CDN cdn.qa.example.com
+
+# Documentation (if deploying docs)
+pnpm saas aws set-var SB_DOMAIN_DOCS docs.qa.example.com
+
+# Celery Flower monitoring (optional)
+pnpm saas aws set-var SB_DOMAIN_FLOWER flower.qa.example.com
+```
+
+---
+
+## Step 3.4: Configure Optional Settings
+
+### For Production Environments
+
+If deploying production with root domain (e.g., `app.example.com` instead of `app.production.example.com`):
+
+```bash
 pnpm saas aws set-var SB_CERTIFICATE_DOMAIN example.com
 ```
 
-Without setting this variable you'll encounter an error during deployment
-```
-Resource handler returned message: "Invalid request provided: AWS::CloudFront::Distribution: The certificate that is
-attached to your distribution doesn't cover the alternate domain name (CNAME) that you're trying to add.
+Without this, you'll get a certificate mismatch error during deployment.
+
+### Basic Auth Protection
+
+Protect non-production environments with HTTP basic auth:
+
+```bash
+# Format: username:password
+pnpm saas aws set-var SB_BASIC_AUTH demo:secretpassword123
 ```
 
-### [Optional] Configuring CI mode
-
-:::caution
-Deploying `<ProjectName />` on a **new AWS account** may result in reaching the AWS CodeBuild concurrent build limit.
-This is a common issue with newly created AWS accounts. To mitigate potential issues during CI builds, it is advisable
-to configure the CI mode to `simple`. For more information about potential issues with new AWS accounts, see
-[Configuring AWS Credentials for New Accounts](./configure-aws-credentials#for-users-with-newly-created-aws-accounts).
+:::tip Security
+Always set basic auth for staging/QA environments to prevent unauthorized access.
 :::
 
-Changing the CI mode affects the execution behavior of CI processes:
-- `parallel` (the default setting): Enables actions in the AWS CodePipeline stages to execute concurrently.
-- `simple`: Ensures actions in the AWS CodePipeline stages are executed sequentially, with only one CodeBuild process
-running at a time.
+### CI/CD Mode
 
-We recommend utilizing the `parallel` mode for optimal performance and efficiency, provided that the concurrent build
-limits of AWS CodeBuild have been adjusted accordingly.
+For new AWS accounts with CodeBuild limits:
 
-```shell
-pnpm saas aws set-var SB_CI_MODE <parallel/simple>
+```bash
+# Use 'simple' for new accounts, 'parallel' for established accounts
+pnpm saas aws set-var SB_CI_MODE simple
 ```
 
-:::info
-Note: If you modify the settings for an already deployed environment, it is necessary to
-[redeploy the CI stack](./deploy-infrastructure#deploy-the-infrastructure) to ensure that the changes take effect.
-:::
+| Mode | Description | Recommended For |
+|------|-------------|-----------------|
+| `parallel` | Runs CI/CD stages concurrently | Established AWS accounts |
+| `simple` | Runs CI/CD stages sequentially | New AWS accounts (avoids build limits) |
 
-### \[Optional\] Protect the website with basic auth
+### Version Matrix (Optional)
 
-It's a good idea to prevent unauthorized access to staging environments so we suggest to set a basic auth password
-if this isn't a production environment.
+If you want to track deployed versions across environments:
 
-```shell
-pnpm saas aws set-var SB_BASIC_AUTH username:password
-```
-
-### \[Optional\] Set tools env variables
-
-The `tools` package during CI deployment is responsible for uploading the information of the version of deployed
-application on specific environment. Then, you will be able to check currently deployed state in the
-[version matrix](../../../working-with-sb/dev-tools/version-matrix).
-
-To configure `tools` package env variables follow the example below.
-
-```shell
-pnpm saas aws set-var SB_TOOLS_ENABLED <true/false>
-pnpm saas aws set-var SB_TOOLS_BASIC_AUTH username:password
-pnpm saas aws set-var SB_TOOLS_HOSTED_ZONE_ID XYZ
+```bash
+pnpm saas aws set-var SB_TOOLS_ENABLED true
+pnpm saas aws set-var SB_TOOLS_BASIC_AUTH admin:password
+pnpm saas aws set-var SB_TOOLS_HOSTED_ZONE_ID Z0123456789ABCDEFGHIJ
 pnpm saas aws set-var SB_TOOLS_HOSTED_ZONE_NAME example.com
 pnpm saas aws set-var SB_TOOLS_DOMAIN_VERSION_MATRIX status.example.com
 ```
 
-:::info
+See [Version Matrix](/working-with-sb/dev-tools/version-matrix) for more details.
 
-If you set `SB_TOOLS_ENABLED` to `true` make sure to deploy **version matrix** component before first CI pipeline run.
+---
 
-Follow the [deployment instructions](../../../working-with-sb/dev-tools/version-matrix#deployment) for more details.
+## Complete Configuration Example
 
-:::
+Here's a complete example for a `qa` environment with domain `example.com`:
 
-## Env variable validation
+```bash
+# Set environment context
+pnpm saas aws set-env qa
 
-You can look up the validator in `packages/internal/cli/src/config/env.ts`, which runs on every `nx` command that
-is executed. It will throw an error if you forget to set any required variables. Feel free to add other variables in
-there if you need.
+# Required: Project name
+pnpm saas aws set-var PROJECT_NAME saas
+
+# Required: Domain configuration
+pnpm saas aws set-var SB_HOSTED_ZONE_ID Z0123456789ABCDEFGHIJ
+pnpm saas aws set-var SB_HOSTED_ZONE_NAME example.com
+pnpm saas aws set-var SB_DOMAIN_WEB_APP app.qa.example.com
+pnpm saas aws set-var SB_DOMAIN_API api.qa.example.com
+pnpm saas aws set-var SB_DOMAIN_ADMIN_PANEL admin.qa.example.com
+pnpm saas aws set-var SB_DOMAIN_CDN cdn.qa.example.com
+pnpm saas aws set-var SB_DOMAIN_DOCS docs.qa.example.com
+pnpm saas aws set-var SB_DOMAIN_FLOWER flower.qa.example.com
+
+# Recommended: Protect non-production environments
+pnpm saas aws set-var SB_BASIC_AUTH demo:secretpassword
+
+# Optional: For new AWS accounts
+pnpm saas aws set-var SB_CI_MODE simple
+```
+
+---
+
+## Variable Reference
+
+| Variable | Required | Description | Example |
+|----------|----------|-------------|---------|
+| `PROJECT_NAME` | ✅ | Project identifier | `saas` |
+| `SB_HOSTED_ZONE_ID` | ✅ | Route 53 Hosted Zone ID | `Z0123456789...` |
+| `SB_HOSTED_ZONE_NAME` | ✅ | Your domain name | `example.com` |
+| `SB_DOMAIN_WEB_APP` | ✅ | Web application URL | `app.qa.example.com` |
+| `SB_DOMAIN_API` | ✅ | Backend API URL | `api.qa.example.com` |
+| `SB_DOMAIN_ADMIN_PANEL` | ✅ | Admin panel URL | `admin.qa.example.com` |
+| `SB_DOMAIN_CDN` | ✅ | CDN URL | `cdn.qa.example.com` |
+| `SB_DOMAIN_DOCS` | Optional | Documentation URL | `docs.qa.example.com` |
+| `SB_DOMAIN_FLOWER` | Optional | Celery monitoring URL | `flower.qa.example.com` |
+| `SB_BASIC_AUTH` | Optional | HTTP basic auth | `user:pass` |
+| `SB_CI_MODE` | Optional | CI/CD execution mode | `simple` or `parallel` |
+| `SB_CERTIFICATE_DOMAIN` | Optional | Override certificate domain | `example.com` |
+
+---
+
+## How Variables Are Stored
+
+All variables are stored in AWS Systems Manager Parameter Store:
+- Encrypted at rest using AWS KMS
+- Accessible only to your AWS account
+- Organized by environment: `/env-saas-qa-*/VARIABLE_NAME`
+
+You can view them in the AWS Console under **Systems Manager → Parameter Store**.
+
+---
+
+## Verification
+
+Confirm your configuration:
+
+```bash
+# Verify environment is set
+pnpm saas aws get-env
+# Expected: qa (or your stage name)
+
+# View set variables in AWS Console
+pnpm saas aws login
+# Navigate to: Systems Manager → Parameter Store
+# Filter by: /env-saas-qa
+```
+
+Check that you have parameters for:
+- [ ] `PROJECT_NAME`
+- [ ] `SB_HOSTED_ZONE_ID`
+- [ ] `SB_HOSTED_ZONE_NAME`
+- [ ] `SB_DOMAIN_WEB_APP`
+- [ ] `SB_DOMAIN_API`
+- [ ] `SB_DOMAIN_ADMIN_PANEL`
+- [ ] `SB_DOMAIN_CDN`
+
+---
+
+## Troubleshooting
+
+### "chamber: command not found"
+
+Chamber CLI is required. Install it:
+```bash
+brew install chamber  # macOS
+```
+
+### "Unable to locate credentials"
+
+Run `pnpm saas aws set-env [STAGE_NAME]` first to set AWS credentials.
+
+### Variables not appearing in Parameter Store
+
+- Ensure you ran `pnpm saas aws set-env [STAGE_NAME]` before setting variables
+- Variables are stored under the path `/env-[PROJECT_NAME]-[STAGE_NAME]/`
+- Check you're looking at the correct AWS region
+
+---
+
+## Next Step
+
+With your environment configured, let's deploy the AWS infrastructure.
+
+**[Continue to Step 4: Deploy Infrastructure →](/aws/deploy-to-aws/deploy-infrastructure)**

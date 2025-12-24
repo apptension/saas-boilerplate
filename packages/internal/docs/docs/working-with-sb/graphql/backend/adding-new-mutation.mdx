@@ -236,3 +236,59 @@ schema = graphene.Schema(
 )
 
 ```
+
+---
+
+## Next Steps
+
+After creating your backend mutation:
+
+1. **Regenerate TypeScript types**: Run `pnpm nx run webapp-api-client:graphql:generate-types`
+2. **Create frontend form**: Follow [Form with Mutation](/working-with-sb/graphql/web-app/form-with-mutation)
+3. **Add tests**: See [Backend Testing](/working-with-sb/tests/backend)
+
+---
+
+## Key Points
+
+- ✅ Use `CreateModelMutation`, `UpdateModelMutation`, `DeleteModelMutation` for standard CRUD
+- ✅ For tenant-scoped models, use `CreateTenantDependentModelMutation` etc.
+- ✅ Define DRF serializers for validation and business logic
+- ✅ Register mutations in `config/schema.py`
+
+---
+
+## Troubleshooting
+
+<details>
+<summary><strong>Mutation not appearing in GraphQL schema</strong></summary>
+
+Ensure you've added your app's `Mutation` class to `config/schema.py`:
+```python
+mutation=graphql_mutation([
+    # ...
+    your_app.Mutation,  # Add this line
+])
+```
+
+</details>
+
+<details>
+<summary><strong>Validation errors not showing</strong></summary>
+
+Make sure your serializer is raising `ValidationError` with the field name:
+```python
+raise serializers.ValidationError({"field_name": "Error message"})
+```
+
+</details>
+
+---
+
+## Related Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Form with Mutation](/working-with-sb/graphql/web-app/form-with-mutation) | Build the frontend for this mutation |
+| [Working with Serializers](/working-with-sb/graphql/backend/working-with-serializers) | Deep dive into DRF serializers |
+| [Backend Testing](/working-with-sb/tests/backend) | Test your mutations |

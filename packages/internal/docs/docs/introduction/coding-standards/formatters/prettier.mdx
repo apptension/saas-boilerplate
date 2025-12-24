@@ -1,0 +1,108 @@
+---
+title: Prettier
+description: JavaScript/TypeScript code formatter
+---
+
+## What is Prettier?
+
+[Prettier](https://prettier.io/) is an opinionated code formatter that supports many languages and integrates with most editors. It enforces a consistent style by parsing your code and re-printing it with its own rules, taking the maximum line length into account.
+
+### Key Benefits
+
+- **Consistent formatting** — Everyone on the team gets the same code style automatically
+- **No debates** — Eliminates discussions about code style in code reviews
+- **Editor integration** — Format on save in VS Code, WebStorm, and other editors
+- **Git hooks** — Automatically format code before commits with Husky
+
+## Configuration
+
+Prettier is configured via `.prettierrc` files. The root configuration at the project root applies to all frontend packages:
+
+```json title=".prettierrc"
+{
+  "singleQuote": true
+}
+```
+
+### Configuration Options
+
+| Option | Value | Description |
+|--------|-------|-------------|
+| `singleQuote` | `true` | Use single quotes instead of double quotes |
+
+:::info
+The project uses a minimal Prettier configuration, relying on Prettier's sensible defaults for most options.
+See the [Prettier Options documentation](https://prettier.io/docs/options.html) for all available options.
+:::
+
+### Additional Plugins
+
+The project includes these Prettier plugins:
+
+| Plugin | Purpose |
+|--------|---------|
+| `@trivago/prettier-plugin-sort-imports` | Automatically sorts import statements |
+| `prettier-plugin-tailwindcss` | Sorts Tailwind CSS classes in recommended order |
+
+## Running Prettier
+
+### Format All Files
+
+```bash
+pnpm prettier --write .
+```
+
+### Check Formatting (CI)
+
+```bash
+pnpm prettier --check .
+```
+
+### Format Specific Package
+
+```bash
+pnpm prettier --write "packages/webapp/src/**/*.{ts,tsx}"
+```
+
+## Editor Integration
+
+### VS Code
+
+1. Install the [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+2. Enable "Format on Save" in settings:
+
+```json title=".vscode/settings.json"
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
+```
+
+### WebStorm / IntelliJ
+
+1. Go to **Preferences → Languages & Frameworks → JavaScript → Prettier**
+2. Check "On save" to format automatically
+3. Check "On 'Reformat Code' action" for manual formatting
+
+## Pre-commit Hook
+
+The project uses [Husky](https://typicode.github.io/husky/) to run Prettier before commits via [lint-staged](https://github.com/okonet/lint-staged). This ensures all committed code is properly formatted.
+
+## Ignoring Files
+
+Files that should not be formatted can be listed in `.prettierignore`:
+
+```text title=".prettierignore"
+# Build outputs
+dist/
+build/
+coverage/
+
+# Generated files
+*.generated.ts
+```
+
+:::tip
+Prettier respects `.gitignore` by default, so you don't need to duplicate ignored paths.
+:::
+

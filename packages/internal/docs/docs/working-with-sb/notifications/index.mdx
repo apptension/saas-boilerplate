@@ -1,18 +1,71 @@
 ---
-title: In-app notification module
+title: Notifications
 slug: /working-with-sb/notifications
 ---
 
 import DocCardList from '@theme/DocCardList';
 import ProjectName from '../../shared/components/ProjectName.component';
 
-In this section, we will cover the technical details of the in-app notifications feature, including how to add new
-notifications and customize existing notifications.
+# Notification System Guides
 
-:::info
-This is a comprehensive technical section of the documentation for the in-app notifications feature in <ProjectName/>.
-If you are looking for a high-level description of this feature, please refer to
-[this article](../../introduction/features/notifications).
+Learn how to create and customize in-app notifications in <ProjectName />.
+
+:::tip Feature Overview
+Looking for a high-level description of notifications? See [Notifications Feature](/introduction/features/notifications).
 :::
+
+---
+
+## How Notifications Work
+
+The notification system provides real-time in-app notifications:
+
+```
+Backend (Django) → GraphQL Subscription → WebSocket → Frontend (React) → Toast/Bell Icon
+```
+
+**Key features:**
+- ✅ Real-time delivery via WebSocket
+- ✅ Persistent storage in database
+- ✅ Read/unread status tracking
+- ✅ Notification center UI (bell icon)
+- ✅ Toast notifications for immediate alerts
+
+---
+
+## Available Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Create Notification](/working-with-sb/notifications/create-notification) | Send custom notifications from your backend code |
+
+---
+
+## Key Files
+
+| Location | Purpose |
+|----------|---------|
+| `packages/backend/apps/notifications/` | Backend models and serializers |
+| `packages/webapp-libs/webapp-notifications/` | Frontend components and hooks |
+
+---
+
+## Quick Example
+
+Sending a notification from backend code:
+
+```python
+from apps.notifications.models import Notification
+
+Notification.objects.create(
+    user=user,
+    type="CUSTOM_EVENT",
+    data={"message": "Something happened!"}
+)
+```
+
+---
+
+## All Guides
 
 <DocCardList />

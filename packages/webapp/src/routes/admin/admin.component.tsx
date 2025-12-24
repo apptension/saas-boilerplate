@@ -214,7 +214,10 @@ export const Admin = () => {
 
 // Tenant-level (OWNER/ADMIN/MEMBER)
 <Route element={<TenantAuthRoute 
-  allowedRoles={[TenantUserRole.ADMIN]} 
+  allowedRoles={[
+    TenantUserRole.ADMIN, 
+    TenantUserRole.OWNER
+  ]} 
 />}>
   <Route path="settings" element={<Settings />} />
 </Route>`}
@@ -259,19 +262,27 @@ export const Admin = () => {
             </CardHeader>
             <CardContent className="space-y-4 pt-6">
               <CodeBlock>
-{`// Using the hook
+{`// Application-level: using the hook
 const { isAllowed } = useRoleAccessCheck(Role.ADMIN);
 {isAllowed && <AdminButton />}
 
-// Using the component
+// Application-level: using the component
+<RoleAccess allowedRoles={Role.ADMIN}>
+  <AdminButton />
+</RoleAccess>
+
+// Tenant-level: using the hook
+const { isAllowed } = useTenantRoleAccessCheck(
+  [TenantUserRole.OWNER]
+);
+{isAllowed && <DeleteOrgButton />}
+
+// Tenant-level: using the component
 <TenantRoleAccess 
   allowedRoles={[TenantUserRole.OWNER]}
 >
   <DeleteOrgButton />
-</TenantRoleAccess>
-
-// Using the hook for tenant roles
-const { isOwner, isAdmin } = useTenantRoles();`}
+</TenantRoleAccess>`}
               </CodeBlock>
 
               <div className="mt-4 rounded-lg border border-border/50 bg-muted/30 p-4">
@@ -324,7 +335,7 @@ const { isOwner, isAdmin } = useTenantRoles();`}
               <div className="space-y-3">
                 <div className="rounded-lg border border-border/50 bg-muted/30 p-4">
                   <p className="mb-2 text-xs font-medium text-muted-foreground">
-                    1. Backend - common/acl/helpers.py
+                    1. Backend - packages/backend/common/acl/helpers.py
                   </p>
                   <CodeBlock>
 {`class CommonGroups:
@@ -335,7 +346,7 @@ const { isOwner, isAdmin } = useTenantRoles();`}
                 </div>
                 <div className="rounded-lg border border-border/50 bg-muted/30 p-4">
                   <p className="mb-2 text-xs font-medium text-muted-foreground">
-                    2. Frontend - src/modules/auth/auth.types.ts
+                    2. Frontend - packages/webapp/src/modules/auth/auth.types.ts
                   </p>
                   <CodeBlock>
 {`export enum Role {
@@ -363,7 +374,7 @@ const { isOwner, isAdmin } = useTenantRoles();`}
               <div className="space-y-3">
                 <div className="rounded-lg border border-border/50 bg-muted/30 p-4">
                   <p className="mb-2 text-xs font-medium text-muted-foreground">
-                    1. Backend - apps/multitenancy/constants.py
+                    1. Backend - packages/backend/apps/multitenancy/constants.py
                   </p>
                   <CodeBlock>
 {`class TenantUserRole(models.TextChoices):
@@ -375,7 +386,7 @@ const { isOwner, isAdmin } = useTenantRoles();`}
                 </div>
                 <div className="rounded-lg border border-border/50 bg-muted/30 p-4">
                   <p className="mb-2 text-xs font-medium text-muted-foreground">
-                    2. GraphQL Schema - webapp-api-client/graphql/schema/api.graphql
+                    2. GraphQL Schema - packages/webapp-libs/webapp-api-client/graphql/schema/api.graphql
                   </p>
                   <CodeBlock>
 {`enum TenantUserRole {
@@ -422,10 +433,11 @@ const { isOwner, isAdmin } = useTenantRoles();`}
                   <span className="h-2 w-2 rounded-full bg-foreground/60" />
                   <FormattedMessage defaultMessage="Application-Level Auth" id="Admin / Files App Level" />
                 </div>
-                <div className="space-y-2 font-mono text-sm">
-                  <p className="text-foreground">src/modules/auth/auth.types.ts</p>
-                  <p className="text-muted-foreground">src/shared/components/routes/authRoute/</p>
-                  <p className="text-muted-foreground">src/shared/hooks/useRoleAccessCheck/</p>
+                <div className="space-y-2 font-mono text-xs">
+                  <p className="text-foreground">packages/webapp/src/modules/auth/auth.types.ts</p>
+                  <p className="text-muted-foreground">packages/webapp/src/shared/components/routes/authRoute/</p>
+                  <p className="text-muted-foreground">packages/webapp/src/shared/components/roleAccess/</p>
+                  <p className="text-muted-foreground">packages/webapp/src/shared/hooks/useRoleAccessCheck/</p>
                 </div>
               </div>
 
@@ -434,10 +446,10 @@ const { isOwner, isAdmin } = useTenantRoles();`}
                   <span className="h-2 w-2 rounded-full bg-foreground/60" />
                   <FormattedMessage defaultMessage="Tenant-Level Auth" id="Admin / Files Tenant Level" />
                 </div>
-                <div className="space-y-2 font-mono text-sm">
-                  <p className="text-foreground">webapp-tenants/hooks/useTenantRoles/</p>
-                  <p className="text-muted-foreground">webapp-tenants/components/routes/tenantAuthRoute/</p>
-                  <p className="text-muted-foreground">webapp-tenants/components/tenantRoleAccess/</p>
+                <div className="space-y-2 font-mono text-xs">
+                  <p className="text-foreground">packages/webapp-libs/webapp-tenants/src/hooks/useTenantRoleAccessCheck/</p>
+                  <p className="text-muted-foreground">packages/webapp-libs/webapp-tenants/src/components/routes/tenantAuthRoute/</p>
+                  <p className="text-muted-foreground">packages/webapp-libs/webapp-tenants/src/components/tenantRoleAccess/</p>
                 </div>
               </div>
             </div>

@@ -10,33 +10,33 @@ module.exports = {
       items: [
         {
           type: 'link',
-          label: 'Getting Started',
+          label: 'Quick Start',
           href: '/getting-started',
-          description: 'Set up and run your project',
+          description: 'Get up and running in minutes',
         },
         {
           type: 'link',
-          label: 'What is SaaS Boilerplate',
+          label: 'Overview',
           href: '/introduction',
-          description: 'Overview and architecture',
+          description: 'Architecture, features, and stack',
         },
         {
           type: 'link',
-          label: 'Guides',
+          label: 'How-To Guides',
           href: '/working-with-sb',
-          description: 'Development guides and best practices',
+          description: 'Step-by-step development tutorials',
         },
         {
           type: 'link',
           label: 'AWS Deployment',
           href: '/aws',
-          description: 'Deploy to Amazon Web Services',
+          description: 'Deploy to production on AWS',
         },
         {
           type: 'link',
           label: 'API Reference',
           href: '/api-reference',
-          description: 'Commands and package documentation',
+          description: 'Commands, modules, and components',
         },
       ],
     },
@@ -153,21 +153,22 @@ module.exports = {
   gettingStartedSidebar: [
     {
       type: 'category',
-      label: 'Getting Started',
+      label: 'Quick Start',
       link: {
         type: 'doc',
         id: 'getting-started/index',
       },
+      collapsed: false,
       items: [
         {
           type: 'doc',
           id: 'getting-started/run-project/run-new-project',
-          label: 'Run New Project',
+          label: 'Start a New Project',
         },
         {
           type: 'doc',
           id: 'getting-started/run-project/run-existing-project',
-          label: 'Run Existing Project',
+          label: 'Join an Existing Project',
         },
       ],
     },
@@ -175,50 +176,94 @@ module.exports = {
   awsSidebar: [
     {
       type: 'category',
-      label: 'AWS',
+      label: 'AWS Deployment',
       link: {
         type: 'doc',
         id: 'aws/index',
       },
+      collapsed: false,
       items: [
         {
           type: 'category',
-          label: 'Deploy to AWS',
+          label: 'Step-by-Step Guide',
           link: {
             type: 'doc',
             id: 'aws/deploy-to-aws/index',
           },
+          collapsed: false,
           items: [
-            'aws/deploy-to-aws/configure-aws-credentials',
-            'aws/deploy-to-aws/configure-hosted-zone',
-            'aws/deploy-to-aws/create-env-stage-in-repo',
-            'aws/deploy-to-aws/deploy-infrastructure',
-            'aws/deploy-to-aws/create-runtime-env-vars',
-            'aws/deploy-to-aws/run-deployment-commands',
+            {
+              type: 'doc',
+              id: 'aws/deploy-to-aws/prerequisites',
+              label: '0. Prerequisites',
+            },
+            {
+              type: 'doc',
+              id: 'aws/deploy-to-aws/configure-aws-credentials',
+              label: '1. Configure AWS Credentials',
+            },
+            {
+              type: 'doc',
+              id: 'aws/deploy-to-aws/configure-hosted-zone',
+              label: '2. Set Up Your Domain',
+            },
+            {
+              type: 'doc',
+              id: 'aws/deploy-to-aws/create-env-stage-in-repo',
+              label: '3. Create Environment Stage',
+            },
+            {
+              type: 'doc',
+              id: 'aws/deploy-to-aws/deploy-infrastructure',
+              label: '4. Deploy Infrastructure',
+            },
+            {
+              type: 'doc',
+              id: 'aws/deploy-to-aws/create-runtime-env-vars',
+              label: '5. Configure App Secrets',
+            },
+            {
+              type: 'doc',
+              id: 'aws/deploy-to-aws/run-deployment-commands',
+              label: '6. Deploy Your App',
+            },
+            {
+              type: 'doc',
+              id: 'aws/deploy-to-aws/verify-deployment',
+              label: '7. Verify & Next Steps',
+            },
           ],
         },
         {
           type: 'category',
-          label: 'CI/CD Pipeline',
+          label: 'CI/CD Automation',
           link: {
             type: 'doc',
             id: 'aws/cicd/index',
           },
+          collapsed: true,
           items: [
-            'aws/cicd/auto-deploy',
-            'aws/cicd/trigger-cicd-manually',
-            'aws/cicd/configure-cicd-notifications',
-            'aws/cicd/setup-docker-hub',
+            {
+              type: 'doc',
+              id: 'aws/cicd/setup-docker-hub',
+              label: 'Set Up Docker Hub',
+            },
+            {
+              type: 'doc',
+              id: 'aws/cicd/auto-deploy',
+              label: 'Configure Auto-Deploy',
+            },
+            {
+              type: 'doc',
+              id: 'aws/cicd/trigger-cicd-manually',
+              label: 'Manual Deployments',
+            },
+            {
+              type: 'doc',
+              id: 'aws/cicd/configure-cicd-notifications',
+              label: 'Slack Notifications',
+            },
           ],
-        },
-        {
-          type: 'category',
-          label: 'Guides',
-          link: {
-            type: 'doc',
-            id: 'aws/guides/index',
-          },
-          items: ['aws/guides/aws-exec'],
         },
         {
           type: 'category',
@@ -227,82 +272,155 @@ module.exports = {
             type: 'doc',
             id: 'aws/architecture/index',
           },
+          collapsed: true,
           items: [
-            'aws/architecture/system-architecture',
-            'aws/architecture/cicd-architecture',
+            {
+              type: 'doc',
+              id: 'aws/architecture/system-architecture',
+              label: 'System Architecture',
+            },
+            {
+              type: 'doc',
+              id: 'aws/architecture/cicd-architecture',
+              label: 'CI/CD Architecture',
+            },
+            {
+              type: 'doc',
+              id: 'aws/architecture/costs',
+              label: 'Cost Estimation',
+            },
           ],
         },
-        'aws/troubleshooting',
+        {
+          type: 'category',
+          label: 'Operations',
+          link: {
+            type: 'doc',
+            id: 'aws/guides/index',
+          },
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'aws/guides/aws-exec',
+              label: 'SSH into Containers',
+            },
+          ],
+        },
+        {
+          type: 'doc',
+          id: 'aws/troubleshooting',
+          label: 'Troubleshooting',
+        },
       ],
     },
   ],
   introductionSidebar: [
     {
       type: 'category',
-      label: 'What is SaaS Boilerplate?',
+      label: 'Overview',
       link: {
         type: 'doc',
         id: 'introduction/index',
       },
+      collapsed: false,
       items: [
-        'introduction/the-problem',
+        {
+          type: 'doc',
+          id: 'introduction/the-problem',
+          label: 'Why SaaS Boilerplate?',
+        },
         'introduction/architecture',
         'introduction/stack-description',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Features',
+      collapsed: false,
+      link: {
+        type: 'doc',
+        id: 'introduction/features/index',
+      },
+      items: [
         {
           type: 'category',
-          label: 'Features',
+          label: 'Core Features',
           collapsed: false,
-          link: {
-            type: 'doc',
-            id: 'introduction/features/index',
-          },
           items: [
             'introduction/features/auth',
-            'introduction/features/emails',
-            'introduction/features/notifications',
-            'introduction/features/openai',
             'introduction/features/multi-tenancy',
             'introduction/features/payments',
-            'introduction/features/iac',
-            'introduction/features/cicd',
-            'introduction/features/cms',
-            'introduction/features/admin',
-            'introduction/features/graphql',
-            'introduction/features/assets',
-            'introduction/features/workers',
-            'introduction/features/crud',
-            'introduction/features/dev-tools',
+            'introduction/features/notifications',
           ],
         },
         {
           type: 'category',
-          label: 'Coding Standards',
-          collapsed: false,
+          label: 'Integrations',
+          collapsed: true,
+          items: [
+            'introduction/features/openai',
+            'introduction/features/cms',
+            'introduction/features/graphql',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Infrastructure',
+          collapsed: true,
+          items: [
+            'introduction/features/iac',
+            'introduction/features/cicd',
+            'introduction/features/workers',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Developer Experience',
+          collapsed: true,
+          items: [
+            'introduction/features/emails',
+            'introduction/features/admin',
+            'introduction/features/assets',
+            'introduction/features/crud',
+            'introduction/features/dev-tools',
+          ],
+        },
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Coding Standards',
+      collapsed: true,
+      link: {
+        type: 'doc',
+        id: 'introduction/coding-standards/index',
+      },
+      items: [
+        {
+          type: 'category',
+          label: 'Formatters',
+          collapsed: true,
           link: {
             type: 'doc',
-            id: 'introduction/coding-standards/index',
+            id: 'introduction/coding-standards/formatters/index',
           },
           items: [
-            {
-              type: 'category',
-              label: 'Formatters',
-              collapsed: false,
-              link: {
-                type: 'doc',
-                id: 'introduction/coding-standards/formatters/index',
-              },
-              items: ['introduction/coding-standards/formatters/black'],
-            },
-            {
-              type: 'category',
-              label: 'Linters',
-              collapsed: false,
-              link: {
-                type: 'doc',
-                id: 'introduction/coding-standards/linters/index',
-              },
-              items: ['introduction/coding-standards/linters/ruff'],
-            },
+            'introduction/coding-standards/formatters/prettier',
+            'introduction/coding-standards/formatters/black',
+          ],
+        },
+        {
+          type: 'category',
+          label: 'Linters',
+          collapsed: true,
+          link: {
+            type: 'doc',
+            id: 'introduction/coding-standards/linters/index',
+          },
+          items: [
+            'introduction/coding-standards/linters/eslint',
+            'introduction/coding-standards/linters/ruff',
           ],
         },
       ],
@@ -311,253 +429,269 @@ module.exports = {
   workingWithSidebar: [
     {
       type: 'category',
-      label: 'Working with SaaS Boilerplate',
+      label: 'How-To Guides',
       link: {
         type: 'doc',
         id: 'working-with-sb/index',
       },
+      collapsed: false,
       items: [
+        // Components & UI
         {
           type: 'category',
-          label: 'Generic Guides',
-          link: {
-            type: 'generated-index',
-            title: 'Generic Guides',
-            description: 'Common development patterns and workflows',
-            slug: '/working-with-sb/guides',
-          },
-          collapsed: false,
+          label: 'Components & UI',
+          collapsed: true,
           items: [
             {
-              type: 'category',
-              label: 'Web App',
-              link: {
-                type: 'generated-index',
-                title: 'Web App Guides',
-                description: 'Frontend development patterns',
-                slug: '/working-with-sb/guides/web-app',
-              },
-              items: [
-                {
-                  type: 'doc',
-                  id: 'working-with-sb/guides/web-app/create-react-component',
-                  label: 'Add React Component',
-                },
-                {
-                  type: 'doc',
-                  id: 'working-with-sb/guides/web-app/new-route',
-                  label: 'Add Route Component',
-                },
-              ],
+              type: 'doc',
+              id: 'working-with-sb/guides/web-app/create-react-component',
+              label: 'Create a Component',
             },
             {
-              type: 'category',
-              label: 'Backend',
-              link: {
-                type: 'generated-index',
-                title: 'Backend Guides',
-                description: 'Backend development patterns',
-                slug: '/working-with-sb/guides/backend',
-              },
-              items: [
-                {
-                  type: 'doc',
-                  id: 'working-with-sb/guides/backend/backend-model',
-                  label: 'Create New Model',
-                },
-              ],
+              type: 'doc',
+              id: 'working-with-sb/guides/web-app/new-route',
+              label: 'Add a Route',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/shadcn',
+              label: 'shadcn/ui Components',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/project-structure/create-web-lib',
+              label: 'Create a New Library',
             },
           ],
         },
+        // Data & GraphQL API
         {
           type: 'category',
-          label: 'Project Structure',
-          link: {
-            type: 'generated-index',
-            title: 'Project Structure',
-            description: 'Understanding the monorepo organization',
-            slug: '/working-with-sb/project-structure',
-          },
-          items: ['working-with-sb/project-structure/create-web-lib'],
-        },
-        {
-          type: 'doc',
-          id: 'working-with-sb/shadcn',
-          label: 'shadcn/ui Integration',
-        },
-        {
-          type: 'category',
-          label: 'GraphQL',
-          link: {
-            type: 'generated-index',
-            title: 'Working with GraphQL',
-            description: 'API development with GraphQL',
-            slug: '/working-with-sb/graphql',
-          },
-          items: [
-            {
-              type: 'category',
-              label: 'Conventions',
-              link: {
-                type: 'generated-index',
-                title: 'GraphQL Conventions',
-                description: 'Best practices and patterns',
-                slug: '/working-with-sb/graphql/conventions',
-              },
-              items: ['working-with-sb/graphql/conventions/errors-format'],
-            },
-            {
-              type: 'category',
-              label: 'Web App',
-              link: {
-                type: 'generated-index',
-                title: 'Frontend GraphQL',
-                description: 'GraphQL in the web application',
-                slug: '/working-with-sb/graphql/web-app',
-              },
-              items: [
-                {
-                  type: 'doc',
-                  id: 'working-with-sb/graphql/web-app/component-with-query',
-                  label: 'Fetch Data from Backend',
-                },
-                {
-                  type: 'doc',
-                  id: 'working-with-sb/graphql/web-app/form-with-mutation',
-                  label: 'Form with Mutation',
-                },
-                'working-with-sb/graphql/web-app/update-schema',
-                'working-with-sb/graphql/web-app/use-fragments',
-              ],
-            },
-            {
-              type: 'category',
-              label: 'Backend',
-              link: {
-                type: 'generated-index',
-                title: 'Backend GraphQL',
-                description: 'GraphQL API development',
-                slug: '/working-with-sb/graphql/backend',
-              },
-              items: [
-                {
-                  type: 'doc',
-                  id: 'working-with-sb/graphql/backend/adding-new-mutation',
-                  label: 'Add a New Mutation',
-                },
-                {
-                  type: 'doc',
-                  id: 'working-with-sb/graphql/backend/working-with-serializers',
-                  label: 'Working with Serializers',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Notifications',
+          label: 'Data & GraphQL API',
           link: {
             type: 'doc',
-            id: 'working-with-sb/notifications/index',
+            id: 'working-with-sb/graphql/index',
           },
-          items: ['working-with-sb/notifications/create-notification'],
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'working-with-sb/graphql/web-app/component-with-query',
+              label: 'Fetch Data (Query)',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/graphql/web-app/form-with-mutation',
+              label: 'Save Data (Mutation)',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/graphql/web-app/update-schema',
+              label: 'Update TypeScript Types',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/graphql/web-app/use-fragments',
+              label: 'Use GraphQL Fragments',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/graphql/backend/adding-new-mutation',
+              label: 'Add Backend Mutation',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/graphql/backend/working-with-serializers',
+              label: 'DRF Serializers',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/guides/backend/backend-model',
+              label: 'Create Django Model',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/graphql/conventions/errors-format',
+              label: 'Error Handling',
+            },
+          ],
         },
+        // Users & Authentication
         {
           type: 'category',
-          label: 'Users & Authentication',
+          label: 'Users & Auth',
           link: {
             type: 'doc',
             id: 'working-with-sb/users/index',
           },
+          collapsed: true,
           items: [
-            'working-with-sb/users/create-profile-field',
-            'working-with-sb/users/create-oauth-method',
-            'working-with-sb/users/admin-page',
-            'working-with-sb/users/create-role',
+            {
+              type: 'doc',
+              id: 'working-with-sb/users/create-profile-field',
+              label: 'Add Profile Field',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/users/create-oauth-method',
+              label: 'Add OAuth Provider',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/users/create-role',
+              label: 'Create Custom Role',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/users/admin-page',
+              label: 'Admin User Management',
+            },
           ],
         },
+        // Payments
         {
           type: 'category',
-          label: 'Payments (Stripe)',
-          collapsed: false,
+          label: 'Payments',
           link: {
             type: 'doc',
             id: 'working-with-sb/payments/index',
           },
-          items: ['working-with-sb/payments/one-time-payment-form'],
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'working-with-sb/payments/one-time-payment-form',
+              label: 'One-Time Payment',
+            },
+          ],
         },
+        // Emails & Notifications
         {
           type: 'category',
-          label: 'Contentful CMS',
+          label: 'Emails & Notifications',
           link: {
-            type: 'generated-index',
-            title: 'Contentful Integration',
-            description: 'Working with Contentful CMS',
-            slug: '/working-with-sb/contentful',
+            type: 'doc',
+            id: 'working-with-sb/emails/index',
           },
-          items: ['working-with-sb/contentful/sync-data'],
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'working-with-sb/emails/create-email-template',
+              label: 'Create Email Template',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/emails/send-email',
+              label: 'Send an Email',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/notifications/create-notification',
+              label: 'Create Notification',
+            },
+          ],
         },
+        // Background Jobs
+        {
+          type: 'category',
+          label: 'Background Jobs',
+          link: {
+            type: 'doc',
+            id: 'working-with-sb/async-workers/index',
+          },
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'working-with-sb/async-workers/run-async-job-celery',
+              label: 'Run Celery Job',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/async-workers/debug-async-job-celery',
+              label: 'Debug Celery Job',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/async-workers/run-async-job-lambda',
+              label: 'Run Lambda Function',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/async-workers/create-workers-module',
+              label: 'Create Worker Module',
+            },
+          ],
+        },
+        // CMS Integration
+        {
+          type: 'doc',
+          id: 'working-with-sb/contentful/sync-data',
+          label: 'Contentful CMS',
+        },
+        // Testing
         {
           type: 'category',
           label: 'Testing',
           link: {
-            type: 'generated-index',
-            title: 'Writing Tests',
-            description: 'Testing strategies and best practices',
-            slug: '/working-with-sb/tests',
+            type: 'doc',
+            id: 'working-with-sb/tests/index',
           },
+          collapsed: true,
           items: [
-            'working-with-sb/tests/webapp',
-            'working-with-sb/tests/backend',
+            {
+              type: 'doc',
+              id: 'working-with-sb/tests/webapp',
+              label: 'Frontend Testing',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/tests/backend',
+              label: 'Backend Testing',
+            },
           ],
         },
-        {
-          type: 'category',
-          label: 'Emails',
-          link: {
-            type: 'generated-index',
-            title: 'Email System',
-            description: 'Transactional email development',
-            slug: '/working-with-sb/emails',
-          },
-          items: [
-            'working-with-sb/emails/create-email-template',
-            'working-with-sb/emails/send-email',
-          ],
-        },
-        {
-          type: 'category',
-          label: 'Async Workers',
-          link: {
-            type: 'generated-index',
-            title: 'Async Workers',
-            description: 'Background job processing',
-            slug: '/working-with-sb/async-workers',
-          },
-          items: [
-            'working-with-sb/async-workers/run-async-job-celery',
-            'working-with-sb/async-workers/debug-async-job-celery',
-            'working-with-sb/async-workers/run-async-job-lambda',
-            'working-with-sb/async-workers/create-workers-module',
-          ],
-        },
+        // Developer Tools
         {
           type: 'category',
           label: 'Developer Tools',
           link: {
-            type: 'generated-index',
-            title: 'Developer Tools',
-            description: 'Utilities for development and debugging',
-            slug: '/working-with-sb/dev-tools',
+            type: 'doc',
+            id: 'working-with-sb/dev-tools/index',
           },
+          collapsed: true,
           items: [
-            'working-with-sb/dev-tools/version-matrix',
-            'working-with-sb/dev-tools/mailcatcher',
-            'working-with-sb/dev-tools/sentry',
-            'working-with-sb/dev-tools/ssh-into-container',
-            'working-with-sb/dev-tools/plop',
-            'working-with-sb/dev-tools/telemetry',
+            {
+              type: 'doc',
+              id: 'working-with-sb/dev-tools/plop',
+              label: 'Code Generation (Plop)',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/dev-tools/mailcatcher',
+              label: 'Email Preview',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/dev-tools/sentry',
+              label: 'Error Monitoring',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/dev-tools/version-matrix',
+              label: 'Version Matrix',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/dev-tools/ssh-into-container',
+              label: 'SSH into Container',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/dev-tools/telemetry',
+              label: 'Telemetry',
+            },
           ],
         },
       ],

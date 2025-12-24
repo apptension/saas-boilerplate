@@ -1,0 +1,102 @@
+---
+title: Background Jobs
+slug: /working-with-sb/async-workers
+---
+
+import DocCardList from '@theme/DocCardList';
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Background Jobs
+
+<ProjectName /> supports background job processing for tasks that shouldn't block the request/response cycle.
+
+---
+
+## Two Approaches
+
+| Environment | Technology | Use Case |
+|-------------|------------|----------|
+| **Local Development** | Celery + Redis | Immediate feedback, debugging |
+| **Production (AWS)** | AWS Lambda | Serverless, auto-scaling |
+
+---
+
+## How It Works
+
+### Local (Celery)
+
+```
+Django Request → Celery Task → Redis Queue → Celery Worker → Task Execution
+```
+
+### Production (Lambda)
+
+```
+Django Request → EventBridge → Lambda Function → Task Execution
+```
+
+---
+
+## Common Tasks
+
+| Task | Guide |
+|------|-------|
+| Create and run a background task | [Run Celery Job](/working-with-sb/async-workers/run-async-job-celery) |
+| Debug task execution | [Debug Celery Job](/working-with-sb/async-workers/debug-async-job-celery) |
+| Deploy task to AWS Lambda | [Run Lambda Function](/working-with-sb/async-workers/run-async-job-lambda) |
+| Add new worker module | [Create Worker Module](/working-with-sb/async-workers/create-workers-module) |
+
+---
+
+## Quick Example
+
+Creating a simple background task:
+
+```python title="packages/backend/apps/myapp/tasks.py"
+from celery import shared_task
+
+@shared_task
+def send_welcome_email(user_id: int):
+    # This runs in the background
+    user = User.objects.get(id=user_id)
+    send_email(user.email, "Welcome!")
+```
+
+Triggering the task:
+
+```python
+# This returns immediately
+send_welcome_email.delay(user.id)
+```
+
+---
+
+## Local Development
+
+Workers run automatically with `pnpm saas up`. To start them manually:
+
+```bash
+# Start Celery worker
+cd packages/backend
+pdm run celery -A config worker -l info
+
+# Start Celery beat (scheduler)
+pdm run celery -A config beat -l info
+```
+
+---
+
+## Key Files
+
+| Location | Purpose |
+|----------|---------|
+| `packages/backend/apps/*/tasks.py` | Celery task definitions |
+| `packages/backend/config/celery.py` | Celery configuration |
+| `packages/workers/` | Lambda function handlers |
+
+---
+
+## All Guides
+
+<DocCardList />
+

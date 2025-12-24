@@ -1,55 +1,240 @@
 ---
-description: Steps required to deploy SaaS Boilerplate on AWS
+title: Set Up Your Domain
+description: Configure Route 53 hosted zone for your domain
 ---
 
 import ProjectName from '../../shared/components/ProjectName.component';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-# Step 2: Configure hosted zone
+# Step 2: Set Up Your Domain
 
-## Configure hosted zone
+This step configures DNS in AWS Route 53 so your application can be accessed via your custom domain (e.g., `app.yourcompany.com`).
 
-In order to access any environment you need to have a public Hosted Zone in AWS Route53.
+**Estimated time: 10-30 minutes** (depending on your domain situation)
 
-<ProjectName /> will use this hosted zone's domain to route traffic to your app.
+---
 
-:::info
+## What You'll Accomplish
 
-A hosted zone is a container for records, and records contain information about how you want to route traffic for a specific domain, such as example.com, and its subdomains (acme.example.com, zenith.example.com). A hosted zone and the corresponding domain have the same name.
+- ✅ Set up a Route 53 hosted zone for your domain
+- ✅ Obtain the Hosted Zone ID and Name (needed for deployment)
+- ✅ Understand how domains will be structured
 
-Source: [AWS docs](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html)
+---
 
+## How <ProjectName /> Uses Your Domain
+
+After deployment, your services will be available at subdomains:
+
+| Service | URL Pattern | Example |
+|---------|-------------|---------|
+| Web Application | `app.[stage].[domain]` | `app.qa.example.com` |
+| API | `api.[stage].[domain]` | `api.qa.example.com` |
+| Admin Panel | `admin.[stage].[domain]` | `admin.qa.example.com` |
+| CDN (Assets) | `cdn.[stage].[domain]` | `cdn.qa.example.com` |
+| Documentation | `docs.[stage].[domain]` | `docs.qa.example.com` |
+| Celery Flower | `flower.[stage].[domain]` | `flower.qa.example.com` |
+
+For production, you can configure simpler URLs like `app.example.com` (without the stage prefix).
+
+---
+
+## What is a Hosted Zone?
+
+A **hosted zone** is a container in Route 53 that holds DNS records for a domain. Think of it as the "address book" for your domain—it tells the internet where to find your services.
+
+**Example:** If you own `example.com`, the hosted zone contains records that say:
+- `app.qa.example.com` → points to your web app
+- `api.qa.example.com` → points to your backend
+
+---
+
+## Choose Your Scenario
+
+<Tabs>
+<TabItem value="new" label="I don't have a domain yet">
+
+### Register a New Domain with AWS
+
+The easiest option—AWS handles everything:
+
+1. Go to [Route 53 Console](https://console.aws.amazon.com/route53)
+2. Click **Registered domains** → **Register domain**
+3. Search for your desired domain and check availability
+4. Follow the purchase flow (prices vary, typically $10-50/year for common TLDs)
+5. Wait for registration to complete (usually a few minutes to hours)
+
+**After registration:**
+- AWS automatically creates a hosted zone
+- You can find it in Route 53 → **Hosted zones**
+
+</TabItem>
+<TabItem value="external" label="I own a domain from another registrar">
+
+### Use a Domain from GoDaddy, Namecheap, etc.
+
+You'll create a hosted zone in AWS and point your domain to it.
+
+#### Step 1: Create a Hosted Zone in AWS
+
+1. Go to [Route 53 Console](https://console.aws.amazon.com/route53)
+2. Click **Hosted zones** → **Create hosted zone**
+3. Enter your domain name (e.g., `example.com`)
+4. Select **Public hosted zone**
+5. Click **Create hosted zone**
+
+#### Step 2: Update Your Domain's Nameservers
+
+After creating the hosted zone, you'll see 4 nameservers (NS records) like:
+```
+ns-123.awsdns-45.com
+ns-678.awsdns-90.co.uk
+ns-111.awsdns-22.net
+ns-333.awsdns-44.org
+```
+
+1. Copy all 4 nameserver addresses
+2. Log in to your domain registrar (GoDaddy, Namecheap, etc.)
+3. Find the nameserver settings for your domain
+4. Replace the existing nameservers with the AWS ones
+5. Save changes
+
+:::warning DNS Propagation
+After changing nameservers, it can take 24-48 hours for changes to propagate globally. In practice, it's often much faster (minutes to hours).
 :::
 
-### Create a new hosted zone
+</TabItem>
+<TabItem value="existing" label="My domain is already in Route 53">
 
-Depending on your use case there are multiple approaches to creating a hosted zone:
+### Domain Already in AWS
 
-1.  You don't have a domain yet.
+Great! You already have what you need.
 
-    - Follow this tutorial prepared by AWS team: [Domain registration docs](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html)
+1. Go to [Route 53 Console](https://console.aws.amazon.com/route53)
+2. Click **Hosted zones**
+3. Find your domain's hosted zone
+4. You're ready to proceed to the next section
 
-2.  You have a domain registered in external DNR (e.g. GoDaddy).
+</TabItem>
+<TabItem value="subdomain" label="I want to use a subdomain">
 
-    - Active domain (with users) – follow this tutorial by AWS team: [Migrate active DNS](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/migrate-dns-domain-in-use.html)
-    - Inactive domain (no users) – follow this tutorial by AWS team: [Migrate inactive DNS](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/migrate-dns-domain-inactive.html)
+### Use a Subdomain of an Existing Domain
 
-3.  You have a domain in Route53 already and want to create a subdomain for the env.
+If you want to deploy to a subdomain (e.g., `saas.yourcompany.com`) without affecting the main domain:
 
-    - Follow this tutorial prepared by AWS team: [Route traffic for subdomains](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-routing-traffic-for-subdomains.html)
+1. Go to [Route 53 Console](https://console.aws.amazon.com/route53)
+2. Click **Hosted zones** → **Create hosted zone**
+3. Enter the subdomain (e.g., `saas.yourcompany.com`)
+4. Select **Public hosted zone**
+5. Click **Create hosted zone**
 
-4.  You have a domain in Route53 already.
+#### Delegate the Subdomain
 
-    - You most likely already have a hosted zone! You're good to go.
+In your parent domain's hosted zone:
 
-### Read hosted zone parameters
+1. Find the NS records for your new subdomain hosted zone
+2. Go to the parent domain's hosted zone
+3. Create a new NS record for the subdomain with those nameservers
 
-In the end you should be able to go to the AWS web panel and get _Hosted Zone ID_ and _Hosted Zone Name_.
+**Example:** If creating `saas.yourcompany.com`, add NS records to the `yourcompany.com` hosted zone.
 
-:::info
+</TabItem>
+</Tabs>
 
-You can open AWS web panel with `pnpm saas aws login` command if you configured `aws-vault`
+---
 
+## Get Your Hosted Zone Details
+
+After setting up your hosted zone, you need two values for deployment:
+
+### Find in AWS Console
+
+1. Go to [Route 53 → Hosted zones](https://console.aws.amazon.com/route53/v2/hostedzones)
+2. Click on your hosted zone
+3. Note down:
+
+| Value | Where to Find It | Example |
+|-------|------------------|---------|
+| **Hosted Zone ID** | Shown in the hosted zone details | `Z0123456789ABCDEFGHIJ` |
+| **Hosted Zone Name** | Your domain name | `example.com` |
+
+:::tip Quick Access
+You can also open the AWS Console directly:
+```bash
+pnpm saas aws login
+```
 :::
 
-- `id` of the hosted zone
-- `name` of the hosted zone
+### Store for Later
+
+You'll use these values in Step 3. Write them down:
+
+```
+Hosted Zone ID:   ____________________________
+Hosted Zone Name: ____________________________
+```
+
+---
+
+## Using External DNS (Advanced)
+
+If you cannot or don't want to use Route 53 for DNS, you can use an external DNS provider. This requires more manual configuration:
+
+1. **Skip** setting `SB_HOSTED_ZONE_ID` and `SB_HOSTED_ZONE_NAME`
+2. Manually create SSL certificates in AWS Certificate Manager (ACM)
+3. Set `SB_CLOUDFRONT_CERTIFICATE_ARN` and `SB_LOAD_BALANCER_CERTIFICATE_ARN`
+4. After deployment, create CNAME records in your DNS provider pointing to CloudFront and the Load Balancer
+
+:::warning More Complex
+This approach requires understanding of SSL certificates, CloudFront, and DNS. We recommend using Route 53 unless you have specific requirements.
+:::
+
+---
+
+## Verification
+
+Before moving on, confirm:
+
+- [ ] You have a hosted zone in Route 53 for your domain
+- [ ] You've noted the **Hosted Zone ID** (starts with `Z`)
+- [ ] You've noted the **Hosted Zone Name** (your domain, e.g., `example.com`)
+- [ ] If you changed nameservers, DNS is propagating (check with `dig example.com NS`)
+
+### Test DNS Propagation
+
+If you updated nameservers from another registrar:
+
+```bash
+# Check if AWS nameservers are responding
+dig example.com NS
+
+# You should see AWS nameservers (awsdns) in the ANSWER section
+```
+
+---
+
+## Troubleshooting
+
+### Hosted Zone Not Showing Records
+
+- Newly created hosted zones may take a few minutes to become active
+- Refresh the page or wait 5 minutes
+
+### Domain Not Resolving After Nameserver Change
+
+- DNS propagation can take up to 48 hours
+- Check propagation status at [whatsmydns.net](https://www.whatsmydns.net/)
+- Clear your local DNS cache: `sudo dscacheutil -flushcache` (macOS)
+
+### DNSSEC Errors
+
+If your domain registrar has DNSSEC enabled, you may need to disable it before changing nameservers, then re-enable after pointing to AWS.
+
+---
+
+## Next Step
+
+With your domain configured, let's create an environment stage for deployment.
+
+**[Continue to Step 3: Create Environment Stage →](/aws/deploy-to-aws/create-env-stage-in-repo)**

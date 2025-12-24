@@ -1,11 +1,31 @@
 import WSLNotice from '../../shared/partials/_wsl_notice.mdx'
 
-#### Install dependencies
+### Install Dependencies
 
 <WSLNotice />
 
-The project is configured to use pnpm workspaces, which means that you can install `node_modules` of all packages in the repository with a single command:
+The project uses [pnpm workspaces](https://pnpm.io/workspaces) to manage all packages in the monorepo. Install everything with a single command:
 
 ```bash
+pnpm install
+```
+
+:::info What Gets Installed
+This installs dependencies for:
+- **webapp** - React frontend application
+- **webapp-libs** - Shared component libraries
+- **internal/cli** - The `pnpm saas` command-line tool
+- **internal/docs** - Documentation site
+- Build and development tools
+:::
+
+**Expected duration**: 1-3 minutes depending on your internet connection.
+
+If you see permission errors, try:
+```bash
+# On macOS/Linux
+sudo chown -R $(whoami) ~/.pnpm-store
+
+# Then retry
 pnpm install
 ```

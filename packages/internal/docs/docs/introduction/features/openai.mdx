@@ -1,40 +1,375 @@
 ---
 title: OpenAI integration
-description: Example generative AI module
+description: Generative AI module with OpenAI API integration
 ---
+
 import useBaseUrl from "@docusaurus/useBaseUrl";
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
-SaaS Boilerplate offers seamless integration with [OpenAI API](https://openai.com/), allowing you to leverage the power
-of artificial intelligence in your application. As an example of such integration, SaaS Boilerplate includes a built-in
-form that generates SaaS ideas from keywords provided by the user of the application.
-
-### Generating SaaS ideas with OpenAI API
-
-The form uses OpenAI's GPT-3 natural language processing model to generate unique and creative SaaS ideas based on the
-user's input. Users simply enter a few keywords related to their desired SaaS product, and the AI generates a list of
-potential ideas.
+SaaS Boilerplate includes a production-ready integration with the [OpenAI API](https://openai.com/), providing a complete example of how to build AI-powered features. The integration demonstrates a chat-style interface that generates SaaS product ideas based on user-provided keywords.
 
 <p align="center">
-  <img src={useBaseUrl("img/features/generative-ai/saas-ideas.png")} alt="SaaS ideas page" />
+  <img src={useBaseUrl("img/features/generative-ai/saas-ideas.png")} alt="SaaS Ideas Generator" />
 </p>
 
-### Example advantages of using OpenAI API in your new SaaS application
+---
 
-Integrating OpenAI API into your application offers several advantages, including:
+## Quick Start
 
-1. Increased Efficiency: AI can automate repetitive tasks and provide quick responses to customer inquiries, improving
-overall efficiency.
-2. Enhanced User Experience: AI can provide personalized recommendations and tailored experiences for users, improving
-engagement and satisfaction.
-3. Improved Decision-Making: AI can analyze vast amounts of data and provide valuable insights, helping businesses make
-informed decisions.
-4. Competitive Advantage: Implementing AI capabilities in your application can give you a competitive edge in the
-market, allowing you to offer unique and innovative features to your users.
+### 1. Set Up Environment Variables
 
-----
+Add your OpenAI API key to your environment configuration:
 
-_Integrating OpenAI API into your application can provide numerous benefits, from increased efficiency to improved
-decision-making. SaaS Boilerplate offers a built-in example of OpenAI integration that generates SaaS ideas based on
-user input. This functionality provides a valuable starting point for developers looking to leverage the power of AI in
-their applications. With SaaS Boilerplate, you can easily integrate OpenAI API into your application and take advantage
-of the latest AI capabilities to improve user experience and gain a competitive edge in the market._
+```bash title=".env"
+OPENAI_API_KEY=sk-your-api-key-here
+OPENAI_MODEL=gpt-4  # Optional, defaults to gpt-4
+```
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `OPENAI_API_KEY` | Yes | - | Your OpenAI API key from [platform.openai.com](https://platform.openai.com/api-keys) |
+| `OPENAI_MODEL` | No | `gpt-4` | The OpenAI model to use for generation |
+
+### 2. Access the Feature
+
+Once configured, the SaaS Ideas Generator is available at:
+
+```
+/en/{tenantId}/saas-ideas
+```
+
+Users can enter comma-separated keywords, and the AI generates creative SaaS product ideas with structured output including product name, description, target market, key features, and monetization strategy.
+
+---
+
+## Architecture Overview
+
+The OpenAI integration follows the standard SaaS Boilerplate architecture pattern:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         Frontend                                 │
+│  packages/webapp-libs/webapp-generative-ai/                     │
+│  ├── src/routes/saasIdeas/                                      │
+│  │   ├── saasIdeas.component.tsx    # Chat UI component         │
+│  │   └── saasIdeas.graphql.ts       # GraphQL mutation          │
+│  └── src/config/routes.ts           # Route configuration       │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼ GraphQL Mutation
+┌─────────────────────────────────────────────────────────────────┐
+│                         Backend                                  │
+│  packages/backend/apps/integrations/                            │
+│  ├── schema.py                      # GraphQL mutation handler  │
+│  └── openai/                                                    │
+│      ├── client.py                  # OpenAI API client         │
+│      ├── types.py                   # Pydantic models           │
+│      └── exceptions.py              # Custom exceptions         │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼ API Request
+┌─────────────────────────────────────────────────────────────────┐
+│                       OpenAI API                                 │
+│  Chat Completions API (gpt-4, gpt-3.5-turbo, etc.)              │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Supported Models
+
+The integration supports multiple OpenAI models with automatic fallback:
+
+| Model | Description | Notes |
+|-------|-------------|-------|
+| `gpt-4` | Default, most capable | Requires GPT-4 API access |
+| `gpt-4-turbo-preview` | Faster GPT-4 variant | Fallback if `gpt-4` unavailable |
+| `gpt-3.5-turbo` | Fast and cost-effective | Final fallback option |
+
+The client automatically tries alternative models if the requested model is unavailable, ensuring resilience.
+
+---
+
+## GraphQL API
+
+### Mutation: `generateSaasIdeas`
+
+```graphql
+mutation generateSaasIdeasMutation($input: GenerateSaasIdeasMutationInput!) {
+  generateSaasIdeas(input: $input) {
+    response
+  }
+}
+```
+
+**Input:**
+
+```graphql
+input GenerateSaasIdeasMutationInput {
+  keywords: [String]      # Array of keywords (e.g., ["CRM", "automation"])
+  clientMutationId: String
+}
+```
+
+**Response:**
+
+```graphql
+type GenerateSaasIdeasMutationPayload {
+  response: String        # Generated SaaS ideas as formatted text
+  clientMutationId: String
+}
+```
+
+### Rate Limiting
+
+:::caution Rate Limit
+The `generateSaasIdeas` mutation is rate-limited to **3 requests per minute** per IP address to prevent abuse and manage API costs.
+:::
+
+---
+
+## Frontend Implementation
+
+The frontend component is located in `packages/webapp-libs/webapp-generative-ai/` and provides a chat-style interface.
+
+### Using the Mutation
+
+```tsx title="Example: Using the generateSaasIdeas mutation"
+import { useMutation } from '@apollo/client';
+import { gql } from '@sb/webapp-api-client/graphql';
+
+const generateSaasIdeasMutation = gql(/* GraphQL */ `
+  mutation generateSaasIdeasMutation($input: GenerateSaasIdeasMutationInput!) {
+    generateSaasIdeas(input: $input) {
+      response
+    }
+  }
+`);
+
+// In your component:
+const [generateIdeas, { loading, data }] = useMutation(generateSaasIdeasMutation, {
+  onCompleted: (data) => {
+    const ideas = data?.generateSaasIdeas?.response;
+    // Handle the generated ideas
+  },
+  onError: (error) => {
+    // Handle errors (rate limiting, API issues, etc.)
+  },
+});
+
+// Trigger the mutation:
+await generateIdeas({
+  variables: {
+    input: {
+      keywords: ['project management', 'AI', 'automation'],
+    },
+  },
+});
+```
+
+### Key Features of the UI Component
+
+- **Chat-style interface**: Modern conversational UI with message bubbles
+- **Example prompts**: Pre-defined keyword combinations for quick testing
+- **Loading states**: Animated typing indicator while waiting for AI response
+- **Error handling**: Toast notifications for API errors and rate limiting
+- **Responsive design**: Works on all screen sizes
+
+---
+
+## Backend Implementation
+
+### OpenAI Client
+
+The OpenAI client (`packages/backend/apps/integrations/openai/client.py`) handles API communication:
+
+```python title="Key features of the OpenAI client"
+class OpenAIClient:
+    # Singleton pattern for client reuse
+    _client = None
+
+    @classmethod
+    def _get_client(cls):
+        """Get or create OpenAI client instance."""
+        if cls._client is None:
+            if not settings.OPENAI_API_KEY:
+                raise OpenAIClientException("OpenAI API key is not configured")
+            cls._client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        return cls._client
+
+    @staticmethod
+    def get_saas_ideas(keywords: list[str]) -> str:
+        """Generate SaaS ideas from keywords."""
+        # Uses chat completions API with structured prompts
+        # Automatic model fallback for resilience
+        # Returns formatted text response
+```
+
+### GraphQL Mutation Handler
+
+```python title="packages/backend/apps/integrations/schema.py"
+class GenerateSaasIdeasMutation(graphene.relay.ClientIDMutation):
+    class Input:
+        keywords = graphene.List(graphene.String)
+
+    response = graphene.String()
+
+    @classmethod
+    @ratelimit(key="ip", rate='3/min')  # Rate limiting
+    def mutate_and_get_payload(cls, root, info, keywords):
+        response_text = client.OpenAIClient.get_saas_ideas(keywords)
+        return cls(response=response_text)
+```
+
+---
+
+## Extending the Integration
+
+### Adding a New AI Feature
+
+To add your own AI-powered feature:
+
+<Tabs>
+<TabItem value="backend" label="1. Backend" default>
+
+Create a new method in the OpenAI client:
+
+```python title="packages/backend/apps/integrations/openai/client.py"
+@staticmethod
+def your_new_feature(input_data: str) -> str:
+    """Your custom AI feature."""
+    client = OpenAIClient._get_client()
+    
+    result = client.chat.completions.create(
+        model=settings.OPENAI_MODEL,
+        messages=[
+            {"role": "system", "content": "Your system prompt here"},
+            {"role": "user", "content": input_data}
+        ],
+        temperature=0.7,
+        max_tokens=1000,
+    )
+    
+    return result.choices[0].message.content.strip()
+```
+
+Add the GraphQL mutation:
+
+```python title="packages/backend/apps/integrations/schema.py"
+class YourNewMutation(graphene.relay.ClientIDMutation):
+    class Input:
+        input_data = graphene.String(required=True)
+
+    response = graphene.String()
+
+    @classmethod
+    @ratelimit(key="ip", rate='10/min')
+    def mutate_and_get_payload(cls, root, info, input_data):
+        response = client.OpenAIClient.your_new_feature(input_data)
+        return cls(response=response)
+
+
+class Mutation(graphene.ObjectType):
+    generate_saas_ideas = GenerateSaasIdeasMutation.Field()
+    your_new_mutation = YourNewMutation.Field()
+```
+
+</TabItem>
+<TabItem value="schema" label="2. GraphQL Schema">
+
+Update the GraphQL schema:
+
+```graphql title="packages/webapp-libs/webapp-api-client/graphql/schema/api.graphql"
+# Add input type
+input YourNewMutationInput {
+  inputData: String!
+  clientMutationId: String
+}
+
+# Add payload type
+type YourNewMutationPayload {
+  response: String
+  clientMutationId: String
+}
+
+# Add to ApiMutation
+type ApiMutation {
+  # ... existing mutations
+  yourNewMutation(input: YourNewMutationInput!): YourNewMutationPayload
+}
+```
+
+Then regenerate types:
+
+```bash
+pnpm nx run webapp-api-client:graphql:generate-types
+```
+
+</TabItem>
+<TabItem value="frontend" label="3. Frontend">
+
+Create your frontend component:
+
+```tsx title="Your new AI component"
+import { useMutation } from '@apollo/client';
+import { gql } from '@sb/webapp-api-client/graphql';
+
+const yourNewMutation = gql(/* GraphQL */ `
+  mutation yourNewMutation($input: YourNewMutationInput!) {
+    yourNewMutation(input: $input) {
+      response
+    }
+  }
+`);
+
+export const YourNewFeature = () => {
+  const [mutate, { loading, data }] = useMutation(yourNewMutation);
+
+  const handleSubmit = async (inputData: string) => {
+    await mutate({
+      variables: { input: { inputData } },
+    });
+  };
+
+  // Your UI here
+};
+```
+
+</TabItem>
+</Tabs>
+
+---
+
+## Error Handling
+
+The integration handles several error scenarios:
+
+| Error | Cause | User Message |
+|-------|-------|--------------|
+| Missing API Key | `OPENAI_API_KEY` not configured | "OpenAI API key is not configured" |
+| Rate Limited | More than 3 requests/minute | "Rate limit exceeded." |
+| API Error | OpenAI service issues | "OpenAI service is currently unavailable. Please try again in a couple seconds." |
+| Model Unavailable | Requested model not accessible | Automatic fallback to alternative model |
+
+---
+
+## Best Practices
+
+1. **Secure your API key**: Never commit `OPENAI_API_KEY` to version control. Use environment variables or secrets management.
+
+2. **Monitor usage**: OpenAI API calls have costs. Implement appropriate rate limiting and monitoring for production.
+
+3. **Handle errors gracefully**: Always provide meaningful feedback to users when AI operations fail.
+
+4. **Test with mocks**: Use the provided test fixtures for unit testing without making actual API calls.
+
+5. **Consider caching**: For repeated queries, consider caching responses to reduce API costs and latency.
+
+---
+
+## Related Resources
+
+- [OpenAI API Documentation](https://platform.openai.com/docs)
+- [OpenAI Pricing](https://openai.com/pricing)
+- [GraphQL Mutations Guide](/working-with-sb/graphql/mutations)

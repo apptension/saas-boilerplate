@@ -1,0 +1,86 @@
+---
+title: Emails & Notifications
+slug: /working-with-sb/emails
+---
+
+import DocCardList from '@theme/DocCardList';
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Emails & Notifications
+
+<ProjectName /> includes a complete system for transactional emails and in-app notifications.
+
+---
+
+## Email System
+
+Emails are built with React components and rendered to HTML on the backend:
+
+```
+React Template → Backend Renders → AWS SES Sends → User Inbox
+     │
+     └── Storybook Preview
+```
+
+**Features:**
+- ✅ React-based email templates
+- ✅ Internationalization (i18n) support
+- ✅ Storybook for local preview
+- ✅ Mailcatcher for local testing
+- ✅ AWS SES for production delivery
+
+---
+
+## Notification System
+
+In-app notifications are delivered in real-time:
+
+```
+Backend Event → GraphQL Subscription → WebSocket → Bell Icon / Toast
+```
+
+**Features:**
+- ✅ Real-time delivery via WebSocket
+- ✅ Persistent storage in database
+- ✅ Read/unread status
+- ✅ Notification center UI
+
+---
+
+## Common Tasks
+
+| Task | Guide |
+|------|-------|
+| Create new email type | [Create Email Template](/working-with-sb/emails/create-email-template) |
+| Trigger email from backend | [Send an Email](/working-with-sb/emails/send-email) |
+| Send in-app notification | [Create Notification](/working-with-sb/notifications/create-notification) |
+| Preview emails locally | [Mailcatcher](/working-with-sb/dev-tools/mailcatcher) |
+
+---
+
+## Local Development
+
+Emails sent during development are caught by Mailcatcher:
+
+| Service | URL |
+|---------|-----|
+| **Mailcatcher** | http://localhost:1080 |
+| **Storybook (emails)** | `pnpm nx storybook webapp-emails` |
+
+---
+
+## Key Files
+
+| Location | Purpose |
+|----------|---------|
+| `webapp-libs/webapp-emails/src/templates/` | Email React components |
+| `webapp-libs/webapp-emails/src/types.ts` | Email type definitions |
+| `webapp-libs/webapp-notifications/` | Notification components |
+| `packages/backend/apps/notifications/` | Backend notification models |
+
+---
+
+## All Guides
+
+<DocCardList />
+

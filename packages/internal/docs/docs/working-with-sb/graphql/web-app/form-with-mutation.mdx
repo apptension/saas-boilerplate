@@ -222,7 +222,48 @@ export const useCreateProductForm = () => {
 helps modify back-end data with mutations.
 - Using `async` handler makes sure the `form.formState.isSubmitting` prop is `true` when the request is in flight.
 
-## Key points
-- Use [useApiForm](../../../api-reference/webapp-api-client/generated/modules/hooks#useapiform) hook to control form state
-- Commit mutations inside custom hooks instead of directly in components to decouple logic from presentation layer
-- Use `react-intl` to format input labels, placeholders, and error messages
+## Key Points
+
+- ✅ Use [useApiForm](../../../api-reference/webapp-api-client/generated/modules/hooks#useapiform) hook to control form state
+- ✅ Commit mutations inside custom hooks to decouple logic from presentation
+- ✅ Use `react-intl` for all user-facing text (labels, placeholders, errors)
+- ✅ Set `async` on your submit handler to enable loading states
+
+---
+
+## Common Issues
+
+<details>
+<summary><strong>Mutation not triggering</strong></summary>
+
+Ensure your GraphQL mutation name matches the backend schema. Run `pnpm nx run webapp-api-client:graphql:generate-types` to regenerate types after backend changes.
+
+</details>
+
+<details>
+<summary><strong>Form errors not displaying</strong></summary>
+
+Make sure you're passing errors to the `error` prop of your Input component:
+```tsx
+error={errors.fieldName?.message}
+```
+
+</details>
+
+<details>
+<summary><strong>TypeScript errors on mutation variables</strong></summary>
+
+Regenerate types with `pnpm nx run webapp-api-client:graphql:generate-types` after any GraphQL schema changes.
+
+</details>
+
+---
+
+## Related Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Add Backend Mutation](/working-with-sb/graphql/backend/adding-new-mutation) | Create the backend API for your form |
+| [Update Schema Types](/working-with-sb/graphql/web-app/update-schema) | Regenerate TypeScript types |
+| [Create React Component](/working-with-sb/guides/web-app/create-react-component) | Component structure patterns |
+| [Testing](/working-with-sb/tests/webapp) | Write tests for your forms |

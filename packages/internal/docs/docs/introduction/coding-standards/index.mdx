@@ -1,7 +1,53 @@
 ---
-title: SaaS Boilerplate coding standards
+title: Coding Standards
+description: Code quality tools and conventions used in SaaS Boilerplate
 ---
 
 import DocCardList from '@theme/DocCardList';
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Coding Standards
+
+<ProjectName /> enforces consistent code quality across the entire codebase through a combination of formatters, linters, and automated checks. These tools run automatically during development and in CI/CD pipelines to maintain high code quality.
+
+## Why Coding Standards Matter
+
+Consistent coding standards help teams:
+- **Reduce cognitive load** - Familiar patterns make code easier to read and understand
+- **Prevent bugs** - Linters catch common errors before they reach production
+- **Simplify code reviews** - Focus on logic, not formatting debates
+- **Onboard faster** - New developers can follow established patterns
+
+## Tools Overview
+
+| Tool | Purpose | Applies To |
+|------|---------|------------|
+| **Prettier** | Code formatting | TypeScript, JavaScript, JSON, CSS |
+| **ESLint** | Static analysis & best practices | TypeScript, JavaScript, React |
+| **Black** | Code formatting | Python |
+| **Ruff** | Fast Python linting | Python |
+| **Stylelint** | CSS/styling linting | CSS, Tailwind |
+
+## Running Quality Checks
+
+```bash
+# Frontend linting
+pnpm nx run webapp:lint
+
+# Backend formatting
+cd packages/backend
+pdm run black .
+
+# Backend linting
+pdm run ruff .
+```
+
+## Pre-commit Hooks
+
+The project uses [Husky](https://typicode.github.io/husky/) to run quality checks before each commit, ensuring that only properly formatted and linted code enters the repository.
+
+---
+
+## Detailed Documentation
 
 <DocCardList />

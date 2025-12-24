@@ -1,6 +1,6 @@
 ---
-title: Run existing project
-description: Run an already existing SaaS Boilerplate project
+title: Join an Existing Project
+description: Set up your local environment to work on an existing SaaS Boilerplate project
 pagination_next: working-with-sb/index
 ---
 
@@ -9,12 +9,62 @@ import Requirements from './_requirements.mdx';
 import InstallDeps from './_install-deps.mdx';
 import StartApp from './_start-app.mdx';
 
-This section provides instructions for running an existing project based on the <ProjectName/> locally on your machine. To run an existing project, you will first need to have a cloned instance of the <ProjectName/> project. Once you have it, you can follow the instructions in this section to install the necessary dependencies and start the application.
+# Join an Existing Project
 
-The section will include a list of [requirements](#requirements), such as the minimum version of Node.js. It will also provide step-by-step instructions for [installing the dependencies](#install-dependencies).
+This guide helps you set up your local development environment to work on an existing <ProjectName/> project that your team has already configured.
 
-Once the dependencies are installed, it will provide instructions for [starting the application](#start-the-app).
+:::tip Before You Begin
+Make sure you have:
+- Access to the project's Git repository
+- Any team-specific environment variables or secrets from your team lead
+:::
+
+Starting fresh? See [Start a New Project](./run-new-project) instead.
+
+---
+
+## Step 1: Clone the Repository
+
+Get the project code from your team's repository:
+
+```bash
+git clone <your-project-repository-url>
+cd <project-name>
+```
+
+---
 
 <Requirements />
+
+---
+
 <InstallDeps />
+
+---
+
+## Step 2: Get Environment Files
+
+Your team should provide you with the necessary `.env` files. These contain configuration specific to your project.
+
+:::caution Don't Commit Secrets
+Never commit `.env` files to Git. They should be shared securely (password manager, encrypted file sharing, etc.).
+:::
+
+You'll need `.env` files in these locations:
+- Root directory (`.env`)
+- `packages/backend/.env`
+- `packages/workers/.env` (if using workers)
+
+**If your team hasn't provided these**, you can create them from the `.env.shared` templates:
+
+```bash
+# Copy shared env files as a starting point
+cp .env.shared .env
+cp packages/backend/.env.shared packages/backend/.env
+```
+
+Then ask your team for any project-specific values you need to update.
+
+---
+
 <StartApp />

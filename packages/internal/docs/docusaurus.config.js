@@ -90,13 +90,25 @@ module.exports = {
           type: 'docSidebar',
           sidebarId: 'gettingStartedSidebar',
           position: 'left',
-          label: 'Getting Started',
+          label: 'Quick Start',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'introductionSidebar',
+          position: 'left',
+          label: 'Overview',
         },
         {
           type: 'docSidebar',
           sidebarId: 'workingWithSidebar',
           position: 'left',
-          label: 'Guides',
+          label: 'How-To Guides',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'awsSidebar',
+          position: 'left',
+          label: 'AWS Deployment',
         },
         {
           type: 'docSidebar',
@@ -127,15 +139,32 @@ module.exports = {
       style: 'dark',
       links: [
         {
-          title: 'Documentation',
+          title: 'Get Started',
           items: [
             {
-              label: 'Getting Started',
+              label: 'Quick Start',
               to: '/getting-started',
             },
             {
-              label: 'Working with SB',
+              label: 'Overview',
+              to: '/introduction',
+            },
+            {
+              label: 'Architecture',
+              to: '/introduction/architecture',
+            },
+          ],
+        },
+        {
+          title: 'Learn',
+          items: [
+            {
+              label: 'How-To Guides',
               to: '/working-with-sb',
+            },
+            {
+              label: 'AWS Deployment',
+              to: '/aws',
             },
             {
               label: 'API Reference',
@@ -146,6 +175,10 @@ module.exports = {
         {
           title: 'Features',
           items: [
+            {
+              label: 'All Features',
+              to: '/introduction/features',
+            },
             {
               label: 'Authentication',
               to: '/introduction/features/auth',
