@@ -26,10 +26,12 @@ import {
   Loader2,
   LogIn,
   LogOut,
+  Monitor,
   RefreshCw,
   Search,
   Settings,
   Shield,
+  Smartphone,
   User,
   Users,
   X,
@@ -101,6 +103,14 @@ const EVENT_ICONS: Record<string, React.ReactNode> = {
   scim_group_updated: <Users className="h-4 w-4" />,
   scim_group_deleted: <Users className="h-4 w-4" />,
 
+  // Session events
+  session_created: <Monitor className="h-4 w-4" />,
+  session_revoked: <LogOut className="h-4 w-4" />,
+
+  // Device events
+  device_registered: <Smartphone className="h-4 w-4" />,
+  device_removed: <Smartphone className="h-4 w-4" />,
+
   // Passkey events
   passkey_registered: <Fingerprint className="h-4 w-4" />,
   passkey_removed: <Fingerprint className="h-4 w-4" />,
@@ -131,6 +141,10 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
   scim_group_created: 'SCIM Group Created',
   scim_group_updated: 'SCIM Group Updated',
   scim_group_deleted: 'SCIM Group Deleted',
+  session_created: 'Session Created',
+  session_revoked: 'Session Revoked',
+  device_registered: 'Device Registered',
+  device_removed: 'Device Removed',
   passkey_registered: 'Passkey Registered',
   passkey_removed: 'Passkey Removed',
   passkey_auth_success: 'Passkey Auth Success',
@@ -348,11 +362,6 @@ export const AuditLogCard = () => {
                 defaultMessage="Security Audit Log"
                 id="Tenant Security Settings / Audit Header"
               />
-              {totalCount > 0 && (
-                <Badge variant="secondary" className="ml-2">
-                  {totalCount.toLocaleString()}
-                </Badge>
-              )}
             </CardTitle>
             <CardDescription>
               <FormattedMessage
@@ -519,21 +528,30 @@ export const AuditLogCard = () => {
             </div>
 
             {/* Filter Actions */}
-            <div className="mt-4 flex items-center justify-end gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleClearFilters}
-                disabled={!hasActiveFilters || isFetching}
-              >
-                <FormattedMessage defaultMessage="Clear filters" id="Audit / Clear filters" />
-              </Button>
-              <Button size="sm" onClick={handleApplyFilters} disabled={isFetching}>
-                {isFetching ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : null}
-                <FormattedMessage defaultMessage="Apply filters" id="Audit / Apply filters" />
-              </Button>
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">
+                <FormattedMessage
+                  defaultMessage="{count, plural, =0 {No events found} one {# event found} other {# events found}}"
+                  id="Audit / Results count"
+                  values={{ count: totalCount }}
+                />
+              </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleClearFilters}
+                  disabled={!hasActiveFilters || isFetching}
+                >
+                  <FormattedMessage defaultMessage="Clear filters" id="Audit / Clear filters" />
+                </Button>
+                <Button size="sm" onClick={handleApplyFilters} disabled={isFetching}>
+                  {isFetching ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  <FormattedMessage defaultMessage="Apply filters" id="Audit / Apply filters" />
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -604,14 +622,7 @@ export const AuditLogCard = () => {
                         {log.success ? getEventIcon(log.eventType) : <AlertTriangle className="h-4 w-4" />}
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm font-medium">{getEventLabel(log.eventType)}</p>
-                          {!log.success && (
-                            <Badge variant="destructive" className="text-xs">
-                              <FormattedMessage defaultMessage="Failed" id="Audit / Failed badge" />
-                            </Badge>
-                          )}
-                        </div>
+                        <p className="text-sm font-medium">{getEventLabel(log.eventType)}</p>
                         <p className="text-xs text-muted-foreground">
                           {formatDate(log.createdAt)}
                           {log.userEmail && ` • ${log.userEmail}`}
@@ -619,13 +630,20 @@ export const AuditLogCard = () => {
                         </p>
                       </div>
                     </div>
-                    <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0">
-                      {expandedLogId === log.id ? (
-                        <ChevronUp className="h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4" />
+                    <div className="flex items-center gap-2">
+                      {!log.success && (
+                        <Badge variant="destructive" className="text-xs">
+                          <FormattedMessage defaultMessage="Failed" id="Audit / Failed badge" />
+                        </Badge>
                       )}
-                    </Button>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0">
+                        {expandedLogId === log.id ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
                   </div>
 
                   {expandedLogId === log.id && (
