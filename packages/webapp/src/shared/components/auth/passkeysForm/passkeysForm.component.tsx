@@ -421,7 +421,7 @@ export const PasskeysForm = () => {
       {/* Add Passkey Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[450px]">
-          <div className="-m-6 flex h-[85vh] max-h-[500px] flex-col overflow-hidden">
+          <div className="-m-6 flex h-[85vh] max-h-[500px] flex-col overflow-hidden sm:rounded-lg">
             {/* Fixed Header */}
             <div className="flex shrink-0 items-center gap-3 border-b bg-background px-6 py-4">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">

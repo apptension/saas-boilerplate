@@ -4,20 +4,33 @@ import { Input } from '@sb/webapp-core/components/forms';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@sb/webapp-core/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@sb/webapp-core/components/ui/dropdown-menu';
 import { Label } from '@sb/webapp-core/components/ui/label';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@sb/webapp-core/components/ui/tooltip';
 import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import { useOpenState } from '@sb/webapp-core/hooks';
+import { cn } from '@sb/webapp-core/lib/utils';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import {
   AlertTriangle,
+  Calendar,
   CheckCircle2,
   Copy,
+  Activity,
   Key,
+  Link2,
   Loader2,
+  MoreHorizontal,
   Plus,
   RefreshCw,
   Shield,
   Trash2,
+  Hash,
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -131,7 +144,7 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
     setRevokingId(tokenId);
     try {
       await apiClient.delete(`/api/sso/tenant/${tenantId}/scim-tokens/${tokenId}`);
-      
+
       // Refetch to update the list properly
       await fetchData();
 
@@ -174,7 +187,6 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
     if (!dateStr) return null;
     return new Intl.DateTimeFormat(undefined, {
       dateStyle: 'medium',
-      timeStyle: 'short',
     }).format(new Date(dateStr));
   };
 
@@ -182,212 +194,309 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
     typeof window !== 'undefined' ? `${window.location.origin}/api/sso/scim/v2` : '/api/sso/scim/v2';
 
   return (
-    <>
+    <TooltipProvider>
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <RefreshCw className="h-5 w-5 text-primary" />
-            <FormattedMessage
-              defaultMessage="Directory Sync (SCIM)"
-              id="Tenant Security Settings / SCIM Header"
-            />
-            {activeTokens.length > 0 && (
-              <Badge variant="default" className="ml-2">
-                {activeTokens.length}{' '}
-                <FormattedMessage defaultMessage="active" id="SCIM / Active badge" />
-              </Badge>
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                <RefreshCw className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">
+                  <FormattedMessage
+                    defaultMessage="Directory Sync (SCIM)"
+                    id="Tenant Security Settings / SCIM Header"
+                  />
+                </CardTitle>
+                <CardDescription className="mt-0.5">
+                  <FormattedMessage
+                    defaultMessage="Automatically provision and deprovision users from your identity provider"
+                    id="Tenant Security Settings / SCIM Description"
+                  />
+                </CardDescription>
+              </div>
+            </div>
+            {canManageSSO && hasActiveConnection && activeTokens.length > 0 && (
+              <Button variant="outline" size="sm" onClick={() => setIsModalOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                <FormattedMessage
+                  defaultMessage="Add Token"
+                  id="Tenant Security Settings / Add SCIM Token Button"
+                />
+              </Button>
             )}
-          </CardTitle>
-          <CardDescription>
-            <FormattedMessage
-              defaultMessage="Automatically provision and deprovision users from your identity provider"
-              id="Tenant Security Settings / SCIM Description"
-            />
-          </CardDescription>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {!canManageSSO ? (
-            <div className="rounded-lg border bg-muted/30 p-4 text-center">
-              <p className="text-sm text-muted-foreground">
-                <FormattedMessage
-                  defaultMessage="Only organization owners and admins can configure directory sync"
-                  id="Tenant Security Settings / SCIM Permission"
-                />
-              </p>
+            <div className="flex items-center justify-center rounded-lg border border-dashed bg-muted/30 p-6 text-center">
+              <div className="space-y-2">
+                <RefreshCw className="mx-auto h-8 w-8 text-muted-foreground/50" />
+                <p className="text-sm text-muted-foreground">
+                  <FormattedMessage
+                    defaultMessage="Only organization owners and admins can configure directory sync"
+                    id="Tenant Security Settings / SCIM Permission"
+                  />
+                </p>
+              </div>
             </div>
           ) : loading ? (
             <div className="flex items-center justify-center p-8">
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
           ) : !hasActiveConnection ? (
-            <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-4">
-              <div className="flex items-center gap-3">
-                <div className="rounded-full bg-muted p-2">
-                  <RefreshCw className="h-5 w-5 text-muted-foreground" />
+            <div className="space-y-6">
+              {/* Empty State - No SSO Connection */}
+              <div className="flex flex-col items-center justify-center rounded-lg border border-dashed bg-muted/20 p-8 text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-4">
+                  <RefreshCw className="h-7 w-7 text-muted-foreground" />
                 </div>
-                <div>
-                  <p className="text-sm font-medium">
-                    <FormattedMessage
-                      defaultMessage="Directory sync is not available"
-                      id="Tenant Security Settings / No SCIM Available"
-                    />
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    <FormattedMessage
-                      defaultMessage="Configure and activate an SSO connection first to enable SCIM provisioning"
-                      id="Tenant Security Settings / SCIM Setup Hint"
-                    />
-                  </p>
-                </div>
+                <h3 className="text-base font-semibold mb-1">
+                  <FormattedMessage
+                    defaultMessage="Directory sync requires SSO"
+                    id="Tenant Security Settings / No SCIM Available"
+                  />
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-sm mb-4">
+                  <FormattedMessage
+                    defaultMessage="Configure and activate an SSO connection first to enable SCIM provisioning for automatic user management."
+                    id="Tenant Security Settings / SCIM Setup Hint"
+                  />
+                </p>
+                <Button variant="outline" disabled>
+                  <Plus className="mr-2 h-4 w-4" />
+                  <FormattedMessage
+                    defaultMessage="Generate SCIM Token"
+                    id="Tenant Security Settings / SCIM Token Button Disabled"
+                  />
+                </Button>
               </div>
-              <Button variant="outline" size="sm" disabled>
-                <Plus className="mr-2 h-4 w-4" />
-                <FormattedMessage
-                  defaultMessage="Generate SCIM Token"
-                  id="Tenant Security Settings / SCIM Token Button"
-                />
-              </Button>
             </div>
           ) : activeTokens.length === 0 ? (
-            <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-4">
-              <div className="flex items-center gap-3">
-                <div className="rounded-full bg-green-100 p-2 dark:bg-green-900/30">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
+            <div className="space-y-6">
+              {/* Empty State - SSO Active, No Tokens */}
+              <div className="flex flex-col items-center justify-center rounded-lg border border-dashed bg-muted/20 p-8 text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 mb-4">
+                  <Link2 className="h-7 w-7 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <div>
-                  <p className="text-sm font-medium">
-                    <FormattedMessage
-                      defaultMessage="SSO is active - SCIM is ready to configure"
-                      id="Tenant Security Settings / SCIM Ready"
-                    />
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    <FormattedMessage
-                      defaultMessage="Generate a SCIM token to start syncing users from your identity provider"
-                      id="Tenant Security Settings / SCIM Ready Hint"
-                    />
-                  </p>
+                <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20 mb-3">
+                  <CheckCircle2 className="mr-1 h-3 w-3" />
+                  <FormattedMessage defaultMessage="SSO Active" id="SCIM / SSO Active Badge" />
+                </Badge>
+                <h3 className="text-base font-semibold mb-1">
+                  <FormattedMessage
+                    defaultMessage="Ready to configure directory sync"
+                    id="Tenant Security Settings / SCIM Ready"
+                  />
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-sm mb-4">
+                  <FormattedMessage
+                    defaultMessage="Generate a SCIM token to start syncing users automatically from your identity provider."
+                    id="Tenant Security Settings / SCIM Ready Hint"
+                  />
+                </p>
+                <Button onClick={() => setIsModalOpen(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  <FormattedMessage
+                    defaultMessage="Generate SCIM Token"
+                    id="Tenant Security Settings / SCIM Token Button"
+                  />
+                </Button>
+              </div>
+
+              {/* Supported Providers */}
+              <div className="rounded-lg border bg-muted/10 p-4">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+                  <FormattedMessage
+                    defaultMessage="Compatible Identity Providers"
+                    id="Tenant Security Settings / SCIM Compatible IdPs"
+                  />
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {['Okta', 'Azure AD', 'Google Workspace', 'OneLogin', 'JumpCloud'].map((provider) => (
+                    <Badge
+                      key={provider}
+                      variant="secondary"
+                      className="bg-background hover:bg-muted transition-colors"
+                    >
+                      {provider}
+                    </Badge>
+                  ))}
                 </div>
               </div>
-              <Button variant="outline" size="sm" onClick={() => setIsModalOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                <FormattedMessage
-                  defaultMessage="Generate SCIM Token"
-                  id="Tenant Security Settings / SCIM Token Button"
-                />
-              </Button>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {/* SCIM Endpoint URL */}
-              <div className="rounded-lg border bg-muted/30 p-4">
-                <div className="flex items-center gap-2 text-sm font-medium">
+              <div className="rounded-lg border bg-muted/10 p-4">
+                <div className="flex items-center gap-2 text-sm font-medium mb-2">
                   <Shield className="h-4 w-4 text-primary" />
                   <FormattedMessage defaultMessage="SCIM Endpoint URL" id="SCIM / Endpoint Label" />
                 </div>
-                <code className="mt-2 block rounded bg-background p-2 font-mono text-xs">
+                <code className="block rounded bg-background p-2 font-mono text-xs text-muted-foreground">
                   {scimEndpointUrl}
                 </code>
               </div>
 
               {/* Active Token List */}
-              <div className="space-y-3">
-                {activeTokens.map((token) => (
-                  <div
-                    key={token.id}
-                    className="flex items-center justify-between rounded-lg border p-4"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="rounded-full bg-primary/10 p-2">
-                        <Key className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm font-medium">{token.name}</p>
-                          <Badge variant="outline" className="text-xs font-mono">
-                            {token.tokenPrefix}...
-                          </Badge>
-                        </div>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <span>
-                            <FormattedMessage
-                              defaultMessage="Created {date}"
-                              id="SCIM / Created Date"
-                              values={{ date: formatDate(token.createdAt) }}
-                            />
-                          </span>
-                          {token.lastUsedAt && (
-                            <>
-                              <span>•</span>
-                              <span>
-                                <FormattedMessage
-                                  defaultMessage="Last used {date}"
-                                  id="SCIM / Last Used"
-                                  values={{ date: formatDate(token.lastUsedAt) }}
-                                />
-                              </span>
-                            </>
-                          )}
-                          {token.requestCount > 0 && (
-                            <>
-                              <span>•</span>
-                              <span>
-                                <FormattedMessage
-                                  defaultMessage="{count} requests"
-                                  id="SCIM / Request Count"
-                                  values={{ count: token.requestCount }}
-                                />
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      </div>
+              {activeTokens.map((token) => (
+                <div
+                  key={token.id}
+                  className={cn(
+                    'group relative flex items-center justify-between rounded-lg border p-4 transition-all',
+                    'hover:shadow-sm hover:border-primary/20',
+                    'border-l-2 border-l-emerald-500'
+                  )}
+                >
+                  <div className="flex items-center gap-4">
+                    {/* Token Icon */}
+                    <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                      <Key className="h-5 w-5" />
                     </div>
-                    <ConfirmDialog
-                      onContinue={() => handleRevokeToken(token.id)}
-                      variant="destructive"
-                      title={
-                        <FormattedMessage
-                          defaultMessage="Revoke SCIM Token?"
-                          id="SCIM / Revoke Dialog Title"
-                        />
-                      }
-                      description={
-                        <FormattedMessage
-                          defaultMessage="This will permanently disable this token. Your identity provider will no longer be able to sync users using this token. This action cannot be undone - you'll need to generate a new token and update your IdP configuration."
-                          id="SCIM / Revoke Dialog Description"
-                        />
-                      }
-                    >
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        disabled={revokingId === token.id}
-                        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                      >
-                        {revokingId === token.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
+
+                    {/* Token Info */}
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{token.name}</span>
+                        <Badge variant="outline" className="font-mono text-xs">
+                          {token.tokenPrefix}...
+                        </Badge>
+                      </div>
+
+                      {/* Stats Row */}
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="flex items-center gap-1 cursor-default">
+                              <Calendar className="h-3.5 w-3.5" />
+                              <FormattedMessage
+                                defaultMessage="Created {date}"
+                                id="SCIM / Created Date"
+                                values={{ date: formatDate(token.createdAt) }}
+                              />
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <FormattedMessage
+                              defaultMessage="Token creation date"
+                              id="SCIM / Created Tooltip"
+                            />
+                          </TooltipContent>
+                        </Tooltip>
+
+                        {token.lastUsedAt && (
                           <>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            <FormattedMessage defaultMessage="Revoke" id="SCIM / Revoke Button" />
+                            <span className="text-muted-foreground/50">•</span>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="flex items-center gap-1 cursor-default">
+                                  <Activity className="h-3.5 w-3.5" />
+                                  <FormattedMessage
+                                    defaultMessage="Last: {date}"
+                                    id="SCIM / Last Used"
+                                    values={{ date: formatDate(token.lastUsedAt) }}
+                                  />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <FormattedMessage
+                                  defaultMessage="Last time this token was used"
+                                  id="SCIM / Last Used Tooltip"
+                                />
+                              </TooltipContent>
+                            </Tooltip>
                           </>
                         )}
-                      </Button>
-                    </ConfirmDialog>
-                  </div>
-                ))}
-              </div>
 
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full"
+                        {token.requestCount > 0 && (
+                          <>
+                            <span className="text-muted-foreground/50">•</span>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="flex items-center gap-1 cursor-default">
+                                  <Hash className="h-3.5 w-3.5" />
+                                  <FormattedMessage
+                                    defaultMessage="{count, plural, one {# request} other {# requests}}"
+                                    id="SCIM / Request Count"
+                                    values={{ count: token.requestCount }}
+                                  />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <FormattedMessage
+                                  defaultMessage="Total API requests made with this token"
+                                  id="SCIM / Request Count Tooltip"
+                                />
+                              </TooltipContent>
+                            </Tooltip>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions Dropdown */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">
+                          <FormattedMessage defaultMessage="Actions" id="SCIM Card / Actions" />
+                        </span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <ConfirmDialog
+                        onContinue={() => handleRevokeToken(token.id)}
+                        variant="destructive"
+                        title={
+                          <FormattedMessage
+                            defaultMessage="Revoke SCIM Token?"
+                            id="SCIM / Revoke Dialog Title"
+                          />
+                        }
+                        description={
+                          <FormattedMessage
+                            defaultMessage="This will permanently disable this token. Your identity provider will no longer be able to sync users using this token. This action cannot be undone."
+                            id="SCIM / Revoke Dialog Description"
+                          />
+                        }
+                      >
+                        <DropdownMenuItem
+                          onSelect={(e) => e.preventDefault()}
+                          disabled={revokingId === token.id}
+                          className="text-destructive focus:text-destructive focus:bg-destructive/10"
+                        >
+                          {revokingId === token.id ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="mr-2 h-4 w-4" />
+                          )}
+                          <FormattedMessage defaultMessage="Revoke token" id="SCIM / Revoke Button" />
+                        </DropdownMenuItem>
+                      </ConfirmDialog>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              ))}
+
+              {/* Add Another Button */}
+              <button
                 onClick={() => setIsModalOpen(true)}
+                className={cn(
+                  'flex w-full items-center justify-center gap-2 rounded-lg border border-dashed p-3',
+                  'text-sm text-muted-foreground transition-all',
+                  'hover:border-primary/40 hover:bg-muted/50 hover:text-foreground'
+                )}
               >
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="h-4 w-4" />
                 <FormattedMessage defaultMessage="Generate another token" id="SCIM / Add Another" />
-              </Button>
+              </button>
             </div>
           )}
         </CardContent>
@@ -505,6 +614,6 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </TooltipProvider>
   );
 };

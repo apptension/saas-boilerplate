@@ -4,10 +4,35 @@ import { Button } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
 import { Dialog, DialogContent } from '@sb/webapp-core/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@sb/webapp-core/components/ui/dropdown-menu';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@sb/webapp-core/components/ui/tooltip';
 import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast/useToast';
-import { Shield, Link2, Plus, Trash2, CheckCircle2, XCircle, Loader2, Building2, Key } from 'lucide-react';
+import { cn } from '@sb/webapp-core/lib/utils';
+import {
+  Shield,
+  Link2,
+  Plus,
+  Trash2,
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  Building2,
+  KeyRound,
+  MoreHorizontal,
+  Power,
+  PowerOff,
+  Users,
+  Calendar,
+  Activity,
+} from 'lucide-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useCurrentTenant } from '../../../../providers';
@@ -131,198 +156,321 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
     }
   };
 
+  const formatDate = (dateStr: string | null) => {
+    if (!dateStr) return null;
+    return new Intl.DateTimeFormat(undefined, {
+      dateStyle: 'medium',
+    }).format(new Date(dateStr));
+  };
+
+  const getStatusBadge = (isActive: boolean) => {
+    if (isActive) {
+      return (
+        <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20">
+          <CheckCircle2 className="mr-1 h-3 w-3" />
+          <FormattedMessage defaultMessage="Active" id="SSO Card / Active Badge" />
+        </Badge>
+      );
+    }
+    return (
+      <Badge variant="secondary" className="text-muted-foreground">
+        <XCircle className="mr-1 h-3 w-3" />
+        <FormattedMessage defaultMessage="Inactive" id="SSO Card / Inactive Badge" />
+      </Badge>
+    );
+  };
+
+  const getConnectionTypeBadge = (connection: SSOConnection) => {
+    const isSaml = connection.isSaml || connection.connectionType.toLowerCase() === 'saml';
+    return (
+      <Badge variant="outline" className="font-mono text-xs">
+        {isSaml ? 'SAML 2.0' : 'OIDC'}
+      </Badge>
+    );
+  };
+
   return (
-    <>
+    <TooltipProvider>
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-primary" />
-            <FormattedMessage 
-              defaultMessage="Single Sign-On (SSO)" 
-              id="Tenant Security Settings / SSO Header" 
-            />
-          </CardTitle>
-          <CardDescription>
-            <FormattedMessage
-              defaultMessage="Configure SAML 2.0 or OIDC identity providers for your organization"
-              id="Tenant Security Settings / SSO Description"
-            />
-          </CardDescription>
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                <Shield className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">
+                  <FormattedMessage
+                    defaultMessage="Single Sign-On (SSO)"
+                    id="Tenant Security Settings / SSO Header"
+                  />
+                </CardTitle>
+                <CardDescription className="mt-0.5">
+                  <FormattedMessage
+                    defaultMessage="Configure SAML 2.0 or OIDC identity providers for your organization"
+                    id="Tenant Security Settings / SSO Description"
+                  />
+                </CardDescription>
+              </div>
+            </div>
+            {canManageSSO && connections.length > 0 && (
+              <Button variant="outline" size="sm" onClick={() => setIsModalOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                <FormattedMessage
+                  defaultMessage="Add Connection"
+                  id="Tenant Security Settings / Add SSO Button"
+                />
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {!canManageSSO ? (
-            <div className="p-4 border rounded-lg bg-muted/30 text-center">
-              <p className="text-sm text-muted-foreground">
-                <FormattedMessage
-                  defaultMessage="Only organization owners and admins can configure SSO"
-                  id="Tenant Security Settings / SSO Permission"
-                />
-              </p>
+            <div className="flex items-center justify-center rounded-lg border border-dashed bg-muted/30 p-6 text-center">
+              <div className="space-y-2">
+                <Shield className="mx-auto h-8 w-8 text-muted-foreground/50" />
+                <p className="text-sm text-muted-foreground">
+                  <FormattedMessage
+                    defaultMessage="Only organization owners and admins can configure SSO"
+                    id="Tenant Security Settings / SSO Permission"
+                  />
+                </p>
+              </div>
             </div>
           ) : loading ? (
             <div className="flex items-center justify-center p-8">
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
           ) : connections.length === 0 ? (
-            <>
-              <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/30">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-muted">
-                    <Link2 className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm">
-                      <FormattedMessage 
-                        defaultMessage="No SSO connections configured" 
-                        id="Tenant Security Settings / No SSO" 
-                      />
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      <FormattedMessage
-                        defaultMessage="Set up SAML or OIDC to enable enterprise authentication"
-                        id="Tenant Security Settings / SSO Setup Hint"
-                      />
-                    </p>
-                  </div>
+            <div className="space-y-6">
+              {/* Empty State */}
+              <div className="flex flex-col items-center justify-center rounded-lg border border-dashed bg-muted/20 p-8 text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 mb-4">
+                  <Link2 className="h-7 w-7 text-primary" />
                 </div>
-                <Button variant="outline" size="sm" onClick={() => setIsModalOpen(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  <FormattedMessage 
-                    defaultMessage="Add SSO Connection" 
-                    id="Tenant Security Settings / Add SSO Button" 
+                <h3 className="text-base font-semibold mb-1">
+                  <FormattedMessage
+                    defaultMessage="No SSO connections configured"
+                    id="Tenant Security Settings / No SSO"
+                  />
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-sm mb-4">
+                  <FormattedMessage
+                    defaultMessage="Enable enterprise authentication by connecting your identity provider. Support for SAML 2.0 and OpenID Connect."
+                    id="Tenant Security Settings / SSO Setup Hint"
+                  />
+                </p>
+                <Button onClick={() => setIsModalOpen(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  <FormattedMessage
+                    defaultMessage="Configure SSO"
+                    id="Tenant Security Settings / Add SSO Button Empty"
                   />
                 </Button>
               </div>
 
-              <div className="text-sm text-muted-foreground">
-                <p className="font-medium mb-2">
-                  <FormattedMessage 
-                    defaultMessage="Supported Identity Providers:" 
-                    id="Tenant Security Settings / Supported IdPs" 
+              {/* Supported Providers */}
+              <div className="rounded-lg border bg-muted/10 p-4">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+                  <FormattedMessage
+                    defaultMessage="Supported Identity Providers"
+                    id="Tenant Security Settings / Supported IdPs"
                   />
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Okta</Badge>
-                  <Badge variant="secondary">Azure AD</Badge>
-                  <Badge variant="secondary">Google Workspace</Badge>
-                  <Badge variant="secondary">OneLogin</Badge>
-                  <Badge variant="secondary">Auth0</Badge>
-                  <Badge variant="secondary">Custom SAML 2.0</Badge>
-                  <Badge variant="secondary">Custom OIDC</Badge>
+                  {['Okta', 'Azure AD', 'Google Workspace', 'OneLogin', 'Auth0', 'JumpCloud', 'Ping Identity'].map(
+                    (provider) => (
+                      <Badge
+                        key={provider}
+                        variant="secondary"
+                        className="bg-background hover:bg-muted transition-colors"
+                      >
+                        {provider}
+                      </Badge>
+                    )
+                  )}
                 </div>
               </div>
-            </>
+            </div>
           ) : (
             <div className="space-y-3">
-              {connections.map((connection) => (
-                <div
-                  key={connection.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-full ${connection.isActive ? 'bg-green-100 dark:bg-green-900/30' : 'bg-muted'}`}>
-                      {connection.isSaml ? (
-                        <Building2 className={`h-5 w-5 ${connection.isActive ? 'text-green-600' : 'text-muted-foreground'}`} />
-                      ) : (
-                        <Key className={`h-5 w-5 ${connection.isActive ? 'text-green-600' : 'text-muted-foreground'}`} />
-                      )}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium text-sm">{connection.name}</p>
-                        <Badge variant={connection.isActive ? 'default' : 'secondary'} className="text-xs">
-                          {connection.isActive ? (
-                            <FormattedMessage defaultMessage="Active" id="SSO Card / Active Badge" />
-                          ) : (
-                            <FormattedMessage defaultMessage="Inactive" id="SSO Card / Inactive Badge" />
-                          )}
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          {connection.connectionType.toUpperCase()}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {connection.loginCount > 0 ? (
-                          <FormattedMessage
-                            defaultMessage="{count} logins"
-                            id="SSO Card / Login Count"
-                            values={{ count: connection.loginCount }}
-                          />
-                        ) : (
-                          <FormattedMessage
-                            defaultMessage="No logins yet"
-                            id="SSO Card / No Logins"
-                          />
+              {connections.map((connection) => {
+                const isSaml = connection.isSaml || connection.connectionType.toLowerCase() === 'saml';
+
+                return (
+                  <div
+                    key={connection.id}
+                    className={cn(
+                      'group relative flex items-center justify-between rounded-lg border p-4 transition-all',
+                      'hover:shadow-sm hover:border-primary/20',
+                      connection.isActive && 'border-l-2 border-l-emerald-500'
+                    )}
+                  >
+                    <div className="flex items-center gap-4">
+                      {/* Connection Icon */}
+                      <div
+                        className={cn(
+                          'flex h-11 w-11 items-center justify-center rounded-lg transition-colors',
+                          connection.isActive
+                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                            : 'bg-muted text-muted-foreground'
                         )}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleToggleActive(connection)}
-                      disabled={toggling === connection.id}
-                    >
-                      {toggling === connection.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : connection.isActive ? (
-                        <>
-                          <XCircle className="h-4 w-4 mr-1" />
-                          <FormattedMessage defaultMessage="Deactivate" id="SSO Card / Deactivate" />
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle2 className="h-4 w-4 mr-1" />
-                          <FormattedMessage defaultMessage="Activate" id="SSO Card / Activate" />
-                        </>
-                      )}
-                    </Button>
-                    <ConfirmDialog
-                      onContinue={() => handleDelete(connection.id)}
-                      variant="destructive"
-                      title={
-                        <FormattedMessage
-                          defaultMessage="Delete SSO Connection"
-                          id="SSO Card / Delete Dialog Title"
-                        />
-                      }
-                      description={
-                        <FormattedMessage
-                          defaultMessage="Are you sure you want to delete this SSO connection? Users will no longer be able to sign in using this identity provider."
-                          id="SSO Card / Delete Dialog Description"
-                        />
-                      }
-                    >
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={deleting === connection.id}
-                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
                       >
-                        {deleting === connection.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <Trash2 className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </ConfirmDialog>
+                        {isSaml ? <Building2 className="h-5 w-5" /> : <KeyRound className="h-5 w-5" />}
+                      </div>
+
+                      {/* Connection Info */}
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{connection.name}</span>
+                          {getStatusBadge(connection.isActive)}
+                          {getConnectionTypeBadge(connection)}
+                        </div>
+
+                        {/* Stats Row */}
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="flex items-center gap-1 cursor-default">
+                                <Users className="h-3.5 w-3.5" />
+                                <FormattedMessage
+                                  defaultMessage="{count, plural, =0 {No logins} one {# login} other {# logins}}"
+                                  id="SSO Card / Login Count"
+                                  values={{ count: connection.loginCount }}
+                                />
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <FormattedMessage
+                                defaultMessage="Total sign-ins via this connection"
+                                id="SSO Card / Login Count Tooltip"
+                              />
+                            </TooltipContent>
+                          </Tooltip>
+
+                          {connection.lastLoginAt && (
+                            <>
+                              <span className="text-muted-foreground/50">•</span>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="flex items-center gap-1 cursor-default">
+                                    <Activity className="h-3.5 w-3.5" />
+                                    <FormattedMessage
+                                      defaultMessage="Last: {date}"
+                                      id="SSO Card / Last Login"
+                                      values={{ date: formatDate(connection.lastLoginAt) }}
+                                    />
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <FormattedMessage
+                                    defaultMessage="Most recent sign-in"
+                                    id="SSO Card / Last Login Tooltip"
+                                  />
+                                </TooltipContent>
+                              </Tooltip>
+                            </>
+                          )}
+
+                          {connection.createdAt && (
+                            <>
+                              <span className="text-muted-foreground/50">•</span>
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-3.5 w-3.5" />
+                                <FormattedMessage
+                                  defaultMessage="Added {date}"
+                                  id="SSO Card / Created At"
+                                  values={{ date: formatDate(connection.createdAt) }}
+                                />
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions Dropdown */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">
+                            <FormattedMessage defaultMessage="Actions" id="SSO Card / Actions" />
+                          </span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem
+                          onClick={() => handleToggleActive(connection)}
+                          disabled={toggling === connection.id}
+                        >
+                          {toggling === connection.id ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : connection.isActive ? (
+                            <PowerOff className="mr-2 h-4 w-4" />
+                          ) : (
+                            <Power className="mr-2 h-4 w-4" />
+                          )}
+                          {connection.isActive ? (
+                            <FormattedMessage defaultMessage="Deactivate" id="SSO Card / Deactivate" />
+                          ) : (
+                            <FormattedMessage defaultMessage="Activate" id="SSO Card / Activate" />
+                          )}
+                        </DropdownMenuItem>
+
+                        <DropdownMenuSeparator />
+
+                        <ConfirmDialog
+                          onContinue={() => handleDelete(connection.id)}
+                          variant="destructive"
+                          title={
+                            <FormattedMessage
+                              defaultMessage="Delete SSO Connection"
+                              id="SSO Card / Delete Dialog Title"
+                            />
+                          }
+                          description={
+                            <FormattedMessage
+                              defaultMessage="Are you sure you want to delete this SSO connection? Users will no longer be able to sign in using this identity provider."
+                              id="SSO Card / Delete Dialog Description"
+                            />
+                          }
+                        >
+                          <DropdownMenuItem
+                            onSelect={(e) => e.preventDefault()}
+                            disabled={deleting === connection.id}
+                            className="text-destructive focus:text-destructive focus:bg-destructive/10"
+                          >
+                            {deleting === connection.id ? (
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="mr-2 h-4 w-4" />
+                            )}
+                            <FormattedMessage defaultMessage="Delete connection" id="SSO Card / Delete" />
+                          </DropdownMenuItem>
+                        </ConfirmDialog>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
-                </div>
-              ))}
-              
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="w-full"
+                );
+              })}
+
+              {/* Add Another Button */}
+              <button
                 onClick={() => setIsModalOpen(true)}
+                className={cn(
+                  'flex w-full items-center justify-center gap-2 rounded-lg border border-dashed p-3',
+                  'text-sm text-muted-foreground transition-all',
+                  'hover:border-primary/40 hover:bg-muted/50 hover:text-foreground'
+                )}
               >
-                <Plus className="h-4 w-4 mr-2" />
-                <FormattedMessage 
-                  defaultMessage="Add another connection" 
-                  id="SSO Card / Add Another Button" 
-                />
-              </Button>
+                <Plus className="h-4 w-4" />
+                <FormattedMessage defaultMessage="Add another connection" id="SSO Card / Add Another Button" />
+              </button>
             </div>
           )}
         </CardContent>
@@ -331,14 +479,14 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-[550px]">
           {tenantId && (
-            <AddSSOConnectionModal 
-              closeModal={() => setIsModalOpen(false)} 
+            <AddSSOConnectionModal
+              closeModal={() => setIsModalOpen(false)}
               onSuccess={fetchConnections}
               tenantId={tenantId}
             />
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </TooltipProvider>
   );
 };

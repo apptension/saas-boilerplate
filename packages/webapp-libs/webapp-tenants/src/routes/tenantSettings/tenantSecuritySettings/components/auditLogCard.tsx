@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@sb/webapp-core/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@sb/webapp-core/components/ui/tooltip';
 import { cn } from '@sb/webapp-core/lib/utils';
 import {
   AlertTriangle,
@@ -31,6 +32,7 @@ import {
   Search,
   Settings,
   Shield,
+  ShieldCheck,
   Smartphone,
   User,
   Users,
@@ -352,291 +354,346 @@ export const AuditLogCard = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-primary" />
-              <FormattedMessage
-                defaultMessage="Security Audit Log"
-                id="Tenant Security Settings / Audit Header"
-              />
-            </CardTitle>
-            <CardDescription>
-              <FormattedMessage
-                defaultMessage="View recent security events for your organization"
-                id="Tenant Security Settings / Audit Description"
-              />
-            </CardDescription>
+    <TooltipProvider>
+      <Card>
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                <Clock className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">
+                  <FormattedMessage
+                    defaultMessage="Security Audit Log"
+                    id="Tenant Security Settings / Audit Header"
+                  />
+                </CardTitle>
+                <CardDescription className="mt-0.5">
+                  <FormattedMessage
+                    defaultMessage="View recent security events for your organization"
+                    id="Tenant Security Settings / Audit Description"
+                  />
+                </CardDescription>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={showFilters ? 'secondary' : 'outline'}
+                    size="sm"
+                    onClick={() => setShowFilters(!showFilters)}
+                    className={cn('gap-2', hasActiveFilters && 'border-primary/50')}
+                  >
+                    <Filter className="h-4 w-4" />
+                    <FormattedMessage defaultMessage="Filters" id="Audit / Filters button" />
+                    {hasActiveFilters && (
+                      <Badge variant="default" className="ml-1 h-5 px-1.5 text-xs">
+                        {Object.values(filters).filter((v) => v !== '').length}
+                      </Badge>
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <FormattedMessage
+                    defaultMessage="Filter audit log events"
+                    id="Audit / Filters Tooltip"
+                  />
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleRefresh}
+                    disabled={isFetching}
+                    className="h-9 w-9"
+                  >
+                    <RefreshCw className={cn('h-4 w-4', isFetching && 'animate-spin')} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <FormattedMessage defaultMessage="Refresh" id="Audit / Refresh Tooltip" />
+                </TooltipContent>
+              </Tooltip>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant={showFilters ? 'secondary' : 'ghost'}
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className={cn('gap-2', hasActiveFilters && 'text-primary')}
-            >
-              <Filter className="h-4 w-4" />
-              <FormattedMessage defaultMessage="Filters" id="Audit / Filters button" />
-              {hasActiveFilters && (
-                <Badge variant="default" className="ml-1 h-5 px-1.5 text-xs">
-                  {Object.values(filters).filter((v) => v !== '').length}
-                </Badge>
-              )}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleRefresh}
-              disabled={isFetching}
-              className="h-8 w-8"
-            >
-              <RefreshCw className={cn('h-4 w-4', isFetching && 'animate-spin')} />
-            </Button>
-          </div>
-        </div>
 
-        {/* Filters Panel */}
-        {showFilters && (
-          <div className="mt-4 rounded-lg border bg-muted/30 p-4">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {/* Search */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">
-                  <FormattedMessage defaultMessage="Search" id="Audit / Filter Search" />
-                </label>
-                <div className="relative">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          {/* Filters Panel */}
+          {showFilters && (
+            <div className="mt-4 rounded-lg border bg-muted/10 p-4">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {/* Search */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    <FormattedMessage defaultMessage="Search" id="Audit / Filter Search" />
+                  </label>
+                  <div className="relative">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder={intl.formatMessage({
+                        defaultMessage: 'Search logs...',
+                        id: 'Audit / Search placeholder',
+                      })}
+                      value={filters.search}
+                      onChange={(e) => handleFilterChange('search', e.target.value)}
+                      className="pl-8"
+                    />
+                  </div>
+                </div>
+
+                {/* Event Type */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    <FormattedMessage defaultMessage="Event Type" id="Audit / Filter Event Type" />
+                  </label>
+                  <Select
+                    value={filters.eventType}
+                    onValueChange={(value) => handleFilterChange('eventType', value === 'all' ? '' : value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={intl.formatMessage({
+                          defaultMessage: 'All events',
+                          id: 'Audit / All events placeholder',
+                        })}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">
+                        <FormattedMessage defaultMessage="All events" id="Audit / All events" />
+                      </SelectItem>
+                      {filterOptions.eventTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {getEventLabel(type)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* User Email */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    <FormattedMessage defaultMessage="User" id="Audit / Filter User" />
+                  </label>
                   <Input
                     placeholder={intl.formatMessage({
-                      defaultMessage: 'Search logs...',
-                      id: 'Audit / Search placeholder',
+                      defaultMessage: 'Filter by email...',
+                      id: 'Audit / User email placeholder',
                     })}
-                    value={filters.search}
-                    onChange={(e) => handleFilterChange('search', e.target.value)}
-                    className="pl-8"
+                    value={filters.userEmail}
+                    onChange={(e) => handleFilterChange('userEmail', e.target.value)}
+                  />
+                </div>
+
+                {/* Status */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    <FormattedMessage defaultMessage="Status" id="Audit / Filter Status" />
+                  </label>
+                  <Select
+                    value={filters.success}
+                    onValueChange={(value) => handleFilterChange('success', value === 'all' ? '' : value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={intl.formatMessage({
+                          defaultMessage: 'All statuses',
+                          id: 'Audit / All statuses placeholder',
+                        })}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">
+                        <FormattedMessage defaultMessage="All statuses" id="Audit / All statuses" />
+                      </SelectItem>
+                      <SelectItem value="true">
+                        <div className="flex items-center gap-2">
+                          <Check className="h-4 w-4 text-emerald-600" />
+                          <FormattedMessage defaultMessage="Success" id="Audit / Status Success" />
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="false">
+                        <div className="flex items-center gap-2">
+                          <X className="h-4 w-4 text-destructive" />
+                          <FormattedMessage defaultMessage="Failed" id="Audit / Status Failed" />
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Start Date */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    <FormattedMessage defaultMessage="From Date" id="Audit / Filter Start Date" />
+                  </label>
+                  <Input
+                    type="date"
+                    value={filters.startDate}
+                    onChange={(e) => handleFilterChange('startDate', e.target.value)}
+                  />
+                </div>
+
+                {/* End Date */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    <FormattedMessage defaultMessage="To Date" id="Audit / Filter End Date" />
+                  </label>
+                  <Input
+                    type="date"
+                    value={filters.endDate}
+                    onChange={(e) => handleFilterChange('endDate', e.target.value)}
                   />
                 </div>
               </div>
 
-              {/* Event Type */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">
-                  <FormattedMessage defaultMessage="Event Type" id="Audit / Filter Event Type" />
-                </label>
-                <Select
-                  value={filters.eventType}
-                  onValueChange={(value) => handleFilterChange('eventType', value === 'all' ? '' : value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={intl.formatMessage({
-                        defaultMessage: 'All events',
-                        id: 'Audit / All events placeholder',
-                      })}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">
-                      <FormattedMessage defaultMessage="All events" id="Audit / All events" />
-                    </SelectItem>
-                    {filterOptions.eventTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {getEventLabel(type)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* User Email */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">
-                  <FormattedMessage defaultMessage="User" id="Audit / Filter User" />
-                </label>
-                <Input
-                  placeholder={intl.formatMessage({
-                    defaultMessage: 'Filter by email...',
-                    id: 'Audit / User email placeholder',
-                  })}
-                  value={filters.userEmail}
-                  onChange={(e) => handleFilterChange('userEmail', e.target.value)}
-                />
-              </div>
-
-              {/* Status */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">
-                  <FormattedMessage defaultMessage="Status" id="Audit / Filter Status" />
-                </label>
-                <Select
-                  value={filters.success}
-                  onValueChange={(value) => handleFilterChange('success', value === 'all' ? '' : value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={intl.formatMessage({
-                        defaultMessage: 'All statuses',
-                        id: 'Audit / All statuses placeholder',
-                      })}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">
-                      <FormattedMessage defaultMessage="All statuses" id="Audit / All statuses" />
-                    </SelectItem>
-                    <SelectItem value="true">
-                      <div className="flex items-center gap-2">
-                        <Check className="h-4 w-4 text-green-600" />
-                        <FormattedMessage defaultMessage="Success" id="Audit / Status Success" />
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="false">
-                      <div className="flex items-center gap-2">
-                        <X className="h-4 w-4 text-destructive" />
-                        <FormattedMessage defaultMessage="Failed" id="Audit / Status Failed" />
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Start Date */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">
-                  <FormattedMessage defaultMessage="From Date" id="Audit / Filter Start Date" />
-                </label>
-                <Input
-                  type="date"
-                  value={filters.startDate}
-                  onChange={(e) => handleFilterChange('startDate', e.target.value)}
-                />
-              </div>
-
-              {/* End Date */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">
-                  <FormattedMessage defaultMessage="To Date" id="Audit / Filter End Date" />
-                </label>
-                <Input
-                  type="date"
-                  value={filters.endDate}
-                  onChange={(e) => handleFilterChange('endDate', e.target.value)}
-                />
-              </div>
-            </div>
-
-            {/* Filter Actions */}
-            <div className="mt-4 flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">
-                <FormattedMessage
-                  defaultMessage="{count, plural, =0 {No events found} one {# event found} other {# events found}}"
-                  id="Audit / Results count"
-                  values={{ count: totalCount }}
-                />
-              </p>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleClearFilters}
-                  disabled={!hasActiveFilters || isFetching}
-                >
-                  <FormattedMessage defaultMessage="Clear filters" id="Audit / Clear filters" />
-                </Button>
-                <Button size="sm" onClick={handleApplyFilters} disabled={isFetching}>
-                  {isFetching ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  <FormattedMessage defaultMessage="Apply filters" id="Audit / Apply filters" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-      </CardHeader>
-
-      <CardContent>
-        {initialLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-          </div>
-        ) : logs.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-muted-foreground/30 p-6 text-center">
-            <Shield className="mx-auto mb-3 h-10 w-10 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">
-              {hasActiveFilters ? (
-                <FormattedMessage
-                  defaultMessage="No events match your filters"
-                  id="Tenant Security Settings / No Filtered Audit Events"
-                />
-              ) : (
-                <FormattedMessage
-                  defaultMessage="No security events found"
-                  id="Tenant Security Settings / No Audit Events"
-                />
-              )}
-            </p>
-            {hasActiveFilters && (
-              <Button variant="link" size="sm" onClick={handleClearFilters} className="mt-2">
-                <FormattedMessage defaultMessage="Clear filters" id="Audit / Clear filters link" />
-              </Button>
-            )}
-          </div>
-        ) : (
-          <div className="relative space-y-4">
-            {/* Subtle loading overlay for fetching */}
-            {isFetching && (
-              <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-center bg-background/50 pt-8">
-                <div className="flex items-center gap-2 rounded-full bg-background px-3 py-1.5 shadow-md">
-                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                  <span className="text-sm text-muted-foreground">
-                    <FormattedMessage defaultMessage="Loading..." id="Audit / Loading indicator" />
-                  </span>
+              {/* Filter Actions */}
+              <div className="mt-4 flex items-center justify-between border-t pt-4">
+                <p className="text-sm text-muted-foreground">
+                  <FormattedMessage
+                    defaultMessage="{count, plural, =0 {No events found} one {# event found} other {# events found}}"
+                    id="Audit / Results count"
+                    values={{ count: totalCount }}
+                  />
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleClearFilters}
+                    disabled={!hasActiveFilters || isFetching}
+                  >
+                    <FormattedMessage defaultMessage="Clear filters" id="Audit / Clear filters" />
+                  </Button>
+                  <Button size="sm" onClick={handleApplyFilters} disabled={isFetching}>
+                    {isFetching ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    <FormattedMessage defaultMessage="Apply filters" id="Audit / Apply filters" />
+                  </Button>
                 </div>
               </div>
-            )}
+            </div>
+          )}
+        </CardHeader>
 
-            {/* Logs List */}
-            <div className={cn('space-y-2', isFetching && 'opacity-60')}>
-              {logs.map((log) => (
-                <div
-                  key={log.id}
-                  className={cn(
-                    'rounded-lg border p-3 transition-colors',
-                    log.success ? 'bg-card hover:bg-muted/30' : 'border-destructive/30 bg-destructive/5'
-                  )}
-                >
+        <CardContent>
+          {initialLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : logs.length === 0 ? (
+            <div className="flex flex-col items-center justify-center rounded-lg border border-dashed bg-muted/20 p-8 text-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-4">
+                <ShieldCheck className="h-7 w-7 text-muted-foreground" />
+              </div>
+              <h3 className="text-base font-semibold mb-1">
+                {hasActiveFilters ? (
+                  <FormattedMessage
+                    defaultMessage="No events match your filters"
+                    id="Tenant Security Settings / No Filtered Audit Events"
+                  />
+                ) : (
+                  <FormattedMessage
+                    defaultMessage="No security events yet"
+                    id="Tenant Security Settings / No Audit Events"
+                  />
+                )}
+              </h3>
+              <p className="text-sm text-muted-foreground max-w-sm mb-4">
+                {hasActiveFilters ? (
+                  <FormattedMessage
+                    defaultMessage="Try adjusting your filters or clearing them to see all events."
+                    id="Tenant Security Settings / No Filtered Audit Events Hint"
+                  />
+                ) : (
+                  <FormattedMessage
+                    defaultMessage="Security events like SSO logins, user provisioning, and configuration changes will appear here."
+                    id="Tenant Security Settings / No Audit Events Hint"
+                  />
+                )}
+              </p>
+              {hasActiveFilters && (
+                <Button variant="outline" size="sm" onClick={handleClearFilters}>
+                  <FormattedMessage defaultMessage="Clear filters" id="Audit / Clear filters link" />
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="relative space-y-4">
+              {/* Subtle loading overlay for fetching */}
+              {isFetching && (
+                <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-center bg-background/50 pt-8">
+                  <div className="flex items-center gap-2 rounded-full bg-background px-3 py-1.5 shadow-md border">
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    <span className="text-sm text-muted-foreground">
+                      <FormattedMessage defaultMessage="Loading..." id="Audit / Loading indicator" />
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Logs List */}
+              <div className={cn('space-y-2', isFetching && 'opacity-60')}>
+                {logs.map((log) => (
                   <div
-                    className="flex cursor-pointer items-center justify-between"
-                    onClick={() => toggleLogExpand(log.id)}
+                    key={log.id}
+                    className={cn(
+                      'group rounded-lg border p-4 transition-all',
+                      'hover:shadow-sm hover:border-primary/20',
+                      log.success
+                        ? 'border-l-2 border-l-emerald-500'
+                        : 'border-l-2 border-l-destructive bg-destructive/5'
+                    )}
                   >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={cn(
-                          'flex h-8 w-8 items-center justify-center rounded-full',
-                          log.success ? 'bg-primary/10 text-primary' : 'bg-destructive/10 text-destructive'
-                        )}
+                    <div
+                      className="flex cursor-pointer items-center justify-between"
+                      onClick={() => toggleLogExpand(log.id)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div
+                          className={cn(
+                            'flex h-10 w-10 items-center justify-center rounded-lg transition-colors',
+                            log.success
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                              : 'bg-destructive/10 text-destructive'
+                          )}
+                        >
+                          {log.success ? getEventIcon(log.eventType) : <AlertTriangle className="h-4 w-4" />}
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-sm">{getEventLabel(log.eventType)}</span>
+                            {!log.success && (
+                              <Badge variant="destructive" className="text-xs">
+                                <FormattedMessage defaultMessage="Failed" id="Audit / Failed badge" />
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            <span>{formatDate(log.createdAt)}</span>
+                            {log.userEmail && (
+                              <>
+                                <span className="text-muted-foreground/50">•</span>
+                                <span>{log.userEmail}</span>
+                              </>
+                            )}
+                            {log.ipAddress && (
+                              <>
+                                <span className="text-muted-foreground/50">•</span>
+                                <span className="font-mono">{log.ipAddress}</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        {log.success ? getEventIcon(log.eventType) : <AlertTriangle className="h-4 w-4" />}
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">{getEventLabel(log.eventType)}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {formatDate(log.createdAt)}
-                          {log.userEmail && ` • ${log.userEmail}`}
-                          {log.ipAddress && ` • ${log.ipAddress}`}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {!log.success && (
-                        <Badge variant="destructive" className="text-xs">
-                          <FormattedMessage defaultMessage="Failed" id="Audit / Failed badge" />
-                        </Badge>
-                      )}
-                      <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0">
                         {expandedLogId === log.id ? (
                           <ChevronUp className="h-4 w-4" />
                         ) : (
@@ -644,146 +701,179 @@ export const AuditLogCard = () => {
                         )}
                       </Button>
                     </div>
-                  </div>
 
-                  {expandedLogId === log.id && (
-                    <div className="mt-3 border-t pt-3">
-                      <dl className="grid grid-cols-2 gap-2 text-xs">
-                        {log.eventDescription && (
-                          <div className="col-span-2">
-                            <dt className="font-medium text-muted-foreground">
-                              <FormattedMessage defaultMessage="Description" id="Audit / Description" />
-                            </dt>
-                            <dd className="mt-0.5">{log.eventDescription}</dd>
-                          </div>
-                        )}
-                        {log.connectionName && (
-                          <div>
-                            <dt className="font-medium text-muted-foreground">
-                              <FormattedMessage defaultMessage="SSO Connection" id="Audit / Connection" />
-                            </dt>
-                            <dd className="mt-0.5">{log.connectionName}</dd>
-                          </div>
-                        )}
-                        {log.ipAddress && (
-                          <div>
-                            <dt className="font-medium text-muted-foreground">
-                              <FormattedMessage defaultMessage="IP Address" id="Audit / IP Address" />
-                            </dt>
-                            <dd className="mt-0.5 font-mono">{log.ipAddress}</dd>
-                          </div>
-                        )}
-                        {log.errorMessage && (
-                          <div className="col-span-2">
-                            <dt className="font-medium text-destructive">
-                              <FormattedMessage defaultMessage="Error" id="Audit / Error" />
-                            </dt>
-                            <dd className="mt-0.5 text-destructive">{log.errorMessage}</dd>
-                          </div>
-                        )}
-                        {log.metadata && Object.keys(log.metadata).length > 0 && (
-                          <div className="col-span-2">
-                            <dt className="font-medium text-muted-foreground">
-                              <FormattedMessage defaultMessage="Details" id="Audit / Details" />
-                            </dt>
-                            <dd className="mt-0.5 rounded bg-muted p-2 font-mono text-xs">
-                              {JSON.stringify(log.metadata, null, 2)}
-                            </dd>
-                          </div>
-                        )}
-                      </dl>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className={cn('flex items-center justify-between border-t pt-4', isFetching && 'opacity-60')}>
-                <p className="text-sm text-muted-foreground">
-                  <FormattedMessage
-                    defaultMessage="Showing {start}-{end} of {total} events"
-                    id="Audit / Pagination summary"
-                    values={{
-                      start: ((currentPage - 1) * DEFAULT_PAGE_SIZE + 1).toLocaleString(),
-                      end: Math.min(currentPage * DEFAULT_PAGE_SIZE, totalCount).toLocaleString(),
-                      total: totalCount.toLocaleString(),
-                    }}
-                  />
-                </p>
-                <div className="flex items-center gap-1">
-                  {/* First page */}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => handlePageChange(1)}
-                    disabled={currentPage === 1 || isFetching}
-                  >
-                    <ChevronsLeft className="h-4 w-4" />
-                  </Button>
-
-                  {/* Previous page */}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1 || isFetching}
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-
-                  {/* Page numbers */}
-                  <div className="flex items-center gap-1">
-                    {getPageNumbers().map((page, index) =>
-                      page === 'ellipsis' ? (
-                        <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground">
-                          ...
-                        </span>
-                      ) : (
-                        <Button
-                          key={page}
-                          variant={currentPage === page ? 'default' : 'ghost'}
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => handlePageChange(page)}
-                          disabled={isFetching}
-                        >
-                          {page}
-                        </Button>
-                      )
+                    {expandedLogId === log.id && (
+                      <div className="mt-4 border-t pt-4">
+                        <dl className="grid grid-cols-2 gap-3 text-sm">
+                          {log.eventDescription && (
+                            <div className="col-span-2">
+                              <dt className="text-xs font-medium text-muted-foreground mb-1">
+                                <FormattedMessage defaultMessage="Description" id="Audit / Description" />
+                              </dt>
+                              <dd>{log.eventDescription}</dd>
+                            </div>
+                          )}
+                          {log.connectionName && (
+                            <div>
+                              <dt className="text-xs font-medium text-muted-foreground mb-1">
+                                <FormattedMessage defaultMessage="SSO Connection" id="Audit / Connection" />
+                              </dt>
+                              <dd>{log.connectionName}</dd>
+                            </div>
+                          )}
+                          {log.ipAddress && (
+                            <div>
+                              <dt className="text-xs font-medium text-muted-foreground mb-1">
+                                <FormattedMessage defaultMessage="IP Address" id="Audit / IP Address" />
+                              </dt>
+                              <dd className="font-mono">{log.ipAddress}</dd>
+                            </div>
+                          )}
+                          {log.errorMessage && (
+                            <div className="col-span-2">
+                              <dt className="text-xs font-medium text-destructive mb-1">
+                                <FormattedMessage defaultMessage="Error" id="Audit / Error" />
+                              </dt>
+                              <dd className="text-destructive">{log.errorMessage}</dd>
+                            </div>
+                          )}
+                          {log.metadata && Object.keys(log.metadata).length > 0 && (
+                            <div className="col-span-2">
+                              <dt className="text-xs font-medium text-muted-foreground mb-1">
+                                <FormattedMessage defaultMessage="Details" id="Audit / Details" />
+                              </dt>
+                              <dd className="rounded-lg bg-muted/50 p-3 font-mono text-xs overflow-auto">
+                                <pre className="whitespace-pre-wrap">{JSON.stringify(log.metadata, null, 2)}</pre>
+                              </dd>
+                            </div>
+                          )}
+                        </dl>
+                      </div>
                     )}
                   </div>
-
-                  {/* Next page */}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages || isFetching}
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-
-                  {/* Last page */}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => handlePageChange(totalPages)}
-                    disabled={currentPage === totalPages || isFetching}
-                  >
-                    <ChevronsRight className="h-4 w-4" />
-                  </Button>
-                </div>
+                ))}
               </div>
-            )}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div
+                  className={cn(
+                    'flex items-center justify-between border-t pt-4',
+                    isFetching && 'opacity-60'
+                  )}
+                >
+                  <p className="text-sm text-muted-foreground">
+                    <FormattedMessage
+                      defaultMessage="Showing {start}-{end} of {total} events"
+                      id="Audit / Pagination summary"
+                      values={{
+                        start: ((currentPage - 1) * DEFAULT_PAGE_SIZE + 1).toLocaleString(),
+                        end: Math.min(currentPage * DEFAULT_PAGE_SIZE, totalCount).toLocaleString(),
+                        total: totalCount.toLocaleString(),
+                      }}
+                    />
+                  </p>
+                  <div className="flex items-center gap-1">
+                    {/* First page */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => handlePageChange(1)}
+                          disabled={currentPage === 1 || isFetching}
+                        >
+                          <ChevronsLeft className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <FormattedMessage defaultMessage="First page" id="Audit / First page" />
+                      </TooltipContent>
+                    </Tooltip>
+
+                    {/* Previous page */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1 || isFetching}
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <FormattedMessage defaultMessage="Previous page" id="Audit / Previous page" />
+                      </TooltipContent>
+                    </Tooltip>
+
+                    {/* Page numbers */}
+                    <div className="flex items-center gap-1">
+                      {getPageNumbers().map((page, index) =>
+                        page === 'ellipsis' ? (
+                          <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground">
+                            ...
+                          </span>
+                        ) : (
+                          <Button
+                            key={page}
+                            variant={currentPage === page ? 'default' : 'ghost'}
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => handlePageChange(page)}
+                            disabled={isFetching}
+                          >
+                            {page}
+                          </Button>
+                        )
+                      )}
+                    </div>
+
+                    {/* Next page */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages || isFetching}
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <FormattedMessage defaultMessage="Next page" id="Audit / Next page" />
+                      </TooltipContent>
+                    </Tooltip>
+
+                    {/* Last page */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => handlePageChange(totalPages)}
+                          disabled={currentPage === totalPages || isFetching}
+                        >
+                          <ChevronsRight className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <FormattedMessage defaultMessage="Last page" id="Audit / Last page" />
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </TooltipProvider>
   );
 };
