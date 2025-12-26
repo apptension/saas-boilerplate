@@ -356,6 +356,50 @@ module.exports = {
         },
         {
           type: 'category',
+          label: 'Enterprise',
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'features/enterprise-sso/index',
+              label: 'Enterprise SSO & Directory Sync',
+            },
+            {
+              type: 'doc',
+              id: 'features/enterprise-sso/passkeys-setup',
+              label: 'Passkeys / WebAuthn',
+            },
+            {
+              type: 'doc',
+              id: 'features/enterprise-sso/scim-setup',
+              label: 'SCIM 2.0 Directory Sync',
+            },
+            {
+              type: 'doc',
+              id: 'features/enterprise-sso/audit-logging',
+              label: 'Security Audit Logging',
+            },
+            {
+              type: 'category',
+              label: 'Provider Guides',
+              collapsed: true,
+              items: [
+                {
+                  type: 'doc',
+                  id: 'features/enterprise-sso/providers/okta',
+                  label: 'Okta Setup',
+                },
+                {
+                  type: 'doc',
+                  id: 'features/enterprise-sso/providers/azure-ad',
+                  label: 'Azure AD / Entra ID Setup',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'category',
           label: 'Integrations',
           collapsed: true,
           items: [

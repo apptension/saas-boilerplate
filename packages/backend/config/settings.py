@@ -67,6 +67,7 @@ LOCAL_APPS = [
     "apps.websockets",
     "apps.integrations",
     "apps.multitenancy",
+    "apps.sso",
 ]
 
 INSTALLED_APPS = (
@@ -373,6 +374,11 @@ OTP_VALIDATE_PATH = "/auth/validate-otp"
 
 OPENAI_API_KEY = env("OPENAI_API_KEY", default="")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4")
+
+# SSO Configuration
+SSO_SP_ENTITY_ID_BASE = env("SSO_SP_ENTITY_ID_BASE", default="")  # e.g., https://api.yourdomain.com
+WEB_APP_URL = env("WEB_APP_URL", default="http://localhost:3000")
+API_URL = env("API_URL", default="http://localhost:5001")
 
 UPLOADED_DOCUMENT_SIZE_LIMIT = env.int("UPLOADED_DOCUMENT_SIZE_LIMIT", default=10 * 1024 * 1024)
 USER_DOCUMENTS_NUMBER_LIMIT = env.int("USER_DOCUMENTS_NUMBER_LIMIT", default=10)

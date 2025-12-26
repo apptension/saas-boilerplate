@@ -1,0 +1,235 @@
+---
+title: Azure AD / Entra ID SSO Setup
+description: Step-by-step guide to configure Microsoft Azure AD (Entra ID) as an identity provider
+---
+
+# Azure AD (Entra ID) SSO Setup
+
+This guide walks you through configuring Microsoft Azure AD (now Microsoft Entra ID) as a SAML or OIDC identity provider.
+
+## Prerequisites
+
+- Azure AD administrator access
+- Your SaaS Boilerplate instance deployed
+- Tenant created in your application
+
+## SAML 2.0 Configuration
+
+### Step 1: Create Enterprise Application
+
+1. Go to [Azure Portal](https://portal.azure.com)
+2. Navigate to **Azure Active Directory** → **Enterprise applications**
+3. Click **New application**
+4. Click **Create your own application**
+5. Name it and select **Integrate any other application you don't find in the gallery (Non-gallery)**
+6. Click **Create**
+
+### Step 2: Configure Single Sign-On
+
+1. Go to your new application
+2. Click **Single sign-on** in the left menu
+3. Select **SAML**
+
+### Step 3: Basic SAML Configuration
+
+Click **Edit** on Basic SAML Configuration:
+
+| Field | Value |
+|-------|-------|
+| Identifier (Entity ID) | `https://api.yourdomain.com/api/sso/saml/{connection_id}/metadata` |
+| Reply URL (ACS URL) | `https://api.yourdomain.com/api/sso/saml/{connection_id}/acs` |
+| Sign on URL | `https://yourdomain.com/auth/sso?connection={connection_id}` |
+| Logout URL | `https://api.yourdomain.com/api/sso/saml/{connection_id}/slo` |
+
+### Step 4: Configure Attributes & Claims
+
+Click **Edit** on Attributes & Claims:
+
+Default claims:
+- **Unique User Identifier** should be `user.userprincipalname` or `user.mail`
+
+Add additional claims:
+
+| Name | Value |
+|------|-------|
+| email | user.mail |
+| firstName | user.givenname |
+| lastName | user.surname |
+| groups | user.groups |
+
+### Step 5: Download Metadata
+
+1. In **SAML Certificates** section, download **Federation Metadata XML**
+2. Or copy:
+   - **Login URL**
+   - **Azure AD Identifier**
+   - **Certificate (Base64)**
+
+### Step 6: Configure in Your App
+
+1. Go to your tenant's SSO settings
+2. Create a new SAML connection
+3. Upload the Federation Metadata XML, or enter:
+   - **Name**: Azure AD
+   - **IdP Entity ID**: Azure AD Identifier
+   - **SSO URL**: Login URL
+   - **Certificate**: Download and paste
+
+### Step 7: Assign Users and Groups
+
+1. Go to **Users and groups**
+2. Click **Add user/group**
+3. Assign the users or groups who need access
+
+## OIDC Configuration
+
+### Step 1: Register Application
+
+1. Go to [Azure Portal](https://portal.azure.com)
+2. Navigate to **Azure Active Directory** → **App registrations**
+3. Click **New registration**
+4. Enter:
+   - **Name**: Your SaaS App
+   - **Supported account types**: Accounts in this organizational directory only
+   - **Redirect URI**: Web - `https://api.yourdomain.com/api/sso/oidc/{connection_id}/callback`
+5. Click **Register**
+
+### Step 2: Configure Authentication
+
+1. Go to **Authentication**
+2. Under **Implicit grant and hybrid flows**, check:
+   - ❌ Access tokens (don't need for code flow)
+   - ❌ ID tokens (don't need for code flow)
+3. Add logout URL: `https://yourdomain.com/logout`
+
+### Step 3: Get Client Credentials
+
+1. Copy the **Application (client) ID**
+2. Go to **Certificates & secrets**
+3. Click **New client secret**
+4. Copy the secret value (store securely!)
+5. Note your **Directory (tenant) ID**
+
+### Step 4: Configure API Permissions
+
+1. Go to **API permissions**
+2. Click **Add a permission**
+3. Select **Microsoft Graph**
+4. Add:
+   - `openid`
+   - `email`
+   - `profile`
+   - `User.Read`
+5. Grant admin consent if required
+
+### Step 5: Configure in Your App
+
+1. Go to your tenant's SSO settings
+2. Create a new OIDC connection
+3. Enter:
+   - **Name**: Azure AD
+   - **Issuer**: `https://login.microsoftonline.com/{tenant_id}/v2.0`
+   - **Client ID**: Application (client) ID
+   - **Client Secret**: Store in AWS Secrets Manager
+   - **Scopes**: `openid email profile`
+
+## SCIM Provisioning Setup
+
+### Step 1: Enable Provisioning
+
+1. Go to your Enterprise Application in Azure AD
+2. Click **Provisioning** in the left menu
+3. Set **Provisioning Mode** to **Automatic**
+
+### Step 2: Configure Credentials
+
+| Field | Value |
+|-------|-------|
+| Tenant URL | `https://api.yourdomain.com/api/sso/scim/v2` |
+| Secret Token | Your SCIM token (generate in app) |
+
+Click **Test Connection** to verify.
+
+### Step 3: Configure Mappings
+
+Click on **Mappings** and configure:
+
+**User Mappings:**
+| Azure AD Attribute | Target Attribute |
+|-------------------|------------------|
+| userPrincipalName | userName |
+| mail | emails[type eq "work"].value |
+| givenName | name.givenName |
+| surname | name.familyName |
+| Switch([IsSoftDeleted], , "False", "True", "True", "False") | active |
+
+### Step 4: Start Provisioning
+
+1. Set **Provisioning Status** to **On**
+2. Click **Save**
+
+## Group Claims Configuration
+
+For SAML applications:
+
+1. Go to **Single sign-on** → **Attributes & Claims**
+2. Click **Add a group claim**
+3. Select **Groups assigned to the application**
+4. For source attribute, choose **Group ID** or **Cloud-only group display names**
+
+:::warning
+If using Group ID, you'll need to map GUIDs to roles. Using display names is more readable but can break if group names change.
+:::
+
+## Configure Attribute Mapping
+
+In your SSO connection, configure the attribute mapping for Azure AD:
+
+```json
+{
+  "email": ["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress", "email"],
+  "first_name": ["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname", "firstName"],
+  "last_name": ["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname", "lastName"],
+  "groups": ["http://schemas.microsoft.com/ws/2008/06/identity/claims/groups", "groups"]
+}
+```
+
+## Conditional Access Policies
+
+Azure AD supports conditional access. Configure policies to:
+
+- Require MFA for your app
+- Block access from specific locations
+- Require compliant devices
+- Session controls
+
+:::info
+Conditional Access policies are enforced by Azure AD. Your app receives the assertion only after all policies are satisfied.
+:::
+
+## Troubleshooting
+
+### "AADSTS50011: Reply URL does not match"
+
+Verify the Reply URL in Azure AD exactly matches your ACS URL, including:
+- Protocol (https)
+- No trailing slash
+- Correct connection ID
+
+### "User is not assigned to a role"
+
+1. Go to Enterprise Application → Users and groups
+2. Ensure users or groups are assigned
+
+### "Group claims missing"
+
+1. Verify group claim is configured in Attributes & Claims
+2. Check user is a member of assigned groups
+3. Azure AD limits group claims to 200 groups
+
+## Next Steps
+
+- [Test SSO login](../testing)
+- [Configure group-to-role mapping](../group-mapping)
+- [Set up Conditional Access](../conditional-access)
+

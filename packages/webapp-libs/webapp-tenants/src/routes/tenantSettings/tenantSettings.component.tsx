@@ -55,6 +55,11 @@ export const TenantSettings = () => {
                 <FormattedMessage defaultMessage="Subscription" id="Tenant settings / Subscription" />
               </TabsTrigger>
             </Link>
+            <Link to={generateTenantPath(RoutesConfig.tenant.settings.security)} replace>
+              <TabsTrigger value={generateTenantPath(RoutesConfig.tenant.settings.security)}>
+                <FormattedMessage defaultMessage="Security" id="Tenant settings / Security" />
+              </TabsTrigger>
+            </Link>
           </TabsList>
 
           <div className="mt-6">

@@ -1,0 +1,8 @@
+{
+  "name": "webapp-sso",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/webapp-libs/webapp-sso/src",
+  "projectType": "library",
+  "targets": {},
+  "tags": []
+}

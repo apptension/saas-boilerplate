@@ -1,0 +1,355 @@
+---
+title: SCIM 2.0 Setup
+description: Configure automatic user provisioning and directory sync with SCIM 2.0
+---
+
+# SCIM 2.0 Directory Sync
+
+SCIM (System for Cross-domain Identity Management) enables automatic user provisioning, deprovisioning, and synchronization between your identity provider and application.
+
+## Why SCIM?
+
+- **Automatic provisioning**: Users are created automatically when added in IdP
+- **Lifecycle management**: Users are deactivated when removed from IdP
+- **Attribute sync**: User attributes stay in sync with directory
+- **Group sync**: Group memberships trigger role updates
+
+## Prerequisites
+
+- SSO connection configured and active
+- IdP with SCIM support (Okta, Azure AD, OneLogin, etc.)
+- SCIM token generated
+
+## Quick Start
+
+### Step 1: Configure an Active SSO Connection
+
+Before you can enable SCIM, you need at least one **active** SSO connection (SAML or OIDC).
+
+1. Go to **Organization Settings → Security**
+2. Under "SSO Connections", click **Add SSO Connection**
+3. Configure your SAML or OIDC connection
+4. Click **Activate** to enable the connection
+
+### Step 2: Generate SCIM Token
+
+Once you have an active SSO connection:
+
+1. Go to **Organization Settings → Security**
+2. Under "Directory Sync (SCIM)", click **Generate SCIM Token**
+3. Enter a descriptive name (e.g., "Okta SCIM Integration")
+4. Click **Generate**
+5. **Copy the token immediately** - it won't be shown again!
+
+:::warning Important
+The SCIM token is only displayed once. Make sure to copy it before closing the dialog!
+:::
+
+**Via REST API:**
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Okta SCIM"}' \
+  https://api.yourdomain.com/api/sso/tenant/{tenant_id}/scim-tokens/
+```
+
+### Step 2: Configure IdP
+
+Enter these values in your IdP's SCIM configuration:
+
+| Field | Value |
+|-------|-------|
+| SCIM Connector Base URL | `https://api.yourdomain.com/api/sso/scim/v2` |
+| Authentication Method | Bearer Token |
+| Token | Your SCIM token |
+
+### Step 3: Test Connection
+
+Most IdPs have a "Test Connection" button. Verify it succeeds before enabling provisioning.
+
+### Step 4: Enable Provisioning
+
+Enable the provisioning features you need:
+- ✅ Create Users
+- ✅ Update User Attributes
+- ✅ Deactivate Users
+
+## SCIM Endpoints
+
+### Users
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/scim/v2/Users` | List users |
+| GET | `/scim/v2/Users/{id}` | Get user |
+| POST | `/scim/v2/Users` | Create user |
+| PUT | `/scim/v2/Users/{id}` | Replace user |
+| PATCH | `/scim/v2/Users/{id}` | Update user |
+| DELETE | `/scim/v2/Users/{id}` | Delete user |
+
+### Groups
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/scim/v2/Groups` | List groups (tenant roles) |
+| GET | `/scim/v2/Groups/{id}` | Get group |
+
+:::info
+Groups in SCIM map to tenant roles (OWNER, ADMIN, MEMBER). Creating or deleting groups via SCIM is not supported.
+:::
+
+## User Schema
+
+### SCIM User Resource
+
+```json
+{
+  "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+  "id": "external-user-id",
+  "externalId": "external-user-id",
+  "userName": "user@example.com",
+  "name": {
+    "givenName": "John",
+    "familyName": "Doe",
+    "formatted": "John Doe"
+  },
+  "emails": [
+    {
+      "value": "user@example.com",
+      "primary": true,
+      "type": "work"
+    }
+  ],
+  "active": true,
+  "meta": {
+    "resourceType": "User",
+    "created": "2024-01-01T00:00:00Z",
+    "lastModified": "2024-01-01T00:00:00Z"
+  }
+}
+```
+
+### Attribute Mapping
+
+| SCIM Attribute | User Field |
+|----------------|------------|
+| userName | email |
+| name.givenName | profile.first_name |
+| name.familyName | profile.last_name |
+| emails[0].value | email |
+| active | is_active |
+| externalId | sso_link.idp_user_id |
+
+## Filtering
+
+SCIM supports filter expressions:
+
+```bash
+# Find user by email
+GET /scim/v2/Users?filter=userName eq "user@example.com"
+
+# Find user by external ID
+GET /scim/v2/Users?filter=externalId eq "12345"
+```
+
+Supported operators:
+- `eq` (equals)
+- `ne` (not equals)
+- `co` (contains)
+- `sw` (starts with)
+
+## Pagination
+
+```bash
+GET /scim/v2/Users?startIndex=1&count=100
+```
+
+Response includes:
+- `totalResults`: Total number of resources
+- `startIndex`: Starting index (1-based)
+- `itemsPerPage`: Number of resources returned
+- `Resources`: Array of resources
+
+## Error Handling
+
+SCIM uses standard HTTP status codes:
+
+| Status | Meaning |
+|--------|---------|
+| 200 | Success |
+| 201 | Created |
+| 204 | No Content (delete) |
+| 400 | Bad Request |
+| 401 | Unauthorized |
+| 404 | Not Found |
+| 409 | Conflict (duplicate) |
+| 500 | Server Error |
+
+Error response format:
+
+```json
+{
+  "schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"],
+  "status": "400",
+  "scimType": "invalidValue",
+  "detail": "The 'userName' attribute is required."
+}
+```
+
+## PATCH Operations
+
+SCIM PATCH follows RFC 7644:
+
+```json
+{
+  "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+  "Operations": [
+    {
+      "op": "replace",
+      "path": "active",
+      "value": false
+    },
+    {
+      "op": "replace",
+      "value": {
+        "name": {
+          "givenName": "Jane"
+        }
+      }
+    }
+  ]
+}
+```
+
+Supported operations:
+- `add` - Add attribute value
+- `replace` - Replace attribute value
+- `remove` - Remove attribute value
+
+## Security
+
+### Token Management
+
+- Generate unique tokens per IdP integration
+- Set expiration dates for compliance
+- Rotate tokens periodically
+- Revoke unused tokens
+
+```graphql
+# Revoke a token
+mutation RevokeToken($id: ID!) {
+  revokeScimToken(id: $id) {
+    ok
+  }
+}
+```
+
+### IP Restrictions
+
+Consider restricting SCIM endpoints to IdP IP ranges (configure at infrastructure level).
+
+### Audit Logging
+
+All SCIM operations are logged:
+
+```graphql
+query SCIMLogs {
+  ssoAuditLogs(first: 100) {
+    edges {
+      node {
+        eventType
+        success
+        ipAddress
+        metadata
+        createdAt
+      }
+    }
+  }
+}
+```
+
+Event types:
+- `scim_user_created`
+- `scim_user_updated`
+- `scim_user_deleted`
+- `scim_group_created`
+- `scim_group_updated`
+
+## Testing SCIM
+
+### Using curl
+
+```bash
+# List users
+curl -H "Authorization: Bearer scim_YOUR_TOKEN" \
+  https://api.yourdomain.com/api/sso/scim/v2/Users
+
+# Create user
+curl -X POST \
+  -H "Authorization: Bearer scim_YOUR_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+    "userName": "test@example.com",
+    "name": {
+      "givenName": "Test",
+      "familyName": "User"
+    },
+    "emails": [{"value": "test@example.com", "primary": true}],
+    "active": true
+  }' \
+  https://api.yourdomain.com/api/sso/scim/v2/Users
+
+# Deactivate user
+curl -X PATCH \
+  -H "Authorization: Bearer scim_YOUR_TOKEN" \
+  -H "Content-Type: application/scim+json" \
+  -d '{
+    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+    "Operations": [
+      {"op": "replace", "path": "active", "value": false}
+    ]
+  }' \
+  https://api.yourdomain.com/api/sso/scim/v2/Users/{id}
+```
+
+## Troubleshooting
+
+### "401 Unauthorized"
+
+1. Verify token is correct
+2. Check token hasn't expired
+3. Ensure token hasn't been revoked
+
+### "User already exists" (409)
+
+The user with that email or externalId already exists. Use PUT to update instead.
+
+### Sync not working
+
+1. Check IdP provisioning logs
+2. Verify SCIM token permissions
+3. Review audit logs for errors
+
+### Group memberships not syncing
+
+1. Verify IdP is sending group information
+2. Check group-to-role mapping configuration
+3. Confirm groups are assigned in IdP
+
+## Best Practices
+
+1. **Use separate tokens per IdP** - Easier to revoke if compromised
+2. **Set reasonable expiration** - 1 year is common
+3. **Monitor provisioning logs** - Catch failures early
+4. **Test with a pilot group** - Before enabling for all users
+5. **Document your attribute mappings** - For maintenance
+
+## Next Steps
+
+- [Configure group-to-role mapping](./group-mapping)
+- [Set up JIT provisioning](./jit-provisioning)
+- [Review audit logs](./audit-logs)
+

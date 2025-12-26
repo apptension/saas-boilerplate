@@ -2,13 +2,15 @@ import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Paragraph } from '@sb/webapp-core/components/typography';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { Separator } from '@sb/webapp-core/components/ui/separator';
-import { Lock, Mail, Shield, User, UserCircle } from 'lucide-react';
+import { Fingerprint, Lock, Mail, Monitor, Shield, User, UserCircle } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import { ActiveSessions } from '../../shared/components/auth/activeSessions';
 import { AvatarForm } from '../../shared/components/auth/avatarForm';
 import { ChangePasswordForm } from '../../shared/components/auth/changePasswordForm';
 import { EditProfileForm } from '../../shared/components/auth/editProfileForm';
+import { PasskeysForm } from '../../shared/components/auth/passkeysForm';
 import { TwoFactorAuthForm } from '../../shared/components/auth/twoFactorAuthForm';
 import { useAuth } from '../../shared/hooks';
 
@@ -153,6 +155,44 @@ export const Profile = () => {
           </CardHeader>
           <CardContent>
             <TwoFactorAuthForm isEnabled={currentUser?.otpEnabled} />
+          </CardContent>
+        </Card>
+
+        {/* Passkeys Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Fingerprint className="h-5 w-5" />
+              <FormattedMessage defaultMessage="Passkeys" id="Auth / Profile details / Passkeys header" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Sign in with your fingerprint, face, or device PIN"
+                id="Auth / Profile details / Passkeys label"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <PasskeysForm />
+          </CardContent>
+        </Card>
+
+        {/* Active Sessions Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Monitor className="h-5 w-5" />
+              <FormattedMessage defaultMessage="Active Sessions" id="Auth / Profile details / Sessions header" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="View and manage your active sign-in sessions across devices"
+                id="Auth / Profile details / Sessions label"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ActiveSessions />
           </CardContent>
         </Card>
       </div>

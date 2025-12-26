@@ -5,6 +5,7 @@ export const RoutesConfig = {
     settings: nestedPath('settings', {
       members: 'members',
       general: 'general',
+      security: 'security',
     }),
   }),
 };

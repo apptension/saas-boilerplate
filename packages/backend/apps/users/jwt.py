@@ -1,9 +1,23 @@
-from rest_framework_simplejwt.token_blacklist import models as blacklist_models
+"""
+JWT token generation utilities.
+"""
 
-from . import models
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
-def blacklist_user_tokens(user: models.User):
-    tokens = blacklist_models.OutstandingToken.objects.filter(user=user)
-    for token in tokens:
-        blacklist_models.BlacklistedToken.objects.get_or_create(token=token)
+def create_jwt_tokens(user) -> dict:
+    """
+    Create JWT access and refresh tokens for a user.
+    
+    Args:
+        user: The user to create tokens for
+    
+    Returns:
+        Dict with 'access' and 'refresh' token strings
+    """
+    refresh = RefreshToken.for_user(user)
+    
+    return {
+        'access': str(refresh.access_token),
+        'refresh': str(refresh),
+    }

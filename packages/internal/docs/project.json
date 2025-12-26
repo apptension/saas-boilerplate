@@ -53,6 +53,17 @@
         "parallel": false
       },
       "dependsOn": ["core:docker-create-volumes"]
+    },
+    "start:no-typedoc": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/internal/docs",
+        "color": true,
+        "commands": [
+          "NODE_OPTIONS=\"--max-old-space-size=4096\" TYPEDOC_WATCH=false nx exec -- docusaurus start --port 3006"
+        ],
+        "parallel": false
+      }
     }
   },
   "tags": []

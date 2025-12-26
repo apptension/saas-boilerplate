@@ -34,6 +34,8 @@ export default defineConfig(({ mode }): UserConfig => {
           target: 'http://localhost:5001',
           changeOrigin: true,
           ws: true,
+          cookieDomainRewrite: 'localhost',
+          secure: false,
         },
         '/static/graphene_django': {
           target: 'http://localhost:5001',

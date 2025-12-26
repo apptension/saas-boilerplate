@@ -22,6 +22,7 @@ import {
   TenantGeneralSettings,
   TenantInvitation,
   TenantMembers,
+  TenantSecuritySettings,
   TenantSettings,
 } from '@sb/webapp-tenants/routes';
 import { IntlProvider } from 'react-intl';
@@ -32,7 +33,7 @@ import { Admin } from '../routes/admin';
 import { PasswordReset } from '../routes/auth/passwordReset';
 import ValidateOtp from '../routes/auth/validateOtp';
 import { AnonymousRoute, AuthRoute } from '../shared/components/routes';
-import { ConfirmEmail, Home, Login, Logout, NotFound, Profile, Signup } from './asyncComponents';
+import { ConfirmEmail, Home, Login, Logout, NotFound, Profile, Signup, SSOCallback, SSOError } from './asyncComponents';
 import { LANG_PREFIX, RoutesConfig, TENANT_PREFIX } from './config/routes';
 import { ValidRoutesProviders } from './providers';
 
@@ -49,6 +50,9 @@ export const App = () => {
             <Route path={RoutesConfig.signup} element={<Signup />} />
             <Route path={RoutesConfig.login} element={<Login />} />
             <Route path={RoutesConfig.validateOtp} element={<ValidateOtp />} />
+            {/* SSO routes - accessible without authentication */}
+            <Route path={RoutesConfig.ssoCallback} element={<SSOCallback />} />
+            <Route path={RoutesConfig.ssoError} element={<SSOError />} />
             <Route path="*" element={<NotFound />} />
           </Route>
 
@@ -58,6 +62,7 @@ export const App = () => {
               <Route element={<TenantSettings />}>
                 <Route path={RoutesConfig.tenant.settings.members} element={<TenantMembers />} />
                 <Route path={RoutesConfig.tenant.settings.general} element={<TenantGeneralSettings />} />
+                <Route path={RoutesConfig.tenant.settings.security} element={<TenantSecuritySettings />} />
               </Route>
               <Route element={<ActiveSubscriptionContext />}>
                 <Route element={<Subscriptions />}>

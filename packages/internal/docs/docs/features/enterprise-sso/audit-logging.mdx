@@ -1,0 +1,279 @@
+---
+title: Security Audit Logging
+description: How to use and extend the security audit logging system
+---
+
+# Security Audit Logging
+
+The SaaS Boilerplate includes a comprehensive security audit logging system that automatically tracks security-related events across your application.
+
+## Overview
+
+The audit log system provides:
+- **Automatic logging** of SSO, SCIM, and passkey events
+- **Per-tenant isolation** - each organization sees only their own events
+- **REST API** for programmatic access
+- **Admin UI** for viewing logs in Organization Settings → Security
+
+## Logged Events
+
+### SSO Authentication
+
+| Event Type | Description |
+|-----------|-------------|
+| `sso_login_initiated` | SSO login flow started |
+| `sso_login_success` | User authenticated successfully via SSO |
+| `sso_login_failed` | SSO authentication failed |
+| `sso_logout` | User logged out via SSO |
+
+### SSO Configuration
+
+| Event Type | Description |
+|-----------|-------------|
+| `idp_config_created` | New SSO connection created |
+| `idp_config_updated` | SSO connection settings updated |
+| `idp_config_deleted` | SSO connection removed |
+| `idp_config_activated` | SSO connection activated |
+| `idp_config_deactivated` | SSO connection deactivated |
+
+### User Provisioning (JIT)
+
+| Event Type | Description |
+|-----------|-------------|
+| `user_provisioned` | New user created via Just-in-Time provisioning |
+| `user_updated` | User attributes updated via SSO |
+| `group_mapping_applied` | User role changed based on IdP groups |
+
+### SCIM Directory Sync
+
+| Event Type | Description |
+|-----------|-------------|
+| `scim_user_created` | User created via SCIM |
+| `scim_user_updated` | User updated via SCIM |
+| `scim_user_deleted` | User deactivated via SCIM |
+| `scim_group_created` | Group created via SCIM |
+| `scim_group_updated` | Group updated via SCIM |
+| `scim_group_deleted` | Group removed via SCIM |
+
+### Passkey/WebAuthn
+
+| Event Type | Description |
+|-----------|-------------|
+| `passkey_registered` | User registered a new passkey |
+| `passkey_removed` | User removed a passkey |
+| `passkey_auth_success` | User authenticated with passkey |
+| `passkey_auth_failed` | Passkey authentication failed |
+
+## Viewing Audit Logs
+
+### Admin UI
+
+Tenant owners and admins can view audit logs in:
+
+**Organization Settings → Security → Security Audit Log**
+
+The UI provides:
+- List of recent events (last 30 days)
+- Event type, timestamp, user, and IP address
+- Success/failure status
+- Expandable details for each event
+- Refresh button for real-time updates
+
+### REST API
+
+```bash
+GET /api/sso/tenant/{tenant_id}/audit-logs/
+```
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|----------|------|---------|-------------|
+| `days` | integer | 30 | Number of days to look back |
+| `limit` | integer | 100 | Maximum events to return (max 500) |
+| `offset` | integer | 0 | Pagination offset |
+| `event_type` | string | - | Filter by specific event type |
+
+**Example Request:**
+
+```bash
+curl -X GET \
+  "http://localhost:5001/api/sso/tenant/abc123/audit-logs/?days=7&limit=50" \
+  -H "Authorization: Bearer your-token"
+```
+
+**Example Response:**
+
+```json
+{
+  "logs": [
+    {
+      "id": "xyz789",
+      "eventType": "sso_login_success",
+      "eventDescription": "OIDC login successful for user@example.com",
+      "userEmail": "user@example.com",
+      "connectionName": "Okta SSO",
+      "ipAddress": "192.168.1.100",
+      "userAgent": "Mozilla/5.0...",
+      "success": true,
+      "errorMessage": "",
+      "metadata": {
+        "provider": "oidc"
+      },
+      "createdAt": "2024-01-15T14:30:00Z"
+    }
+  ],
+  "totalCount": 150,
+  "hasMore": true
+}
+```
+
+## Adding Custom Audit Events
+
+You can log custom security events from your application code:
+
+```python
+from apps.sso.models import SSOAuditLog
+from apps.sso.constants import SSOAuditEventType
+
+# Log a successful event
+SSOAuditLog.log_event(
+    event_type=SSOAuditEventType.SSO_LOGIN_SUCCESS,
+    tenant=tenant,
+    user=user,
+    sso_connection=connection,  # optional
+    description="User logged in via Okta",
+    ip_address=get_client_ip(request),
+    metadata={
+        'session_id': session.id,
+        'user_agent': request.META.get('HTTP_USER_AGENT'),
+    },
+)
+
+# Log a failed event
+SSOAuditLog.log_event(
+    event_type=SSOAuditEventType.SSO_LOGIN_FAILED,
+    tenant=tenant,
+    sso_connection=connection,
+    description="Invalid SAML assertion",
+    ip_address=get_client_ip(request),
+    success=False,
+    error_message="Signature verification failed",
+)
+```
+
+## Extending Event Types
+
+To add custom event types, extend the `SSOAuditEventType` enum:
+
+```python
+# apps/sso/constants.py
+
+class SSOAuditEventType(models.TextChoices):
+    # ... existing events ...
+    
+    # Add your custom events
+    CUSTOM_SECURITY_EVENT = "custom_security_event", "Custom Security Event"
+    API_KEY_CREATED = "api_key_created", "API Key Created"
+    API_KEY_REVOKED = "api_key_revoked", "API Key Revoked"
+```
+
+Then update the frontend to display your new event types:
+
+```typescript
+// auditLogCard.tsx
+
+const EVENT_ICONS: Record<string, React.ReactNode> = {
+  // ... existing icons ...
+  custom_security_event: <Shield className="h-4 w-4" />,
+  api_key_created: <Key className="h-4 w-4" />,
+  api_key_revoked: <Key className="h-4 w-4" />,
+};
+
+const getEventLabel = (eventType: string): string => {
+  const labels: Record<string, string> = {
+    // ... existing labels ...
+    custom_security_event: 'Custom Security Event',
+    api_key_created: 'API Key Created',
+    api_key_revoked: 'API Key Revoked',
+  };
+  return labels[eventType] || eventType;
+};
+```
+
+## Automatic Event Logging
+
+The following events are logged automatically via Django signals:
+
+### SSO Connection Changes
+
+```python
+# apps/sso/signals.py
+@receiver(post_save, sender=TenantSSOConnection)
+def on_sso_connection_saved(sender, instance, created, **kwargs):
+    if created:
+        SSOAuditLog.log_event(
+            event_type=SSOAuditEventType.IDP_CONFIG_CREATED,
+            tenant=instance.tenant,
+            sso_connection=instance,
+            description=f'SSO connection "{instance.name}" created',
+        )
+```
+
+### Passkey Events
+
+Passkey registration, removal, and authentication are logged automatically in the `WebAuthnService`.
+
+### SCIM Operations
+
+All SCIM create/update/delete operations are logged in the `SCIMService`.
+
+## Retention and Cleanup
+
+By default, audit logs are retained indefinitely. To implement log rotation:
+
+```python
+# Management command: cleanup_audit_logs.py
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+from apps.sso.models import SSOAuditLog
+
+class Command(BaseCommand):
+    help = 'Clean up old audit logs'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--days',
+            type=int,
+            default=365,
+            help='Delete logs older than this many days',
+        )
+
+    def handle(self, *args, **options):
+        cutoff = timezone.now() - timezone.timedelta(days=options['days'])
+        deleted, _ = SSOAuditLog.objects.filter(
+            created_at__lt=cutoff
+        ).delete()
+        self.stdout.write(f'Deleted {deleted} audit logs')
+```
+
+Run periodically via cron:
+
+```bash
+# Delete logs older than 1 year
+python manage.py cleanup_audit_logs --days=365
+```
+
+## Security Considerations
+
+1. **Access Control**: Only tenant owners and admins can view audit logs
+2. **No PII in Metadata**: Avoid storing sensitive data in the metadata field
+3. **Immutability**: Audit logs should not be editable or deletable by regular users
+4. **Compliance**: Configure retention policies based on your compliance requirements (GDPR, SOC2, etc.)
+
+## Related
+
+- [Enterprise SSO Overview](/features/enterprise-sso)
+- [SCIM Directory Sync](/features/enterprise-sso/scim-setup)
+- [Passkeys Setup](/features/enterprise-sso/passkeys-setup)
+
