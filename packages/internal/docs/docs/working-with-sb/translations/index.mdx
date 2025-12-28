@@ -1,0 +1,52 @@
+---
+title: Translations (i18n)
+description: Manage and customize the internationalization system
+---
+
+import DocCardList from '@theme/DocCardList';
+
+The dynamic translations system allows you to manage all user-facing text through the Django Admin panel. Translation changes are published to a CDN and loaded by the frontend at runtime—no redeployment needed.
+
+## Available Guides
+
+<DocCardList />
+
+## Quick Reference
+
+### Message Definition
+
+```tsx
+import { FormattedMessage } from 'react-intl';
+
+<FormattedMessage 
+  defaultMessage="Welcome back" 
+  id="Dashboard / Welcome message" 
+/>
+```
+
+### Syncing Keys
+
+```bash
+cd packages/webapp
+pnpm translations:extract-and-sync
+```
+
+### Publishing (Admin Panel)
+
+1. Admin → Translations → Locales
+2. Select locale
+3. Click **Publish Translations** action
+
+### AI Translation (with OpenAI)
+
+1. Admin → Translations → Locales
+2. Click **🤖 AI Translate**
+3. Select source → target locales
+4. Track progress in AI Translation Jobs
+
+---
+
+## See Also
+
+- [Translations Feature Overview](/introduction/features/translations)
+

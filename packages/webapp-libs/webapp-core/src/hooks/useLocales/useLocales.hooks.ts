@@ -1,7 +1,7 @@
 import { useCallback, useContext } from 'react';
 
-import { Locale } from '../../config/i18n';
 import { LocalesContext } from '../../providers/localesProvider';
+import { LocaleCode } from '../../providers/localesProvider/localesProvider.types';
 
 export const useLocales = () => {
   const context = useContext(LocalesContext);
@@ -11,7 +11,7 @@ export const useLocales = () => {
   const { locales, dispatch } = context;
 
   const setLanguage = useCallback(
-    (language: Locale) => {
+    (language: LocaleCode) => {
       dispatch({ type: 'SET_LANGUAGE', payload: language });
     },
     [dispatch]

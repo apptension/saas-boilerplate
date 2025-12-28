@@ -1,0 +1,219 @@
+---
+title: How to use AI translation?
+description: Automatically translate your app using OpenAI
+---
+
+This guide shows you how to use AI-powered translation to automatically translate your application to new languages using OpenAI.
+
+---
+
+## Prerequisites
+
+- Django Admin access
+- OpenAI API key configured (`OPENAI_API_KEY`)
+- At least one source locale with translations (typically English)
+- Target locale created in the database
+
+---
+
+## Step 1: Configure OpenAI
+
+Add your OpenAI API key to the backend environment:
+
+```bash title=".env"
+OPENAI_API_KEY=sk-your-openai-api-key
+
+# Optional: Specify model (defaults to gpt-4)
+OPENAI_MODEL=gpt-4
+```
+
+:::tip Model Selection
+- **gpt-4**: Best quality, higher cost
+- **gpt-4-turbo**: Good balance of quality and speed
+- **gpt-3.5-turbo**: Faster and cheaper, but lower quality for nuanced translations
+:::
+
+---
+
+## Step 2: Create Target Locale
+
+If you haven't already, create the target locale:
+
+1. Go to **Admin → Translations → Locales**
+2. Click **Add Locale**
+3. Fill in details (e.g., code: `de`, name: `German`)
+4. Save
+
+See [Add a Language](/working-with-sb/translations/add-language) for details.
+
+---
+
+## Step 3: Start AI Translation
+
+1. Go to **Admin → Translations → Locales**
+2. Click the **🤖 AI Translate** button (only visible when OpenAI is configured)
+3. Configure the translation job:
+
+| Option | Description | Recommendation |
+|--------|-------------|----------------|
+| **Source locale** | Language to translate from | Usually English (`en`) |
+| **Target locale** | Language to translate to | Your target language |
+| **Overwrite existing** | Re-translate existing translations | ☐ for first run, ☑ to refresh all |
+| **Auto-publish** | Set status to Published | ☐ to review first, ☑ for trusted output |
+| **Batch size** | Keys per API call (1-50) | 20 is a good default |
+
+4. Click **Start AI Translation**
+
+---
+
+## Step 4: Monitor Progress
+
+The translation runs asynchronously. Track progress:
+
+1. Go to **Admin → Translations → AI Translation Jobs**
+2. View job status:
+   - **Pending**: Waiting to start
+   - **In Progress**: Currently translating (shows progress %)
+   - **Completed**: Finished successfully
+   - **Failed**: Error occurred (check error message)
+   - **Cancelled**: Manually stopped
+
+### Job Actions
+
+| Action | When Available | Description |
+|--------|----------------|-------------|
+| **Cancel** | In Progress | Stop the job immediately |
+| **Retry** | Failed | Restart from the beginning |
+
+---
+
+## Step 5: Review Translations
+
+If you didn't enable auto-publish:
+
+1. Go to **Admin → Translations → Translations**
+2. Filter by **Locale** = your target language
+3. Filter by **Status** = Draft
+4. Review translations, edit if needed
+5. Select reviewed translations → Action: **Publish selected translations**
+
+### Quality Tips
+
+- Look for placeholder preservation: `{name}` should remain `{name}`
+- Check for natural phrasing (AI sometimes over-translates)
+- Verify technical terms are handled correctly
+- Test UI strings in context (may be too long/short)
+
+---
+
+## Step 6: Publish to CDN
+
+Once satisfied with translations:
+
+1. Go to **Admin → Translations → Locales**
+2. Select your target locale
+3. Click **Publish** or use Action: **Publish translations to CDN**
+
+---
+
+## Handling Large Codebases
+
+For applications with thousands of translation keys:
+
+### Batch Size Optimization
+
+```
+Keys: 5,000
+Batch size: 20
+API calls: 250
+Estimated time: 15-30 minutes
+```
+
+### Progress Monitoring
+
+The AI Translation Jobs page shows:
+- Total keys to translate
+- Processed count
+- Success/failure counts
+- Progress percentage
+
+### Partial Failures
+
+Some keys may fail due to:
+- Rate limiting
+- Content filtering
+- API timeouts
+
+Failed key IDs are recorded. You can:
+1. View failed keys in job details
+2. Retry the entire job
+3. Manually translate failed keys
+
+---
+
+## Troubleshooting
+
+### "OpenAI API is not configured"
+
+Set the `OPENAI_API_KEY` environment variable and restart the backend.
+
+### Job stuck at 0%
+
+Check Celery worker is running:
+```bash
+docker compose logs celery_default
+```
+
+### Many failed translations
+
+1. Check OpenAI API status
+2. Reduce batch size to 5-10
+3. Verify API key has sufficient quota
+
+### Translations not appearing in app
+
+1. Ensure translations are Published (not Draft)
+2. Publish locale to CDN
+3. Clear browser cache / hard refresh
+
+---
+
+## CLI Alternative
+
+You can also trigger AI translation via management command:
+
+```bash
+cd packages/backend
+
+# Translate English to German
+pdm run python manage.py ai_translate en de --batch-size 20
+
+# Overwrite existing translations
+pdm run python manage.py ai_translate en de --overwrite
+
+# Auto-publish results
+pdm run python manage.py ai_translate en de --auto-publish
+```
+
+---
+
+## Cost Estimation
+
+OpenAI pricing (approximate, check current rates):
+
+| Model | Cost per 1K tokens | Est. per 1000 keys |
+|-------|-------------------|-------------------|
+| gpt-4 | $0.03 input, $0.06 output | ~$2-5 |
+| gpt-4-turbo | $0.01 input, $0.03 output | ~$0.50-2 |
+| gpt-3.5-turbo | $0.0005 input, $0.0015 output | ~$0.05-0.20 |
+
+*Actual costs depend on message length and batch size.*
+
+---
+
+## Related
+
+- [Manage Translations](/working-with-sb/translations/manage-translations)
+- [Add a Language](/working-with-sb/translations/add-language)
+- [Translations Feature Overview](/introduction/features/translations)
+

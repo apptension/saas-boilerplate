@@ -7,6 +7,7 @@ from apps.users import schema as users_schema
 from apps.integrations import schema as integrations_schema
 from apps.multitenancy import schema as multitenancy_schema
 from apps.sso import schema as sso_schema
+from apps.translations import schema as translations_schema
 from common.graphql.utils import graphql_query, graphql_mutation, graphql_subscription
 
 schema = graphene.Schema(
@@ -19,6 +20,7 @@ schema = graphene.Schema(
             multitenancy_schema.Query,
             sso_schema.Query,
             sso_schema.TenantSSOQuery,
+            translations_schema.TranslationsQuery,
         ]
     ),
     mutation=graphql_mutation(
@@ -35,6 +37,7 @@ schema = graphene.Schema(
             multitenancy_schema.TenantOwnerMutation,
             sso_schema.Mutation,
             sso_schema.TenantOwnerMutation,
+            translations_schema.TranslationsMutation,
         ]
     ),
     subscription=graphql_subscription(([notifications_schema.Subscription])),

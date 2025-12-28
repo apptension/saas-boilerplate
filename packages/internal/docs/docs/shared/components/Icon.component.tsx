@@ -47,6 +47,7 @@ import {
   Cog,
   Play,
   Clock,
+  Languages,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -75,6 +76,7 @@ const iconMap: Record<string, LucideIcon> = {
   workflow: Workflow,
   layers: Layers,
   terminal: Terminal,
+  languages: Languages,
   
   // Arrows
   'arrow-right': ArrowRight,
@@ -189,6 +191,7 @@ export {
   Cog,
   Play,
   Clock,
+  Languages,
 };
 
 

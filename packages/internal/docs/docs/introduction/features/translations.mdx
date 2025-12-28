@@ -1,0 +1,463 @@
+---
+title: Dynamic Translations (i18n)
+description: Manage translations through the admin panel without code changes
+---
+
+import ProjectName from '../../shared/components/ProjectName.component';
+
+<ProjectName /> includes a comprehensive internationalization (i18n) system that goes beyond static translation files. You can manage all translations dynamically through the Django Admin panel—no redeployment required.
+
+## Key Features
+
+| Feature | Description |
+|---------|-------------|
+| **Admin-managed translations** | Add, edit, and publish translations via Django Admin |
+| **AI-powered translation** | Automatically translate to new languages using OpenAI |
+| **Dynamic locales** | Languages are fetched from the API—no frontend code changes needed |
+| **Default locale control** | Set the default language in Admin—controls initial redirect |
+| **Version history** | Track changes and rollback to previous versions |
+| **CDN distribution** | Translations served via CloudFront for fast global delivery |
+| **Development mode** | Hot-reload translations during development |
+| **Fallback support** | Graceful fallback to bundled defaults if CDN fails |
+| **Progress tracking** | Visual indicators show translation completion per locale |
+
+---
+
+## Quick Start
+
+To load all existing translation keys from the codebase into the database:
+
+```bash
+# 1. Extract all translation keys from the codebase
+cd packages/webapp
+pnpm extract-intl:master
+
+# 2. Sync to database (copy master.json to Docker, then run sync)
+cd ../..
+docker compose cp packages/webapp-libs/webapp-core/src/translations/master.json backend:/tmp/master.json
+docker compose exec backend python manage.py sync_translations /tmp/master.json
+```
+
+This will:
+- Extract ~1000+ translation keys from all `FormattedMessage` and `intl.formatMessage` usages
+- Load them into the database with their default English text
+- Make them available in Django Admin for translation
+
+:::tip Production Builds
+In CI/CD, run `pnpm translations:extract-and-sync` as part of your build process to keep translation keys in sync with the codebase.
+:::
+
+---
+
+## Architecture Overview
+
+The translation system works in three phases:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     BUILD TIME                               │
+├─────────────────────────────────────────────────────────────┤
+│  1. formatjs extract → master.json                          │
+│  2. POST /api/translations/sync/ → database                 │
+└─────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────┐
+│                    ADMIN PANEL                               │
+├─────────────────────────────────────────────────────────────┤
+│  1. Translator views keys with English defaults             │
+│  2. Adds/edits translations for each locale                 │
+│  3. Admin publishes → JSON uploaded to S3/CDN               │
+└─────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────┐
+│                      RUNTIME                                 │
+├─────────────────────────────────────────────────────────────┤
+│  1. App fetches /api/translations/locales/ for defaults     │
+│  2. Redirects to default locale from Admin                  │
+│  3. Fetches /translations/{locale}.json from CDN            │
+│  4. Falls back to bundled defaults on failure               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Frontend Usage
+
+### Message Definition
+
+Use `react-intl` for all user-facing text:
+
+```tsx
+import { FormattedMessage, useIntl } from 'react-intl';
+
+// In JSX
+<FormattedMessage 
+  defaultMessage="Welcome to the dashboard" 
+  id="Home / Welcome message" 
+/>
+
+// For props/attributes
+const intl = useIntl();
+const label = intl.formatMessage({
+  defaultMessage: 'Save changes',
+  id: 'Form / Save button',
+});
+```
+
+### Message ID Convention
+
+Use the pattern `"Section / Description"`:
+
+- `"Home / Welcome message"`
+- `"Profile / Edit button"`
+- `"Sidebar / Settings link"`
+
+### Language Switcher
+
+The built-in language switcher dynamically fetches available locales from the API:
+
+- **Header** (logged-in): Globe icon with flag and language name
+- **Auth pages**: Settings menu in the floating button (bottom-right)
+
+The switcher displays:
+- Flag emoji for each locale
+- Native language name (e.g., "Deutsch" for German)
+- English name as subtitle
+- Check mark for current selection
+
+:::info Dynamic Languages
+The language switcher only shows locales marked as **Active** in the Admin panel. Add new languages via Admin → Locales without any frontend code changes.
+:::
+
+---
+
+## Default Locale
+
+The default locale controls where users are redirected when visiting the root URL (e.g., `https://yourapp.com/`).
+
+### Setting the Default Locale
+
+1. Navigate to **Admin → Translations → Locales**
+2. Click on the locale you want as default (e.g., "Polish")
+3. Check **Is default**
+4. Click **Save**
+
+:::note Single Default
+Only one locale can be the default at a time. Setting a new default automatically unsets the previous one.
+:::
+
+### How It Works
+
+When a user visits the app without a locale in the URL:
+
+1. The app fetches available locales from `/api/translations/locales/`
+2. Finds the locale with `is_default: true`
+3. Redirects to `/{default_locale}/` (e.g., `/pl/` for Polish)
+
+```
+https://yourapp.com/           → https://yourapp.com/pl/
+https://yourapp.com/?ref=123   → https://yourapp.com/pl/?ref=123
+```
+
+---
+
+## Backend (Admin Panel)
+
+### Accessing the Admin
+
+Navigate to `/admin/translations/` to manage translations.
+
+### Models
+
+| Model | Purpose |
+|-------|---------|
+| **Locales** | Supported languages (en, pl, de, etc.) with default/active flags |
+| **Translation Keys** | Auto-synced message IDs from codebase |
+| **Translations** | Actual translations per locale |
+| **Translation Versions** | Published version history for rollback |
+| **AI Translation Jobs** | Batch AI translation task tracking |
+
+### Locale Properties
+
+| Property | Description |
+|----------|-------------|
+| **Code** | ISO 639-1 code (e.g., `en`, `pl`, `de`) |
+| **Name** | English name (e.g., "German") |
+| **Native Name** | Native name (e.g., "Deutsch") |
+| **Is Default** | Redirect target for root URL |
+| **Is Active** | Shown in language switcher |
+| **RTL** | Right-to-left language support |
+| **Sort Order** | Display order in language switcher |
+
+### Translation Workflow
+
+1. **Keys sync automatically** during build (CI/CD)
+2. **Translators** open Admin → Translation Keys
+3. Click a key to see/add translations for each locale
+4. Set status to **Published** when ready
+5. Go to **Locales** → click **Publish** button
+6. Translations are uploaded to S3 and CDN cache is invalidated
+
+---
+
+## Configuration
+
+### Backend Environment Variables
+
+```bash
+# S3 bucket for published translation JSON files
+TRANSLATIONS_BUCKET_NAME=my-project-translations
+
+# CloudFront distribution ID for cache invalidation
+TRANSLATIONS_CLOUDFRONT_ID=ABCD1234567890
+```
+
+### Frontend Environment Variables
+
+By default, the app uses remote translations in production and bundled translations in development.
+
+```bash
+# Override remote translation behavior (default: true in production, false in development)
+VITE_USE_REMOTE_TRANSLATIONS=true
+
+# Base URL for translations (default: /api/translations)
+# In production, set this to your CDN URL
+VITE_TRANSLATIONS_URL=https://d123456.cloudfront.net/translations
+
+# Enable polling in development for live updates (default: false)
+VITE_TRANSLATIONS_POLLING=true
+```
+
+:::note Default Behavior
+- **Production**: Fetches translations from `VITE_TRANSLATIONS_URL` (remote)
+- **Development**: Uses bundled translations for faster startup
+- Set `VITE_USE_REMOTE_TRANSLATIONS=true` in development to test remote translations
+:::
+
+---
+
+## AI-Powered Translation
+
+When `OPENAI_API_KEY` is configured, you can automatically translate all keys from one locale to another using OpenAI.
+
+### How It Works
+
+1. Navigate to **Admin → Translations → Locales**
+2. Click the **AI Translate** button
+3. Select source and target locales
+4. Configure options:
+   - **Overwrite existing**: Re-translate keys that already have translations
+   - **Auto-publish**: Set translations to Published status automatically
+   - **Batch size**: Keys per API call (1-50)
+5. Click **Start Translation**
+
+### Features
+
+- **Context-aware**: Passes key ID, description, and app context to OpenAI for better translations
+- **Batch processing**: Translates keys in configurable batches to handle large codebases
+- **Browser-based execution**: Runs via browser polling—no Celery required
+- **Live progress tracking**: Real-time progress bar with batch-by-batch updates
+- **Resume capability**: Failed or paused jobs can be resumed from where they left off
+- **Cancel support**: Running jobs can be cancelled at any time
+- **Placeholder preservation**: Maintains `{variable}` placeholders in translations
+
+### Progress Tracking
+
+The AI translation panel shows:
+- **Progress bar**: Visual completion percentage
+- **Stats**: Total keys, processed, translated, failed
+- **Live log**: Terminal-style output of batch processing
+- **Status banner**: Current state (running, completed, failed, cancelled)
+
+### Environment Variables
+
+```bash
+# Required for AI translation
+OPENAI_API_KEY=sk-your-openai-key
+
+# Optional: Specify model (default: gpt-4)
+OPENAI_MODEL=gpt-4
+```
+
+### Best Practices
+
+1. **Review AI translations** before publishing—set `auto_publish` to false for review workflow
+2. **Use smaller batch sizes** (10-20) for complex texts with context
+3. **Start with one locale** to verify quality before batch-translating all languages
+4. **Provide descriptions** in your `FormattedMessage` for better context
+
+---
+
+## Adding a New Language
+
+Languages are managed entirely through the Django Admin—no code changes required.
+
+1. **Django Admin** → Translations → Locales → **Add Locale**
+   - Code: `de` (ISO 639-1)
+   - Name: `German`
+   - Native name: `Deutsch`
+   - Active: ✓
+
+2. **Translate keys** using one of these methods:
+   - **Manual**: Edit translations in Admin → Translation Keys
+   - **AI-powered**: Use the "AI Translate" button to auto-translate from English
+
+3. **Publish** the new locale to make translations available
+
+The language switcher automatically shows all active locales from the database.
+
+:::tip No Frontend Changes Needed
+When you add a new locale in the Admin panel, it immediately appears in the language switcher. The frontend dynamically fetches available locales from the API.
+:::
+
+---
+
+## Hooks & Components
+
+### `useAvailableLocales`
+
+Fetches available locales from the API:
+
+```tsx
+import { useAvailableLocales } from '@sb/webapp-core/hooks';
+
+const MyComponent = () => {
+  const { locales, defaultLocale, isLoading, getFlag } = useAvailableLocales();
+  
+  return (
+    <ul>
+      {locales.map((locale) => (
+        <li key={locale.code}>
+          {getFlag(locale.code)} {locale.native_name}
+          {locale.is_default && ' (default)'}
+        </li>
+      ))}
+    </ul>
+  );
+};
+```
+
+**Returns:**
+| Property | Type | Description |
+|----------|------|-------------|
+| `locales` | `RemoteLocale[]` | Array of active locales from API |
+| `defaultLocale` | `string` | Code of the default locale (e.g., `"en"`) |
+| `isLoading` | `boolean` | True while fetching |
+| `isError` | `boolean` | True if fetch failed |
+| `getFlag` | `(code: string) => string` | Returns flag emoji for locale code |
+
+### `RemoteLocale` Type
+
+```typescript
+interface RemoteLocale {
+  id: number;
+  code: string;           // "en", "pl", "de"
+  name: string;           // "English", "Polish"
+  native_name: string;    // "English", "Polski"
+  is_default: boolean;    // Is default locale
+  is_active: boolean;     // Shown in switcher
+  rtl: boolean;           // Right-to-left
+  translation_progress: number; // 0-100
+}
+```
+
+---
+
+## API Endpoints
+
+### REST API
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/api/translations/locales/` | List available locales | Public |
+| `GET` | `/api/translations/{locale}.json` | Get translations for locale | Public |
+| `POST` | `/api/translations/sync/` | Sync keys from build | Admin |
+| `POST` | `/api/translations/publish/` | Publish to CDN | Admin |
+| `GET` | `/api/translations/status/` | Get sync status | Admin |
+| `GET` | `/api/translations/ai-jobs/` | List AI translation jobs | Admin |
+| `POST` | `/api/translations/ai-jobs/` | Create AI translation job | Admin |
+| `POST` | `/api/translations/ai-jobs/{id}/process-batch/` | Process next batch | Admin |
+| `DELETE` | `/api/translations/ai-jobs/{id}/` | Cancel AI translation job | Admin |
+
+### GraphQL
+
+```graphql
+query {
+  availableLocales {
+    code
+    name
+    nativeName
+    isDefault
+    translationProgress
+  }
+}
+
+mutation {
+  publishTranslations(input: { localeCode: "en" }) {
+    success
+    version
+    message
+  }
+}
+```
+
+---
+
+## CLI Commands
+
+### Extract & Sync
+
+```bash
+cd packages/webapp
+
+# Extract all translation keys from code
+pnpm extract-intl:master
+
+# Sync to database
+pnpm translations:sync
+
+# Both in one command
+pnpm translations:extract-and-sync
+```
+
+### Django Management Commands
+
+```bash
+cd packages/backend
+
+# Sync from JSON file
+pdm run python manage.py sync_translations path/to/master.json
+
+# Publish translations
+pdm run python manage.py publish_translations en
+pdm run python manage.py publish_translations --all
+```
+
+---
+
+## Related Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Manage Translations](/working-with-sb/translations/manage-translations) | Step-by-step translation workflow |
+| [Add a Language](/working-with-sb/translations/add-language) | Add support for a new locale |
+| [AI Translation](/working-with-sb/translations/ai-translate) | Automated translation with OpenAI |
+
+---
+
+## Summary
+
+The dynamic translations system provides:
+
+- ✅ No-code translation management via Admin panel
+- ✅ AI-powered batch translation with OpenAI
+- ✅ Dynamic locale configuration (no frontend code changes)
+- ✅ Admin-controlled default locale for redirects
+- ✅ Automatic key extraction from codebase
+- ✅ Version history and rollback capability
+- ✅ CDN-cached delivery for performance
+- ✅ Resume/cancel for AI translation jobs
+- ✅ Development mode with live updates
+- ✅ Built-in dynamic language switcher UI
+- ✅ REST and GraphQL APIs
+- ✅ CLI tools for CI/CD integration

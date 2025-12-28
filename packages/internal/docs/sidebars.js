@@ -424,6 +424,7 @@ module.exports = {
           collapsed: true,
           items: [
             'introduction/features/emails',
+            'introduction/features/translations',
             'introduction/features/admin',
             'introduction/features/assets',
             'introduction/features/crud',
@@ -665,6 +666,33 @@ module.exports = {
               type: 'doc',
               id: 'working-with-sb/async-workers/create-workers-module',
               label: 'Create Worker Module',
+            },
+          ],
+        },
+        // Translations
+        {
+          type: 'category',
+          label: 'Translations (i18n)',
+          link: {
+            type: 'doc',
+            id: 'working-with-sb/translations/index',
+          },
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'working-with-sb/translations/manage-translations',
+              label: 'Manage Translations',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/translations/add-language',
+              label: 'Add a Language',
+            },
+            {
+              type: 'doc',
+              id: 'working-with-sb/translations/ai-translate',
+              label: 'AI Translation',
             },
           ],
         },

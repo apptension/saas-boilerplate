@@ -1,0 +1,631 @@
+{% extends "admin/base_site.html" %} {% load i18n admin_urls static %} {% block
+extrahead %} {{ block.super }}
+<style>
+  :root {
+    --color-bg: #f8fafc;
+    --color-surface: #ffffff;
+    --color-border: #e2e8f0;
+    --color-text: #1e293b;
+    --color-text-muted: #64748b;
+    --color-success: #059669;
+    --color-success-bg: #ecfdf5;
+    --color-error: #dc2626;
+    --color-error-bg: #fef2f2;
+    --color-warning: #d97706;
+    --color-warning-bg: #fffbeb;
+    --color-info: #0284c7;
+    --color-info-bg: #f0f9ff;
+    --color-progress: #0ea5e9;
+  }
+
+  .translation-container {
+    max-width: 640px;
+    margin: 32px auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      sans-serif;
+  }
+
+  .translation-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .translation-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .locale-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .locale-badge .arrow {
+    color: var(--color-text-muted);
+  }
+
+  /* Progress Section */
+  .progress-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .progress-bar-track {
+    height: 8px;
+    background: var(--color-bg);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--color-progress);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-bar-fill.success {
+    background: var(--color-success);
+  }
+
+  .progress-bar-fill.error {
+    background: var(--color-error);
+  }
+
+  .progress-bar-fill.warning {
+    background: var(--color-warning);
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 1.2;
+  }
+
+  .stat-value.success {
+    color: var(--color-success);
+  }
+  .stat-value.error {
+    color: var(--color-error);
+  }
+  .stat-value.muted {
+    color: var(--color-text-muted);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+
+  /* Status Banner */
+  .status-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+
+  .status-banner.running {
+    background: var(--color-info-bg);
+    color: var(--color-info);
+  }
+
+  .status-banner.success {
+    background: var(--color-success-bg);
+    color: var(--color-success);
+  }
+
+  .status-banner.error {
+    background: var(--color-error-bg);
+    color: var(--color-error);
+  }
+
+  .status-banner.warning {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+  }
+
+  .status-banner.paused {
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Log Section */
+  .log-section {
+    background: #0f172a;
+    border-radius: 8px;
+    padding: 16px;
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .log-entry {
+    color: #94a3b8;
+  }
+
+  .log-entry.success {
+    color: #4ade80;
+  }
+  .log-entry.error {
+    color: #f87171;
+  }
+  .log-entry.info {
+    color: #60a5fa;
+  }
+
+  .log-entry .timestamp {
+    color: #475569;
+    margin-right: 8px;
+  }
+
+  /* Actions */
+  .actions-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    min-width: 140px;
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: white;
+    box-shadow: 0 2px 4px rgba(30, 41, 59, 0.2);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #334155 0%, #475569 100%);
+    box-shadow: 0 4px 8px rgba(30, 41, 59, 0.25);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: white;
+    color: var(--color-text);
+    border: 1.5px solid var(--color-border);
+  }
+
+  .btn-secondary:hover {
+    background: var(--color-bg);
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+  }
+
+  .btn-danger {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: white;
+    box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+  }
+
+  .btn-danger:hover {
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+    box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: white;
+    box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+  }
+
+  .btn-success:hover {
+    background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+    box-shadow: 0 4px 8px rgba(5, 150, 105, 0.3);
+    transform: translateY(-1px);
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .translation-container {
+      margin: 16px;
+    }
+    .stats-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .stat-value {
+      font-size: 24px;
+    }
+  }
+</style>
+{% endblock %} {% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+  &rsaquo;
+  <a href="{% url 'admin:app_list' app_label=opts.app_label %}"
+    >{{ opts.app_label|capfirst }}</a
+  >
+  &rsaquo;
+  <a href="{% url 'admin:translations_locale_changelist' %}">Locales</a>
+  &rsaquo; AI Translation
+</div>
+{% endblock %} {% block content %}
+<div class="translation-container">
+  <div class="translation-header">
+    <h1>AI Translation</h1>
+    <div class="locale-badge">
+      <span>{{ job.source_locale.code|upper }}</span>
+      <span class="arrow">→</span>
+      <span>{{ job.target_locale.code|upper }}</span>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-bar-track">
+      <div
+        class="progress-bar-fill"
+        id="progress-bar"
+        style="width: {{ job.progress_percent }}%;"
+      ></div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-value muted" id="stat-total">{{ job.total_keys }}</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="stat-processed">
+          {{ job.processed_keys }}
+        </div>
+        <div class="stat-label">Processed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value success" id="stat-success">
+          {{ job.successful_translations }}
+        </div>
+        <div class="stat-label">Translated</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value error" id="stat-failed">
+          {{ job.failed_keys }}
+        </div>
+        <div class="stat-label">Failed</div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="status-banner {% if job.status == 'completed' %}success{% elif job.status == 'failed' %}error{% elif job.status == 'cancelled' %}warning{% elif job.status == 'pending' or job.status == 'in_progress' %}running{% else %}paused{% endif %}"
+    id="status-banner"
+  >
+    {% if job.status == 'completed' %}
+    <span>✓</span> Translation completed {% elif job.status == 'failed' %}
+    <span>✕</span> Translation failed {% elif job.status == 'cancelled' %}
+    <span>!</span> Translation cancelled {% elif job.status == 'pending' %}
+    <span class="spinner"></span>
+    <span id="status-text">Waiting to start...</span>
+    {% else %}
+    <span class="spinner"></span> <span id="status-text">Initializing...</span>
+    {% endif %}
+  </div>
+
+  <div class="log-section" id="log-container">
+    <div class="log-entry info">
+      <span class="timestamp">[--:--:--]</span> Translation job #{{ job.id }}
+      loaded
+    </div>
+  </div>
+
+  <div class="actions-row" id="action-buttons">
+    {% if job.status == 'completed' %}
+    <a
+      href="{% url 'admin:translations_locale_changelist' %}"
+      class="btn btn-primary"
+      >Back to Locales</a
+    >
+    <a
+      href="{% url 'admin:translations_aitranslationjob_changelist' %}"
+      class="btn btn-secondary"
+      >View All Jobs</a
+    >
+    {% elif job.status == 'failed' %}
+    <button type="button" class="btn btn-success" onclick="resumeJob()">
+      Resume
+    </button>
+    <a
+      href="{% url 'admin:translations_locale_changelist' %}"
+      class="btn btn-secondary"
+      >Back to Locales</a
+    >
+    {% elif job.status == 'cancelled' %}
+    <a
+      href="{% url 'admin:translations_locale_ai_translate' %}"
+      class="btn btn-primary"
+      >New Translation</a
+    >
+    <a
+      href="{% url 'admin:translations_locale_changelist' %}"
+      class="btn btn-secondary"
+      >Back to Locales</a
+    >
+    {% elif job.status == 'pending' or job.status == 'in_progress' %}
+    <button
+      type="button"
+      class="btn btn-danger"
+      id="cancel-btn"
+      onclick="cancelJob()"
+    >
+      Cancel
+    </button>
+    {% else %}
+    <button type="button" class="btn btn-success" onclick="resumeJob()">
+      Resume
+    </button>
+    <a
+      href="{% url 'admin:translations_locale_changelist' %}"
+      class="btn btn-secondary"
+      >Back to Locales</a
+    >
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  const JOB_ID = {{ job_id }};
+  const API_URL = '{{ api_url }}';
+  const CSRF_TOKEN = '{{ csrf_token }}';
+  const INITIAL_STATUS = '{{ job.status }}';
+
+  let isRunning = false;
+  let batchCount = 0;
+
+  function timestamp() {
+      return new Date().toLocaleTimeString('en-US', { hour12: false });
+  }
+
+  function log(message, type = 'info') {
+      const container = document.getElementById('log-container');
+      const entry = document.createElement('div');
+      entry.className = 'log-entry ' + type;
+      entry.innerHTML = `<span class="timestamp">[${timestamp()}]</span> ${message}`;
+      container.appendChild(entry);
+      container.scrollTop = container.scrollHeight;
+  }
+
+  function updateUI(data) {
+      const job = data.job;
+      const progress = job.progress_percent || 0;
+
+      // Update progress bar
+      const progressBar = document.getElementById('progress-bar');
+      progressBar.style.width = progress + '%';
+
+      // Update stats
+      document.getElementById('stat-total').textContent = job.total_keys || 0;
+      document.getElementById('stat-processed').textContent = job.processed_keys || 0;
+      document.getElementById('stat-success').textContent = job.successful_translations || 0;
+      document.getElementById('stat-failed').textContent = job.failed_keys || 0;
+
+      const statusBanner = document.getElementById('status-banner');
+      const statusText = document.getElementById('status-text');
+
+      if (data.done) {
+          isRunning = false;
+
+          if (job.status === 'completed') {
+              progressBar.className = 'progress-bar-fill success';
+              statusBanner.className = 'status-banner success';
+              statusBanner.innerHTML = '<span>✓</span> Translation completed';
+              log('Completed successfully', 'success');
+
+              document.getElementById('action-buttons').innerHTML = `
+                  <a href="{% url 'admin:translations_locale_changelist' %}" class="btn btn-primary">Back to Locales</a>
+                  <a href="{% url 'admin:translations_aitranslationjob_changelist' %}" class="btn btn-secondary">View All Jobs</a>
+              `;
+          } else if (job.status === 'failed') {
+              progressBar.className = 'progress-bar-fill error';
+              statusBanner.className = 'status-banner error';
+              statusBanner.innerHTML = '<span>✕</span> ' + (job.error_message || 'Translation failed');
+              log('Failed: ' + (job.error_message || 'Unknown error'), 'error');
+
+              document.getElementById('action-buttons').innerHTML = `
+                  <button type="button" class="btn btn-success" onclick="resumeJob()">Resume</button>
+                  <a href="{% url 'admin:translations_locale_changelist' %}" class="btn btn-secondary">Back to Locales</a>
+              `;
+          } else if (job.status === 'cancelled') {
+              progressBar.className = 'progress-bar-fill warning';
+              statusBanner.className = 'status-banner warning';
+              statusBanner.innerHTML = '<span>!</span> Translation cancelled';
+              log('Cancelled by user', 'error');
+
+              document.getElementById('action-buttons').innerHTML = `
+                  <a href="{% url 'admin:translations_locale_ai_translate' %}" class="btn btn-primary">New Translation</a>
+                  <a href="{% url 'admin:translations_locale_changelist' %}" class="btn btn-secondary">Back to Locales</a>
+              `;
+          }
+      } else if (statusText) {
+          statusText.textContent = `Translating batch ${batchCount}...`;
+      }
+  }
+
+  async function processBatch() {
+      if (!isRunning) return;
+
+      try {
+          batchCount++;
+          log(`Processing batch ${batchCount}...`);
+
+          const response = await fetch(API_URL, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': CSRF_TOKEN
+              },
+              credentials: 'same-origin'
+          });
+
+          if (!response.ok) {
+              const errorBody = await response.text();
+              console.error('API Error:', response.status, errorBody);
+              throw new Error(`HTTP ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (data.batch_processed) {
+              const msg = `Batch ${batchCount}: ${data.batch_success} translated`;
+              log(msg + (data.batch_failed > 0 ? `, ${data.batch_failed} failed` : ''),
+                  data.batch_failed > 0 ? 'error' : 'success');
+          }
+
+          updateUI(data);
+
+          if (!data.done && isRunning) {
+              setTimeout(processBatch, 300);
+          }
+
+      } catch (error) {
+          log('Error: ' + error.message, 'error');
+          isRunning = false;
+
+          document.getElementById('status-banner').className = 'status-banner error';
+          document.getElementById('status-banner').innerHTML = '<span>✕</span> Connection error';
+
+          document.getElementById('action-buttons').innerHTML = `
+              <button type="button" class="btn btn-success" onclick="resumeJob()">Retry</button>
+              <a href="{% url 'admin:translations_locale_changelist' %}" class="btn btn-secondary">Back to Locales</a>
+          `;
+      }
+  }
+
+  async function cancelJob() {
+      if (!confirm('Cancel this translation job?')) return;
+
+      isRunning = false;
+      log('Cancelling...');
+
+      try {
+          const response = await fetch(`/api/translations/ai-jobs/${JOB_ID}/`, {
+              method: 'DELETE',
+              headers: { 'X-CSRFToken': CSRF_TOKEN },
+              credentials: 'same-origin'
+          });
+
+          if (response.ok) {
+              log('Cancelled', 'error');
+              document.getElementById('status-banner').className = 'status-banner warning';
+              document.getElementById('status-banner').innerHTML = '<span>!</span> Translation cancelled';
+              document.getElementById('progress-bar').className = 'progress-bar-fill warning';
+
+              document.getElementById('action-buttons').innerHTML = `
+                  <a href="{% url 'admin:translations_locale_ai_translate' %}" class="btn btn-primary">New Translation</a>
+                  <a href="{% url 'admin:translations_locale_changelist' %}" class="btn btn-secondary">Back to Locales</a>
+              `;
+          }
+      } catch (error) {
+          log('Cancel failed: ' + error.message, 'error');
+      }
+  }
+
+  function resumeJob() {
+      log('Resuming translation...');
+      isRunning = true;
+      batchCount = 0;
+
+      document.getElementById('status-banner').className = 'status-banner running';
+      document.getElementById('status-banner').innerHTML = '<span class="spinner"></span> <span id="status-text">Resuming...</span>';
+      document.getElementById('progress-bar').className = 'progress-bar-fill';
+
+      document.getElementById('action-buttons').innerHTML = `
+          <button type="button" class="btn btn-danger" onclick="cancelJob()">Cancel</button>
+      `;
+
+      processBatch();
+  }
+
+  function startTranslation() {
+      log('Starting translation...');
+      isRunning = true;
+      setTimeout(processBatch, 500);
+  }
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', function() {
+      // Auto-start if job is pending or in_progress
+      if (INITIAL_STATUS === 'pending' || INITIAL_STATUS === 'in_progress') {
+          startTranslation();
+      } else if (INITIAL_STATUS === 'completed') {
+          log('Job already completed', 'success');
+      } else if (INITIAL_STATUS === 'failed') {
+          log('Job failed - click Resume to continue', 'error');
+      } else if (INITIAL_STATUS === 'cancelled') {
+          log('Job was cancelled', 'error');
+      }
+  });
+</script>
+{% endblock %}

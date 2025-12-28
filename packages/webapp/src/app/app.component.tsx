@@ -1,6 +1,7 @@
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { DemoItem, DemoItems, PrivacyPolicy, TermsAndConditions } from '@sb/webapp-contentful/routes';
-import { DEFAULT_LOCALE, translationMessages } from '@sb/webapp-core/config/i18n';
+import { DEFAULT_LOCALE } from '@sb/webapp-core/config/i18n';
+import { DynamicIntlProvider } from '@sb/webapp-core/providers';
 import { CrudDemoItem } from '@sb/webapp-crud-demo/routes';
 import { Documents } from '@sb/webapp-documents/routes';
 import { ActiveSubscriptionContext } from '@sb/webapp-finances/components/activeSubscriptionContext';
@@ -25,8 +26,7 @@ import {
   TenantSecuritySettings,
   TenantSettings,
 } from '@sb/webapp-tenants/routes';
-import { IntlProvider } from 'react-intl';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import { Role } from '../modules/auth/auth.types';
 import { Admin } from '../routes/admin';
@@ -38,8 +38,6 @@ import { LANG_PREFIX, RoutesConfig, TENANT_PREFIX } from './config/routes';
 import { ValidRoutesProviders } from './providers';
 
 export const App = () => {
-  const { pathname, search } = useLocation();
-
   return (
     <Routes>
       <Route element={<ValidRoutesProviders />}>
@@ -110,14 +108,12 @@ export const App = () => {
         <Route
           path="*"
           element={
-            <IntlProvider key={DEFAULT_LOCALE} locale={DEFAULT_LOCALE} messages={translationMessages[DEFAULT_LOCALE]}>
+            <DynamicIntlProvider locale={DEFAULT_LOCALE}>
               <NotFound />
-            </IntlProvider>
+            </DynamicIntlProvider>
           }
         />
       </Route>
-
-      <Route path="/" element={<Navigate to={`/${DEFAULT_LOCALE}${pathname}${search}`} />} />
     </Routes>
   );
 };

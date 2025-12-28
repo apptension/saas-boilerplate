@@ -5,6 +5,7 @@ import { HTMLAttributes, useContext } from 'react';
 import { useIntl } from 'react-intl';
 
 import { LayoutContext } from '../layout.context';
+import { LanguageSwitcher } from './languageSwitcher';
 import { UserMenu } from './userMenu';
 
 export type HeaderProps = HTMLAttributes<HTMLElement>;
@@ -32,6 +33,7 @@ export const Header = (props: HeaderProps) => {
           </Button>
         )}
         <div className="flex-1"></div>
+        <LanguageSwitcher />
         <UserMenu />
       </div>
     </header>

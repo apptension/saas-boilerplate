@@ -68,6 +68,7 @@ LOCAL_APPS = [
     "apps.integrations",
     "apps.multitenancy",
     "apps.sso",
+    "apps.translations",
 ]
 
 INSTALLED_APPS = (
@@ -403,3 +404,7 @@ AWS_SES_REGION_NAME = env("AWS_SES_REGION_NAME", default=AWS_REGION)
 
 # If you want to use the SESv2 client
 USE_SES_V2 = True
+
+# Translations settings
+TRANSLATIONS_BUCKET_NAME = env("TRANSLATIONS_BUCKET_NAME", default=None)
+TRANSLATIONS_CLOUDFRONT_ID = env("TRANSLATIONS_CLOUDFRONT_ID", default=None)

@@ -23,6 +23,16 @@ class AnyoneFullAccess(AccessPolicy):
     statements = [make_statement(principal=Principal.Any, action=Action.Any, effect=Effect.Allow)]
 
 
+class IsAdminUser(AccessPolicy):
+    """Access policy that requires the user to be a Django admin (is_superuser)."""
+    statements = [make_statement(principal=Principal.Authenticated, action=Action.Any, effect=Effect.Allow)]
+
+    def has_permission(self, request, view):
+        if not request.user or not request.user.is_authenticated:
+            return False
+        return request.user.is_superuser
+
+
 class TenantDependentAccess(AccessPolicy):
     def is_request_from_tenant_owner(self, request, view, action) -> bool:
         return request.user_role in TenantRoles.Owner

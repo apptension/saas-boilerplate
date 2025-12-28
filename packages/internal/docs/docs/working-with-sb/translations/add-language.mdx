@@ -1,0 +1,231 @@
+---
+title: How to add a new language?
+description: Add support for a new locale in your application
+---
+
+This guide walks you through adding a new language (locale) to your SaaS Boilerplate application.
+
+---
+
+## Step 1: Add Locale to Database
+
+### Option A: Django Admin
+
+1. Navigate to `/admin/translations/locale/`
+2. Click **Add Locale**
+3. Fill in the form:
+   - **Code**: `de` (ISO 639-1 code)
+   - **Name**: `German`
+   - **Native name**: `Deutsch`
+   - **Is default**: ☐ (only one locale should be default)
+   - **Is active**: ☑
+4. Click **Save**
+
+### Option B: Django Shell
+
+```python
+from apps.translations.models import Locale
+
+Locale.objects.create(
+    code='de',
+    name='German',
+    native_name='Deutsch',
+    is_active=True
+)
+```
+
+### Option C: Data Migration
+
+Create a migration for reproducible deployments:
+
+```python title="packages/backend/apps/translations/migrations/0003_add_german_locale.py"
+from django.db import migrations
+
+
+def add_german_locale(apps, schema_editor):
+    Locale = apps.get_model('translations', 'Locale')
+    Locale.objects.get_or_create(
+        code='de',
+        defaults={
+            'name': 'German',
+            'native_name': 'Deutsch',
+            'is_active': True,
+        }
+    )
+
+
+def remove_german_locale(apps, schema_editor):
+    Locale = apps.get_model('translations', 'Locale')
+    Locale.objects.filter(code='de').delete()
+
+
+class Migration(migrations.Migration):
+    dependencies = [
+        ('translations', '0002_create_default_locales'),
+    ]
+
+    operations = [
+        migrations.RunPython(add_german_locale, remove_german_locale),
+    ]
+```
+
+---
+
+## Step 2: Update Frontend Locale Enum
+
+Add the new locale to the frontend configuration:
+
+```typescript title="packages/webapp-libs/webapp-core/src/config/i18n.ts"
+export enum Locale {
+  ENGLISH = 'en',
+  POLISH = 'pl',
+  GERMAN = 'de', // Add new locale
+}
+
+export const DEFAULT_LOCALE = Locale.ENGLISH;
+```
+
+---
+
+## Step 3: Add Locale Display Metadata (Optional)
+
+If you want to customize how the locale appears in the language switcher:
+
+```typescript title="packages/webapp/src/shared/components/layout/header/languageSwitcher/languageSwitcher.component.tsx"
+// Add to the component if not fetching from API
+const LOCALE_DISPLAY: Record<string, { name: string; flag: string }> = {
+  en: { name: 'English', flag: '🇺🇸' },
+  pl: { name: 'Polski', flag: '🇵🇱' },
+  de: { name: 'Deutsch', flag: '🇩🇪' },
+};
+```
+
+---
+
+## Step 4: Add Translations
+
+### 4.1 View All Translation Keys
+
+In Admin → Translations → Translation Keys, you'll see all extracted messages.
+
+### 4.2 Add German Translations
+
+For each key:
+1. Click on the key
+2. Add a new translation for German
+3. Set status to `Published` when ready
+4. Save
+
+### 4.3 Bulk Import (Optional)
+
+If you have translations in a JSON file, create a management command:
+
+```python title="packages/backend/apps/translations/management/commands/import_translations.py"
+import json
+from django.core.management.base import BaseCommand
+from apps.translations.models import Locale, TranslationKey, Translation
+
+
+class Command(BaseCommand):
+    help = 'Import translations from JSON file'
+
+    def add_arguments(self, parser):
+        parser.add_argument('file_path', type=str)
+        parser.add_argument('locale_code', type=str)
+
+    def handle(self, *args, **options):
+        locale = Locale.objects.get(code=options['locale_code'])
+        
+        with open(options['file_path'], 'r') as f:
+            data = json.load(f)
+        
+        for key_id, message in data.items():
+            try:
+                key = TranslationKey.objects.get(key=key_id)
+                Translation.objects.update_or_create(
+                    key=key,
+                    locale=locale,
+                    defaults={
+                        'message': message,
+                        'status': 'published',
+                    }
+                )
+                self.stdout.write(f'✓ {key_id}')
+            except TranslationKey.DoesNotExist:
+                self.stdout.write(f'✗ Key not found: {key_id}')
+```
+
+Usage:
+
+```bash
+pdm run python manage.py import_translations translations_de.json de
+```
+
+---
+
+## Step 5: Publish the New Locale
+
+```bash
+cd packages/backend
+pdm run python manage.py publish_translations de
+```
+
+Or via Admin → Locales → Select German → Action: **Publish translations**
+
+---
+
+## Step 6: Verify
+
+1. Refresh your application
+2. Click the language switcher (🌍) in the header
+3. Select the new language
+4. Verify translations appear correctly
+
+---
+
+## Infrastructure: CDN Permissions
+
+If using S3/CloudFront in production, ensure the translations bucket and distribution are configured:
+
+```typescript title="packages/infra/infra-shared/src/stacks/components/translations.ts"
+// Bucket already supports any locale code
+// No changes needed
+```
+
+---
+
+## Checklist
+
+- [ ] Locale added to database
+- [ ] Frontend enum updated
+- [ ] All keys translated
+- [ ] Translations published
+- [ ] Language switcher shows new option
+- [ ] Tested in browser
+
+---
+
+## Common Languages Reference
+
+| Code | Name | Native Name |
+|------|------|-------------|
+| `en` | English | English |
+| `pl` | Polish | Polski |
+| `de` | German | Deutsch |
+| `fr` | French | Français |
+| `es` | Spanish | Español |
+| `it` | Italian | Italiano |
+| `pt` | Portuguese | Português |
+| `nl` | Dutch | Nederlands |
+| `ja` | Japanese | 日本語 |
+| `zh` | Chinese | 中文 |
+| `ko` | Korean | 한국어 |
+| `ar` | Arabic | العربية |
+
+---
+
+## Related
+
+- [Manage Translations](/working-with-sb/translations/manage-translations)
+- [Translations Feature Overview](/introduction/features/translations)
+
