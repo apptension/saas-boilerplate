@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
@@ -17,7 +16,7 @@ export type CrudDemoItemFormProps = {
   onSubmit: (formData: CrudDemoItemFormFields) => void;
   loading: boolean;
   initialData?: CrudDemoItemFormFields | null;
-  error?: ApolloError;
+  error?: Error;
 };
 
 export const CrudDemoItemForm = ({ initialData, onSubmit, error, loading }: CrudDemoItemFormProps) => {

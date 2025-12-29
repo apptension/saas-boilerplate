@@ -1,4 +1,4 @@
-import { ApolloProvider as Provider } from '@apollo/client';
+import { ApolloProvider as Provider } from '@apollo/client/react';
 import { apolloClient, apolloEmitter } from '@sb/webapp-api-client';
 import { useLocales } from '@sb/webapp-core/hooks';
 import { ToastEmitterActions } from '@sb/webapp-core/toast/toastProvider/toastProvider.types';

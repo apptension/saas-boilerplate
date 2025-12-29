@@ -30,7 +30,8 @@ describe('TwoFactorAuthForm: Component', () => {
     const setupButton = await screen.findByText('Setup 2FA');
     await userEvent.click(setupButton);
 
-    expect(await screen.findByText(/Configuring Google Authenticator or Authy/i)).toBeInTheDocument();
+    // Wait for the modal to open and the component to render
+    expect(await screen.findByText(/Set Up Two-Factor Authentication/i)).toBeInTheDocument();
   });
 
   it('should disable 2FA', async () => {

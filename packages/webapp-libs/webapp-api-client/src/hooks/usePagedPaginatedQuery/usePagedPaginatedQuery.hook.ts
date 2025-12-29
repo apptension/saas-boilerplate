@@ -1,4 +1,6 @@
-import { NoInfer, QueryHookOptions, TypedDocumentNode, useQuery } from '@apollo/client';
+import { TypedDocumentNode } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
+import type { QueryHookOptions } from '@apollo/client/react';
 import { PAGE_SIZE_OPTIONS } from '@sb/webapp-core/components/table';
 import { flatten, omit, pick } from 'ramda';
 import { useCallback, useEffect } from 'react';
@@ -27,7 +29,7 @@ export const usePagedPaginatedQuery = <
   A extends { [key: string]: any },
   B extends { [key: string]: any },
   C extends { cursor?: string; pageSize?: string; [key: string]: any },
-  T extends TypedDocumentNode<Partial<A>, NoInfer<CursorsInput & B>>,
+  T extends TypedDocumentNode<Partial<A>, CursorsInput & B>,
 >(
   query: T,
   options: {
@@ -64,7 +66,7 @@ export const usePagedPaginatedQuery = <
       fetchMore({
         variables: {
           after: cursor,
-        },
+        } as any,
         updateQuery: (_, { fetchMoreResult }) => {
           return fetchMoreResult;
         },

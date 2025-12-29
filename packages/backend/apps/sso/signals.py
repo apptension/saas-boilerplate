@@ -37,10 +37,10 @@ def on_sso_connection_saved(sender, instance, created, **kwargs):
                 sso_connection=instance,
                 description=f'SSO connection "{instance.name}" activated',
             )
-            
+
             # Send notification to tenant owners
             _notify_sso_status_change(instance, activated=True)
-        
+
         elif instance.status == SSOConnectionStatus.INACTIVE:
             SSOAuditLog.log_event(
                 event_type=SSOAuditEventType.IDP_CONFIG_DEACTIVATED,
@@ -48,7 +48,7 @@ def on_sso_connection_saved(sender, instance, created, **kwargs):
                 sso_connection=instance,
                 description=f'SSO connection "{instance.name}" deactivated',
             )
-            
+
             _notify_sso_status_change(instance, activated=False)
 
 
@@ -76,12 +76,11 @@ def _notify_sso_status_change(connection, activated: bool):
     try:
         from apps.notifications.sender import NotificationSender
         from apps.notifications.models import Notification as NotificationModel
-        
+
         notification_type = (
-            Notification.SSO_CONNECTION_ACTIVATED.value if activated
-            else Notification.SSO_CONNECTION_DEACTIVATED.value
+            Notification.SSO_CONNECTION_ACTIVATED.value if activated else Notification.SSO_CONNECTION_DEACTIVATED.value
         )
-        
+
         # Notify tenant owners
         for owner in connection.tenant.owners:
             NotificationSender.send_notification(
@@ -102,7 +101,7 @@ def _notify_passkey_registered(passkey):
     """Send notification about new passkey registration."""
     try:
         from apps.notifications.sender import NotificationSender
-        
+
         NotificationSender.send_notification(
             user=passkey.user,
             type=Notification.PASSKEY_REGISTERED.value,
@@ -114,4 +113,3 @@ def _notify_passkey_registered(passkey):
         )
     except Exception as e:
         logger.warning(f"Failed to send passkey notification: {e}")
-

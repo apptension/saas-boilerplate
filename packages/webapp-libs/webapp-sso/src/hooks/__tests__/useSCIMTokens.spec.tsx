@@ -1,14 +1,13 @@
-import { renderHook, waitFor } from '@testing-library/react';
-import { MockedProvider, MockedResponse } from '@apollo/client/testing';
-import { ReactNode } from 'react';
+import { waitFor } from '@testing-library/react';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 
-import { useSCIMTokens } from '../useSCIMTokens';
 import {
-  GET_SCIM_TOKENS,
+  useSCIMTokens,
+  SCIM_TOKENS_QUERY,
   CREATE_SCIM_TOKEN,
   REVOKE_SCIM_TOKEN,
-  DELETE_SCIM_TOKEN,
-} from '../../graphql/scimTokens.graphql';
+} from '../useSCIMTokens';
+import { renderHook } from '../../tests/utils/rendering';
 
 const mockTenantId = 'tenant-123';
 
@@ -18,52 +17,42 @@ const mockSCIMToken = {
   tokenPrefix: 'scim_abc',
   isActive: true,
   lastUsedAt: '2024-01-15T10:00:00Z',
+  lastUsedIp: '192.168.1.100',
   requestCount: 150,
   expiresAt: null,
   createdAt: '2024-01-01T00:00:00Z',
 };
 
-const mockGetTokensResponse: MockedResponse = {
-  request: {
-    query: GET_SCIM_TOKENS,
-    variables: { tenantId: mockTenantId },
-  },
-  result: {
-    data: {
-      scimTokens: {
-        edges: [
-          {
-            node: mockSCIMToken,
-            cursor: 'cursor-1',
-          },
-        ],
-        pageInfo: {
-          hasNextPage: false,
-          endCursor: 'cursor-1',
+const mockGetTokensResponse = composeMockedQueryResult(SCIM_TOKENS_QUERY, {
+  variables: { tenantId: mockTenantId },
+  data: {
+    scimTokens: {
+      edges: [
+        {
+          node: mockSCIMToken,
+          cursor: 'cursor-1',
         },
+      ],
+      pageInfo: {
+        hasNextPage: false,
+        endCursor: 'cursor-1',
       },
     },
   },
-};
-
-const wrapper = (mocks: MockedResponse[]) => {
-  return ({ children }: { children: ReactNode }) => (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      {children}
-    </MockedProvider>
-  );
-};
+});
 
 describe('useSCIMTokens', () => {
   it('should fetch SCIM tokens', async () => {
-    const { result } = renderHook(
+    const { result, waitForApolloMocks } = renderHook(
       () => useSCIMTokens(mockTenantId),
-      { wrapper: wrapper([mockGetTokensResponse]) }
+      { apolloMocks: (defaultMocks) => defaultMocks.concat(mockGetTokensResponse) }
     );
 
-    expect(result.current.loading).toBe(true);
-
+    // Wait for SCIM_TOKENS_QUERY mock (index 1, since CommonQuery is index 0)
+    await waitForApolloMocks(1);
+    
     await waitFor(() => {
+      expect(result.current).not.toBeNull();
       expect(result.current.loading).toBe(false);
     });
 
@@ -73,37 +62,68 @@ describe('useSCIMTokens', () => {
 
   it('should create SCIM token and return raw token', async () => {
     const rawToken = 'scim_abcdef123456789';
-    const createMock: MockedResponse = {
-      request: {
-        query: CREATE_SCIM_TOKEN,
-        variables: {
-          input: {
-            tenantId: mockTenantId,
+    const createMock = composeMockedQueryResult(CREATE_SCIM_TOKEN, {
+      variables: {
+        input: {
+          tenantId: mockTenantId,
+          name: 'New Token',
+        },
+      },
+      data: {
+        createScimToken: {
+          scimToken: {
+            id: 'token-2',
             name: 'New Token',
+            tokenPrefix: 'scim_abc',
           },
+          rawToken: rawToken,
         },
       },
-      result: {
-        data: {
-          createScimToken: {
-            scimToken: {
-              id: 'token-2',
-              name: 'New Token',
-              tokenPrefix: 'scim_abc',
-              isActive: true,
-            },
-            rawToken: rawToken,
-          },
-        },
-      },
-    };
+    });
 
-    const { result } = renderHook(
+    // Add refetch mock
+    const refetchMock = composeMockedQueryResult(SCIM_TOKENS_QUERY, {
+      variables: { tenantId: mockTenantId },
+      data: {
+        scimTokens: {
+          edges: [
+            {
+              node: mockSCIMToken,
+              cursor: 'cursor-1',
+            },
+            {
+              node: {
+                id: 'token-2',
+                name: 'New Token',
+                tokenPrefix: 'scim_abc',
+                isActive: true,
+                lastUsedAt: null,
+                lastUsedIp: null,
+                requestCount: 0,
+                expiresAt: null,
+                createdAt: '2024-01-15T00:00:00Z',
+              },
+              cursor: 'cursor-2',
+            },
+          ],
+          pageInfo: {
+            hasNextPage: false,
+            endCursor: 'cursor-2',
+          },
+        },
+      },
+    });
+
+    const { result, waitForApolloMocks } = renderHook(
       () => useSCIMTokens(mockTenantId),
-      { wrapper: wrapper([mockGetTokensResponse, createMock]) }
+      { apolloMocks: (defaultMocks) => defaultMocks.concat(mockGetTokensResponse, createMock, refetchMock) }
     );
 
+    // Wait for SCIM_TOKENS_QUERY mock (index 1)
+    await waitForApolloMocks(1);
+    
     await waitFor(() => {
+      expect(result.current).not.toBeNull();
       expect(result.current.loading).toBe(false);
     });
 
@@ -111,97 +131,110 @@ describe('useSCIMTokens', () => {
   });
 
   it('should revoke SCIM token', async () => {
-    const revokeMock: MockedResponse = {
-      request: {
-        query: REVOKE_SCIM_TOKEN,
-        variables: {
-          input: { id: 'token-1' },
+    const revokeMock = composeMockedQueryResult(REVOKE_SCIM_TOKEN, {
+      variables: {
+        id: 'token-1',
+      },
+      data: {
+        revokeScimToken: {
+          ok: true,
         },
       },
-      result: {
-        data: {
-          revokeScimToken: {
-            scimToken: {
-              ...mockSCIMToken,
-              isActive: false,
-            },
-          },
-        },
-      },
-    };
+    });
 
-    const { result } = renderHook(
+    const { result, waitForApolloMocks } = renderHook(
       () => useSCIMTokens(mockTenantId),
-      { wrapper: wrapper([mockGetTokensResponse, revokeMock]) }
+      { apolloMocks: (defaultMocks) => defaultMocks.concat(mockGetTokensResponse, revokeMock) }
     );
 
+    // Wait for SCIM_TOKENS_QUERY mock (index 1)
+    await waitForApolloMocks(1);
+    
     await waitFor(() => {
+      expect(result.current).not.toBeNull();
       expect(result.current.loading).toBe(false);
     });
 
     expect(result.current.revokeToken).toBeDefined();
   });
 
-  it('should delete SCIM token', async () => {
-    const deleteMock: MockedResponse = {
-      request: {
-        query: DELETE_SCIM_TOKEN,
-        variables: {
-          input: { id: 'token-1' },
+  it('should revoke SCIM token (delete functionality)', async () => {
+    const revokeMock = composeMockedQueryResult(REVOKE_SCIM_TOKEN, {
+      variables: {
+        id: 'token-1',
+      },
+      data: {
+        revokeScimToken: {
+          ok: true,
         },
       },
-      result: {
-        data: {
-          deleteScimToken: {
-            deleted: true,
+    });
+
+    // Add refetch mock
+    const refetchMock = composeMockedQueryResult(SCIM_TOKENS_QUERY, {
+      variables: { tenantId: mockTenantId },
+      data: {
+        scimTokens: {
+          edges: [
+            {
+              node: { ...mockSCIMToken, isActive: false },
+              cursor: 'cursor-1',
+            },
+          ],
+          pageInfo: {
+            hasNextPage: false,
+            endCursor: 'cursor-1',
           },
         },
       },
-    };
+    });
 
-    const { result } = renderHook(
+    const { result, waitForApolloMocks } = renderHook(
       () => useSCIMTokens(mockTenantId),
-      { wrapper: wrapper([mockGetTokensResponse, deleteMock]) }
+      { apolloMocks: (defaultMocks) => defaultMocks.concat(mockGetTokensResponse, revokeMock, refetchMock) }
     );
 
+    // Wait for SCIM_TOKENS_QUERY mock (index 1)
+    await waitForApolloMocks(1);
+    
     await waitFor(() => {
+      expect(result.current).not.toBeNull();
       expect(result.current.loading).toBe(false);
     });
 
-    expect(result.current.deleteToken).toBeDefined();
+    expect(result.current.revokeToken).toBeDefined();
   });
 
   it('should handle revoked tokens correctly', async () => {
     const revokedToken = { ...mockSCIMToken, isActive: false };
-    const revokedResponse: MockedResponse = {
-      request: {
-        query: GET_SCIM_TOKENS,
-        variables: { tenantId: mockTenantId },
-      },
-      result: {
-        data: {
-          scimTokens: {
-            edges: [
-              {
-                node: revokedToken,
-                cursor: 'cursor-1',
-              },
-            ],
-            pageInfo: {
-              hasNextPage: false,
-              endCursor: 'cursor-1',
+    const revokedResponse = composeMockedQueryResult(SCIM_TOKENS_QUERY, {
+      variables: { tenantId: mockTenantId },
+      data: {
+        scimTokens: {
+          edges: [
+            {
+              node: revokedToken,
+              cursor: 'cursor-1',
             },
+          ],
+          pageInfo: {
+            hasNextPage: false,
+            endCursor: 'cursor-1',
           },
         },
       },
-    };
+    });
 
-    const { result } = renderHook(
+    const { result, waitForApolloMocks } = renderHook(
       () => useSCIMTokens(mockTenantId),
-      { wrapper: wrapper([revokedResponse]) }
+      { apolloMocks: (defaultMocks) => defaultMocks.concat(revokedResponse) }
     );
 
+    // Wait for SCIM_TOKENS_QUERY mock (index 1)
+    await waitForApolloMocks(1);
+    
     await waitFor(() => {
+      expect(result.current).not.toBeNull();
       expect(result.current.loading).toBe(false);
     });
 

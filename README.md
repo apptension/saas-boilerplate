@@ -50,8 +50,8 @@ and seamlessly transition from setup to innovation.
 ### Requirements
 
 - Install [Docker](https://docs.docker.com/get-docker)
-- Install [Node.js](https://nodejs.org/en/download/) version 18 or above (which can be checked by running `node -v`).
-  You can use [nvm](https://github.com/nvm-sh/nvm) or [n](https://github.com/tj/n) for managing multiple Node versions installed on a single machine.
+- Install [Node.js](https://nodejs.org/en/download/) version 20 or above (which can be checked by running `node -v`).
+  We recommend Node.js 20+ for optimal compatibility with the latest features. You can use [nvm](https://github.com/nvm-sh/nvm) or [n](https://github.com/tj/n) for managing multiple Node versions installed on a single machine.
 - Install [pnpm](https://pnpm.io/installation) version 9 or above (which can be checked by running `pnpm --version`)
 - (Windows only) Install [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install)
 
@@ -89,9 +89,9 @@ pnpm create saas-boilerplate PATH
 yarn create saas-boilerplate PATH
 ```
 
-> :information_source: Where `PATH` is a directory name where to initialize project.
+> :information_source: Replace `PATH` with your desired project directory name (e.g., `my-saas-app`).
 >
-> :warning: **The init directory needs to be empty!**
+> :warning: **The target directory must be empty or non-existent!** The CLI will create it for you.
 
 #### Manual setup
 
@@ -103,6 +103,13 @@ For the manual setup clone this repository and follow the steps in
 > :warning: **If you are using a Windows machine**, it's mandatory to have **WSL 2** (Windows Subsystem for Linux)
 > installed on your system to run the commands for installing dependencies and running the application.
 
+#### Clone the repository
+
+```sh
+git clone <your-project-repository-url>
+cd <project-name>
+```
+
 #### Install dependencies
 
 The project is configured to use pnpm workspaces, which means that you can install `node_modules` of all packages in
@@ -111,6 +118,14 @@ repository, with single command:
 ```sh
 pnpm install
 ```
+
+:::tip Environment Files
+Make sure you have the necessary `.env` files from your team. If not, copy from `.env.shared` templates:
+```sh
+cp .env.shared .env
+cp packages/backend/.env.shared packages/backend/.env
+```
+:::
 
 ### Start the app
 
@@ -140,11 +155,38 @@ In order to run your local documentation server execute following command:
 pnpm saas docs up
 ```
 
+#### Stop services
+
+To stop all services:
+
+```sh
+pnpm saas down
+```
+
+### What's Running Locally?
+
+After starting the application, you'll have these services available:
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Web App** | [http://localhost:3000](http://localhost:3000) | Your SaaS frontend |
+| **Backend API** | [http://localhost:5001](http://localhost:5001) | Django + GraphQL API |
+| **Admin Panel** | [http://admin.localhost:5001](http://admin.localhost:5001) | Django admin interface |
+| **Mailcatcher** | [http://localhost:1080](http://localhost:1080) | Catches all emails locally |
+| **Docs** | [http://localhost:3006](http://localhost:3006) | Local documentation |
+| **Workers** | [http://localhost:3005](http://localhost:3005) | Workers trigger server |
+
+:::tip First Steps
+1. Open [http://localhost:3000](http://localhost:3000) and create an account
+2. Check [http://localhost:1080](http://localhost:1080) for the verification email
+3. Log in to the Admin Panel at [http://admin.localhost:5001](http://admin.localhost:5001) using credentials from your `.env` file
+:::
+
 ## Features
 
 <details open>
 <summary>
-This boilerplate includes plenty of ready to use features that you can adjust to you needs:
+This boilerplate includes plenty of ready to use features that you can adjust to your needs:
 </summary> <br />
 
   <a href="https://docs.demo.saas.apptoku.com/introduction/features/auth">
@@ -158,11 +200,14 @@ This boilerplate includes plenty of ready to use features that you can adjust to
     </summary><br/>
     <ul>
       <li>User registration and login, including Facebook and Google OAuth</li>
+      <li>WebAuthn/Passkeys for passwordless authentication</li>
+      <li>Enterprise SSO (SAML 2.0, OIDC) with SCIM 2.0 directory sync</li>
       <li>Basic user data like name, surname, and user role for authorization</li>
       <li>User email address verification via a transactional email</li>
       <li>Password change and password recovery within the app flow</li>
       <li>User management panel in Django admin</li>
-      <li>Two-factor authentication</li>
+      <li>Two-factor authentication (2FA)</li>
+      <li>Active session management across devices</li>
     </ul>
   </details>
 
@@ -249,6 +294,56 @@ This boilerplate includes plenty of ready to use features that you can adjust to
     </ul>
   </details>
 
+  <a href="https://docs.demo.saas.apptoku.com/introduction/features/notifications">
+    <img src="./.github/images/features/notifications/notification.png" alt="Notifications" />
+  </a>
+  <br /><br />
+  
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/notifications">Notifications</a>
+    </summary><br/>
+    <ul>
+      <li>Real-time in-app notifications with WebSocket support</li>
+      <li>Notification center UI with unread indicators</li>
+      <li>Mark all as read functionality</li>
+      <li>Easy to add new notification types</li>
+    </ul>
+  </details>
+
+  <a href="https://docs.demo.saas.apptoku.com/introduction/features/openai">
+    <img src="./.github/images/features/generative-ai/saas-ideas.png" alt="AI Integration" />
+  </a>
+  <br /><br />
+  
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/openai">AI Integration</a>
+    </summary><br/>
+    <ul>
+      <li>OpenAI integration ready for building AI-powered features</li>
+      <li>Example implementation included</li>
+      <li>Easy to extend with other AI providers</li>
+    </ul>
+  </details>
+
+  <a href="https://docs.demo.saas.apptoku.com/introduction/features/crud">
+    <img src="./.github/images/features/crud/list.png" alt="CRUD Generator" />
+  </a>
+  <br /><br />
+  
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/crud">CRUD Generator</a>
+    </summary><br/>
+    <ul>
+      <li>Plop-based generators for quickly scaffolding new features</li>
+      <li>Example CRUD module included</li>
+      <li>Tenant-scoped data isolation</li>
+      <li>Generate forms, tables, and GraphQL operations automatically</li>
+    </ul>
+  </details>
+
 ---
 
 </details>
@@ -261,30 +356,40 @@ The full list with the descriptions can be found in the [features documentation]
 
 Front-end stack:
 
-- [React](https://github.com/facebook/react)
+- [React](https://github.com/facebook/react) 19.2.x
+- [TypeScript](https://www.typescriptlang.org/) 5.4.x
 - [GraphQL](https://graphql.org/)
-- [Apollo Client](https://github.com/apollographql/apollo-client)
-- [tailwindcss](https://github.com/tailwindlabs/tailwindcss)
+- [Apollo Client](https://github.com/apollographql/apollo-client) 4.x
+- [React Router](https://github.com/remix-run/react-router) 7.x
+- [Vite](https://github.com/vitejs/vite) 6.x
+- [tailwindcss](https://github.com/tailwindlabs/tailwindcss) 3.4.x
 - [shadcn/ui](https://github.com/shadcn-ui/ui)
-- [styled-components](https://github.com/styled-components/styled-components) (optional)
 - [jest](https://github.com/jestjs/jest)
-- [Storybook](https://github.com/storybookjs/storybook)
-- [Vite](https://github.com/vitejs/vite)
+- [Storybook](https://github.com/storybookjs/storybook) 10.x
+
+:::info Styling Approach
+**Tailwind CSS** is the primary styling solution for all components. Use Tailwind utility classes with the `cn()` helper for conditional styling. [styled-components](https://github.com/styled-components/styled-components) is included as a dependency for internal theme infrastructure and email template rendering, but developers should use Tailwind CSS for all new component styling. See the [shadcn/ui guide](https://docs.demo.saas.apptoku.com/working-with-sb/shadcn) for component styling patterns.
+:::
 
 Back-end stack:
 
-- [Python](https://www.python.org/)
-- [Django](https://github.com/django/django)
-- [Django REST Framework](https://github.com/encode/django-rest-framework)
-- [Graphene Django](https://github.com/graphql-python/graphene)
+- [Python](https://www.python.org/) 3.11.x
+- [Django](https://github.com/django/django) 5.2.x
+- [Django REST Framework](https://github.com/encode/django-rest-framework) 3.15.x
+- [Graphene Django](https://github.com/graphql-python/graphene) 3.2.x
+- [Celery](https://github.com/celery/celery) 5.4.x
+- [Sentry SDK](https://github.com/getsentry/sentry-python) 2.0.x
 - [dj-stripe](https://github.com/dj-stripe/dj-stripe/)
-- [Postgres](https://www.postgresql.org/)
+- [Postgres](https://www.postgresql.org/) 14+
+- [Redis](https://redis.io/) 7+
 
 Infrastructure:
 
-- [NX](https://github.com/nrwl/nx)
-- AWS infrastructure written in [AWS CDK](https://github.com/aws/aws-cdk)
-- Github or Bitbucket
+- [NX](https://github.com/nrwl/nx) 19.x
+- AWS infrastructure written in [AWS CDK](https://github.com/aws/aws-cdk) 2.x
+- [Docker](https://www.docker.com/) (Latest)
+- [pnpm](https://pnpm.io/) 9+ (package manager)
+- GitHub or Bitbucket
 
 3rd party services:
 

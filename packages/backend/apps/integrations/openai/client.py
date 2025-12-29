@@ -27,14 +27,14 @@ class OpenAIClient:
     def get_saas_ideas(keywords: list[str]) -> str:
         """Get SaaS ideas from OpenAI as raw text."""
         keywords_str = ', '.join(keywords)
-        
+
         # Log the keywords being sent
         logger.info(f"Generating SaaS ideas for keywords: {keywords}")
-        
+
         # Use chat completions API for better instruction following
         # Try to use a chat model if available, otherwise fall back to completion model
         model = settings.OPENAI_MODEL
-        
+
         try:
             # If using a completion model, use completions API
             if 'instruct' in model or 'davinci' in model or 'curie' in model or 'babbage' in model or 'ada' in model:
@@ -53,7 +53,7 @@ Key Features:
 Monetization: [pricing]
 
 Separate ideas with ---"""
-                
+
                 client = OpenAIClient._get_client()
                 result = client.completions.create(
                     model=model,
@@ -61,12 +61,12 @@ Separate ideas with ---"""
                     max_tokens=2000,
                     temperature=0.8,
                 )
-                
+
                 if not result.choices or len(result.choices) == 0:
                     raise ValueError("OpenAI API returned no choices in response")
-                
+
                 response_text = result.choices[0].text.strip()
-                
+
             else:
                 # Use chat completions API for chat models (gpt-3.5-turbo, gpt-4, etc.)
                 client = OpenAIClient._get_client()
@@ -77,16 +77,16 @@ Separate ideas with ---"""
                 else:
                     # Default to gpt-3.5-turbo which is widely available
                     model_name = 'gpt-3.5-turbo'
-                
+
                 # If gpt-4 is requested but might not be available, try alternatives
                 if model_name == 'gpt-4':
                     # Try common GPT-4 variants if base gpt-4 fails
                     gpt4_variants = ['gpt-4', 'gpt-4-turbo-preview', 'gpt-4-0613', 'gpt-3.5-turbo']
                 else:
                     gpt4_variants = [model_name]
-                
+
                 logger.info(f"Using model: {model_name} (requested: {model})")
-                
+
                 last_error = None
                 for attempt_model in gpt4_variants:
                     try:
@@ -98,16 +98,16 @@ Separate ideas with ---"""
                             "messages": [
                                 {
                                     "role": "system",
-                                    "content": "You are a SaaS product strategist. Generate creative SaaS product ideas in plain text. Do not write code."
+                                    "content": "You are a SaaS product strategist. Generate creative SaaS product ideas in plain text. Do not write code.",
                                 },
                                 {
                                     "role": "user",
-                                    "content": f"Generate 3-5 creative SaaS product ideas for: {keywords_str}\n\nFormat each idea as:\n\nProduct Name: [name]\nDescription: [what it does]\nTarget Market: [who uses it]\nKey Features:\n- [feature 1]\n- [feature 2]\n- [feature 3]\nMonetization: [pricing]\n\nSeparate ideas with ---"
-                                }
+                                    "content": f"Generate 3-5 creative SaaS product ideas for: {keywords_str}\n\nFormat each idea as:\n\nProduct Name: [name]\nDescription: [what it does]\nTarget Market: [who uses it]\nKey Features:\n- [feature 1]\n- [feature 2]\n- [feature 3]\nMonetization: [pricing]\n\nSeparate ideas with ---",
+                                },
                             ],
                             "temperature": 0.8,
                         }
-                        
+
                         # Try max_completion_tokens first (for newer models like o1, gpt-4o, etc.)
                         # If that fails, fall back to max_tokens (for older models)
                         try:
@@ -117,8 +117,14 @@ Separate ideas with ---"""
                         except Exception as param_error:
                             error_str = str(param_error).lower()
                             # If max_completion_tokens is not supported, try max_tokens
-                            if "max_completion_tokens" in error_str or "unsupported_parameter" in error_str or "not supported" in error_str:
-                                logger.info(f"max_completion_tokens not supported for {attempt_model}, trying max_tokens")
+                            if (
+                                "max_completion_tokens" in error_str
+                                or "unsupported_parameter" in error_str
+                                or "not supported" in error_str
+                            ):
+                                logger.info(
+                                    f"max_completion_tokens not supported for {attempt_model}, trying max_tokens"
+                                )
                                 api_params.pop("max_completion_tokens", None)
                                 api_params["max_tokens"] = 2000
                                 result = client.chat.completions.create(**api_params)
@@ -144,30 +150,30 @@ Separate ideas with ---"""
                     if last_error:
                         raise last_error
                     raise ValueError("Failed to create chat completion with any available model")
-                
+
                 if not result.choices or len(result.choices) == 0:
                     raise ValueError("OpenAI API returned no choices in response")
-                
+
                 response_text = result.choices[0].message.content.strip()
-            
+
             # Log the raw OpenAI response for debugging
             logger.info(f"OpenAI Raw Response: {response_text}")
             logger.info(f"OpenAI Full Response Length: {len(response_text)} characters")
-            
+
             if not response_text:
                 raise ValueError("OpenAI API returned empty text in response choices")
-            
+
             return response_text
-            
+
         except Exception as error:
             # Handle OpenAI API errors (new SDK uses openai.APIError or other exceptions)
             error_type = type(error).__name__
             error_message = str(error)
-            
+
             # Log detailed error information
             logger.error(f"OpenAI API error: {error_type}")
             logger.error(f"Error message: {error_message}")
-            
+
             # Try to extract more details from the error
             if hasattr(error, 'response'):
                 logger.error(f"Error response: {error.response}")
@@ -175,12 +181,14 @@ Separate ideas with ---"""
                 logger.error(f"Error body: {error.body}")
             if hasattr(error, 'status_code'):
                 logger.error(f"Error status code: {error.status_code}")
-            
+
             # Check if it's an OpenAI API error
             if 'APIError' in error_type or 'openai' in error_type.lower() or 'rate limit' in error_message.lower():
                 # For 400 errors, provide more specific message
                 if '400' in error_message or (hasattr(error, 'status_code') and error.status_code == 400):
-                    detailed_error = f"Invalid request to OpenAI API. Check model name and parameters. Error: {error_message}"
+                    detailed_error = (
+                        f"Invalid request to OpenAI API. Check model name and parameters. Error: {error_message}"
+                    )
                     logger.error(detailed_error)
                     raise OpenAIClientException(detailed_error) from error
                 raise OpenAIClientException(OPEN_AI_API_ERROR_MSG) from error

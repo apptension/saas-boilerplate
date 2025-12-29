@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { screen } from '@testing-library/react';
 import { append } from 'ramda';
 

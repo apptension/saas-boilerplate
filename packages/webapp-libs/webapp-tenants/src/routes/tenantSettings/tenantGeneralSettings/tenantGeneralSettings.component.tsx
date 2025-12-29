@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { TenantType } from '@sb/webapp-api-client/constants';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';

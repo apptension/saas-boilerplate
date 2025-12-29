@@ -96,10 +96,10 @@ class TestCreateTenantInvitationSerializer:
 class TestResendTenantInvitationSerializer:
     def test_resend_invitation_for_existing_user(self, mocker, user, user_factory, tenant_factory):
         mocker.patch("apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token")
-        mock_send_email = mocker.patch("apps.multitenancy.serializers.TenantInvitationEmail")
-        mock_send_notification = mocker.patch(
-            "apps.multitenancy.serializers.send_tenant_invitation_notification"
-        )
+        # Mock where it's imported - the serializer imports notifications module and then imports from it in create()
+        mock_email_instance = mocker.Mock()
+        mock_send_email = mocker.patch("apps.multitenancy.serializers.notifications.TenantInvitationEmail", return_value=mock_email_instance)
+        mock_send_notification = mocker.patch("apps.multitenancy.serializers.notifications.send_tenant_invitation_notification")
         creator = user_factory()
 
         tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)
@@ -108,7 +108,7 @@ class TestResendTenantInvitationSerializer:
         )
 
         data = {
-            "id": membership.id,
+            "id": str(membership.id),
             "tenant_id": str(tenant.id),
         }
         serializer = ResendTenantInvitationSerializer(data=data, context={'request': Mock(tenant=tenant, user=creator)})
@@ -122,10 +122,10 @@ class TestResendTenantInvitationSerializer:
 
     def test_resend_invitation_for_invitee_email(self, mocker, user_factory, tenant_factory):
         mocker.patch("apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token")
-        mock_send_email = mocker.patch("apps.multitenancy.serializers.TenantInvitationEmail")
-        mock_send_notification = mocker.patch(
-            "apps.multitenancy.serializers.send_tenant_invitation_notification"
-        )
+        # Mock where it's imported - the serializer imports notifications module and then imports from it in create()
+        mock_email_instance = mocker.Mock()
+        mock_send_email = mocker.patch("apps.multitenancy.serializers.notifications.TenantInvitationEmail", return_value=mock_email_instance)
+        mock_send_notification = mocker.patch("apps.multitenancy.serializers.notifications.send_tenant_invitation_notification")
         creator = user_factory()
 
         tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)
@@ -138,7 +138,7 @@ class TestResendTenantInvitationSerializer:
         )
 
         data = {
-            "id": membership.id,
+            "id": str(membership.id),
             "tenant_id": str(tenant.id),
         }
         serializer = ResendTenantInvitationSerializer(data=data, context={'request': Mock(tenant=tenant, user=creator)})

@@ -131,16 +131,16 @@ export const PasskeysForm = () => {
     }
   };
 
-  const openModal = () => {
+  const openModal = useCallback(() => {
     setPasskeyName('');
     setStep('name');
     setErrorMessage('');
     setIsModalOpen(true);
-  };
+  }, [setIsModalOpen]);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
-  };
+  }, [setIsModalOpen]);
 
   const handleContinue = () => {
     if (!passkeyName.trim()) return;
@@ -292,7 +292,7 @@ export const PasskeysForm = () => {
     } finally {
       setIsRegistering(false);
     }
-  }, [passkeyName, intl, toast, fetchPasskeys]);
+  }, [passkeyName, intl, toast, fetchPasskeys, closeModal]);
 
   const handleRetry = () => {
     setStep('name');

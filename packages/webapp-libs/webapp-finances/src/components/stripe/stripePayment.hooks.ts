@@ -1,10 +1,9 @@
-import { BaseMutationOptions, useMutation } from '@apollo/client';
-import { ApolloError } from '@apollo/client/errors';
+import { useMutation } from '@apollo/client/react';
 import { StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
-import { GraphQLError } from 'graphql';
+import { GraphQLFormattedError } from 'graphql';
 import { useState } from 'react';
 
 import { TestProduct } from '../../types';
@@ -83,7 +82,7 @@ interface StripePaymentFormFields extends PaymentFormFields {
   product: TestProduct;
 }
 
-export const useStripePaymentIntent = (onError: (error: ApolloError, clientOptions?: BaseMutationOptions) => void) => {
+export const useStripePaymentIntent = (onError: (error: Error, clientOptions?: any) => void) => {
   const { data: currentTenant } = useCurrentTenant();
   const [paymentIntent, setPaymentIntent] = useState<StripePaymentIntentType | undefined | null>(null);
 
@@ -105,7 +104,7 @@ export const useStripePaymentIntent = (onError: (error: ApolloError, clientOptio
    */
   const updateOrCreatePaymentIntent = async (
     product: TestProduct
-  ): Promise<{ errors?: readonly GraphQLError[]; paymentIntent?: StripePaymentIntentType | null }> => {
+  ): Promise<{ errors?: readonly GraphQLFormattedError[]; paymentIntent?: StripePaymentIntentType | null }> => {
     if (!currentTenant) return {};
     if (!paymentIntent) {
       const { data, errors } = await commitCreatePaymentIntentMutation({

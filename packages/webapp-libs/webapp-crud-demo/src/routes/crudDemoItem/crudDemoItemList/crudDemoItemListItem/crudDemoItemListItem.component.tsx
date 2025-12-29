@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import editIcon from '@iconify-icons/ion/pencil-sharp';
 import deleteIcon from '@iconify-icons/ion/trash-outline';
 import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';

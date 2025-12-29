@@ -1,4 +1,6 @@
-import { MockedProvider as MockedApolloProvider, MockedProviderProps, MockedResponse } from '@apollo/client/testing';
+import { MockedProvider as MockedApolloProvider } from '@apollo/client/testing/react';
+import type { MockedProviderProps } from '@apollo/client/testing/react';
+import type { MockedResponse } from '@apollo/client/testing';
 import * as coreUtils from '@sb/webapp-core/tests/utils/rendering';
 import { CoreTestProviders, CoreTestProvidersProps } from '@sb/webapp-core/tests/utils/rendering';
 import { StoryContext } from '@storybook/react';
@@ -29,7 +31,7 @@ export type ApiTestProvidersProps = PropsWithChildren<{
  */
 export function ApiTestProviders({ children, apolloMocks = [], apolloProviderProps = {} }: ApiTestProvidersProps) {
   return (
-    <MockedApolloProvider addTypename={false} {...apolloProviderProps} mocks={apolloMocks}>
+    <MockedApolloProvider {...apolloProviderProps} mocks={apolloMocks}>
       <CommonQuery>{children}</CommonQuery>
     </MockedApolloProvider>
   );

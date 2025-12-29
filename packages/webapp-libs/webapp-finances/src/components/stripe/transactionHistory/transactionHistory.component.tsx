@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@sb/webapp-core/components/ui/table';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';

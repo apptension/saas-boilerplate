@@ -1,4 +1,4 @@
-import openai
+from openai import APIError
 
 import pytest
 from apps.integrations.openai.types import OpenAICompletionResponse
@@ -11,7 +11,7 @@ class TestGenerateSaasIdeasMutation:
     MUTATION = """
         mutation($input: GenerateSaasIdeasMutationInput!)  {
           generateSaasIdeas(input: $input) {
-            ideas
+            response
           }
         }
     """
@@ -31,8 +31,8 @@ class TestGenerateSaasIdeasMutation:
         openai_client_mock.get_saas_ideas.assert_not_called()
 
     def test_failure_for_open_api_exception(self, graphene_client, user, input_data, openai_completion_mock):
-        openai_completion_mock.create.side_effect = openai.error.APIError(
-            "The server had an error while processing your request."
+        openai_completion_mock.create.side_effect = APIError(
+            message="The server had an error while processing your request.", request=None, body=None
         )
 
         graphene_client.force_authenticate(user)
@@ -44,8 +44,11 @@ class TestGenerateSaasIdeasMutation:
         assert executed['errors'][0]['message'] == OPEN_AI_API_ERROR_MSG
 
     def test_success(self, graphene_client, user, input_data, openai_client_mock, open_ai_completion_response_factory):
-        response_mock = OpenAICompletionResponse(**open_ai_completion_response_factory.create())
-        openai_client_mock.get_saas_ideas.return_value = response_mock
+        # The client returns a string, not a response object
+        response_data = open_ai_completion_response_factory.create()
+        # Extract the text from choices and join them as the client does
+        ideas_text = '\n\n'.join([choice['text'] for choice in response_data['choices']])
+        openai_client_mock.get_saas_ideas.return_value = ideas_text
 
         graphene_client.force_authenticate(user)
         executed = graphene_client.mutate(
@@ -54,4 +57,10 @@ class TestGenerateSaasIdeasMutation:
         )
 
         openai_client_mock.get_saas_ideas.assert_called_once_with(input_data['keywords'])
-        assert all(choice.text in executed["data"]['generateSaasIdeas']['ideas'] for choice in response_mock.choices)
+        assert executed["data"]['generateSaasIdeas']['response'] is not None
+        # The response is a string containing the ideas text
+        assert len(executed["data"]['generateSaasIdeas']['response']) > 0
+        # Verify the response contains text from the mocked choices
+        assert any(
+            choice['text'] in executed["data"]['generateSaasIdeas']['response'] for choice in response_data['choices']
+        )

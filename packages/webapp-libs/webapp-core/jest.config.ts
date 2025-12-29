@@ -19,4 +19,5 @@ export default {
   coveragePathIgnorePatterns: ['/node_modules/', '.*.svg'],
   setupFilesAfterEnv: ['./src/tests/setupTests.ts'],
   watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
+  testEnvironment: 'jsdom',
 };

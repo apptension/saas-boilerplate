@@ -24,6 +24,22 @@ const codegenConfigs = webappLibs
 const config: CodegenConfig = {
   overwrite: true,
   ignoreNoDocuments: true,
+  parserOptions: {
+    plugins: [
+      'typescript',
+      'jsx',
+      'decorators-legacy',
+      'classProperties',
+      'objectRestSpread',
+      'asyncGenerators',
+      'functionBind',
+      'exportDefaultFrom',
+      'exportNamespaceFrom',
+      'dynamicImport',
+      'nullishCoalescingOperator',
+      'optionalChaining',
+    ],
+  },
   generates: {
     'src/graphql/__generated/gql/': {
       schema: {
@@ -45,6 +61,10 @@ const config: CodegenConfig = {
 
         '../../webapp/src/**/*.ts',
         '../../webapp/src/**/*.tsx',
+
+        // Include all webapp-libs packages for GraphQL files
+        ...webappLibs.map((dirName) => `../${dirName}/src/**/*.ts`),
+        ...webappLibs.map((dirName) => `../${dirName}/src/**/*.tsx`),
       ],
 
       config: {

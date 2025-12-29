@@ -15,7 +15,9 @@ export const useTenantForm = ({ error, onSubmit, initialData }: UseTenantFormPro
   const { handleSubmit, setApolloGraphQLResponseErrors } = form;
 
   useEffect(() => {
-    if (error) setApolloGraphQLResponseErrors(error.graphQLErrors);
+    if (error && 'graphQLErrors' in error) {
+      setApolloGraphQLResponseErrors((error as any).graphQLErrors);
+    }
   }, [error, setApolloGraphQLResponseErrors]);
 
   const handleFormSubmit = handleSubmit((formData: TenantFormFields) => onSubmit(formData));

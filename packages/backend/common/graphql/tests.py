@@ -9,7 +9,7 @@ from django.test import TestCase, Client
 class GraphQLTestCase(TestCase):
     """
     Base test case class for GraphQL tests.
-    
+
     Provides helper methods for executing GraphQL queries and mutations.
     """
 
@@ -22,20 +22,20 @@ class GraphQLTestCase(TestCase):
     def execute(self, query, variables=None, operation_name=None):
         """
         Execute a GraphQL query/mutation.
-        
+
         Args:
             query: The GraphQL query string
             variables: Optional dict of variables
             operation_name: Optional operation name
-            
+
         Returns:
             The parsed JSON response
         """
         body = {'query': query}
-        
+
         if variables:
             body['variables'] = variables
-            
+
         if operation_name:
             body['operationName'] = operation_name
 
@@ -44,17 +44,17 @@ class GraphQLTestCase(TestCase):
             data=json.dumps(body),
             content_type='application/json',
         )
-        
+
         return json.loads(response.content)
 
     def execute_with_errors(self, query, variables=None):
         """
         Execute a query and assert it contains errors.
-        
+
         Args:
             query: The GraphQL query string
             variables: Optional dict of variables
-            
+
         Returns:
             The errors from the response
         """
@@ -65,23 +65,22 @@ class GraphQLTestCase(TestCase):
     def execute_without_errors(self, query, variables=None):
         """
         Execute a query and assert it does not contain errors.
-        
+
         Args:
             query: The GraphQL query string
             variables: Optional dict of variables
-            
+
         Returns:
             The data from the response
         """
         response = self.execute(query, variables)
-        self.assertNotIn('errors', response, 
-            f"Expected no errors but got: {response.get('errors')}")
+        self.assertNotIn('errors', response, f"Expected no errors but got: {response.get('errors')}")
         return response['data']
 
     def login_user(self, user):
         """
         Log in a user for subsequent requests.
-        
+
         Args:
             user: The user instance to log in
         """
@@ -90,4 +89,3 @@ class GraphQLTestCase(TestCase):
     def logout(self):
         """Log out the current user."""
         self.client.logout()
-

@@ -31,9 +31,9 @@ class TestSSOGraphQLTypes:
                 }
             }
         """
-        
+
         response = graphene_client.query(query)
-        
+
         assert response.get('errors') is None
         assert response['data']['__type'] is not None
         assert response['data']['__type']['name'] == 'SSOConnectionType'
@@ -48,9 +48,9 @@ class TestSSOGraphQLTypes:
                 }
             }
         """
-        
+
         response = graphene_client.query(query)
-        
+
         assert response.get('errors') is None
         assert response['data']['__type'] is not None
         assert response['data']['__type']['name'] == 'SCIMTokenType'
@@ -65,9 +65,9 @@ class TestSSOGraphQLTypes:
                 }
             }
         """
-        
+
         response = graphene_client.query(query)
-        
+
         assert response.get('errors') is None
         assert response['data']['__type'] is not None
         assert response['data']['__type']['name'] == 'PasskeyType'
@@ -82,9 +82,9 @@ class TestSSOGraphQLTypes:
                 }
             }
         """
-        
+
         response = graphene_client.query(query)
-        
+
         assert response.get('errors') is None
         assert response['data']['__type'] is not None
         assert response['data']['__type']['name'] == 'SSOSessionType'
@@ -99,9 +99,9 @@ class TestSSOGraphQLTypes:
                 }
             }
         """
-        
+
         response = graphene_client.query(query)
-        
+
         assert response.get('errors') is None
         assert response['data']['__type'] is not None
         assert response['data']['__type']['name'] == 'SSOAuditLogType'
@@ -121,9 +121,9 @@ class TestSSOMutationsRegistration:
                 }
             }
         """
-        
+
         response = graphene_client.query(query)
-        
+
         assert response.get('errors') is None
         field_names = [f['name'] for f in response['data']['__type']['fields']]
         assert 'createSsoConnection' in field_names
@@ -139,9 +139,9 @@ class TestSSOMutationsRegistration:
                 }
             }
         """
-        
+
         response = graphene_client.query(query)
-        
+
         assert response.get('errors') is None
         field_names = [f['name'] for f in response['data']['__type']['fields']]
         assert 'createScimToken' in field_names

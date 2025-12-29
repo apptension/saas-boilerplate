@@ -74,7 +74,7 @@ export const PasskeyLoginButton = () => {
 
       // 2. Create credential request (using base64url decoding)
       const publicKeyOptions: PublicKeyCredentialRequestOptions = {
-        challenge: base64UrlToUint8Array(options.challenge),
+        challenge: base64UrlToUint8Array(options.challenge) as BufferSource,
         timeout: options.timeout || 60000,
         rpId: options.rpId || window.location.hostname,
         userVerification: options.userVerification || 'preferred',

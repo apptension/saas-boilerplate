@@ -160,7 +160,7 @@ describe('MembershipEntry: Component', () => {
     });
 
     // Check that "No" is displayed and resend button is visible
-    expect(screen.getByText(/No/i)).toBeInTheDocument();
+    expect(await screen.findByText(/No/i)).toBeInTheDocument();
 
     // Click the resend button
     const resendButton = await screen.findByRole('button', { name: /Resend/i });
@@ -179,8 +179,8 @@ describe('MembershipEntry: Component', () => {
       apolloMocks: [commonQueryMock],
     });
 
-    // Check that "Yes" is displayed
-    expect(screen.getByText(/Yes/i)).toBeInTheDocument();
+    // Check that "Yes" is displayed (wait for it to appear)
+    expect(await screen.findByText(/Yes/i)).toBeInTheDocument();
 
     // Resend button should not be present
     expect(screen.queryByRole('button', { name: /Resend/i })).not.toBeInTheDocument();

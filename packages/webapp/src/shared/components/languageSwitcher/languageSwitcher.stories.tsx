@@ -1,7 +1,7 @@
 import { StoryFn } from '@storybook/react';
 
-import { LanguageSwitcher } from '.';
 import { withProviders } from '../../utils/storybook';
+import { LanguageSwitcher } from '.';
 
 const Template: StoryFn = () => <LanguageSwitcher />;
 

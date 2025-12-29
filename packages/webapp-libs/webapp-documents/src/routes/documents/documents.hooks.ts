@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 
 import {
@@ -24,10 +24,7 @@ export const useHandleDrop = () => {
 
       const newEdge = {
         node: cache.writeFragment({
-          data: {
-            createdAt: null,
-            ...node,
-          },
+          data: node,
           fragment: documentListItemFragment,
         }),
       };

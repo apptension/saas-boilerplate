@@ -22,7 +22,7 @@ class SecretsService:
     - OIDC client secrets
     - SP signing keys
     """
-    
+
     def __init__(self):
         self.client = boto3.client(
             'secretsmanager',
@@ -30,11 +30,11 @@ class SecretsService:
             endpoint_url=getattr(settings, 'AWS_ENDPOINT_URL', None),
         )
         self.prefix = f"{getattr(settings, 'ENVIRONMENT_NAME', 'dev')}/sso"
-    
+
     def _get_secret_name(self, tenant_id: str, secret_type: str) -> str:
         """Generate a standardized secret name."""
         return f"{self.prefix}/{tenant_id}/{secret_type}"
-    
+
     def store_secret(
         self,
         tenant_id: str,
@@ -44,18 +44,18 @@ class SecretsService:
     ) -> str:
         """
         Store a secret in AWS Secrets Manager.
-        
+
         Args:
             tenant_id: The tenant identifier
             secret_type: Type of secret (e.g., 'saml_certificate', 'oidc_client_secret')
             secret_value: The secret value to store
             description: Human-readable description
-        
+
         Returns:
             The ARN of the stored secret
         """
         secret_name = self._get_secret_name(tenant_id, secret_type)
-        
+
         try:
             # Try to create the secret
             response = self.client.create_secret(
@@ -69,7 +69,7 @@ class SecretsService:
                 ],
             )
             return response['ARN']
-        
+
         except ClientError as e:
             if e.response['Error']['Code'] == 'ResourceExistsException':
                 # Secret already exists, update it
@@ -83,14 +83,14 @@ class SecretsService:
             else:
                 logger.error(f"Error storing secret: {e}")
                 raise
-    
+
     def get_secret(self, secret_arn: str) -> Optional[str]:
         """
         Retrieve a secret from AWS Secrets Manager.
-        
+
         Args:
             secret_arn: The ARN or name of the secret
-        
+
         Returns:
             The secret value, or None if not found
         """
@@ -104,15 +104,15 @@ class SecretsService:
             else:
                 logger.error(f"Error retrieving secret: {e}")
                 raise
-    
+
     def delete_secret(self, secret_arn: str, force: bool = False) -> bool:
         """
         Delete a secret from AWS Secrets Manager.
-        
+
         Args:
             secret_arn: The ARN or name of the secret
             force: If True, delete immediately without recovery window
-        
+
         Returns:
             True if deleted successfully
         """
@@ -125,7 +125,7 @@ class SecretsService:
         except ClientError as e:
             logger.error(f"Error deleting secret: {e}")
             return False
-    
+
     def store_saml_certificate(
         self,
         tenant_id: str,
@@ -139,7 +139,7 @@ class SecretsService:
             secret_value=certificate,
             description=f"SAML IdP certificate for SSO connection {connection_id}",
         )
-    
+
     def store_sp_signing_key(
         self,
         tenant_id: str,
@@ -148,24 +148,26 @@ class SecretsService:
         certificate: str,
     ) -> str:
         """Store SP signing key pair (private key + certificate)."""
-        key_pair = json.dumps({
-            'private_key': private_key,
-            'certificate': certificate,
-        })
+        key_pair = json.dumps(
+            {
+                'private_key': private_key,
+                'certificate': certificate,
+            }
+        )
         return self.store_secret(
             tenant_id=tenant_id,
             secret_type=f"sp_signing_key_{connection_id}",
             secret_value=key_pair,
             description=f"SP signing key pair for SSO connection {connection_id}",
         )
-    
+
     def get_sp_signing_key(self, secret_arn: str) -> Optional[Dict[str, str]]:
         """Get SP signing key pair."""
         secret = self.get_secret(secret_arn)
         if secret:
             return json.loads(secret)
         return None
-    
+
     def store_oidc_client_secret(
         self,
         tenant_id: str,
@@ -179,15 +181,15 @@ class SecretsService:
             secret_value=client_secret,
             description=f"OIDC client secret for SSO connection {connection_id}",
         )
-    
+
     def rotate_secret(self, secret_arn: str, new_value: str) -> bool:
         """
         Rotate a secret with a new value.
-        
+
         Args:
             secret_arn: The ARN of the secret to rotate
             new_value: The new secret value
-        
+
         Returns:
             True if rotated successfully
         """
@@ -212,4 +214,3 @@ def get_secrets_service() -> SecretsService:
     if _secrets_service is None:
         _secrets_service = SecretsService()
     return _secrets_service
-

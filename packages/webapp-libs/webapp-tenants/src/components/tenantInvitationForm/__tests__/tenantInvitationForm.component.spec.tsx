@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
@@ -46,7 +45,8 @@ describe('TenantInvitationForm: Component', () => {
 
   it('should show non field error if error', async () => {
     const errorText = 'Provided value is invalid';
-    render(<Component error={new ApolloError({ graphQLErrors: [new GraphQLError(errorText)] })} />);
+    const mockError = { graphQLErrors: [new GraphQLError(errorText)] } as any;
+    render(<Component error={mockError as Error} />);
 
     expect(await screen.findByText(errorText)).toBeInTheDocument();
   });

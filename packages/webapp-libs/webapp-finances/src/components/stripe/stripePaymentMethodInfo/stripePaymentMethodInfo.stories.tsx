@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
 import { subscriptionPhaseFactory, subscriptionPlanFactory } from '@sb/webapp-api-client/tests/factories';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';

@@ -19,9 +19,17 @@ describe('LanguageSwitcher', () => {
     const button = await screen.findByRole('button', { name: /change language/i });
     await userEvent.click(button);
 
-    // Check that language options are visible
-    expect(await screen.findByText('English')).toBeInTheDocument();
-    expect(await screen.findByText('Polski')).toBeInTheDocument();
+    // Check that language options are visible in the dropdown menu
+    // Use getAllByText since "English" appears in both button and dropdown
+    const englishElements = await screen.findAllByText('English');
+    expect(englishElements.length).toBeGreaterThan(0);
+    
+    const polishElements = await screen.findAllByText('Polski');
+    expect(polishElements.length).toBeGreaterThan(0);
+    
+    // Verify dropdown menu items are present
+    const menuItems = await screen.findAllByRole('menuitem');
+    expect(menuItems.length).toBeGreaterThan(0);
   });
 
   it('should show flags for each language', async () => {

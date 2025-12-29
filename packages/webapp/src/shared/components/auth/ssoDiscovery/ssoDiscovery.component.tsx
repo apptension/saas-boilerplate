@@ -35,11 +35,6 @@ export const SSODiscovery = ({ email, onSSORequired }: SSODiscoveryProps) => {
   const [loading, setLoading] = useState(false);
   const [lastCheckedEmail, setLastCheckedEmail] = useState('');
 
-  // Check if SSO feature is enabled
-  if (!ENV.ENABLE_SSO) {
-    return null;
-  }
-
   const discoverSSO = useCallback(async (emailToCheck: string) => {
     if (!emailToCheck || !emailToCheck.includes('@')) {
       setDiscoveryResult(null);
@@ -87,6 +82,11 @@ export const SSODiscovery = ({ email, onSSORequired }: SSODiscoveryProps) => {
 
     return () => clearTimeout(timer);
   }, [email, discoverSSO]);
+
+  // Check if SSO feature is enabled
+  if (!ENV.ENABLE_SSO) {
+    return null;
+  }
 
   const handleSSOLogin = (connection: SSOConnection) => {
     // Get the intended destination from URL params, or default to home

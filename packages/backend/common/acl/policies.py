@@ -25,6 +25,7 @@ class AnyoneFullAccess(AccessPolicy):
 
 class IsAdminUser(AccessPolicy):
     """Access policy that requires the user to be a Django admin (is_superuser)."""
+
     statements = [make_statement(principal=Principal.Authenticated, action=Action.Any, effect=Effect.Allow)]
 
     def has_permission(self, request, view):

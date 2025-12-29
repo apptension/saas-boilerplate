@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { ResultOf } from '@graphql-typed-document-node/core';
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription/types';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';

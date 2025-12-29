@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
@@ -18,7 +17,7 @@ export type TenantFormProps = {
   initialData?: TenantFormFields | null;
   onSubmit: (formData: TenantFormFields) => void;
   loading: boolean;
-  error?: ApolloError;
+  error?: Error;
   /** Custom submit button label, defaults to "Save changes" */
   submitLabel?: ReactNode;
   /** Custom cancel URL, defaults to home route */

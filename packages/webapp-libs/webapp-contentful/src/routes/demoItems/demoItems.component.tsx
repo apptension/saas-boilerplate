@@ -1,4 +1,5 @@
-import { NetworkStatus, useQuery } from '@apollo/client';
+import { NetworkStatus } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { SchemaType } from '@sb/webapp-api-client/graphql';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Paragraph } from '@sb/webapp-core/components/typography';
@@ -120,7 +121,7 @@ export const DemoItems = () => {
   const renderError = () => {
     // Check if this is a configuration/network error (Contentful not set up)
     const isConfigError =
-      error?.networkError ||
+      (error && 'networkError' in error && error.networkError) ||
       error?.message?.includes('fetch') ||
       error?.message?.includes('network') ||
       error?.message?.includes('Failed to fetch');

@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useEffect } from 'react';
 
@@ -7,7 +6,7 @@ import { TenantInvitationFormFields } from './tenantInvitationForm.component';
 export type UseTenantInvitationFormHookProps = {
   initialData?: TenantInvitationFormFields | null;
   onSubmit: (formData: TenantInvitationFormFields) => void;
-  error?: ApolloError;
+  error?: Error;
 };
 
 export const useTenantInvitationForm = ({ error, onSubmit, initialData }: UseTenantInvitationFormHookProps) => {
@@ -21,7 +20,9 @@ export const useTenantInvitationForm = ({ error, onSubmit, initialData }: UseTen
   const { handleSubmit, setApolloGraphQLResponseErrors } = form;
 
   useEffect(() => {
-    if (error) setApolloGraphQLResponseErrors(error.graphQLErrors);
+    if (error && 'graphQLErrors' in error) {
+      setApolloGraphQLResponseErrors((error as any).graphQLErrors);
+    }
   }, [error, setApolloGraphQLResponseErrors]);
 
   const handleFormSubmit = handleSubmit((formData: TenantInvitationFormFields) => onSubmit(formData));

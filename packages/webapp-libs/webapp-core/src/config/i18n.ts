@@ -52,25 +52,44 @@ export interface TranslationsConfig {
 /**
  * Get translations configuration from environment variables.
  */
+// Helper to safely access import.meta (works in both Vite and Jest/Node)
+const getImportMeta = (): { env?: Record<string, string> } | undefined => {
+  // In Jest/Node, import.meta is not available, so we check via globalThis mock
+  if (typeof globalThis !== 'undefined' && (globalThis as any).__importMetaMock) {
+    return (globalThis as any).__importMetaMock;
+  }
+  
+  // In Vite, import.meta is available
+  try {
+    // Use Function constructor to avoid syntax error in Jest
+    const getMeta = new Function('return typeof import !== "undefined" ? import.meta : undefined');
+    return getMeta();
+  } catch {
+    return undefined;
+  }
+};
+
 const getTranslationsConfig = (): TranslationsConfig => {
   // Handle both Vite (import.meta.env) and Node (process.env) environments
   const getEnv = (key: string, defaultValue: string = ''): string => {
-     
-    const meta = import.meta as any;
-    if (typeof meta !== 'undefined' && meta.env) {
+    // Try import.meta.env (Vite) first
+    const meta = getImportMeta();
+    if (meta?.env) {
       return meta.env[key] || defaultValue;
     }
+    
+    // Fallback to process.env (Node.js/Jest)
     if (typeof process !== 'undefined' && process.env) {
       return process.env[key] || defaultValue;
     }
     return defaultValue;
   };
 
-   
-  const meta = import.meta as any;
+  // Check if we're in development mode
+  const meta = getImportMeta();
   const isDev =
-    (typeof meta !== 'undefined' && meta.env?.MODE === 'development') ||
-    (typeof process !== 'undefined' && process.env['NODE_ENV'] === 'development');
+    (meta?.env?.['MODE'] === 'development') ||
+    (typeof process !== 'undefined' && process.env && process.env['NODE_ENV'] === 'development');
 
   // Default: use remote translations in production, configurable in development
   const useRemote = getEnv('VITE_USE_REMOTE_TRANSLATIONS');

@@ -1,4 +1,5 @@
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
@@ -9,6 +10,10 @@ import polyfillNode from 'rollup-plugin-polyfill-node';
 import { UserConfig, defineConfig, loadEnv } from 'vite';
 import svgr from 'vite-plugin-svgr';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
+
+// ESM-compatible __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default defineConfig(async (props): Promise<UserConfig> => {
   const env = loadEnv(props.mode, process.cwd());

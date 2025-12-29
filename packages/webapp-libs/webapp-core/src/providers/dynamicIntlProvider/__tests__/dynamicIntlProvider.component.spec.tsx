@@ -39,7 +39,7 @@ describe('DynamicIntlProvider', () => {
 
   it('should render children with bundled translations as fallback', async () => {
     const TestComponent = () => (
-      <FormattedMessage id="Test / Key" defaultMessage="Default Test Message" />
+      <FormattedMessage id="NonExistent / Key" defaultMessage="Default Test Message" />
     );
 
     const { container } = render(<TestComponent />, {

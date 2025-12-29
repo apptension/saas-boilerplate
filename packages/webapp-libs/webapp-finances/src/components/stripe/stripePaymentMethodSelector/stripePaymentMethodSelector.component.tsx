@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { StripeSubscriptionQueryQuery } from '@sb/webapp-api-client';
 import { Button, RadioButton } from '@sb/webapp-core/components/buttons';
 import { FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';

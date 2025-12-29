@@ -1,5 +1,5 @@
 import { camelCaseKeys } from '@sb/webapp-core/utils';
-import { GraphQLError } from 'graphql/error/GraphQLError';
+import { GraphQLFormattedError, GraphQLError } from 'graphql';
 import { isEmpty, isNil, keys } from 'ramda';
 import { useCallback, useState } from 'react';
 import { FieldValues, Path, UseFormHandleSubmit, useForm } from 'react-hook-form';
@@ -104,7 +104,7 @@ export const useApiForm = <FormData extends FieldValues = FieldValues>(
   );
 
   const setApolloGraphQLResponseErrors = useCallback(
-    (errors: ReadonlyArray<GraphQLError>) => {
+    (errors: ReadonlyArray<GraphQLFormattedError>) => {
       const validationError = errors.find(({ message }) => message === 'GraphQlValidationError') as
         | GraphQLValidationError<FormData>
         | undefined;

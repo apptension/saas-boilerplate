@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { setUserId } from '@sb/webapp-core/services/analytics';
 import { PropsWithChildren, useCallback, useEffect, useMemo } from 'react';
 

@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';

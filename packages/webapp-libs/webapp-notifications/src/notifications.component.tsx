@@ -1,4 +1,5 @@
-import { NetworkStatus, useQuery, useSubscription } from '@apollo/client';
+import { NetworkStatus } from '@apollo/client';
+import { useQuery, useSubscription } from '@apollo/client/react';
 import { getFragmentData } from '@sb/webapp-api-client';
 import { Popover, PopoverContent, PopoverTrigger } from '@sb/webapp-core/components/ui/popover';
 import { ElementType, FC } from 'react';
@@ -27,30 +28,45 @@ export const Notifications: FC<NotificationsProps> = ({ templates, events }) => 
         options.data?.data?.notificationCreated?.notification
       );
 
-      if (notificationData) events[notificationData.type as NotificationTypes]?.();
+      if (notificationData) {
+        events[notificationData.type as NotificationTypes]?.();
 
-      options.client.cache.updateQuery({ query: notificationsListQuery }, (prev) => {
-        const prevListData = getFragmentData(notificationsListContentFragment, prev);
-        const alreadyExists = prevListData?.allNotifications?.edges?.find((edge) => {
+        const cache = options.client.cache;
+        const notificationId = cache.identify({ __typename: 'NotificationType', id: notificationData.id });
+        
+        // Check if notification already exists in the connection
+        const existingData = cache.readQuery({ query: notificationsListQuery });
+        const existingListData = existingData
+          ? getFragmentData(notificationsListContentFragment, existingData as any)
+          : undefined;
+        const alreadyExists = existingListData?.allNotifications?.edges?.some((edge) => {
           const nodeData = getFragmentData(notificationsListItemFragment, edge?.node);
-          return nodeData?.id === notificationData?.id;
+          return nodeData?.id === notificationData.id;
         });
-        if (alreadyExists) {
-          return prev;
-        }
 
-        return {
-          ...prev,
-          allNotifications: {
-            ...(prevListData?.allNotifications ?? {}),
-            edges: [
-              ...(notificationData ? [{ node: notificationData }] : []),
-              ...(prevListData?.allNotifications?.edges ?? []),
-            ],
-          },
-          hasUnreadNotifications: true,
-        };
-      });
+        if (!alreadyExists) {
+          // Write the notification fragment to cache
+          cache.writeFragment({
+            data: notificationData,
+            fragment: notificationsListItemFragment,
+          });
+
+          // Add to connection and update unread flag
+          cache.modify({
+            fields: {
+              allNotifications(existingConnection) {
+                return {
+                  ...existingConnection,
+                  edges: [{ node: { __ref: notificationId } }, ...(existingConnection?.edges ?? [])],
+                };
+              },
+              hasUnreadNotifications() {
+                return true;
+              },
+            },
+          });
+        }
+      }
     },
   });
 

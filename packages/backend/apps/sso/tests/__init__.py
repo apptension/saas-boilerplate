@@ -25,4 +25,3 @@ This package contains comprehensive tests for the Enterprise SSO feature:
 
 - conftest.py: Pytest configuration and fixture registration
 """
-

@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription';
 import {
   currentUserFactory,

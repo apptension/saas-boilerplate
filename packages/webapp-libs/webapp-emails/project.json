@@ -10,7 +10,7 @@
       "options": {
         "cwd": "packages/webapp-libs/webapp-emails",
         "color": true,
-        "command": "pnpm vite -c vite.config.ts build"
+        "command": "pnpm vite -c vite.config.mts build"
       }
     }
   },

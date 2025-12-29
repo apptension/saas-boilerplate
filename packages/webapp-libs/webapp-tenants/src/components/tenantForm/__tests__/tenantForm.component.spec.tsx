@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { GraphQLError } from 'graphql/error/GraphQLError';
@@ -38,7 +37,8 @@ describe('TenantForm: Component', () => {
   });
 
   it('should show non field error if error', async () => {
-    render(<Component error={new ApolloError({ graphQLErrors: [new GraphQLError('Provided value is invalid')] })} />);
+    const mockError = { graphQLErrors: [new GraphQLError('Provided value is invalid')] } as any;
+    render(<Component error={mockError as Error} />);
 
     expect(await screen.findByText('Provided value is invalid')).toBeInTheDocument();
   });

@@ -21,39 +21,57 @@ class TenantSSOConnectionAdmin(admin.ModelAdmin):
     list_filter = ['connection_type', 'status', 'jit_provisioning_enabled']
     search_fields = ['name', 'tenant__name', 'saml_entity_id', 'oidc_issuer']
     readonly_fields = ['created_at', 'updated_at', 'login_count', 'last_login_at']
-    
+
     fieldsets = (
-        ('Basic', {
-            'fields': ('tenant', 'name', 'connection_type', 'status')
-        }),
-        ('Access Control', {
-            'fields': ('allowed_domains', 'jit_provisioning_enabled', 'group_role_mapping')
-        }),
-        ('SAML Configuration', {
-            'fields': (
-                'saml_entity_id', 'saml_sso_url', 'saml_slo_url', 'saml_name_id_format',
-                'saml_certificate_arn', 'saml_signing_certificate_arn',
-                'saml_want_assertions_signed', 'saml_want_response_signed',
-                'saml_attribute_mapping',
-            ),
-            'classes': ('collapse',),
-        }),
-        ('OIDC Configuration', {
-            'fields': (
-                'oidc_issuer', 'oidc_client_id', 'oidc_client_secret_arn',
-                'oidc_authorization_endpoint', 'oidc_token_endpoint',
-                'oidc_userinfo_endpoint', 'oidc_jwks_uri', 'oidc_scopes',
-                'oidc_claim_mapping',
-            ),
-            'classes': ('collapse',),
-        }),
-        ('Metadata', {
-            'fields': ('idp_metadata_xml', 'sp_metadata_xml', 'metadata_last_updated'),
-            'classes': ('collapse',),
-        }),
-        ('Statistics', {
-            'fields': ('login_count', 'last_login_at', 'created_at', 'updated_at'),
-        }),
+        ('Basic', {'fields': ('tenant', 'name', 'connection_type', 'status')}),
+        ('Access Control', {'fields': ('allowed_domains', 'jit_provisioning_enabled', 'group_role_mapping')}),
+        (
+            'SAML Configuration',
+            {
+                'fields': (
+                    'saml_entity_id',
+                    'saml_sso_url',
+                    'saml_slo_url',
+                    'saml_name_id_format',
+                    'saml_certificate_arn',
+                    'saml_signing_certificate_arn',
+                    'saml_want_assertions_signed',
+                    'saml_want_response_signed',
+                    'saml_attribute_mapping',
+                ),
+                'classes': ('collapse',),
+            },
+        ),
+        (
+            'OIDC Configuration',
+            {
+                'fields': (
+                    'oidc_issuer',
+                    'oidc_client_id',
+                    'oidc_client_secret_arn',
+                    'oidc_authorization_endpoint',
+                    'oidc_token_endpoint',
+                    'oidc_userinfo_endpoint',
+                    'oidc_jwks_uri',
+                    'oidc_scopes',
+                    'oidc_claim_mapping',
+                ),
+                'classes': ('collapse',),
+            },
+        ),
+        (
+            'Metadata',
+            {
+                'fields': ('idp_metadata_xml', 'sp_metadata_xml', 'metadata_last_updated'),
+                'classes': ('collapse',),
+            },
+        ),
+        (
+            'Statistics',
+            {
+                'fields': ('login_count', 'last_login_at', 'created_at', 'updated_at'),
+            },
+        ),
     )
 
 
@@ -111,4 +129,3 @@ class SSOAuditLogAdmin(admin.ModelAdmin):
     search_fields = ['user__email', 'event_description', 'ip_address', 'tenant__name']
     readonly_fields = ['created_at']
     date_hierarchy = 'created_at'
-

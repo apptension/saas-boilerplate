@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { Card, CardContent } from '@sb/webapp-core/components/ui/card';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { FormattedMessage } from 'react-intl';

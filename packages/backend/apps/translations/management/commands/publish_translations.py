@@ -23,22 +23,9 @@ class Command(BaseCommand):
     help = 'Publish translations for a locale to S3'
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            'locale_code',
-            nargs='?',
-            type=str,
-            help='Locale code to publish (e.g., "en", "pl")'
-        )
-        parser.add_argument(
-            '--all',
-            action='store_true',
-            help='Publish all active locales'
-        )
-        parser.add_argument(
-            '--user',
-            type=str,
-            help='Email of user to attribute the publish to'
-        )
+        parser.add_argument('locale_code', nargs='?', type=str, help='Locale code to publish (e.g., "en", "pl")')
+        parser.add_argument('--all', action='store_true', help='Publish all active locales')
+        parser.add_argument('--user', type=str, help='Email of user to attribute the publish to')
 
     def handle(self, *args, **options):
         locale_code = options.get('locale_code')
@@ -62,9 +49,9 @@ class Command(BaseCommand):
             locales = Locale.objects.filter(is_active=True)
             if not locales:
                 raise CommandError('No active locales found')
-            
+
             self.stdout.write(f'Publishing {locales.count()} locales...')
-            
+
             for locale in locales:
                 self._publish_locale(publisher, locale, user)
         else:
@@ -72,7 +59,7 @@ class Command(BaseCommand):
                 locale = Locale.objects.get(code=locale_code, is_active=True)
             except Locale.DoesNotExist:
                 raise CommandError(f'Locale "{locale_code}" not found or inactive')
-            
+
             self._publish_locale(publisher, locale, user)
 
         self.stdout.write('')
@@ -80,13 +67,14 @@ class Command(BaseCommand):
 
     def _publish_locale(self, publisher, locale, user):
         self.stdout.write(f'Publishing {locale.name} ({locale.code})...')
-        
+
         try:
             version = publisher.publish(locale, user)
-            self.stdout.write(self.style.SUCCESS(
-                f'  ✓ Published version {version.version} ({version.translation_count} translations)'
-            ))
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f'  ✓ Published version {version.version} ({version.translation_count} translations)'
+                )
+            )
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'  ✗ Failed: {e}'))
             raise CommandError(f'Failed to publish {locale.code}: {e}')
-

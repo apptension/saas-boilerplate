@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { TenantMembershipType, TenantUserRole, getFragmentData } from '@sb/webapp-api-client';
 import { commonQueryMembershipFragment } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';

@@ -36,6 +36,21 @@ that will be handled by the multipart request spec
 """
 scalar Upload
 type Query {
+  "Get all active locales"
+  availableLocales: [LocaleType]
+  "Get the default locale"
+  defaultLocale: LocaleType
+  "Get translation sync status (admin only)"
+  translationSyncStatus: TranslationSyncStatusType
+  "Get translation progress for all locales"
+  localeProgress: [LocaleProgressType]
+  ssoConnections(before: String, after: String, first: Int, last: Int): SSOConnectionConnection
+  ssoConnection(id: ID): SSOConnectionType
+  scimTokens(before: String, after: String, first: Int, last: Int): SCIMTokenConnection
+  ssoAuditLogs(before: String, after: String, first: Int, last: Int): SSOAuditLogConnection
+  myPasskeys(before: String, after: String, first: Int, last: Int): PasskeyConnection
+  mySessions(before: String, after: String, first: Int, last: Int): SSOSessionConnection
+  myDevices(before: String, after: String, first: Int, last: Int): UserDeviceConnection
   allTenants(before: String, after: String, first: Int, last: Int): TenantConnection
   tenant(id: ID): TenantType
   allSubscriptionPlans(before: String, after: String, first: Int, last: Int): StripePriceConnection
@@ -56,11 +71,42 @@ type Query {
     id: ID!
   ): Node
 }
-type TenantConnection {
+"GraphQL type for Locale model."
+type LocaleType implements Node {
+  "The ID of the object"
+  id: ID!
+  "Locale code (e.g., 'en', 'pl', 'de', 'en-US')"
+  code: String!
+  "Language name in English (e.g., 'English', 'Polish')"
+  name: String!
+  "Language name in native language (e.g., 'English', 'Polski')"
+  nativeName: String!
+  "Whether this is the default/fallback locale"
+  isDefault: Boolean!
+  "Whether this locale is available to users"
+  isActive: Boolean!
+  "Right-to-left language (e.g., Arabic, Hebrew)"
+  rtl: Boolean!
+  translationProgress: Float
+}
+"Type for translation sync status."
+type TranslationSyncStatusType {
+  totalKeys: Int
+  activeKeys: Int
+  deprecatedKeys: Int
+}
+"Type for locale translation progress."
+type LocaleProgressType {
+  code: String
+  name: String
+  publishedTranslations: Int
+  progress: Float
+}
+type SSOConnectionConnection {
   "Pagination data for this connection."
   pageInfo: PageInfo!
   "Contains the nodes in this connection."
-  edges: [TenantEdge]!
+  edges: [SSOConnectionEdge]!
 }
 "The Relay compliant `PageInfo` type, containing data necessary to paginate this connection."
 type PageInfo {
@@ -72,6 +118,200 @@ type PageInfo {
   startCursor: String
   "When paginating forwards, the cursor to continue."
   endCursor: String
+}
+"A Relay edge containing a `SSOConnection` and its cursor."
+type SSOConnectionEdge {
+  "The item at the end of the edge"
+  node: SSOConnectionType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for SSO connections."
+type SSOConnectionType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+  "Display name for this SSO connection"
+  name: String!
+  connectionType: SsoTenantSSOConnectionConnectionTypeChoices!
+  status: SsoTenantSSOConnectionStatusChoices!
+  "List of email domains allowed to use this SSO connection"
+  allowedDomains: JSONString!
+  "Automatically create users on first SSO login"
+  jitProvisioningEnabled: Boolean!
+  "Mapping of IdP groups to tenant roles"
+  groupRoleMapping: JSONString!
+  samlEntityId: String!
+  samlSsoUrl: String!
+  "Single Logout URL"
+  samlSloUrl: String!
+  samlNameIdFormat: SsoTenantSSOConnectionSamlNameIdFormatChoices!
+  samlWantAssertionsSigned: Boolean!
+  samlWantResponseSigned: Boolean!
+  "Mapping of SAML attributes to user fields"
+  samlAttributeMapping: JSONString!
+  oidcIssuer: String!
+  oidcClientId: String!
+  oidcAuthorizationEndpoint: String!
+  oidcTokenEndpoint: String!
+  oidcUserinfoEndpoint: String!
+  oidcJwksUri: String!
+  "Space-separated list of OAuth scopes"
+  oidcScopes: String!
+  "Mapping of OIDC claims to user fields"
+  oidcClaimMapping: JSONString!
+  lastLoginAt: DateTime
+  loginCount: Int!
+  isActive: Boolean
+  isSaml: Boolean
+  isOidc: Boolean
+  spMetadataUrl: String
+}
+type SCIMTokenConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [SCIMTokenEdge]!
+}
+"A Relay edge containing a `SCIMToken` and its cursor."
+type SCIMTokenEdge {
+  "The item at the end of the edge"
+  node: SCIMTokenType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for SCIM tokens."
+type SCIMTokenType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+  "Display name for this token"
+  name: String!
+  "First 8 chars of token for identification"
+  tokenPrefix: String!
+  isActive: Boolean!
+  expiresAt: DateTime
+  lastUsedAt: DateTime
+  lastUsedIp: String
+  requestCount: Int!
+  isValid: Boolean
+  isExpired: Boolean
+}
+type SSOAuditLogConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [SSOAuditLogEdge]!
+}
+"A Relay edge containing a `SSOAuditLog` and its cursor."
+type SSOAuditLogEdge {
+  "The item at the end of the edge"
+  node: SSOAuditLogType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for SSO audit logs."
+type SSOAuditLogType implements Node {
+  createdAt: DateTime!
+  id: ID!
+  eventType: SsoSSOAuditLogEventTypeChoices!
+  eventDescription: String!
+  ipAddress: String
+  metadata: JSONString!
+  success: Boolean!
+  errorMessage: String!
+  userEmail: String
+  connectionName: String
+}
+type PasskeyConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [PasskeyEdge]!
+}
+"A Relay edge containing a `Passkey` and its cursor."
+type PasskeyEdge {
+  "The item at the end of the edge"
+  node: PasskeyType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for passkeys."
+type PasskeyType implements Node {
+  createdAt: DateTime!
+  id: ID!
+  "User-provided name for this passkey"
+  name: String!
+  authenticatorType: String!
+  transports: JSONString!
+  isActive: Boolean!
+  lastUsedAt: DateTime
+  useCount: Int!
+  deviceType: String!
+}
+type SSOSessionConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [SSOSessionEdge]!
+}
+"A Relay edge containing a `SSOSession` and its cursor."
+type SSOSessionEdge {
+  "The item at the end of the edge"
+  node: SSOSessionType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for SSO sessions."
+type SSOSessionType implements Node {
+  createdAt: DateTime!
+  id: ID!
+  deviceName: String!
+  deviceType: String!
+  browser: String!
+  operatingSystem: String!
+  ipAddress: String
+  location: String!
+  isActive: Boolean!
+  isCurrent: Boolean!
+  lastActivityAt: DateTime!
+  expiresAt: DateTime!
+  isValid: Boolean
+  isExpired: Boolean
+}
+type UserDeviceConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [UserDeviceEdge]!
+}
+"A Relay edge containing a `UserDevice` and its cursor."
+type UserDeviceEdge {
+  "The item at the end of the edge"
+  node: UserDeviceType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for user devices."
+type UserDeviceType implements Node {
+  createdAt: DateTime!
+  id: ID!
+  deviceName: String!
+  deviceType: String!
+  browser: String!
+  operatingSystem: String!
+  isTrusted: Boolean!
+  trustedAt: DateTime
+  lastSeenAt: DateTime!
+  lastIpAddress: String
+  lastLocation: String!
+  isBlocked: Boolean!
+}
+type TenantConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [TenantEdge]!
 }
 "A Relay edge containing a `Tenant` and its cursor."
 type TenantEdge {
@@ -758,6 +998,40 @@ type FileFieldType {
   name: String
 }
 type ApiMutation {
+  "Publish translations for a locale to S3/CDN."
+  publishTranslations(input: PublishTranslationsMutationInput!): PublishTranslationsMutationPayload
+  "Sync translation keys from master JSON."
+  syncTranslationKeys(input: SyncTranslationKeysMutationInput!): SyncTranslationKeysMutationPayload
+  "Rollback to a previous translation version."
+  rollbackTranslations(input: RollbackTranslationsMutationInput!): RollbackTranslationsMutationPayload
+  "Create a new SSO connection."
+  createSsoConnection(input: CreateSSOConnectionMutationInput!): CreateSSOConnectionMutationPayload
+  "Update an existing SSO connection."
+  updateSsoConnection(input: UpdateSSOConnectionMutationInput!): UpdateSSOConnectionMutationPayload
+  "Delete an SSO connection."
+  deleteSsoConnection(input: DeleteSSOConnectionMutationInput!): DeleteSSOConnectionMutationPayload
+  "Activate an SSO connection."
+  activateSsoConnection(input: ActivateSSOConnectionMutationInput!): ActivateSSOConnectionMutationPayload
+  "Deactivate an SSO connection."
+  deactivateSsoConnection(id: ID!): DeactivateSSOConnectionMutation
+  "Create a new SCIM token."
+  createScimToken(input: CreateSCIMTokenMutationInput!): CreateSCIMTokenMutationPayload
+  "Revoke a SCIM token."
+  revokeScimToken(id: ID!): RevokeSCIMTokenMutation
+  "Revoke an SSO session."
+  revokeSession(reason: String, sessionId: String!): RevokeSessionMutation
+  "Revoke all SSO sessions for the current user."
+  revokeAllSessions: RevokeAllSessionsMutation
+  "Mark a device as trusted."
+  trustDevice(id: ID!): TrustDeviceMutation
+  "Remove trust from a device."
+  untrustDevice(id: ID!): UntrustDeviceMutation
+  "Block a device."
+  blockDevice(id: ID!, reason: String): BlockDeviceMutation
+  "Rename a passkey."
+  renamePasskey(id: ID!, name: String!): RenamePasskeyMutation
+  "Delete a passkey."
+  deletePasskey(input: DeletePasskeyMutationInput!): DeletePasskeyMutationPayload
   updateTenant(input: UpdateTenantMutationInput!): UpdateTenantMutationPayload
   "Mutation to delete a tenant from the system."
   deleteTenant(input: DeleteTenantMutationInput!): DeleteTenantMutationPayload
@@ -796,6 +1070,170 @@ type ApiMutation {
   deleteDocumentDemoItem(input: DeleteDocumentDemoItemMutationInput!): DeleteDocumentDemoItemMutationPayload
   createFavoriteContentfulDemoItem(input: CreateFavoriteContentfulDemoItemMutationInput!): CreateFavoriteContentfulDemoItemMutationPayload
   deleteFavoriteContentfulDemoItem(input: DeleteFavoriteContentfulDemoItemMutationInput!): DeleteFavoriteContentfulDemoItemMutationPayload
+}
+"Publish translations for a locale to S3/CDN."
+type PublishTranslationsMutationPayload {
+  success: Boolean
+  version: String
+  message: String
+  clientMutationId: String
+}
+"Sync translation keys from master JSON."
+type SyncTranslationKeysMutationPayload {
+  success: Boolean
+  created: Int
+  updated: Int
+  deprecated: Int
+  message: String
+  clientMutationId: String
+}
+"Rollback to a previous translation version."
+type RollbackTranslationsMutationPayload {
+  success: Boolean
+  message: String
+  clientMutationId: String
+}
+"Create a new SSO connection."
+type CreateSSOConnectionMutationPayload {
+  id: String
+  "Display name for this SSO connection"
+  name: String
+  connectionType: connection_type
+  status: status
+  "List of email domains allowed to use this SSO connection"
+  allowedDomains: JSONString
+  "Automatically create users on first SSO login"
+  jitProvisioningEnabled: Boolean
+  "Mapping of IdP groups to tenant roles"
+  groupRoleMapping: JSONString
+  samlEntityId: String
+  samlSsoUrl: String
+  "Single Logout URL"
+  samlSloUrl: String
+  samlNameIdFormat: saml_name_id_format
+  samlWantAssertionsSigned: Boolean
+  samlWantResponseSigned: Boolean
+  "Mapping of SAML attributes to user fields"
+  samlAttributeMapping: JSONString
+  oidcIssuer: String
+  oidcClientId: String
+  oidcAuthorizationEndpoint: String
+  oidcTokenEndpoint: String
+  oidcUserinfoEndpoint: String
+  oidcJwksUri: String
+  "Space-separated list of OAuth scopes"
+  oidcScopes: String
+  "Mapping of OIDC claims to user fields"
+  oidcClaimMapping: JSONString
+  spMetadataXml: String
+  metadataLastUpdated: DateTime
+  lastLoginAt: DateTime
+  loginCount: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  ssoConnection: SSOConnectionType
+  clientMutationId: String
+}
+"Update an existing SSO connection."
+type UpdateSSOConnectionMutationPayload {
+  id: String
+  "Display name for this SSO connection"
+  name: String
+  connectionType: connection_type
+  status: status
+  "List of email domains allowed to use this SSO connection"
+  allowedDomains: JSONString
+  "Automatically create users on first SSO login"
+  jitProvisioningEnabled: Boolean
+  "Mapping of IdP groups to tenant roles"
+  groupRoleMapping: JSONString
+  samlEntityId: String
+  samlSsoUrl: String
+  "Single Logout URL"
+  samlSloUrl: String
+  samlNameIdFormat: saml_name_id_format
+  samlWantAssertionsSigned: Boolean
+  samlWantResponseSigned: Boolean
+  "Mapping of SAML attributes to user fields"
+  samlAttributeMapping: JSONString
+  oidcIssuer: String
+  oidcClientId: String
+  oidcAuthorizationEndpoint: String
+  oidcTokenEndpoint: String
+  oidcUserinfoEndpoint: String
+  oidcJwksUri: String
+  "Space-separated list of OAuth scopes"
+  oidcScopes: String
+  "Mapping of OIDC claims to user fields"
+  oidcClaimMapping: JSONString
+  spMetadataXml: String
+  metadataLastUpdated: DateTime
+  lastLoginAt: DateTime
+  loginCount: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  ssoConnection: SSOConnectionType
+  clientMutationId: String
+}
+"Delete an SSO connection."
+type DeleteSSOConnectionMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
+}
+"Activate an SSO connection."
+type ActivateSSOConnectionMutationPayload {
+  id: String
+  tenantId: String
+  ssoConnection: SSOConnectionType
+  clientMutationId: String
+}
+"Deactivate an SSO connection."
+type DeactivateSSOConnectionMutation {
+  ssoConnection: SSOConnectionType
+}
+"Create a new SCIM token."
+type CreateSCIMTokenMutationPayload {
+  tenantId: String
+  name: String
+  ssoConnectionId: String
+  expiresInDays: Int
+  scimToken: SCIMTokenType
+  rawToken: String
+  clientMutationId: String
+}
+"Revoke a SCIM token."
+type RevokeSCIMTokenMutation {
+  ok: Boolean
+}
+"Revoke an SSO session."
+type RevokeSessionMutation {
+  ok: Boolean
+}
+"Revoke all SSO sessions for the current user."
+type RevokeAllSessionsMutation {
+  ok: Boolean
+  revokedCount: Int
+}
+"Mark a device as trusted."
+type TrustDeviceMutation {
+  device: UserDeviceType
+}
+"Remove trust from a device."
+type UntrustDeviceMutation {
+  device: UserDeviceType
+}
+"Block a device."
+type BlockDeviceMutation {
+  device: UserDeviceType
+}
+"Rename a passkey."
+type RenamePasskeyMutation {
+  passkey: PasskeyType
+}
+"Delete a passkey."
+type DeletePasskeyMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
 }
 type UpdateTenantMutationPayload {
   tenant: TenantType
@@ -1037,6 +1475,90 @@ type NotificationCreatedSubscription {
 interface Node {
   "The ID of the object"
   id: ID!
+}
+"An enumeration."
+enum SsoTenantSSOConnectionConnectionTypeChoices {
+  "SAML 2.0"
+  SAML
+  "OpenID Connect"
+  OIDC
+}
+"An enumeration."
+enum SsoTenantSSOConnectionStatusChoices {
+  "Draft"
+  DRAFT
+  "Active"
+  ACTIVE
+  "Inactive"
+  INACTIVE
+  "Configuration Error"
+  ERROR
+}
+"An enumeration."
+enum SsoTenantSSOConnectionSamlNameIdFormatChoices {
+  "Email Address"
+  URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_EMAILADDRESS
+  "Persistent"
+  URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_PERSISTENT
+  "Transient"
+  URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_TRANSIENT
+  "Unspecified"
+  URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_UNSPECIFIED
+}
+"An enumeration."
+enum SsoSSOAuditLogEventTypeChoices {
+  "IdP Configuration Created"
+  IDP_CONFIG_CREATED
+  "IdP Configuration Updated"
+  IDP_CONFIG_UPDATED
+  "IdP Configuration Deleted"
+  IDP_CONFIG_DELETED
+  "IdP Configuration Activated"
+  IDP_CONFIG_ACTIVATED
+  "IdP Configuration Deactivated"
+  IDP_CONFIG_DEACTIVATED
+  "SSO Login Initiated"
+  SSO_LOGIN_INITIATED
+  "SSO Login Success"
+  SSO_LOGIN_SUCCESS
+  "SSO Login Failed"
+  SSO_LOGIN_FAILED
+  "SSO Logout"
+  SSO_LOGOUT
+  "User Provisioned via JIT"
+  USER_PROVISIONED
+  "User Updated via SSO"
+  USER_UPDATED
+  "Group Mapping Applied"
+  GROUP_MAPPING_APPLIED
+  "SCIM User Created"
+  SCIM_USER_CREATED
+  "SCIM User Updated"
+  SCIM_USER_UPDATED
+  "SCIM User Deleted"
+  SCIM_USER_DELETED
+  "SCIM Group Created"
+  SCIM_GROUP_CREATED
+  "SCIM Group Updated"
+  SCIM_GROUP_UPDATED
+  "SCIM Group Deleted"
+  SCIM_GROUP_DELETED
+  "Session Created"
+  SESSION_CREATED
+  "Session Revoked"
+  SESSION_REVOKED
+  "Device Registered"
+  DEVICE_REGISTERED
+  "Device Removed"
+  DEVICE_REMOVED
+  "Passkey Registered"
+  PASSKEY_REGISTERED
+  "Passkey Removed"
+  PASSKEY_REMOVED
+  "Passkey Auth Success"
+  PASSKEY_AUTH_SUCCESS
+  "Passkey Auth Failed"
+  PASSKEY_AUTH_FAILED
 }
 """
 
@@ -1457,6 +1979,35 @@ enum DjstripeChargeStatusChoices {
   SUCCEEDED
 }
 "An enumeration."
+enum connection_type {
+  "SAML 2.0"
+  SAML
+  "OpenID Connect"
+  OIDC
+}
+"An enumeration."
+enum status {
+  "Draft"
+  DRAFT
+  "Active"
+  ACTIVE
+  "Inactive"
+  INACTIVE
+  "Configuration Error"
+  ERROR
+}
+"An enumeration."
+enum saml_name_id_format {
+  "Email Address"
+  URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_EMAILADDRESS
+  "Persistent"
+  URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_PERSISTENT
+  "Transient"
+  URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_TRANSIENT
+  "Unspecified"
+  URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_UNSPECIFIED
+}
+"An enumeration."
 enum DjstripeSetupIntentCancellationReasonChoices {
   "Abandoned"
   ABANDONED
@@ -1486,6 +2037,106 @@ enum DjstripeSetupIntentUsageChoices {
   OFF_SESSION
   "On session"
   ON_SESSION
+}
+input PublishTranslationsMutationInput {
+  localeCode: String!
+  clientMutationId: String
+}
+input SyncTranslationKeysMutationInput {
+  translations: JSONString!
+  clientMutationId: String
+}
+input RollbackTranslationsMutationInput {
+  versionId: ID!
+  clientMutationId: String
+}
+input CreateSSOConnectionMutationInput {
+  id: String
+  tenantId: String!
+  "Display name for this SSO connection"
+  name: String!
+  connectionType: connection_type
+  status: status
+  "List of email domains allowed to use this SSO connection"
+  allowedDomains: JSONString
+  "Automatically create users on first SSO login"
+  jitProvisioningEnabled: Boolean
+  "Mapping of IdP groups to tenant roles"
+  groupRoleMapping: JSONString
+  samlEntityId: String
+  samlSsoUrl: String
+  "Single Logout URL"
+  samlSloUrl: String
+  samlNameIdFormat: saml_name_id_format
+  samlWantAssertionsSigned: Boolean
+  samlWantResponseSigned: Boolean
+  "Mapping of SAML attributes to user fields"
+  samlAttributeMapping: JSONString
+  oidcIssuer: String
+  oidcClientId: String
+  oidcAuthorizationEndpoint: String
+  oidcTokenEndpoint: String
+  oidcUserinfoEndpoint: String
+  oidcJwksUri: String
+  "Space-separated list of OAuth scopes"
+  oidcScopes: String
+  "Mapping of OIDC claims to user fields"
+  oidcClaimMapping: JSONString
+  clientMutationId: String
+}
+input UpdateSSOConnectionMutationInput {
+  id: String
+  tenantId: String!
+  "Display name for this SSO connection"
+  name: String!
+  connectionType: connection_type
+  status: status
+  "List of email domains allowed to use this SSO connection"
+  allowedDomains: JSONString
+  "Automatically create users on first SSO login"
+  jitProvisioningEnabled: Boolean
+  "Mapping of IdP groups to tenant roles"
+  groupRoleMapping: JSONString
+  samlEntityId: String
+  samlSsoUrl: String
+  "Single Logout URL"
+  samlSloUrl: String
+  samlNameIdFormat: saml_name_id_format
+  samlWantAssertionsSigned: Boolean
+  samlWantResponseSigned: Boolean
+  "Mapping of SAML attributes to user fields"
+  samlAttributeMapping: JSONString
+  oidcIssuer: String
+  oidcClientId: String
+  oidcAuthorizationEndpoint: String
+  oidcTokenEndpoint: String
+  oidcUserinfoEndpoint: String
+  oidcJwksUri: String
+  "Space-separated list of OAuth scopes"
+  oidcScopes: String
+  "Mapping of OIDC claims to user fields"
+  oidcClaimMapping: JSONString
+  clientMutationId: String
+}
+input DeleteSSOConnectionMutationInput {
+  id: String
+  clientMutationId: String
+}
+input ActivateSSOConnectionMutationInput {
+  id: String!
+  tenantId: String!
+  clientMutationId: String
+}
+input CreateSCIMTokenMutationInput {
+  tenantId: String!
+  name: String!
+  ssoConnectionId: String
+  expiresInDays: Int
+  clientMutationId: String
+}
+input DeletePasskeyMutationInput {
+  id: String
+  clientMutationId: String
 }
 input UpdateTenantMutationInput {
   name: String!

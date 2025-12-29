@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { FragmentType, NotificationConnection, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast/useToast';

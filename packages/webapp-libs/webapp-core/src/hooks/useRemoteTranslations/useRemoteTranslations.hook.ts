@@ -32,17 +32,29 @@ export interface RemoteTranslationsConfig {
 /**
  * Get environment variable safely across different environments.
  */
-const getEnvVar = (key: string, defaultValue: string = ''): string => {
-  // Vite environment - use type assertion to avoid import.meta.env typing issues
+// Helper to safely access import.meta (works in both Vite and Jest/Node)
+const getImportMeta = (): { env?: Record<string, string> } | undefined => {
+  // In Jest/Node, import.meta is not available, so we check via globalThis mock
+  if (typeof globalThis !== 'undefined' && (globalThis as any).__importMetaMock) {
+    return (globalThis as any).__importMetaMock;
+  }
+  
+  // In Vite, import.meta is available
   try {
-     
-    const importMeta = import.meta as any;
-    if (importMeta?.env) {
-      const value = importMeta.env[key];
-      if (value !== undefined) return String(value);
-    }
+    // Use Function constructor to avoid syntax error in Jest
+    const getMeta = new Function('return typeof import !== "undefined" ? import.meta : undefined');
+    return getMeta();
   } catch {
-    // import.meta not available
+    return undefined;
+  }
+};
+
+const getEnvVar = (key: string, defaultValue: string = ''): string => {
+  // Try import.meta.env (Vite) first
+  const importMeta = getImportMeta();
+  if (importMeta?.env) {
+    const value = importMeta.env[key];
+    if (value !== undefined) return String(value);
   }
   
   // Node environment
@@ -67,25 +79,19 @@ const getDefaultConfig = (): RemoteTranslationsConfig => ({
 async function fetchTranslations(locale: Locale, baseUrl: string): Promise<TranslationMessages> {
   const url = `${baseUrl}/${locale}.json`;
 
-  try {
-    const response = await fetch(url, {
-      headers: {
-        Accept: 'application/json',
-      },
-      // Add cache-busting in development
-      cache: getDefaultConfig().enablePolling ? 'no-cache' : 'default',
-    });
+  const response = await fetch(url, {
+    headers: {
+      Accept: 'application/json',
+    },
+    // Add cache-busting in development
+    cache: getDefaultConfig().enablePolling ? 'no-cache' : 'default',
+  });
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch translations: ${response.status} ${response.statusText}`);
-    }
-
-    return response.json();
-  } catch (error) {
-    console.warn(`Failed to load remote translations for ${locale}, using bundled defaults:`, error);
-    // Fall back to bundled translations
-    return translationMessages[locale] || translationMessages[DEFAULT_LOCALE];
+  if (!response.ok) {
+    throw new Error(`Failed to fetch translations: ${response.status} ${response.statusText}`);
   }
+
+  return response.json();
 }
 
 interface UseRemoteTranslationsResult {
@@ -140,10 +146,14 @@ export function useRemoteTranslations(
   const fetchData = useCallback(async () => {
     if (!enabled) {
       setData(translationMessages[locale] || translationMessages[DEFAULT_LOCALE]);
+      setIsError(false);
+      setError(null);
       return;
     }
 
     setIsFetching(true);
+    setIsError(false);
+    setError(null);
     try {
       const translations = await fetchTranslations(locale, translationsBaseUrl);
       setData(translations);

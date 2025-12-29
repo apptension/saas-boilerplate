@@ -1,5 +1,3 @@
-version: '3.4'
-
 volumes:
   web_backend_db_data:
     name: '${PROJECT_NAME}-web-backend-db-data'

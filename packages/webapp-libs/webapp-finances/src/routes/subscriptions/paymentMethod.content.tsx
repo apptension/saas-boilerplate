@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Link } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';

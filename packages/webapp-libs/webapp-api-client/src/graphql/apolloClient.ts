@@ -1,12 +1,12 @@
-import { ApolloClient, HttpLink, InMemoryCache, Observable, ServerError, from, split } from '@apollo/client';
-import { GraphQLErrors, NetworkError } from '@apollo/client/errors';
-import { FetchResult } from '@apollo/client/link/core';
+import { ApolloClient, HttpLink, InMemoryCache, Observable, from, split, FetchResult } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { getMainDefinition, relayStylePagination } from '@apollo/client/utilities';
 import { ENV } from '@sb/webapp-core/config/env';
+import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { ToastEmitterActions } from '@sb/webapp-core/toast';
-import { createUploadLink } from 'apollo-upload-client';
+import UploadHttpLink from 'apollo-upload-client/UploadHttpLink.mjs';
+import { GraphQLFormattedError } from 'graphql';
 import { Kind, OperationTypeNode } from 'graphql/language';
 
 import { apiURL, auth } from '../api';
@@ -18,9 +18,103 @@ const IS_LOCAL_ENV = ENV.ENVIRONMENT_NAME === 'local';
 
 export const emitter = new Emitter();
 
-const httpApiLink = createUploadLink({
+// Flag to prevent multiple redirects in quick succession
+let redirectingToLogin = false;
+let redirectTimeout: NodeJS.Timeout | null = null;
+
+/**
+ * Redirects to the login page when authentication fails.
+ * Extracts the current locale from the URL and constructs the login path.
+ * Calls logout endpoint to properly clear session cookies.
+ */
+const redirectToLogin = () => {
+  // Prevent multiple redirects in quick succession
+  if (redirectingToLogin) {
+    return;
+  }
+  
+  // Extract locale from current pathname (e.g., /en/... or /pl/...)
+  const pathname = window.location.pathname;
+  const localeMatch = pathname.match(/^\/([a-z]{2})\//);
+  const locale = localeMatch ? localeMatch[1] : 'en'; // Default to 'en' if no locale found
+  
+  // Construct login path with locale
+  const loginPath = `/${locale}/${RoutesConfig.login}`;
+  
+  // Check if we're already on the login page to avoid redirect loops
+  if (pathname.includes('/auth/login')) {
+    return;
+  }
+  
+  // Set flag to prevent multiple redirects
+  redirectingToLogin = true;
+  
+  // Clear any existing timeout
+  if (redirectTimeout) {
+    clearTimeout(redirectTimeout);
+  }
+  
+  // Clear any stale authentication data from storage
+  try {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refresh_token');
+    sessionStorage.clear();
+  } catch (e) {
+    // Ignore storage errors (e.g., in private browsing mode)
+  }
+  
+  // Call logout endpoint to properly clear session cookies (including HTTP-only cookies)
+  // This ensures the backend clears all auth cookies and blacklists the refresh token
+  // Fire logout request but don't wait - redirect immediately to prevent further 401s
+  auth.logout().catch(() => {
+    // Ignore logout errors - we'll redirect anyway
+    // The logout might fail if the session is already invalid, which is fine
+  });
+  
+  // Use replace instead of href to prevent back button issues
+  // Redirect immediately - page reload will stop all operations and clear cache
+  // Small delay ensures logout request is sent before redirect
+  setTimeout(() => {
+    window.location.replace(loginPath);
+  }, 100);
+};
+
+const httpApiLink = new UploadHttpLink({
   uri: apiURL('/graphql/'),
+  credentials: 'include', // Required for cookie-based authentication
 });
+
+// Helper function to check if an error is a 401
+const is401Error = (error: any): boolean => {
+  if (!error) return false;
+  
+  // Check various possible status code locations
+  const statusCode =
+    error.statusCode ||
+    error.status ||
+    error.response?.status ||
+    (error.response instanceof Response ? error.response.status : null) ||
+    (error instanceof Response ? error.status : null);
+  
+  // Check error message - ServerError from Apollo often has "status code 401" in message
+  const errorMessage = error.message || error.toString() || '';
+  
+  // Check if error has a result with status
+  if (error.result && typeof error.result === 'object') {
+    if (error.result.status === 401) return true;
+  }
+  
+  // Check for ServerError with status code in message
+  const isServerError = error.name === 'ServerError' || errorMessage.includes('ServerError');
+  const has401InMessage = errorMessage.includes('401') || errorMessage.includes('status code 401');
+  
+  return (
+    statusCode === 401 ||
+    (isServerError && has401InMessage) ||
+    errorMessage.includes('Unauthorized') ||
+    (error.response && error.response.status === 401)
+  );
+};
 
 function showNetworkErrorMessage() {
   emitter.dispatchEvent(ToastEmitterActions.ADD_TOAST, {
@@ -31,8 +125,8 @@ function showNetworkErrorMessage() {
 
 const handleApiErrors = (
   callRefresh: () => Observable<FetchResult> | void,
-  graphQLErrors?: GraphQLErrors,
-  networkError?: NetworkError
+  graphQLErrors?: ReadonlyArray<GraphQLFormattedError>,
+  networkError?: Error | null
 ) => {
   if (graphQLErrors) {
     for (const err of graphQLErrors) {
@@ -45,10 +139,21 @@ const handleApiErrors = (
     }
   }
 
+  if (networkError && is401Error(networkError)) {
+    if (IS_LOCAL_ENV) {
+      console.log('[handleApiErrors] Detected 401 error, redirecting to login', networkError);
+    }
+    // Redirect immediately - page reload will clear cache
+    redirectToLogin();
+    return;
+  }
+  
   if (networkError) {
-    const result = (networkError as ServerError).result;
-    if (typeof result !== 'string') {
-      if (result && result?.['code']?.code === 'token_not_valid') {
+    // Apollo Client 4: ServerError structure may have changed
+    const serverError = networkError as any;
+    
+    if (serverError.result && typeof serverError.result !== 'string') {
+      if (serverError.result?.['code']?.code === 'token_not_valid') {
         return callRefresh();
       }
     }
@@ -56,7 +161,19 @@ const handleApiErrors = (
   }
 };
 
-const refreshTokenLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
+const refreshTokenLink = onError((error: any) => {
+  const { graphQLErrors, networkError, operation, forward } = error;
+  
+  // Check for 401 errors first, before trying to refresh token
+  if (networkError && is401Error(networkError)) {
+    if (IS_LOCAL_ENV) {
+      console.log('[Apollo Error] Detected 401 error, redirecting to login', networkError);
+    }
+    // Redirect immediately - page reload will clear cache
+    redirectToLogin();
+    return;
+  }
+  
   const callRefresh = (): Observable<FetchResult> | void =>
     new Observable((observer) => {
       (async () => {
@@ -72,6 +189,9 @@ const refreshTokenLink = onError(({ graphQLErrors, networkError, operation, forw
 
           forward(operation).subscribe(subscriber);
         } catch (err) {
+          // If refresh token fails, redirect to login
+          // Page reload will clear cache automatically
+          redirectToLogin();
           observer.error(err);
         }
       })();
@@ -84,12 +204,13 @@ const httpContentfulLink = new HttpLink({
   uri: `https://graphql.contentful.com/content/v1/spaces/${ENV.CONTENTFUL_SPACE}/environments/${ENV.CONTENTFUL_ENV}?access_token=${ENV.CONTENTFUL_TOKEN}`,
 });
 
+const apiLinkChain = from([refreshTokenLink, httpApiLink]);
 const splitHttpLink = split(
   (operation) => {
     const { schemaType = SchemaType.API } = operation.getContext();
     return schemaType === SchemaType.API;
   },
-  from([refreshTokenLink, httpApiLink]),
+  apiLinkChain as any,
   httpContentfulLink
 );
 
@@ -109,6 +230,16 @@ const maxRetryAttempts = 5;
 const retryLink = new RetryLink({
   delay: () => 1000,
   attempts: (count, operation, error) => {
+    // Don't retry on 401 errors - redirect to login instead
+    if (error && is401Error(error)) {
+      if (IS_LOCAL_ENV) {
+        console.log('[RetryLink] Detected 401 error, redirecting to login', error);
+      }
+      // Redirect immediately - page reload will clear cache
+      redirectToLogin();
+      return false; // Don't retry
+    }
+    
     if (count === maxRetryAttempts) {
       showNetworkErrorMessage();
     }
@@ -117,7 +248,9 @@ const retryLink = new RetryLink({
 });
 
 export const client = new ApolloClient({
-  connectToDevTools: IS_LOCAL_ENV,
+  devtools: {
+    enabled: IS_LOCAL_ENV,
+  },
   link: from([retryLink, splitLink]),
   cache: new InMemoryCache({
     typePolicies: {

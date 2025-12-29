@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { DocumentsListQueryQuery } from '@sb/webapp-api-client/graphql';
 import { Dropzone } from '@sb/webapp-core/components/forms';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';

@@ -47,7 +47,7 @@
       "options": {
         "cwd": "packages/webapp",
         "color": true,
-        "command": "pnpm vite -c vite.config.ts build"
+        "command": "pnpm vite -c vite.config.mts build"
       },
       "dependsOn": ["graphql:generate-types"]
     },

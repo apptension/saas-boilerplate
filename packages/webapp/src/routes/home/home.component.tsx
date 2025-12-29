@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { Link } from '@sb/webapp-core/components/buttons';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';

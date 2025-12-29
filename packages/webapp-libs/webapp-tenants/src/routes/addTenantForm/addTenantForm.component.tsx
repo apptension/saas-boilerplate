@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { gql } from '@sb/webapp-api-client/graphql';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';

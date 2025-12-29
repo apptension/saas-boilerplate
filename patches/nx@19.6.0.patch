@@ -1,0 +1,13 @@
+diff --git a/src/tasks-runner/run-command.js b/src/tasks-runner/run-command.js
+index 62ce54fc2ed49ceaa901e29e0f4dabe3ece98da8..fc309ca17d49c7fa2f82f2ec5f5a4e69edd66091 100644
+--- a/src/tasks-runner/run-command.js
++++ b/src/tasks-runner/run-command.js	
+@@ -241,7 +241,7 @@ function setEnvVarsBasedOnArgs(nxArgs, loadDotEnvFiles) {
+     if (nxArgs.outputStyle == 'stream-without-prefixes') {
+         process.env.NX_STREAM_OUTPUT = 'true';
+     }
+-    if (loadDotEnvFiles) {
++    if (loadDotEnvFiles && !process.env.NX_LOAD_DOT_ENV_FILES) {
+         process.env.NX_LOAD_DOT_ENV_FILES = 'true';
+     }
+ }

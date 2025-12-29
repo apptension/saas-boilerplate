@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Dialog, DialogContent } from '@sb/webapp-core/components/ui/dialog';

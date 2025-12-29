@@ -155,9 +155,7 @@ class ResendTenantInvitationSerializer(serializers.Serializer):
         membership_id = attrs["id"]
         tenant = self.context["request"].tenant
 
-        membership = (
-            models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, tenant=tenant).first()
-        )
+        membership = models.TenantMembership.objects.get_not_accepted().filter(pk=membership_id, tenant=tenant).first()
 
         if not membership:
             raise exceptions.NotFound(_("Pending invitation not found."))

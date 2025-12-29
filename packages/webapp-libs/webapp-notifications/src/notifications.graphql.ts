@@ -5,6 +5,39 @@ export const notificationsListQuery = gql(/* GraphQL */ `
     ...notificationsListContentFragment
     ...notificationsButtonContent
   }
+  
+  fragment notificationsListContentFragment on Query {
+    hasUnreadNotifications
+    allNotifications(first: $count, after: $cursor) {
+      edges {
+        node {
+          id
+          ...notificationsListItemFragment
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  
+  fragment notificationsListItemFragment on NotificationType {
+    id
+    data
+    createdAt
+    readAt
+    type
+    issuer {
+      id
+      avatar
+      email
+    }
+  }
+  
+  fragment notificationsButtonContent on Query {
+    hasUnreadNotifications
+  }
 `);
 
 export const notificationCreatedSubscription = gql(/* GraphQL */ `
@@ -13,6 +46,19 @@ export const notificationCreatedSubscription = gql(/* GraphQL */ `
       notification {
         ...notificationsListItemFragment
       }
+    }
+  }
+  
+  fragment notificationsListItemFragment on NotificationType {
+    id
+    data
+    createdAt
+    readAt
+    type
+    issuer {
+      id
+      avatar
+      email
     }
   }
 `);

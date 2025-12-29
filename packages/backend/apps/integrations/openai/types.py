@@ -19,7 +19,7 @@ class OpenAIResponse(BaseModel):
 class OpenAICompletionResponseChoice(BaseModel):
     text: str
     index: int
-    longprobs: Optional[int]
+    logprobs: Optional[int] = None
     finish_reason: str
 
 

@@ -1,14 +1,14 @@
-import { renderHook, waitFor } from '@testing-library/react';
-import { MockedProvider, MockedResponse } from '@apollo/client/testing';
-import { ReactNode } from 'react';
+import { waitFor } from '@testing-library/react';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 
-import { useSSOConnections } from '../useSSOConnections';
 import {
-  GET_SSO_CONNECTIONS,
+  useSSOConnections,
+  SSO_CONNECTIONS_QUERY,
   CREATE_SSO_CONNECTION,
   UPDATE_SSO_CONNECTION,
   DELETE_SSO_CONNECTION,
-} from '../../graphql/ssoConnections.graphql';
+} from '../useSSOConnections';
+import { renderHook } from '../../tests/utils/rendering';
 
 const mockTenantId = 'tenant-123';
 
@@ -17,54 +17,48 @@ const mockSSOConnection = {
   name: 'Okta SAML',
   connectionType: 'SAML',
   status: 'ACTIVE',
+  allowedDomains: null,
   jitProvisioningEnabled: true,
   samlEntityId: 'https://okta.example.com',
   samlSsoUrl: 'https://okta.example.com/sso',
+  oidcIssuer: null,
+  oidcClientId: null,
+  lastLoginAt: null,
+  loginCount: 0,
   createdAt: '2024-01-01T00:00:00Z',
-  updatedAt: '2024-01-01T00:00:00Z',
+  spMetadataUrl: null,
 };
 
-const mockGetConnectionsResponse: MockedResponse = {
-  request: {
-    query: GET_SSO_CONNECTIONS,
-    variables: { tenantId: mockTenantId },
-  },
-  result: {
-    data: {
-      ssoConnections: {
-        edges: [
-          {
-            node: mockSSOConnection,
-            cursor: 'cursor-1',
-          },
-        ],
-        pageInfo: {
-          hasNextPage: false,
-          endCursor: 'cursor-1',
+const mockGetConnectionsResponse = composeMockedQueryResult(SSO_CONNECTIONS_QUERY, {
+  variables: { tenantId: mockTenantId },
+  data: {
+    ssoConnections: {
+      edges: [
+        {
+          node: mockSSOConnection,
+          cursor: 'cursor-1',
         },
+      ],
+      pageInfo: {
+        hasNextPage: false,
+        endCursor: 'cursor-1',
       },
     },
   },
-};
-
-const wrapper = (mocks: MockedResponse[]) => {
-  return ({ children }: { children: ReactNode }) => (
-    <MockedProvider mocks={mocks} addTypename={false}>
-      {children}
-    </MockedProvider>
-  );
-};
+});
 
 describe('useSSOConnections', () => {
   it('should fetch SSO connections', async () => {
-    const { result } = renderHook(
+    const { result, waitForApolloMocks } = renderHook(
       () => useSSOConnections(mockTenantId),
-      { wrapper: wrapper([mockGetConnectionsResponse]) }
+      { apolloMocks: (defaultMocks) => defaultMocks.concat(mockGetConnectionsResponse) }
     );
 
-    expect(result.current.loading).toBe(true);
-
+    // Wait for SSO_CONNECTIONS_QUERY mock (index 1, since CommonQuery is index 0)
+    await waitForApolloMocks(1);
+    
     await waitFor(() => {
+      expect(result.current).not.toBeNull();
       expect(result.current.loading).toBe(false);
     });
 
@@ -73,56 +67,94 @@ describe('useSSOConnections', () => {
   });
 
   it('should handle fetch error', async () => {
-    const errorMock: MockedResponse = {
-      request: {
-        query: GET_SSO_CONNECTIONS,
-        variables: { tenantId: mockTenantId },
-      },
-      error: new Error('Network error'),
-    };
+    const errorMock = composeMockedQueryResult(SSO_CONNECTIONS_QUERY, {
+      variables: { tenantId: mockTenantId },
+      data: null,
+      errors: [new Error('Network error') as any],
+    });
 
-    const { result } = renderHook(
+    const { result, waitForApolloMocks } = renderHook(
       () => useSSOConnections(mockTenantId),
-      { wrapper: wrapper([errorMock]) }
+      { apolloMocks: (defaultMocks) => defaultMocks.concat(errorMock) }
     );
 
+    // Wait for SSO_CONNECTIONS_QUERY mock (index 1)
+    await waitForApolloMocks(1);
+    
     await waitFor(() => {
       expect(result.current.error).toBeDefined();
     });
   });
 
   it('should create SSO connection', async () => {
-    const createMock: MockedResponse = {
-      request: {
-        query: CREATE_SSO_CONNECTION,
-        variables: {
-          input: {
-            tenantId: mockTenantId,
+    const createMock = composeMockedQueryResult(CREATE_SSO_CONNECTION, {
+      variables: {
+        input: {
+          tenantId: mockTenantId,
+          name: 'New Connection',
+          connectionType: 'OIDC',
+        },
+      },
+      data: {
+        createSsoConnection: {
+          ssoConnection: {
+            id: 'sso-conn-2',
             name: 'New Connection',
             connectionType: 'OIDC',
+            status: 'DRAFT',
           },
         },
       },
-      result: {
-        data: {
-          createSsoConnection: {
-            ssoConnection: {
-              id: 'sso-conn-2',
-              name: 'New Connection',
-              connectionType: 'OIDC',
-              status: 'DRAFT',
-            },
-          },
-        },
-      },
-    };
+    });
 
-    const { result } = renderHook(
+    // Add refetch mock for when mutation completes
+    const refetchMock = composeMockedQueryResult(SSO_CONNECTIONS_QUERY, {
+      variables: { tenantId: mockTenantId },
+      data: {
+        ssoConnections: {
+          edges: [
+            {
+              node: mockSSOConnection,
+              cursor: 'cursor-1',
+            },
+            {
+              node: {
+                id: 'sso-conn-2',
+                name: 'New Connection',
+                connectionType: 'OIDC',
+                status: 'DRAFT',
+                allowedDomains: null,
+                jitProvisioningEnabled: false,
+                samlEntityId: null,
+                samlSsoUrl: null,
+                oidcIssuer: 'https://oidc.example.com',
+                oidcClientId: 'client-123',
+                lastLoginAt: null,
+                loginCount: 0,
+                createdAt: '2024-01-15T00:00:00Z',
+                spMetadataUrl: null,
+              },
+              cursor: 'cursor-2',
+            },
+          ],
+          pageInfo: {
+            hasNextPage: false,
+            endCursor: 'cursor-2',
+          },
+        },
+      },
+    });
+
+    const { result, waitForApolloMocks } = renderHook(
       () => useSSOConnections(mockTenantId),
-      { wrapper: wrapper([mockGetConnectionsResponse, createMock]) }
+      { apolloMocks: (defaultMocks) => defaultMocks.concat(mockGetConnectionsResponse, createMock, refetchMock) }
     );
 
+    // Wait for SSO_CONNECTIONS_QUERY mock (index 1)
+    await waitForApolloMocks(1);
+    
     await waitFor(() => {
+      expect(result.current).not.toBeNull();
       expect(result.current.loading).toBe(false);
     });
 
@@ -130,34 +162,52 @@ describe('useSSOConnections', () => {
   });
 
   it('should update SSO connection', async () => {
-    const updateMock: MockedResponse = {
-      request: {
-        query: UPDATE_SSO_CONNECTION,
-        variables: {
-          input: {
-            id: 'sso-conn-1',
+    const updateMock = composeMockedQueryResult(UPDATE_SSO_CONNECTION, {
+      variables: {
+        input: {
+          id: 'sso-conn-1',
+          name: 'Updated Name',
+        },
+      },
+      data: {
+        updateSsoConnection: {
+          ssoConnection: {
+            ...mockSSOConnection,
             name: 'Updated Name',
           },
         },
       },
-      result: {
-        data: {
-          updateSsoConnection: {
-            ssoConnection: {
-              ...mockSSOConnection,
-              name: 'Updated Name',
+    });
+
+    // Add refetch mock
+    const refetchMock = composeMockedQueryResult(SSO_CONNECTIONS_QUERY, {
+      variables: { tenantId: mockTenantId },
+      data: {
+        ssoConnections: {
+          edges: [
+            {
+              node: { ...mockSSOConnection, name: 'Updated Name' },
+              cursor: 'cursor-1',
             },
+          ],
+          pageInfo: {
+            hasNextPage: false,
+            endCursor: 'cursor-1',
           },
         },
       },
-    };
+    });
 
-    const { result } = renderHook(
+    const { result, waitForApolloMocks } = renderHook(
       () => useSSOConnections(mockTenantId),
-      { wrapper: wrapper([mockGetConnectionsResponse, updateMock]) }
+      { apolloMocks: (defaultMocks) => defaultMocks.concat(mockGetConnectionsResponse, updateMock, refetchMock) }
     );
 
+    // Wait for SSO_CONNECTIONS_QUERY mock (index 1)
+    await waitForApolloMocks(1);
+    
     await waitFor(() => {
+      expect(result.current).not.toBeNull();
       expect(result.current.loading).toBe(false);
     });
 
@@ -165,39 +215,58 @@ describe('useSSOConnections', () => {
   });
 
   it('should delete SSO connection', async () => {
-    const deleteMock: MockedResponse = {
-      request: {
-        query: DELETE_SSO_CONNECTION,
-        variables: {
-          input: { id: 'sso-conn-1' },
+    const deleteMock = composeMockedQueryResult(DELETE_SSO_CONNECTION, {
+      variables: {
+        input: { id: 'sso-conn-1' },
+      },
+      data: {
+        deleteSsoConnection: {
+          deletedIds: ['sso-conn-1'],
         },
       },
-      result: {
-        data: {
-          deleteSsoConnection: {
-            deleted: true,
+    });
+
+    // Add refetch mock for empty list after deletion
+    const refetchMock = composeMockedQueryResult(SSO_CONNECTIONS_QUERY, {
+      variables: { tenantId: mockTenantId },
+      data: {
+        ssoConnections: {
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            endCursor: null,
           },
         },
       },
-    };
+    });
 
-    const { result } = renderHook(
+    const { result, waitForApolloMocks } = renderHook(
       () => useSSOConnections(mockTenantId),
-      { wrapper: wrapper([mockGetConnectionsResponse, deleteMock]) }
+      { apolloMocks: (defaultMocks) => defaultMocks.concat(mockGetConnectionsResponse, deleteMock, refetchMock) }
     );
 
+    // Wait for SSO_CONNECTIONS_QUERY mock (index 1)
+    await waitForApolloMocks(1);
+    
     await waitFor(() => {
+      expect(result.current).not.toBeNull();
       expect(result.current.loading).toBe(false);
     });
 
     expect(result.current.deleteConnection).toBeDefined();
   });
 
-  it('should not fetch when tenantId is empty', () => {
-    const { result } = renderHook(
+  it('should not fetch when tenantId is empty', async () => {
+    const { result, waitForApolloMocks } = renderHook(
       () => useSSOConnections(''),
-      { wrapper: wrapper([]) }
+      { apolloMocks: (defaultMocks) => defaultMocks }
     );
+
+    await waitForApolloMocks();
+    
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
 
     expect(result.current.loading).toBe(false);
     expect(result.current.connections).toEqual([]);

@@ -36,6 +36,7 @@ def oidc_connection(oidc_sso_connection):
 def active_sso_connection(tenant_sso_connection):
     """Create an active SSO connection."""
     from apps.sso.constants import SSOConnectionStatus
+
     tenant_sso_connection.status = SSOConnectionStatus.ACTIVE
     tenant_sso_connection.save()
     return tenant_sso_connection
@@ -45,6 +46,7 @@ def active_sso_connection(tenant_sso_connection):
 def scim_token_with_raw(tenant):
     """Create a SCIM token and return both instance and raw token."""
     from apps.sso.models import SCIMToken
+
     token_instance, raw_token = SCIMToken.create_for_tenant(
         tenant=tenant,
         name="Test SCIM Token",

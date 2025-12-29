@@ -46,7 +46,7 @@ class TestSAMLSSOFlow:
         # Assertions
         assert created is True
         assert user.email == 'newuser@example.com'
-        
+
         # Check SSO link was created
         assert link.idp_user_id == 'saml_user_123'
         assert link.sso_connection == connection
@@ -56,14 +56,14 @@ class TestSAMLSSOFlow:
         connection = tenant_sso_connection
         connection.status = constants.SSOConnectionStatus.ACTIVE
         connection.save()
-        
+
         # Create existing link
         link = factories.SSOUserLinkFactory(
             user=user,
             sso_connection=connection,
             idp_user_id='existing_idp_user',
         )
-        
+
         # Create membership
         TenantMembership.objects.create(
             user=user,
@@ -153,13 +153,17 @@ class TestSessionManagementFlow:
         current_session = factories.SSOSessionFactory(user=user)
 
         # Revoke all except current
-        revoked_count = models.SSOSession.objects.filter(
-            user=user,
-            is_active=True,
-        ).exclude(id=current_session.id).update(
-            is_active=False,
-            revoked_at=timezone.now(),
-            revoked_reason="User logged out all other sessions",
+        revoked_count = (
+            models.SSOSession.objects.filter(
+                user=user,
+                is_active=True,
+            )
+            .exclude(id=current_session.id)
+            .update(
+                is_active=False,
+                revoked_at=timezone.now(),
+                revoked_reason="User logged out all other sessions",
+            )
         )
 
         assert revoked_count == 2

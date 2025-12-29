@@ -1,13 +1,21 @@
 import dns from 'dns';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
 import tailwind from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
 import { UserConfig, defineConfig, loadEnv } from 'vite';
 import svgr from 'vite-plugin-svgr';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
+
+// ESM-compatible __dirname and require
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const require = createRequire(import.meta.url);
 
 dns.setDefaultResultOrder('verbatim');
 
@@ -29,6 +37,12 @@ export default defineConfig(({ mode }): UserConfig => {
       port: 3000,
       host: 'localhost',
       open: true,
+      headers: {
+        // Disable caching in development to prevent stale JavaScript
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
       proxy: {
         '/api': {
           target: 'http://localhost:5001',
@@ -53,7 +67,7 @@ export default defineConfig(({ mode }): UserConfig => {
 
     css: {
       postcss: {
-        plugins: [tailwind({ config: join(__dirname, 'tailwind.config.ts') }), require('autoprefixer')()],
+        plugins: [tailwind({ config: join(__dirname, 'tailwind.config.ts') }), autoprefixer()],
       },
     },
 
@@ -76,6 +90,9 @@ export default defineConfig(({ mode }): UserConfig => {
     },
 
     resolve: {
+      // Vite 6: Default conditions changed - explicitly set if needed
+      // Defaults are now: ['module', 'browser', 'development|production']
+      conditions: ['module', 'browser', 'development', 'production'],
       alias: {
         fs: require.resolve('rollup-plugin-node-builtins'),
         path: require.resolve('rollup-plugin-node-builtins'),

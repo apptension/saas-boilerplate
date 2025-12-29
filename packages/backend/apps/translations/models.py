@@ -15,39 +15,32 @@ class TranslationKey(models.Model):
     Represents a unique translation key extracted from the codebase.
     Keys are automatically synced during the build process using formatjs extract.
     """
-    
+
     key = models.CharField(
         max_length=512,
         unique=True,
         db_index=True,
-        help_text="The unique message ID from the codebase (e.g., 'Home / dashboard link')"
+        help_text="The unique message ID from the codebase (e.g., 'Home / dashboard link')",
     )
-    default_message = models.TextField(
-        help_text="The English default message from the code"
-    )
+    default_message = models.TextField(help_text="The English default message from the code")
     description = models.TextField(
-        blank=True,
-        help_text="Context or description to help translators understand the message"
+        blank=True, help_text="Context or description to help translators understand the message"
     )
-    
+
     # Source tracking
     source_file = models.CharField(
-        max_length=512,
-        blank=True,
-        help_text="File where this key was found (for reference)"
+        max_length=512, blank=True, help_text="File where this key was found (for reference)"
     )
-    
+
     # Lifecycle management
     is_deprecated = models.BooleanField(
-        default=False,
-        db_index=True,
-        help_text="Whether this key is no longer in use in the codebase"
+        default=False, db_index=True, help_text="Whether this key is no longer in use in the codebase"
     )
-    
+
     # Timestamps
     first_seen_at = models.DateTimeField(auto_now_add=True)
     last_seen_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         ordering = ['key']
         verbose_name = 'Translation Key'
@@ -69,42 +62,29 @@ class Locale(models.Model):
     """
     Represents a supported locale/language for the application.
     """
-    
+
     code_validator = RegexValidator(
         regex=r'^[a-z]{2}(-[A-Z]{2})?$',
-        message="Locale code must be in format 'xx' or 'xx-XX' (e.g., 'en', 'en-US', 'pl')"
+        message="Locale code must be in format 'xx' or 'xx-XX' (e.g., 'en', 'en-US', 'pl')",
     )
-    
+
     code = models.CharField(
         max_length=10,
         unique=True,
         validators=[code_validator],
-        help_text="Locale code (e.g., 'en', 'pl', 'de', 'en-US')"
+        help_text="Locale code (e.g., 'en', 'pl', 'de', 'en-US')",
     )
-    name = models.CharField(
-        max_length=100,
-        help_text="Language name in English (e.g., 'English', 'Polish')"
-    )
+    name = models.CharField(max_length=100, help_text="Language name in English (e.g., 'English', 'Polish')")
     native_name = models.CharField(
-        max_length=100,
-        help_text="Language name in native language (e.g., 'English', 'Polski')"
+        max_length=100, help_text="Language name in native language (e.g., 'English', 'Polski')"
     )
-    is_default = models.BooleanField(
-        default=False,
-        help_text="Whether this is the default/fallback locale"
-    )
-    is_active = models.BooleanField(
-        default=True,
-        help_text="Whether this locale is available to users"
-    )
-    rtl = models.BooleanField(
-        default=False,
-        help_text="Right-to-left language (e.g., Arabic, Hebrew)"
-    )
-    
+    is_default = models.BooleanField(default=False, help_text="Whether this is the default/fallback locale")
+    is_active = models.BooleanField(default=True, help_text="Whether this locale is available to users")
+    rtl = models.BooleanField(default=False, help_text="Right-to-left language (e.g., Arabic, Hebrew)")
+
     # Ordering for language selector
     sort_order = models.PositiveIntegerField(default=0)
-    
+
     class Meta:
         ordering = ['-is_default', 'sort_order', 'name']
         verbose_name = 'Locale'
@@ -126,9 +106,7 @@ class Locale(models.Model):
         if total_keys == 0:
             return 100
         translated = Translation.objects.filter(
-            locale=self,
-            status=Translation.Status.PUBLISHED,
-            key__is_deprecated=False
+            locale=self, status=Translation.Status.PUBLISHED, key__is_deprecated=False
         ).count()
         return round((translated / total_keys) * 100, 1)
 
@@ -137,53 +115,30 @@ class Translation(models.Model):
     """
     Represents a translation of a key in a specific locale.
     """
-    
+
     class Status(models.TextChoices):
         DRAFT = 'draft', 'Draft'
         REVIEW = 'review', 'Needs Review'
         APPROVED = 'approved', 'Approved'
         PUBLISHED = 'published', 'Published'
-    
-    key = models.ForeignKey(
-        TranslationKey,
-        on_delete=models.CASCADE,
-        related_name='translations'
-    )
-    locale = models.ForeignKey(
-        Locale,
-        on_delete=models.CASCADE,
-        related_name='translations'
-    )
-    value = models.TextField(
-        help_text="The translated text"
-    )
-    status = models.CharField(
-        max_length=20,
-        choices=Status.choices,
-        default=Status.DRAFT,
-        db_index=True
-    )
-    
+
+    key = models.ForeignKey(TranslationKey, on_delete=models.CASCADE, related_name='translations')
+    locale = models.ForeignKey(Locale, on_delete=models.CASCADE, related_name='translations')
+    value = models.TextField(help_text="The translated text")
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT, db_index=True)
+
     # Audit fields
     translated_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='translations_created'
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name='translations_created'
     )
     reviewed_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='translations_reviewed'
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name='translations_reviewed'
     )
-    
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         unique_together = ['key', 'locale']
         ordering = ['key__key', 'locale__code']
@@ -202,41 +157,24 @@ class TranslationVersion(models.Model):
     Represents a published version of translations for a locale.
     Enables version history and rollback functionality.
     """
-    
-    locale = models.ForeignKey(
-        Locale,
-        on_delete=models.CASCADE,
-        related_name='versions'
-    )
-    version = models.CharField(
-        max_length=50,
-        help_text="Version identifier (e.g., 'v20231215120000-abc123')"
-    )
-    s3_key = models.CharField(
-        max_length=512,
-        help_text="S3 object key for the versioned JSON file"
-    )
-    
+
+    locale = models.ForeignKey(Locale, on_delete=models.CASCADE, related_name='versions')
+    version = models.CharField(max_length=50, help_text="Version identifier (e.g., 'v20231215120000-abc123')")
+    s3_key = models.CharField(max_length=512, help_text="S3 object key for the versioned JSON file")
+
     # Stats
     translation_count = models.PositiveIntegerField(default=0)
-    
+
     # State
-    is_active = models.BooleanField(
-        default=False,
-        help_text="Whether this is the currently active version"
-    )
-    
+    is_active = models.BooleanField(default=False, help_text="Whether this is the currently active version")
+
     # Audit
-    published_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        null=True,
-        on_delete=models.SET_NULL
-    )
+    published_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
     published_at = models.DateTimeField(auto_now_add=True)
-    
+
     # Store a snapshot of the translations for quick rollback
     content_hash = models.CharField(max_length=64, blank=True)
-    
+
     class Meta:
         ordering = ['-published_at']
         unique_together = ['locale', 'version']
@@ -252,81 +190,53 @@ class AITranslationJob(models.Model):
     """
     Tracks async AI translation jobs for batch processing.
     """
-    
+
     class Status(models.TextChoices):
         PENDING = 'pending', 'Pending'
         IN_PROGRESS = 'in_progress', 'In Progress'
         COMPLETED = 'completed', 'Completed'
         FAILED = 'failed', 'Failed'
         CANCELLED = 'cancelled', 'Cancelled'
-    
+
     # Source and target
     source_locale = models.ForeignKey(
-        Locale,
-        on_delete=models.CASCADE,
-        related_name='ai_jobs_as_source',
-        help_text="Source locale to translate from"
+        Locale, on_delete=models.CASCADE, related_name='ai_jobs_as_source', help_text="Source locale to translate from"
     )
     target_locale = models.ForeignKey(
-        Locale,
-        on_delete=models.CASCADE,
-        related_name='ai_jobs_as_target',
-        help_text="Target locale to translate to"
+        Locale, on_delete=models.CASCADE, related_name='ai_jobs_as_target', help_text="Target locale to translate to"
     )
-    
+
     # Job status
-    status = models.CharField(
-        max_length=20,
-        choices=Status.choices,
-        default=Status.PENDING,
-        db_index=True
-    )
-    
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING, db_index=True)
+
     # Progress tracking
     total_keys = models.PositiveIntegerField(default=0)
     processed_keys = models.PositiveIntegerField(default=0)
     failed_keys = models.PositiveIntegerField(default=0)
-    skipped_keys = models.PositiveIntegerField(
-        default=0,
-        help_text="Keys skipped (already translated)"
-    )
-    
+    skipped_keys = models.PositiveIntegerField(default=0, help_text="Keys skipped (already translated)")
+
     # Configuration
-    overwrite_existing = models.BooleanField(
-        default=False,
-        help_text="Whether to overwrite existing translations"
-    )
+    overwrite_existing = models.BooleanField(default=False, help_text="Whether to overwrite existing translations")
     auto_publish = models.BooleanField(
-        default=False,
-        help_text="Automatically set status to Published after translation"
+        default=False, help_text="Automatically set status to Published after translation"
     )
-    batch_size = models.PositiveIntegerField(
-        default=20,
-        help_text="Number of keys to translate in each batch"
-    )
-    
+    batch_size = models.PositiveIntegerField(default=20, help_text="Number of keys to translate in each batch")
+
     # Error tracking
     error_message = models.TextField(blank=True)
-    failed_key_ids = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="List of key IDs that failed to translate"
-    )
-    
+    failed_key_ids = models.JSONField(default=list, blank=True, help_text="List of key IDs that failed to translate")
+
     # Celery task tracking
     celery_task_id = models.CharField(max_length=255, blank=True)
-    
+
     # Audit
     created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='ai_translation_jobs'
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name='ai_translation_jobs'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     started_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
-    
+
     class Meta:
         ordering = ['-created_at']
         verbose_name = 'AI Translation Job'
@@ -350,4 +260,3 @@ class AITranslationJob(models.Model):
     def successful_translations(self):
         """Returns count of successful translations."""
         return self.processed_keys - self.failed_keys
-

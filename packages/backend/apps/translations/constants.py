@@ -31,4 +31,3 @@ DEFAULT_LOCALES = [
         'sort_order': 1,
     },
 ]
-

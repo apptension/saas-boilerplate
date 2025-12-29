@@ -21,16 +21,8 @@ class Command(BaseCommand):
     help = 'Sync translation keys from a master JSON file to the database'
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            'json_file',
-            type=str,
-            help='Path to the master translations JSON file'
-        )
-        parser.add_argument(
-            '--dry-run',
-            action='store_true',
-            help='Show what would be done without making changes'
-        )
+        parser.add_argument('json_file', type=str, help='Path to the master translations JSON file')
+        parser.add_argument('--dry-run', action='store_true', help='Show what would be done without making changes')
 
     def handle(self, *args, **options):
         json_path = Path(options['json_file'])
@@ -54,14 +46,14 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING('Dry run mode - no changes will be made'))
             # Just count what would happen
             from apps.translations.models import TranslationKey
-            
+
             existing_keys = set(TranslationKey.objects.values_list('key', flat=True))
             new_keys = set(master_data.keys())
-            
+
             to_create = new_keys - existing_keys
             to_update = new_keys & existing_keys
             to_deprecate = existing_keys - new_keys
-            
+
             self.stdout.write(f'  Would create: {len(to_create)} keys')
             self.stdout.write(f'  Would update: {len(to_update)} keys')
             self.stdout.write(f'  Would deprecate: {len(to_deprecate)} keys')
@@ -79,8 +71,9 @@ class Command(BaseCommand):
 
         if stats['deprecated'] > 0:
             self.stdout.write('')
-            self.stdout.write(self.style.WARNING(
-                f'{stats["deprecated"]} keys were marked as deprecated. '
-                'These are no longer in the codebase but their translations are preserved.'
-            ))
-
+            self.stdout.write(
+                self.style.WARNING(
+                    f'{stats["deprecated"]} keys were marked as deprecated. '
+                    'These are no longer in the codebase but their translations are preserved.'
+                )
+            )

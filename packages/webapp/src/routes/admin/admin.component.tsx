@@ -401,9 +401,7 @@ const { isAllowed } = useTenantRoleAccessCheck(
                   <p className="mb-2 text-xs font-medium text-muted-foreground">
                     3. Run codegen to update TypeScript types
                   </p>
-                  <CodeBlock>
-{`pnpm nx run webapp-api-client:graphql:generate-types`}
-                  </CodeBlock>
+                  <CodeBlock>pnpm nx run webapp-api-client:graphql:generate-types</CodeBlock>
                 </div>
               </div>
             </div>

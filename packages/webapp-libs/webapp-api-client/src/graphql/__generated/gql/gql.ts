@@ -61,12 +61,27 @@ const documents = {
     "\n  fragment subscriptionPlanItemFragment on SubscriptionPlanType {\n    id\n    pk\n    product {\n      id\n      name\n    }\n    amount\n  }\n": types.SubscriptionPlanItemFragmentFragmentDoc,
     "\n  mutation generateSaasIdeasMutation($input: GenerateSaasIdeasMutationInput!) {\n    generateSaasIdeas(input: $input) {\n      response\n    }\n  }\n": types.GenerateSaasIdeasMutationDocument,
     "\n  mutation notificationMutation($input: UpdateNotificationMutationInput!) {\n    updateNotification(input: $input) {\n      hasUnreadNotifications\n      notificationEdge {\n        node {\n          id\n          readAt\n        }\n      }\n    }\n  }\n": types.NotificationMutationDocument,
-    "\n  query notificationsListQuery($count: Int = 20, $cursor: String) {\n    ...notificationsListContentFragment\n    ...notificationsButtonContent\n  }\n": types.NotificationsListQueryDocument,
-    "\n  subscription NotificationCreatedSubscription {\n    notificationCreated {\n      notification {\n        ...notificationsListItemFragment\n      }\n    }\n  }\n": types.NotificationCreatedSubscriptionDocument,
+    "\n  query notificationsListQuery($count: Int = 20, $cursor: String) {\n    ...notificationsListContentFragment\n    ...notificationsButtonContent\n  }\n  \n  fragment notificationsListContentFragment on Query {\n    hasUnreadNotifications\n    allNotifications(first: $count, after: $cursor) {\n      edges {\n        node {\n          id\n          ...notificationsListItemFragment\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n  \n  fragment notificationsListItemFragment on NotificationType {\n    id\n    data\n    createdAt\n    readAt\n    type\n    issuer {\n      id\n      avatar\n      email\n    }\n  }\n  \n  fragment notificationsButtonContent on Query {\n    hasUnreadNotifications\n  }\n": types.NotificationsListQueryDocument,
+    "\n  subscription NotificationCreatedSubscription {\n    notificationCreated {\n      notification {\n        ...notificationsListItemFragment\n      }\n    }\n  }\n  \n  fragment notificationsListItemFragment on NotificationType {\n    id\n    data\n    createdAt\n    readAt\n    type\n    issuer {\n      id\n      avatar\n      email\n    }\n  }\n": types.NotificationCreatedSubscriptionDocument,
     "\n  fragment notificationsButtonContent on Query {\n    hasUnreadNotifications\n  }\n": types.NotificationsButtonContentFragmentDoc,
     "\n  fragment notificationsListContentFragment on Query {\n    hasUnreadNotifications\n    allNotifications(first: $count, after: $cursor) {\n      edges {\n        node {\n          id\n          ...notificationsListItemFragment\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n": types.NotificationsListContentFragmentFragmentDoc,
     "\n  fragment notificationsListItemFragment on NotificationType {\n    id\n    data\n    createdAt\n    readAt\n    type\n    issuer {\n      id\n      avatar\n      email\n    }\n  }\n": types.NotificationsListItemFragmentFragmentDoc,
     "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n": types.NotificationsListMarkAsReadMutationDocument,
+    "\n  query PasskeysQuery {\n    myPasskeys(first: 20) {\n      edges {\n        node {\n          id\n          name\n          authenticatorType\n          transports\n          isActive\n          lastUsedAt\n          useCount\n          createdAt\n        }\n      }\n    }\n  }\n": types.PasskeysQueryDocument,
+    "\n  mutation RenamePasskey($id: ID!, $name: String!) {\n    renamePasskey(id: $id, name: $name) {\n      passkey {\n        id\n        name\n      }\n    }\n  }\n": types.RenamePasskeyDocument,
+    "\n  mutation DeletePasskey($input: DeletePasskeyMutationInput!) {\n    deletePasskey(input: $input) {\n      deletedIds\n    }\n  }\n": types.DeletePasskeyDocument,
+    "\n  query SCIMTokensQuery($tenantId: ID!) {\n    scimTokens(first: 50) {\n      edges {\n        node {\n          id\n          name\n          tokenPrefix\n          isActive\n          expiresAt\n          lastUsedAt\n          lastUsedIp\n          requestCount\n          createdAt\n        }\n      }\n    }\n  }\n": types.ScimTokensQueryDocument,
+    "\n  mutation CreateSCIMToken($input: CreateSCIMTokenMutationInput!) {\n    createScimToken(input: $input) {\n      scimToken {\n        id\n        name\n        tokenPrefix\n      }\n      rawToken\n    }\n  }\n": types.CreateScimTokenDocument,
+    "\n  mutation RevokeSCIMToken($id: ID!) {\n    revokeScimToken(id: $id) {\n      ok\n    }\n  }\n": types.RevokeScimTokenDocument,
+    "\n  query SSOConnectionsQuery($tenantId: ID!) {\n    ssoConnections(first: 50) {\n      edges {\n        node {\n          id\n          name\n          connectionType\n          status\n          allowedDomains\n          jitProvisioningEnabled\n          samlEntityId\n          samlSsoUrl\n          oidcIssuer\n          oidcClientId\n          lastLoginAt\n          loginCount\n          createdAt\n          spMetadataUrl\n        }\n      }\n    }\n  }\n": types.SsoConnectionsQueryDocument,
+    "\n  mutation CreateSSOConnection($input: CreateSSOConnectionMutationInput!) {\n    createSsoConnection(input: $input) {\n      ssoConnection {\n        id\n        name\n        connectionType\n        status\n      }\n    }\n  }\n": types.CreateSsoConnectionDocument,
+    "\n  mutation UpdateSSOConnection($input: UpdateSSOConnectionMutationInput!) {\n    updateSsoConnection(input: $input) {\n      ssoConnection {\n        id\n        name\n        connectionType\n        status\n      }\n    }\n  }\n": types.UpdateSsoConnectionDocument,
+    "\n  mutation ActivateSSOConnection($input: ActivateSSOConnectionMutationInput!) {\n    activateSsoConnection(input: $input) {\n      ssoConnection {\n        id\n        status\n      }\n    }\n  }\n": types.ActivateSsoConnectionDocument,
+    "\n  mutation DeactivateSSOConnection($id: ID!) {\n    deactivateSsoConnection(id: $id) {\n      ssoConnection {\n        id\n        status\n      }\n    }\n  }\n": types.DeactivateSsoConnectionDocument,
+    "\n  mutation DeleteSSOConnection($input: DeleteSSOConnectionMutationInput!) {\n    deleteSsoConnection(input: $input) {\n      deletedIds\n    }\n  }\n": types.DeleteSsoConnectionDocument,
+    "\n  query SessionsQuery {\n    mySessions(first: 50) {\n      edges {\n        node {\n          id\n          deviceName\n          deviceType\n          browser\n          operatingSystem\n          ipAddress\n          location\n          isActive\n          isCurrent\n          lastActivityAt\n          expiresAt\n          createdAt\n        }\n      }\n    }\n  }\n": types.SessionsQueryDocument,
+    "\n  mutation RevokeSession($sessionId: String!, $reason: String) {\n    revokeSession(sessionId: $sessionId, reason: $reason) {\n      ok\n    }\n  }\n": types.RevokeSessionDocument,
+    "\n  mutation RevokeAllSessions {\n    revokeAllSessions {\n      ok\n      revokedCount\n    }\n  }\n": types.RevokeAllSessionsDocument,
     "\n  mutation deleteTenantMutation($input: DeleteTenantMutationInput!) {\n    deleteTenant(input: $input) {\n      deletedIds\n      clientMutationId\n    }\n  }\n": types.DeleteTenantMutationDocument,
     "\n  mutation updateTenantMembershipMutation($input: UpdateTenantMembershipMutationInput!) {\n    updateTenantMembership(input: $input) {\n      tenantMembership {\n        ...commonQueryMembershipFragment\n      }\n    }\n  }\n": types.UpdateTenantMembershipMutationDocument,
     "\n  mutation deleteTenantMembershipMutation($input: DeleteTenantMembershipMutationInput!) {\n    deleteTenantMembership(input: $input) {\n      deletedIds\n      clientMutationId\n    }\n  }\n": types.DeleteTenantMembershipMutationDocument,
@@ -302,11 +317,11 @@ export function gql(source: "\n  mutation notificationMutation($input: UpdateNot
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query notificationsListQuery($count: Int = 20, $cursor: String) {\n    ...notificationsListContentFragment\n    ...notificationsButtonContent\n  }\n"): (typeof documents)["\n  query notificationsListQuery($count: Int = 20, $cursor: String) {\n    ...notificationsListContentFragment\n    ...notificationsButtonContent\n  }\n"];
+export function gql(source: "\n  query notificationsListQuery($count: Int = 20, $cursor: String) {\n    ...notificationsListContentFragment\n    ...notificationsButtonContent\n  }\n  \n  fragment notificationsListContentFragment on Query {\n    hasUnreadNotifications\n    allNotifications(first: $count, after: $cursor) {\n      edges {\n        node {\n          id\n          ...notificationsListItemFragment\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n  \n  fragment notificationsListItemFragment on NotificationType {\n    id\n    data\n    createdAt\n    readAt\n    type\n    issuer {\n      id\n      avatar\n      email\n    }\n  }\n  \n  fragment notificationsButtonContent on Query {\n    hasUnreadNotifications\n  }\n"): (typeof documents)["\n  query notificationsListQuery($count: Int = 20, $cursor: String) {\n    ...notificationsListContentFragment\n    ...notificationsButtonContent\n  }\n  \n  fragment notificationsListContentFragment on Query {\n    hasUnreadNotifications\n    allNotifications(first: $count, after: $cursor) {\n      edges {\n        node {\n          id\n          ...notificationsListItemFragment\n        }\n      }\n      pageInfo {\n        endCursor\n        hasNextPage\n      }\n    }\n  }\n  \n  fragment notificationsListItemFragment on NotificationType {\n    id\n    data\n    createdAt\n    readAt\n    type\n    issuer {\n      id\n      avatar\n      email\n    }\n  }\n  \n  fragment notificationsButtonContent on Query {\n    hasUnreadNotifications\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  subscription NotificationCreatedSubscription {\n    notificationCreated {\n      notification {\n        ...notificationsListItemFragment\n      }\n    }\n  }\n"): (typeof documents)["\n  subscription NotificationCreatedSubscription {\n    notificationCreated {\n      notification {\n        ...notificationsListItemFragment\n      }\n    }\n  }\n"];
+export function gql(source: "\n  subscription NotificationCreatedSubscription {\n    notificationCreated {\n      notification {\n        ...notificationsListItemFragment\n      }\n    }\n  }\n  \n  fragment notificationsListItemFragment on NotificationType {\n    id\n    data\n    createdAt\n    readAt\n    type\n    issuer {\n      id\n      avatar\n      email\n    }\n  }\n"): (typeof documents)["\n  subscription NotificationCreatedSubscription {\n    notificationCreated {\n      notification {\n        ...notificationsListItemFragment\n      }\n    }\n  }\n  \n  fragment notificationsListItemFragment on NotificationType {\n    id\n    data\n    createdAt\n    readAt\n    type\n    issuer {\n      id\n      avatar\n      email\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -323,6 +338,66 @@ export function gql(source: "\n  fragment notificationsListItemFragment on Notif
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query PasskeysQuery {\n    myPasskeys(first: 20) {\n      edges {\n        node {\n          id\n          name\n          authenticatorType\n          transports\n          isActive\n          lastUsedAt\n          useCount\n          createdAt\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query PasskeysQuery {\n    myPasskeys(first: 20) {\n      edges {\n        node {\n          id\n          name\n          authenticatorType\n          transports\n          isActive\n          lastUsedAt\n          useCount\n          createdAt\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation RenamePasskey($id: ID!, $name: String!) {\n    renamePasskey(id: $id, name: $name) {\n      passkey {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation RenamePasskey($id: ID!, $name: String!) {\n    renamePasskey(id: $id, name: $name) {\n      passkey {\n        id\n        name\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation DeletePasskey($input: DeletePasskeyMutationInput!) {\n    deletePasskey(input: $input) {\n      deletedIds\n    }\n  }\n"): (typeof documents)["\n  mutation DeletePasskey($input: DeletePasskeyMutationInput!) {\n    deletePasskey(input: $input) {\n      deletedIds\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query SCIMTokensQuery($tenantId: ID!) {\n    scimTokens(first: 50) {\n      edges {\n        node {\n          id\n          name\n          tokenPrefix\n          isActive\n          expiresAt\n          lastUsedAt\n          lastUsedIp\n          requestCount\n          createdAt\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query SCIMTokensQuery($tenantId: ID!) {\n    scimTokens(first: 50) {\n      edges {\n        node {\n          id\n          name\n          tokenPrefix\n          isActive\n          expiresAt\n          lastUsedAt\n          lastUsedIp\n          requestCount\n          createdAt\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation CreateSCIMToken($input: CreateSCIMTokenMutationInput!) {\n    createScimToken(input: $input) {\n      scimToken {\n        id\n        name\n        tokenPrefix\n      }\n      rawToken\n    }\n  }\n"): (typeof documents)["\n  mutation CreateSCIMToken($input: CreateSCIMTokenMutationInput!) {\n    createScimToken(input: $input) {\n      scimToken {\n        id\n        name\n        tokenPrefix\n      }\n      rawToken\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation RevokeSCIMToken($id: ID!) {\n    revokeScimToken(id: $id) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation RevokeSCIMToken($id: ID!) {\n    revokeScimToken(id: $id) {\n      ok\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query SSOConnectionsQuery($tenantId: ID!) {\n    ssoConnections(first: 50) {\n      edges {\n        node {\n          id\n          name\n          connectionType\n          status\n          allowedDomains\n          jitProvisioningEnabled\n          samlEntityId\n          samlSsoUrl\n          oidcIssuer\n          oidcClientId\n          lastLoginAt\n          loginCount\n          createdAt\n          spMetadataUrl\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query SSOConnectionsQuery($tenantId: ID!) {\n    ssoConnections(first: 50) {\n      edges {\n        node {\n          id\n          name\n          connectionType\n          status\n          allowedDomains\n          jitProvisioningEnabled\n          samlEntityId\n          samlSsoUrl\n          oidcIssuer\n          oidcClientId\n          lastLoginAt\n          loginCount\n          createdAt\n          spMetadataUrl\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation CreateSSOConnection($input: CreateSSOConnectionMutationInput!) {\n    createSsoConnection(input: $input) {\n      ssoConnection {\n        id\n        name\n        connectionType\n        status\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateSSOConnection($input: CreateSSOConnectionMutationInput!) {\n    createSsoConnection(input: $input) {\n      ssoConnection {\n        id\n        name\n        connectionType\n        status\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation UpdateSSOConnection($input: UpdateSSOConnectionMutationInput!) {\n    updateSsoConnection(input: $input) {\n      ssoConnection {\n        id\n        name\n        connectionType\n        status\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateSSOConnection($input: UpdateSSOConnectionMutationInput!) {\n    updateSsoConnection(input: $input) {\n      ssoConnection {\n        id\n        name\n        connectionType\n        status\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation ActivateSSOConnection($input: ActivateSSOConnectionMutationInput!) {\n    activateSsoConnection(input: $input) {\n      ssoConnection {\n        id\n        status\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation ActivateSSOConnection($input: ActivateSSOConnectionMutationInput!) {\n    activateSsoConnection(input: $input) {\n      ssoConnection {\n        id\n        status\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation DeactivateSSOConnection($id: ID!) {\n    deactivateSsoConnection(id: $id) {\n      ssoConnection {\n        id\n        status\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation DeactivateSSOConnection($id: ID!) {\n    deactivateSsoConnection(id: $id) {\n      ssoConnection {\n        id\n        status\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation DeleteSSOConnection($input: DeleteSSOConnectionMutationInput!) {\n    deleteSsoConnection(input: $input) {\n      deletedIds\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteSSOConnection($input: DeleteSSOConnectionMutationInput!) {\n    deleteSsoConnection(input: $input) {\n      deletedIds\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query SessionsQuery {\n    mySessions(first: 50) {\n      edges {\n        node {\n          id\n          deviceName\n          deviceType\n          browser\n          operatingSystem\n          ipAddress\n          location\n          isActive\n          isCurrent\n          lastActivityAt\n          expiresAt\n          createdAt\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query SessionsQuery {\n    mySessions(first: 50) {\n      edges {\n        node {\n          id\n          deviceName\n          deviceType\n          browser\n          operatingSystem\n          ipAddress\n          location\n          isActive\n          isCurrent\n          lastActivityAt\n          expiresAt\n          createdAt\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation RevokeSession($sessionId: String!, $reason: String) {\n    revokeSession(sessionId: $sessionId, reason: $reason) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation RevokeSession($sessionId: String!, $reason: String) {\n    revokeSession(sessionId: $sessionId, reason: $reason) {\n      ok\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation RevokeAllSessions {\n    revokeAllSessions {\n      ok\n      revokedCount\n    }\n  }\n"): (typeof documents)["\n  mutation RevokeAllSessions {\n    revokeAllSessions {\n      ok\n      revokedCount\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

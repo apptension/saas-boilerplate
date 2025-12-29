@@ -1,4 +1,4 @@
-import { ApolloError, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { SchemaType } from '@sb/webapp-api-client';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Paragraph } from '@sb/webapp-core/components/typography';
@@ -179,7 +179,7 @@ const NotConfiguredState: FC<NotConfiguredStateProps> = ({ onRetry, isRefetching
 };
 
 type ErrorStateProps = {
-  error: ApolloError;
+  error: Error;
   onRetry: () => void;
   isRefetching: boolean;
 };

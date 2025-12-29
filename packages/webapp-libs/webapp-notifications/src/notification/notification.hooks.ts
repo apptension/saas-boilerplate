@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { UpdateNotificationMutationInput } from '@sb/webapp-api-client/graphql';
 import { MouseEvent } from 'react';
 

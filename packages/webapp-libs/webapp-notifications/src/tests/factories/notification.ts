@@ -9,12 +9,14 @@ import {
 import { notificationCreatedSubscription, notificationsListQuery } from '../../notifications.graphql';
 
 export const notificationFactory = createFactory<NotificationType>(() => ({
+  __typename: 'NotificationType',
   id: makeId(32),
   type: 'CRUD_ITEM_CREATED',
   data: {},
   createdAt: new Date().toISOString(),
   readAt: null,
   issuer: {
+    __typename: 'UserType',
     id: makeId(32),
     email: 'mock@example.org',
     avatar: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/315.jpg',

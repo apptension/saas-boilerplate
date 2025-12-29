@@ -1,4 +1,4 @@
-import { ApolloError, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
 import { pipe, pluck } from 'ramda';
 import { useMemo, useState } from 'react';
@@ -13,14 +13,14 @@ import {
 export type UseFavoriteDemoItemResult = {
   isFavorite: boolean;
   isLoading: boolean;
-  error: ApolloError | null;
+  error: Error | null;
   setFavorite: (isFavorite: boolean) => Promise<void>;
 };
 
 export const useFavoriteDemoItem = (id: string): UseFavoriteDemoItemResult => {
   const { handleCreate, createLoading, createError } = useHandleCreate();
   const { handleDelete, deleteLoading, deleteError } = useHandleDelete();
-  const [lastError, setLastError] = useState<ApolloError | null>(null);
+  const [lastError, setLastError] = useState<Error | null>(null);
 
   const { data, error: queryError } = useQuery(useFavoriteDemoItemListQuery, {
     fetchPolicy: 'cache-and-network',
@@ -39,7 +39,7 @@ export const useFavoriteDemoItem = (id: string): UseFavoriteDemoItemResult => {
         await handleDelete(id);
       }
     } catch (err) {
-      if (err instanceof ApolloError) {
+      if (err instanceof Error) {
         setLastError(err);
       }
       throw err;

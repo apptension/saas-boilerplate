@@ -8,4 +8,3 @@ class TranslationsConfig(AppConfig):
 
     def ready(self):
         pass
-

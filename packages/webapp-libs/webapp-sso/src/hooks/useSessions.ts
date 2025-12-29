@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client/react';
 import { gql } from '@sb/webapp-api-client/graphql';
 
 export const SESSIONS_QUERY = gql(`

@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { gql } from '@sb/webapp-api-client/graphql';
 import { DEFAULT_PAGE_SIZE } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';

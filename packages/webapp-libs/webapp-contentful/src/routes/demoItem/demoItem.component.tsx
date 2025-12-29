@@ -1,4 +1,4 @@
-import { ApolloError, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { SchemaType } from '@sb/webapp-api-client';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Paragraph } from '@sb/webapp-core/components/typography';
@@ -55,7 +55,7 @@ const LoadingSkeleton = () => (
 );
 
 type ErrorStateProps = {
-  error: ApolloError;
+  error: Error;
   onRetry: () => void;
   listPath: string;
   isRefetching: boolean;
@@ -121,7 +121,7 @@ const ErrorState: FC<ErrorStateProps> = ({ error, onRetry, listPath, isRefetchin
 
   // Check if this is a configuration/network error
   const isConfigError =
-    error?.networkError ||
+    (error && 'networkError' in error && error.networkError) ||
     error?.message?.includes('fetch') ||
     error?.message?.includes('network') ||
     error?.message?.includes('Failed to fetch');

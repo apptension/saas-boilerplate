@@ -1,16 +1,16 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { StripePaymentMethodType } from '@sb/webapp-api-client/api/stripe/paymentMethod';
 import { StripeSetupIntentFragmentFragment } from '@sb/webapp-api-client/graphql';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { GraphQLError } from 'graphql';
+import { GraphQLFormattedError } from 'graphql';
 
 import { StripePaymentMethodSelection, StripePaymentMethodSelectionType } from '../../../components/stripe';
 import { stripeCreateSetupIntentMutation } from './editPaymentMethodForm.graphql';
 
 interface UseStripeSetupIntentProps {
   onSuccess: (data: StripeSetupIntentFragmentFragment) => void;
-  onError: (error: readonly GraphQLError[]) => void;
+  onError: (error: readonly GraphQLFormattedError[]) => void;
 }
 
 export const useStripeSetupIntent = ({ onSuccess, onError }: UseStripeSetupIntentProps) => {
