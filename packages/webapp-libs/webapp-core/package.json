@@ -1,6 +1,6 @@
 {
   "name": "@sb/webapp-core",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "type": "commonjs",
   "scripts": {
     "test": "jest",
@@ -31,6 +31,7 @@
     "recharts": "^3.6.0"
   },
   "devDependencies": {
+    "@tanstack/react-query": "^5.90.14",
     "@types/color": "^3.0.6",
     "@types/lodash.throttle": "^4.1.9",
     "babel-jest": "29.7.0",
