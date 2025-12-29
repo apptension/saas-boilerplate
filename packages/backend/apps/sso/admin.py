@@ -60,7 +60,7 @@ class TenantSSOConnectionAdmin(admin.ModelAdmin):
 @admin.register(SCIMToken)
 class SCIMTokenAdmin(admin.ModelAdmin):
     list_display = ['name', 'tenant', 'token_prefix', 'is_active', 'expires_at', 'last_used_at']
-    list_filter = ['is_active', 'tenant']
+    list_filter = ['is_active']
     search_fields = ['name', 'tenant__name', 'token_prefix']
     readonly_fields = ['token_hash', 'token_prefix', 'created_at', 'updated_at', 'last_used_at', 'request_count']
 
@@ -68,8 +68,8 @@ class SCIMTokenAdmin(admin.ModelAdmin):
 @admin.register(SSOUserLink)
 class SSOUserLinkAdmin(admin.ModelAdmin):
     list_display = ['user', 'sso_connection', 'idp_user_id', 'provisioned_via_jit', 'last_login_at']
-    list_filter = ['provisioned_via_jit', 'provisioned_via_scim', 'sso_connection__tenant']
-    search_fields = ['user__email', 'idp_user_id', 'idp_email']
+    list_filter = ['provisioned_via_jit', 'provisioned_via_scim']
+    search_fields = ['user__email', 'idp_user_id', 'idp_email', 'sso_connection__tenant__name']
     readonly_fields = ['created_at', 'updated_at', 'last_login_at', 'login_count']
 
 
@@ -107,8 +107,8 @@ class WebAuthnChallengeAdmin(admin.ModelAdmin):
 @admin.register(SSOAuditLog)
 class SSOAuditLogAdmin(admin.ModelAdmin):
     list_display = ['event_type', 'user', 'tenant', 'success', 'ip_address', 'created_at']
-    list_filter = ['event_type', 'success', 'tenant']
-    search_fields = ['user__email', 'event_description', 'ip_address']
+    list_filter = ['event_type', 'success']
+    search_fields = ['user__email', 'event_description', 'ip_address', 'tenant__name']
     readonly_fields = ['created_at']
     date_hierarchy = 'created_at'
 
