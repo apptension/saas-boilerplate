@@ -1,4 +1,3 @@
-import { invalidateApolloStore } from '@sb/webapp-api-client';
 import { auth } from '@sb/webapp-api-client/api';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
@@ -19,9 +18,14 @@ export const Logout = () => {
         await auth.logout();
       } catch {}
 
-      reloadCommonQuery();
+      // Clear user tracking
       setUserId(null);
-      invalidateApolloStore();
+
+      // Reload common query to clear user data from cache
+      // This will update isLoggedIn to false
+      await reloadCommonQuery();
+
+      // Navigate to login page
       navigate(generateLocalePath(RoutesConfig.login));
     })();
   }, [reloadCommonQuery, generateLocalePath, navigate]);

@@ -6,9 +6,12 @@ import { Alert, AlertDescription } from '@sb/webapp-core/components/ui/alert';
 import { Button } from '@sb/webapp-core/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { Input } from '@sb/webapp-core/components/ui/input';
+import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useLocation, useNavigate } from 'react-router-dom';
 
+import { RoutesConfig } from '../../../../app/config/routes';
 import { AuthLogo } from '../authLogo';
 import { FloatingThemeToggle } from '../floatingThemeToggle';
 import { validateOtpMutation } from '../twoFactorAuthForm/twoFactorAuthForm.graphql';
@@ -19,6 +22,10 @@ export type ValidateOtpFormFields = {
 
 export const ValidateOtpForm = () => {
   const intl = useIntl();
+  const navigate = useNavigate();
+  const generateLocalePath = useGenerateLocalePath();
+  const { search } = useLocation();
+
   const form = useApiForm<ValidateOtpFormFields>({
     defaultValues: {
       token: '',
@@ -48,7 +55,15 @@ export const ValidateOtpForm = () => {
     try {
       const { data } = await commitValidateOtpMutation({ variables: { input: { otpToken: values.token } } });
       if (data?.validateOtp?.access) {
-        reloadCommonQuery();
+        // Reload the common query to get fresh user data
+        await reloadCommonQuery();
+
+        // Get redirect URL from search params, or default to home
+        const searchParams = new URLSearchParams(search);
+        const redirect = searchParams.get('redirect');
+
+        // Navigate to the redirect URL or home page
+        navigate(redirect ?? generateLocalePath(RoutesConfig.home));
       }
     } catch (error) {
       // Error is handled by onError callback

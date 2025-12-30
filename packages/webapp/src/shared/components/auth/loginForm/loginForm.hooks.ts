@@ -1,5 +1,4 @@
 import { useMutation } from '@apollo/client/react';
-import { invalidateApolloStore } from '@sb/webapp-api-client';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
@@ -40,7 +39,7 @@ export const useLoginForm = () => {
   const { handleSubmit, setApolloGraphQLResponseErrors } = form;
 
   const [commitLoginMutation, { loading }] = useMutation(authSinginMutation, {
-    onCompleted: ({ tokenAuth }) => {
+    onCompleted: async ({ tokenAuth }) => {
       if (tokenAuth?.otpAuthToken) {
         return navigate({
           pathname: generateLocalePath(RoutesConfig.validateOtp),
@@ -48,9 +47,17 @@ export const useLoginForm = () => {
         });
       }
 
-      reloadCommonQuery();
-
       trackEvent('auth', 'log-in');
+
+      // Reload the common query to get fresh user data
+      await reloadCommonQuery();
+
+      // Get redirect URL from search params, or default to home
+      const searchParams = new URLSearchParams(search);
+      const redirect = searchParams.get('redirect');
+
+      // Navigate to the redirect URL or home page
+      navigate(redirect ?? generateLocalePath(RoutesConfig.home));
     },
     onError: (error: any) => {
       if (error?.graphQLErrors) {
@@ -66,7 +73,6 @@ export const useLoginForm = () => {
           input: data,
         },
       });
-      invalidateApolloStore();
     } catch (error) {
       // Error is handled by onError callback
       // This catch prevents unhandled promise rejection

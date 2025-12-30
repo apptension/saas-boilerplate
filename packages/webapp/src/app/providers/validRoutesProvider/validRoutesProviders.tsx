@@ -6,11 +6,24 @@ import { Toaster } from '@sb/webapp-core/toast';
 import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { FormattedMessage } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 import { Layout } from '../../../shared/components/layout';
 import { useLanguageFromParams } from './useLanguageFromParams';
+
+/**
+ * Component to render the page title using useIntl (must be inside IntlProvider)
+ */
+const PageTitle = () => {
+  const intl = useIntl();
+  const pageTitle = intl.formatMessage({
+    defaultMessage: 'Apptension Boilerplate',
+    id: 'App / Page title',
+  });
+
+  return <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />;
+};
 
 /**
  * Provides validated routes context with locale, theme, and tenant providers.
@@ -54,9 +67,7 @@ export const ValidRoutesProviders = () => {
   return (
     <DynamicIntlProvider locale={language as Locale}>
       <>
-        <FormattedMessage defaultMessage="Apptension Boilerplate" id="App / Page title">
-          {([pageTitle]: [string]) => <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />}
-        </FormattedMessage>
+        <PageTitle />
 
         <ResponsiveThemeProvider>
           <CurrentTenantProvider>
