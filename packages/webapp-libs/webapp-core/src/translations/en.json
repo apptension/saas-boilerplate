@@ -749,20 +749,38 @@
   "Auth / Signup / password too common": {
     "defaultMessage": "The password is too common."
   },
+  "Auth / Two-factor / Description": {
+    "defaultMessage": "Add an extra layer of security to your account by requiring a verification code in addition to your password."
+  },
   "Auth / Two-factor / Disable button": {
-    "defaultMessage": "Disable 2FA"
+    "defaultMessage": "Disable"
+  },
+  "Auth / Two-factor / Disable confirm description": {
+    "defaultMessage": "This will remove the extra layer of security from your account. You can re-enable it at any time."
+  },
+  "Auth / Two-factor / Disable confirm title": {
+    "defaultMessage": "Disable two-factor authentication?"
   },
   "Auth / Two-factor / Disable success": {
     "defaultMessage": "Two-Factor Auth disabled successfully!"
   },
-  "Auth / Two-factor / Not using two-factor auth": {
-    "defaultMessage": "Your account is not using two-factor authentication"
+  "Auth / Two-factor / Enabled badge": {
+    "defaultMessage": "Enabled"
+  },
+  "Auth / Two-factor / Not enabled description": {
+    "defaultMessage": "Protect your account with an authenticator app like Google Authenticator or Authy."
+  },
+  "Auth / Two-factor / Not enabled title": {
+    "defaultMessage": "Two-factor authentication is not enabled"
+  },
+  "Auth / Two-factor / Protected message": {
+    "defaultMessage": "Your account is protected with an authenticator app"
   },
   "Auth / Two-factor / Setup button": {
-    "defaultMessage": "Setup 2FA"
+    "defaultMessage": "Enable 2FA"
   },
-  "Auth / Two-factor / Using two-factor auth": {
-    "defaultMessage": "Your account is using two-factor authentication"
+  "Auth / Two-factor / Status label": {
+    "defaultMessage": "Two-factor authentication"
   },
   "Auth / Update profile / First name label": {
     "defaultMessage": "First name"
@@ -1499,6 +1517,9 @@
   "Header / Open user menu aria label": {
     "defaultMessage": "Open user menu"
   },
+  "Home / Admin Panel / Credentials Location": {
+    "defaultMessage": "Find these values in packages/backend/secrets.example.json or your .env file"
+  },
   "Home / Admin Panel / Credentials Title": {
     "defaultMessage": "Login Credentials"
   },
@@ -1512,7 +1533,7 @@
     "defaultMessage": "Password"
   },
   "Home / Admin Panel / Security Warning": {
-    "defaultMessage": "These credentials are for local development only. Always use strong, unique passwords in production!"
+    "defaultMessage": "Default: admin@example.com / AvPZpabgj9Z8. For production, set custom values in your environment variables."
   },
   "Home / Admin Panel / Title": {
     "defaultMessage": "Admin Panel"
@@ -1691,6 +1712,9 @@
   "My subscription / Current subscription subheader": {
     "defaultMessage": "Manage your subscription"
   },
+  "My subscription / Developer hint": {
+    "defaultMessage": "Developers: 1) Create Products & Prices in Stripe Dashboard (dashboard.stripe.com) 2) Run: pnpm saas backend stripe sync"
+  },
   "My subscription / Edit payment method button": {
     "defaultMessage": "Edit payment methods"
   },
@@ -1721,11 +1745,20 @@
   "My subscription / No active plan": {
     "defaultMessage": "No active plan"
   },
+  "My subscription / No active plan description": {
+    "defaultMessage": "You don't have an active subscription plan. Choose a plan to unlock premium features."
+  },
   "My subscription / No credit card": {
-    "defaultMessage": "You don't have any payment method added."
+    "defaultMessage": "You don't have any payment method added. Add a card to enable subscription purchases."
+  },
+  "My subscription / No payment methods title": {
+    "defaultMessage": "No payment methods"
   },
   "My subscription / No transaction history": {
-    "defaultMessage": "You don't have any history to show"
+    "defaultMessage": "Your payment history will appear here once you make your first subscription purchase."
+  },
+  "My subscription / No transactions title": {
+    "defaultMessage": "No transactions yet"
   },
   "My subscription / Payment methods": {
     "defaultMessage": "Payment methods"
@@ -1747,6 +1780,9 @@
   },
   "My subscription / Year": {
     "defaultMessage": "year"
+  },
+  "NonExistent / Key": {
+    "defaultMessage": "Default Test Message"
   },
   "Not found / description": {
     "defaultMessage": "This page has been corrupted or doesn't exist. The data you're looking for has been lost in transmission."

@@ -19,7 +19,10 @@ export const useMarkAllAsRead = (message: string) => {
         cache.modify({
           fields: {
             hasUnreadNotifications() {
-              return false;
+              return data?.markReadAllNotifications?.hasUnreadNotifications ?? false;
+            },
+            unreadNotificationsCount() {
+              return data?.markReadAllNotifications?.unreadNotificationsCount ?? 0;
             },
             allNotifications(connection) {
               const readAt = new Date().toISOString();

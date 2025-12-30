@@ -28,11 +28,14 @@ export const useToggleIsRead = (input: UpdateNotificationMutationInput) => {
           });
         }
 
-        // Update the global unread count
+        // Update the global unread status and count
         cache.modify({
           fields: {
             hasUnreadNotifications(currentValue = false) {
               return data?.updateNotification?.hasUnreadNotifications ?? currentValue;
+            },
+            unreadNotificationsCount(currentValue = 0) {
+              return data?.updateNotification?.unreadNotificationsCount ?? currentValue;
             },
           },
         });

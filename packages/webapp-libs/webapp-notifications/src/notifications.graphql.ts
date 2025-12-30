@@ -37,6 +37,7 @@ export const notificationsListQuery = gql(/* GraphQL */ `
   
   fragment notificationsButtonContent on Query {
     hasUnreadNotifications
+    unreadNotificationsCount
   }
 `);
 

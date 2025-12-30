@@ -61,6 +61,7 @@ type Query {
   paymentIntent(id: ID, tenantId: ID): StripePaymentIntentType
   currentUser: CurrentUserType
   hasUnreadNotifications: Boolean
+  unreadNotificationsCount: Int
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
   crudDemoItem(id: ID, tenantId: ID): CrudDemoItemType
   allCrudDemoItems(tenantId: ID, before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
@@ -1426,9 +1427,12 @@ type UpdateNotificationMutationPayload {
   notification: NotificationType
   notificationEdge: NotificationEdge
   hasUnreadNotifications: Boolean
+  unreadNotificationsCount: Int
   clientMutationId: String
 }
 type MarkReadAllNotificationsMutationPayload {
+  hasUnreadNotifications: Boolean
+  unreadNotificationsCount: Int
   ok: Boolean
   clientMutationId: String
 }

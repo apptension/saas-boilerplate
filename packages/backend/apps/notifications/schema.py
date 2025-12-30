@@ -16,10 +16,15 @@ from . import services
 
 class HasUnreadNotificationsMixin:
     has_unread_notifications = graphene.Boolean()
+    unread_notifications_count = graphene.Int()
 
     @staticmethod
     def resolve_has_unread_notifications(parent, info):
         return services.NotificationService.user_has_unread_notifications(user=info.context.user)
+
+    @staticmethod
+    def resolve_unread_notifications_count(parent, info):
+        return services.NotificationService.get_unread_notifications_count(user=info.context.user)
 
 
 class UserType(DjangoObjectType):
@@ -78,7 +83,7 @@ class UpdateNotificationMutation(HasUnreadNotificationsMixin, mutations.UpdateMo
         return model_class.objects.filter_by_user(info.context.user)
 
 
-class MarkReadAllNotificationsMutation(graphene.ClientIDMutation):
+class MarkReadAllNotificationsMutation(HasUnreadNotificationsMixin, graphene.ClientIDMutation):
     ok = graphene.Boolean()
 
     @classmethod
