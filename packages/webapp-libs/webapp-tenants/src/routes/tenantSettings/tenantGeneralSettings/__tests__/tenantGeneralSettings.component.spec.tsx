@@ -56,25 +56,16 @@ describe('TenantGeneralSettings: Component', () => {
       data: currentUserRefetchData,
     });
 
-    requestMock.newData = jest.fn(() => ({
-      data,
-    }));
-
-    refetchMock.newData = jest.fn(() => ({
-      data: {
-        currentUser: currentUserRefetchData,
-      },
-    }));
-
     const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.general, { tenantId: '1' });
 
     render(<Component />, { apolloMocks: [commonQueryMock, requestMock, refetchMock], routerProps });
 
     await userEvent.type(await screen.findByPlaceholderText(/name/i), ' - new item name');
     await userEvent.click(screen.getByRole('button', { name: /save/i }));
-    expect(requestMock.newData).toHaveBeenCalled();
-    const toast = await screen.findByTestId('toast-1');
 
+    // Wait for the toast first (proves mutation completed), then verify mock was called
+    const toast = await screen.findByTestId('toast-1');
     expect(toast).toHaveTextContent('Organization updated successfully!');
+    expect(requestMock.result).toHaveBeenCalled();
   });
 });

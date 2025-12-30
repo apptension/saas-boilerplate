@@ -231,11 +231,6 @@ describe('EditPaymentMethodForm: Component', () => {
     const paymentMethods = times(() => paymentMethodFactory(), 2);
 
     const requestCreateIntentMock = composeMockedQueryResult(stripeCreateSetupIntentMutation, {
-      data: { createSetupIntent: {} },
-      variables: { input: { tenantId } },
-    });
-
-    requestCreateIntentMock.newData = jest.fn(() => ({
       data: {
         createSetupIntent: {
           setupIntent: {
@@ -243,18 +238,22 @@ describe('EditPaymentMethodForm: Component', () => {
           },
         },
       },
-    }));
+      variables: { input: { tenantId } },
+    });
 
     const requestMock = fillSubscriptionScheduleQueryWithPhases(phases, paymentMethods, tenantId);
 
-    render(<Component onSuccess={onSuccess} />, {
+    const { waitForApolloMocks } = render(<Component onSuccess={onSuccess} />, {
       apolloMocks: [tenantMock, requestMock, requestCreateIntentMock],
     });
 
+    await waitForApolloMocks(1);
     await pressNewCardButton();
     await fillForm();
     await submitForm();
 
-    expect(requestCreateIntentMock.newData).toBeCalled();
+    // Wait for the mutation to complete
+    await waitForApolloMocks();
+    expect(requestCreateIntentMock.result).toBeCalled();
   });
 });

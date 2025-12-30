@@ -102,14 +102,7 @@ describe('TenantDangerSettings: Component', () => {
     const refetchMock = composeMockedQueryResult(commonQueryCurrentUserQuery, {
       data: currentUserRefetchData,
     });
-    requestMock.newData = jest.fn(() => ({
-      data,
-    }));
-    refetchMock.newData = jest.fn(() => ({
-      data: {
-        currentUser: currentUserRefetchData,
-      },
-    }));
+
     const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.general, { tenantId: '1' });
     render(<Component />, { apolloMocks: [commonQueryMock, requestMock, refetchMock], routerProps });
 
@@ -119,8 +112,9 @@ describe('TenantDangerSettings: Component', () => {
     const continueButton = await screen.findByRole('button', { name: /continue/i });
     await userEvent.click(continueButton);
 
-    expect(requestMock.newData).toHaveBeenCalled();
+    // Wait for the toast first (proves mutation completed), then verify mock was called
     const toast = await screen.findByTestId('toast-1');
     expect(toast).toHaveTextContent('Organization deleted successfully!');
+    expect(requestMock.result).toHaveBeenCalled();
   });
 });

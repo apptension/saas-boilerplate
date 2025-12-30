@@ -1,4 +1,5 @@
 const nxPreset = require('@nx/jest/preset').default;
+const path = require('path');
 
 module.exports = {
   ...nxPreset,
@@ -12,4 +13,11 @@ module.exports = {
    * More info: https://jestjs.io/docs/upgrading-to-jest29#snapshot-format
    */
   snapshotFormat: { escapeString: true, printBasicPrototype: true },
+  moduleNameMapper: {
+    // Mock apollo-upload-client ESM module for Jest compatibility
+    'apollo-upload-client/UploadHttpLink.mjs': path.join(
+      __dirname,
+      'packages/webapp-libs/webapp-api-client/src/tests/mocks/apolloUploadClient.ts'
+    ),
+  },
 };

@@ -34,8 +34,9 @@ describe('buildEmail', () => {
     const expectedSubject = 'Mock Subject';
     expect(renderToStaticMarkup(result.subject)).toEqual(expectedSubject);
 
-    expect(mockTemplate).toHaveBeenCalledWith({ to: 'Test User' }, {});
-    expect(mockSubject).toHaveBeenCalledWith({ to: 'Test User' }, {});
+    // React 19 passes undefined as second arg to function components (instead of {} in React 18)
+    expect(mockTemplate).toHaveBeenCalledWith({ to: 'Test User' }, undefined);
+    expect(mockSubject).toHaveBeenCalledWith({ to: 'Test User' }, undefined);
   });
 
   it('throws an error when template is missing', () => {

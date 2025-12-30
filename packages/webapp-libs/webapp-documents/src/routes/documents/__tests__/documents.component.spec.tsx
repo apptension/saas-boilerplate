@@ -72,9 +72,6 @@ describe('Documents: Component', () => {
     };
 
     const deleteMutationMock = fillDocumentDeleteQuery(id, mutationData);
-    deleteMutationMock.newData = jest.fn(() => ({
-      data: mutationData,
-    }));
 
     const mockRequest = fillDocumentsListQuery([generatedDoc]);
 
@@ -84,7 +81,8 @@ describe('Documents: Component', () => {
     fireEvent.click(await screen.findByRole('button', { name: /delete/i }));
     fireEvent.click(screen.getByText(/continue/i));
 
-    expect(deleteMutationMock.newData).toHaveBeenCalled();
+    // Wait for the mutation to complete by checking for tracking event
     await waitFor(() => expect(trackEvent).toHaveBeenCalledWith('document', 'delete', id));
+    expect(deleteMutationMock.result).toHaveBeenCalled();
   });
 });

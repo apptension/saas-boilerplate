@@ -96,9 +96,6 @@ describe('DemoItemListItem: Component', () => {
           },
         };
         const removeFavoriteItemMockResponse = fillRemoveFavouriteDemoItemQuery(id, mutationData);
-        removeFavoriteItemMockResponse.newData = jest.fn(() => ({
-          data: mutationData,
-        }));
 
         const { waitForApolloMocks } = render(<Component id={id} />, {
           apolloMocks: (defaultMocks) => defaultMocks.concat(itemsMock, removeFavoriteItemMockResponse),
@@ -109,7 +106,10 @@ describe('DemoItemListItem: Component', () => {
         expect(checkbox).toBeChecked();
 
         await userEvent.click(checkbox);
-        expect(removeFavoriteItemMockResponse.newData).toHaveBeenCalled();
+
+        // Wait for the mutation to complete
+        await waitForApolloMocks(2);
+        expect(removeFavoriteItemMockResponse.result).toHaveBeenCalled();
       });
     });
   });
@@ -123,25 +123,22 @@ describe('DemoItemListItem: Component', () => {
     });
 
     describe('item checkbox is clicked', () => {
-      const id = 'item-999';
-      const mutationData = {
-        createFavoriteContentfulDemoItem: {
-          contentfulDemoItemFavoriteEdge: {
-            node: {
-              id,
-              item: {
-                pk: id,
+      it('should call create mutation', async () => {
+        const id = 'item-999';
+        const mutationData = {
+          createFavoriteContentfulDemoItem: {
+            contentfulDemoItemFavoriteEdge: {
+              node: {
+                id,
+                item: {
+                  pk: id,
+                },
               },
             },
           },
-        },
-      };
-      const createFavoriteItemMockResponse = fillCreateFavouriteDemoItemQuery(id, mutationData);
-      createFavoriteItemMockResponse.newData = jest.fn(() => ({
-        data: mutationData,
-      }));
+        };
+        const createFavoriteItemMockResponse = fillCreateFavouriteDemoItemQuery(id, mutationData);
 
-      it('should call create mutation', async () => {
         const itemsMock = mockItemsResponse();
         const { waitForApolloMocks } = render(<Component id={id} />, {
           apolloMocks: (defaultMocks) => defaultMocks.concat(itemsMock, createFavoriteItemMockResponse),
@@ -152,7 +149,9 @@ describe('DemoItemListItem: Component', () => {
 
         await userEvent.click(checkbox);
 
-        expect(createFavoriteItemMockResponse.newData).toHaveBeenCalled();
+        // Wait for the mutation to complete
+        await waitForApolloMocks(2);
+        expect(createFavoriteItemMockResponse.result).toHaveBeenCalled();
       });
     });
   });

@@ -130,9 +130,6 @@ describe('CancelSubscription: Component', () => {
       const routerProps = createMockRouterProps(routePath);
       const requestMock = resolveSubscriptionDetailsQuery(tenantId);
       const requestCancelMock = resolveSubscriptionCancelMutation(undefined, { input: { tenantId } });
-      requestCancelMock.newData = jest.fn(() => ({
-        data: mutationData,
-      }));
 
       render(<Component />, {
         routerProps,
@@ -147,7 +144,10 @@ describe('CancelSubscription: Component', () => {
       const continueButton = await screen.findByRole('button', { name: /continue/i });
       await userEvent.click(continueButton);
 
-      expect(requestCancelMock.newData).toHaveBeenCalled();
+      // Wait for the mutation to complete by checking for a toast or success indicator
+      // The mock result function should have been called after the mutation completes
+      await screen.findByText(/free plan/i);
+      expect(requestCancelMock.result).toHaveBeenCalled();
     });
   });
 

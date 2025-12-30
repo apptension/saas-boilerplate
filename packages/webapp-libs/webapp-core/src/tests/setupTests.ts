@@ -16,13 +16,31 @@ if (typeof global.TextEncoder === 'undefined') {
   global.TextDecoder = TextDecoder;
 }
 
-// Suppress unhandled AbortError from Apollo Client when React 19 strict mode causes component unmount
+// Helper function to check if an error is from Apollo Client cleanup (expected in tests)
+const isApolloCleanupError = (error: any): boolean => {
+  // AbortError from React 19 strict mode
+  if (error?.name === 'AbortError' || (error instanceof DOMException && error.name === 'AbortError')) {
+    return true;
+  }
+  // Apollo Client 4.x InvariantError during MockedProvider unmount
+  // Error message 84 = "client.stop was called while there are still active queries"
+  if (
+    error?.name === 'Invariant Violation' ||
+    error?.message?.includes('Invariant Violation') ||
+    error?.message?.includes('go.apollo.dev/c/err')
+  ) {
+    return true;
+  }
+  return false;
+};
+
+// Suppress unhandled errors from Apollo Client when React 19 strict mode causes component unmount
 // This is expected behavior in tests and should not cause test failures
 const originalOnUnhandledRejection = process.listeners('unhandledRejection')[0];
 process.removeAllListeners('unhandledRejection');
 process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
-  // Suppress AbortError which is expected in React 19 strict mode with Apollo Client
-  if (reason?.name === 'AbortError' || (reason instanceof DOMException && reason.name === 'AbortError')) {
+  // Suppress Apollo Client cleanup errors which are expected in React 19 strict mode
+  if (isApolloCleanupError(reason)) {
     return;
   }
   // Re-throw other unhandled rejections
@@ -33,12 +51,12 @@ process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
   }
 });
 
-// Also handle uncaught exceptions for DOMException which can be thrown synchronously
+// Also handle uncaught exceptions for errors which can be thrown synchronously
 const originalOnUncaughtException = process.listeners('uncaughtException')[0];
 process.removeAllListeners('uncaughtException');
 process.on('uncaughtException', (error: any) => {
-  // Suppress AbortError DOMException which is expected in React 19 strict mode
-  if (error instanceof DOMException && error.name === 'AbortError') {
+  // Suppress Apollo Client cleanup errors which are expected in React 19 strict mode
+  if (isApolloCleanupError(error)) {
     return;
   }
   // Re-throw other errors

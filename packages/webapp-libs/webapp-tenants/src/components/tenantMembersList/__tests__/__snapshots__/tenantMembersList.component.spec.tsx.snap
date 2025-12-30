@@ -119,7 +119,7 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
               aria-haspopup="menu"
               class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0"
               data-state="closed"
-              id="radix-:r0:"
+              id="radix-_r_0_"
               role="button"
               type="button"
             >
@@ -244,7 +244,7 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
               aria-haspopup="menu"
               class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0"
               data-state="closed"
-              id="radix-:r2:"
+              id="radix-_r_2_"
               role="button"
               type="button"
             >
@@ -404,7 +404,7 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
               aria-haspopup="menu"
               class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0"
               data-state="closed"
-              id="radix-:r4:"
+              id="radix-_r_4_"
               role="button"
               type="button"
             >

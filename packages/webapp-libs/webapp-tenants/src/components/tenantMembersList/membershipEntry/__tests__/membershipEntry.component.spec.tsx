@@ -48,10 +48,6 @@ const prepareMocks = <T extends DocumentNode>(query: T, input: Record<string, an
     data,
   });
 
-  requestMock.newData = jest.fn(() => ({
-    data,
-  }));
-
   const refetch = jest.fn();
 
   return {
@@ -86,9 +82,10 @@ describe('MembershipEntry: Component', () => {
     const memberRoleBtn = await screen.findByRole('button', { name: /Member/i });
     await userEvent.click(memberRoleBtn);
 
-    expect(requestMock.newData).toHaveBeenCalled();
+    // Wait for the toast first (proves mutation completed), then verify mock was called
     const toast = await screen.findByTestId('toast-1');
     expect(toast).toHaveTextContent('The user role was updated successfully!');
+    expect(requestMock.result).toHaveBeenCalled();
   });
 
   it('should commit delete mutation', async () => {
@@ -110,10 +107,11 @@ describe('MembershipEntry: Component', () => {
     const continueBtn = await screen.findByRole('button', { name: /Continue/i });
     await userEvent.click(continueBtn);
 
-    expect(requestMock.newData).toHaveBeenCalled();
-    expect(refetch).toHaveBeenCalled();
+    // Wait for the toast first (proves mutation completed), then verify mocks were called
     const toast = await screen.findByTestId('toast-1');
     expect(toast).toHaveTextContent('User was removed successfully!');
+    expect(requestMock.result).toHaveBeenCalled();
+    expect(refetch).toHaveBeenCalled();
   });
 
   it('should show resend button for pending invitations and commit resend mutation', async () => {
@@ -151,10 +149,6 @@ describe('MembershipEntry: Component', () => {
       data,
     });
 
-    requestMock.newData = jest.fn(() => ({
-      data,
-    }));
-
     render(<Component membership={membership} />, {
       apolloMocks: [commonQueryMock, requestMock],
     });
@@ -166,9 +160,10 @@ describe('MembershipEntry: Component', () => {
     const resendButton = await screen.findByRole('button', { name: /Resend/i });
     await userEvent.click(resendButton);
 
-    expect(requestMock.newData).toHaveBeenCalled();
+    // Wait for the toast first (proves mutation completed), then verify mock was called
     const toast = await screen.findByTestId('toast-1');
     expect(toast).toHaveTextContent('Invitation was resent successfully!');
+    expect(requestMock.result).toHaveBeenCalled();
   });
 
   it('should not show resend button for accepted invitations', async () => {

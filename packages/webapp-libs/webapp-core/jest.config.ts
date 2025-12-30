@@ -12,7 +12,7 @@ export default {
     },
   },
   moduleNameMapper: {
-    'react-markdown': '<rootDir>/../../../node_modules/react-markdown/react-markdown.min.js',
+    'react-markdown': '<rootDir>/src/tests/mocks/reactMarkdown.tsx',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageReporters: ['lcov'],

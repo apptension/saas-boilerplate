@@ -31,7 +31,7 @@ export type ApiTestProvidersProps = PropsWithChildren<{
  */
 export function ApiTestProviders({ children, apolloMocks = [], apolloProviderProps = {} }: ApiTestProvidersProps) {
   return (
-    <MockedApolloProvider {...apolloProviderProps} mocks={apolloMocks}>
+    <MockedApolloProvider {...apolloProviderProps} mocks={apolloMocks} showWarnings={false}>
       <CommonQuery>{children}</CommonQuery>
     </MockedApolloProvider>
   );

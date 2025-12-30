@@ -31,9 +31,6 @@ describe('useFavoriteDemoItem: Hook', () => {
       },
     };
     const removeFavoriteItemMockResponse = fillRemoveFavouriteDemoItemQuery(id, mutationData);
-    removeFavoriteItemMockResponse.newData = jest.fn(() => ({
-      data: mutationData,
-    }));
 
     const { result, waitForApolloMocks } = renderHook(() => useFavoriteDemoItem(id), {
       apolloMocks: (defaultMocks) => defaultMocks.concat(mockedItems, removeFavoriteItemMockResponse),
@@ -41,10 +38,13 @@ describe('useFavoriteDemoItem: Hook', () => {
 
     await waitForApolloMocks(1);
 
-    act(() => {
+    await act(async () => {
       result.current.setFavorite(false);
-      expect(removeFavoriteItemMockResponse.newData).toHaveBeenCalled();
     });
+
+    // Wait for mutation to complete
+    await waitForApolloMocks(2);
+    expect(removeFavoriteItemMockResponse.result).toHaveBeenCalled();
   });
 
   describe('item is favorited', () => {
