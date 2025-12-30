@@ -26,8 +26,10 @@ services:
     env_file:
       - ./packages/backend/.env
     environment:
-      - AWS_ENDPOINT_URL=http://localstack:4566
-      - WORKERS_EVENT_BUS_NAME=${PROJECT_NAME}-${ENV_STAGE}-workers
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AWS_S3_CUSTOM_DOMAIN: localhost:4566/test-bucket
+      AWS_S3_URL_PROTOCOL: "http:"
+      WORKERS_EVENT_BUS_NAME: ${PROJECT_NAME}-${ENV_STAGE}-workers
     depends_on:
       - db
       - localstack
@@ -88,7 +90,7 @@ services:
     ports:
       - '4566:4566'
     environment:
-      - SERVICES=serverless,events,cloudformation,ses,secretsmanager
+      - SERVICES=s3,serverless,events,cloudformation,ses,secretsmanager
       - DEFAULT_REGION=eu-west-1
       - DEBUG=1
       - LAMBDA_EXECUTOR=docker

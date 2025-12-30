@@ -23,7 +23,11 @@ except Exception:
 }
 
 function create_s3_bucket {
-  aws --no-sign-request --endpoint-url="$LOCALSTACK_URL" \
-      --region $AWS_DEFAULT_REGION \
-      s3 mb "s3://$1"
+  # Use Python/boto3 instead of AWS CLI to avoid AWS CLI compatibility issues
+  python3 -c "
+import boto3
+s3 = boto3.client('s3', endpoint_url='$LOCALSTACK_URL', aws_access_key_id='foo', aws_secret_access_key='bar', region_name='$AWS_DEFAULT_REGION')
+s3.create_bucket(Bucket='$1', CreateBucketConfiguration={'LocationConstraint': '$AWS_DEFAULT_REGION'})
+print(f'Created bucket: $1')
+"
 }
