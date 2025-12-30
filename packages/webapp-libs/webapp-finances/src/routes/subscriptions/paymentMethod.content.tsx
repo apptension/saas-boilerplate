@@ -6,7 +6,7 @@ import { TabsContent } from '@sb/webapp-core/components/ui/tabs';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
-import { CreditCard } from 'lucide-react';
+import { CreditCard, Wallet } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
 import { useActiveSubscriptionDetails } from '../../components/activeSubscriptionContext';
@@ -51,11 +51,19 @@ const PaymentMethodContent = () => {
   );
 
   const renderEmptyList = () => (
-    <div className="text-muted-foreground text-sm">
-      <FormattedMessage
-        defaultMessage="You don't have any payment method added."
-        id="My subscription / No credit card"
-      />
+    <div className="flex flex-col items-center justify-center py-8 text-center">
+      <div className="rounded-full bg-muted p-4 mb-4">
+        <Wallet className="h-8 w-8 text-muted-foreground" />
+      </div>
+      <h3 className="text-lg font-medium mb-2">
+        <FormattedMessage defaultMessage="No payment methods" id="My subscription / No payment methods title" />
+      </h3>
+      <p className="text-sm text-muted-foreground max-w-sm">
+        <FormattedMessage
+          defaultMessage="You don't have any payment method added. Add a card to enable subscription purchases."
+          id="My subscription / No credit card"
+        />
+      </p>
     </div>
   );
 

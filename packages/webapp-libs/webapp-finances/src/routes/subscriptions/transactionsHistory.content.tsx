@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/w
 import { TabsContent } from '@sb/webapp-core/components/ui/tabs';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
-import { History } from 'lucide-react';
+import { History, Receipt } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
 import { RoutesConfig } from '../../config/routes';
@@ -37,11 +37,19 @@ const TransactionsHistoryContent = () => {
           </CardHeader>
           <CardContent>
             {!length ? (
-              <div className="text-muted-foreground text-sm">
-                <FormattedMessage
-                  defaultMessage="You don't have any history to show"
-                  id="My subscription / No transaction history"
-                />
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <div className="rounded-full bg-muted p-4 mb-4">
+                  <Receipt className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <h3 className="text-lg font-medium mb-2">
+                  <FormattedMessage defaultMessage="No transactions yet" id="My subscription / No transactions title" />
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-sm">
+                  <FormattedMessage
+                    defaultMessage="Your payment history will appear here once you make your first subscription purchase."
+                    id="My subscription / No transaction history"
+                  />
+                </p>
               </div>
             ) : (
               <div>

@@ -5,6 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@sb/webapp-core/components/ui/dropdown-menu';
+import { Skeleton } from '@sb/webapp-core/components/ui/skeleton';
 import { Locale, DEFAULT_LOCALE } from '@sb/webapp-core/config/i18n';
 import { useLocales, useAvailableLocales } from '@sb/webapp-core/hooks';
 import { cn } from '@sb/webapp-core/lib/utils';
@@ -93,7 +94,7 @@ export const LanguageSwitcher = (props: LanguageSwitcherProps) => {
                 {getFlag(currentLocale)}
               </span>
               <span className="text-sm font-medium hidden sm:inline">
-                {currentLocaleInfo?.native_name || currentLocale.toUpperCase()}
+                {currentLocaleInfo?.native_name || <Skeleton className="h-4 w-14" />}
               </span>
               <ArrowIcon className="h-3.5 w-3.5 text-muted-foreground" />
             </span>

@@ -625,7 +625,7 @@ export const Home = () => {
                           {intl.formatMessage({ defaultMessage: 'Email', id: 'Home / Admin Panel / Email Label' })}
                         </dt>
                         <dd className="flex items-center gap-2">
-                          <code className="rounded-md bg-muted px-2.5 py-1.5 font-mono text-sm">admin@example.com</code>
+                          <code className="rounded-md bg-muted px-2.5 py-1.5 font-mono text-sm">ADMIN_EMAIL</code>
                         </dd>
                       </div>
                       <div>
@@ -633,17 +633,23 @@ export const Home = () => {
                           {intl.formatMessage({ defaultMessage: 'Password', id: 'Home / Admin Panel / Password Label' })}
                         </dt>
                         <dd className="flex items-center gap-2">
-                          <code className="rounded-md bg-muted px-2.5 py-1.5 font-mono text-sm">AvPZpabgj9Z8</code>
+                          <code className="rounded-md bg-muted px-2.5 py-1.5 font-mono text-sm">ADMIN_DEFAULT_PASSWORD</code>
                         </dd>
                       </div>
                     </dl>
+                    <p className="text-xs text-muted-foreground">
+                      {intl.formatMessage({
+                        defaultMessage: 'Find these values in packages/backend/secrets.example.json or your .env file',
+                        id: 'Home / Admin Panel / Credentials Location',
+                      })}
+                    </p>
                   </div>
 
                   <Alert variant="default" className="mt-4">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription className="text-sm">
                       {intl.formatMessage({
-                        defaultMessage: 'These credentials are for local development only. Always use strong, unique passwords in production!',
+                        defaultMessage: 'Default: admin@example.com / AvPZpabgj9Z8. For production, set custom values in your environment variables.',
                         id: 'Home / Admin Panel / Security Warning',
                       })}
                     </AlertDescription>
