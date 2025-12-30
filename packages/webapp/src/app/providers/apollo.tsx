@@ -23,5 +23,5 @@ export const ApolloProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('LOCALES_LANGUAGE', language || '');
   }, [language]);
 
-  return <Provider client={apolloClient}>{children}</Provider>;
+  return <Provider client={apolloClient as any}>{children}</Provider>;
 };

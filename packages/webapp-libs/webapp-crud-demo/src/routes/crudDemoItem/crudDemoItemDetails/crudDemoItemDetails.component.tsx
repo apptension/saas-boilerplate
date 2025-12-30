@@ -8,6 +8,7 @@ import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { ArrowLeft, Database } from 'lucide-react';
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -38,17 +39,20 @@ export const CrudDemoItemDetails = () => {
     defaultMessage: 'Failed to load item details',
   });
 
-  const { loading, data } = useQuery(crudDemoItemDetailsQuery, {
+  const { loading, data, error } = useQuery(crudDemoItemDetailsQuery, {
     variables: {
       id,
       tenantId: currentTenant?.id || '',
     },
-    onError: () => {
-      toast({ description: errorMessage, variant: 'destructive' });
-      navigate(generateLocalePath(RoutesConfig.crudDemoItem.list));
-    },
     skip: !currentTenant,
   });
+
+  useEffect(() => {
+    if (error) {
+      toast({ description: errorMessage, variant: 'destructive' });
+      navigate(generateLocalePath(RoutesConfig.crudDemoItem.list));
+    }
+  }, [error, toast, navigate, errorMessage]);
 
   if (loading) {
     return (

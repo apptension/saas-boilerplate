@@ -18,6 +18,7 @@ services:
       - ./packages/webapp-libs/webapp-emails/build/email-renderer/:/app/scripts/runtime/email/renderer:ro
       - ./packages/backend/:/app
       - ./packages/backend/docs:/app/docs
+      - ./packages/webapp-libs/webapp-core/src/translations/:/app/translations:ro
       - /app/__pypackages__
       - /app/node_modules
       - /app/cdk.out

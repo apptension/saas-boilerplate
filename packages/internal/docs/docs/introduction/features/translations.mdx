@@ -25,26 +25,30 @@ import ProjectName from '../../shared/components/ProjectName.component';
 
 ## Quick Start
 
-To load all existing translation keys from the codebase into the database:
+### Automatic Sync on Startup
+
+When you run `pnpm saas up`, translation keys are **automatically synced** from the codebase 
+to the database during backend startup. This happens after migrations run.
+
+### Manual Sync
+
+To manually extract and sync translation keys:
 
 ```bash
-# 1. Extract all translation keys from the codebase
 cd packages/webapp
-pnpm extract-intl:master
-
-# 2. Sync to database (copy master.json to Docker, then run sync)
-cd ../..
-docker compose cp packages/webapp-libs/webapp-core/src/translations/master.json backend:/tmp/master.json
-docker compose exec backend python manage.py sync_translations /tmp/master.json
+pnpm translations:extract-and-sync
 ```
 
 This will:
 - Extract ~1000+ translation keys from all `FormattedMessage` and `intl.formatMessage` usages
-- Load them into the database with their default English text
+- Sync them to the backend database using docker exec (no authentication required)
 - Make them available in Django Admin for translation
 
-:::tip Production Builds
-In CI/CD, run `pnpm translations:extract-and-sync` as part of your build process to keep translation keys in sync with the codebase.
+:::tip CI/CD Integration
+In CI/CD pipelines, you can run the sync directly via the management command:
+```bash
+docker compose exec backend python manage.py sync_translations /path/to/master.json
+```
 :::
 
 ---
@@ -58,7 +62,8 @@ The translation system works in three phases:
 │                     BUILD TIME                               │
 ├─────────────────────────────────────────────────────────────┤
 │  1. formatjs extract → master.json                          │
-│  2. POST /api/translations/sync/ → database                 │
+│  2. python manage.py sync_translations → database           │
+│     (automatic on backend startup, or via docker exec)      │
 └─────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -413,25 +418,40 @@ cd packages/webapp
 # Extract all translation keys from code
 pnpm extract-intl:master
 
-# Sync to database
+# Sync to database (uses docker exec - no auth required)
 pnpm translations:sync
 
 # Both in one command
 pnpm translations:extract-and-sync
 ```
 
+:::tip Automatic on Startup
+Translation keys are automatically synced when the backend starts (`pnpm saas up`).
+The above commands are useful when you've added new translation keys and want to sync
+them without restarting the backend.
+:::
+
 ### Django Management Commands
 
 ```bash
-cd packages/backend
+# Sync from JSON file (run inside backend container or with docker exec)
+docker compose exec backend python manage.py sync_translations /app/translations/master.json
 
-# Sync from JSON file
-pdm run python manage.py sync_translations path/to/master.json
+# Dry run - see what would change
+docker compose exec backend python manage.py sync_translations /path/to/master.json --dry-run
 
 # Publish translations
-pdm run python manage.py publish_translations en
-pdm run python manage.py publish_translations --all
+docker compose exec backend python manage.py publish_translations en
+docker compose exec backend python manage.py publish_translations --all
 ```
+
+### Environment Variables for Sync Script
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `TRANSLATIONS_SYNC_MODE` | `docker` | Sync method: `docker` (recommended) or `api` |
+| `TRANSLATIONS_SYNC_API_URL` | `http://localhost:5001/api/translations/sync/` | API URL (only for `api` mode) |
+| `TRANSLATIONS_API_TOKEN` | - | Bearer token (only for `api` mode) |
 
 ---
 

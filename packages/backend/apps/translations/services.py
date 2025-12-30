@@ -262,19 +262,21 @@ class TranslationSyncer:
         Sync translation keys from extracted master JSON.
 
         The master JSON format (from formatjs extract):
+
+        ```json
         {
             "key_id": {
                 "defaultMessage": "The default text",
                 "description": "Optional description"
-            },
-            ...
+            }
         }
+        ```
 
         Args:
             master_json: Dictionary of translation keys from formatjs extract
 
         Returns:
-            Stats dictionary: {'created': X, 'updated': Y, 'deprecated': Z}
+            Stats dictionary with keys: created, updated, deprecated
         """
         stats = {'created': 0, 'updated': 0, 'deprecated': 0, 'unchanged': 0}
         seen_keys = set()

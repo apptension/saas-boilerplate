@@ -5,6 +5,7 @@ import { getMainDefinition, relayStylePagination } from '@apollo/client/utilitie
 import { ENV } from '@sb/webapp-core/config/env';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { ToastEmitterActions } from '@sb/webapp-core/toast';
+// @ts-ignore - Type declaration in apollo-upload-client.d.ts
 import UploadHttpLink from 'apollo-upload-client/UploadHttpLink.mjs';
 import { GraphQLFormattedError } from 'graphql';
 import { Kind, OperationTypeNode } from 'graphql/language';

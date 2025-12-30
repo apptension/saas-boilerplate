@@ -87,20 +87,35 @@ This creates `packages/webapp/src/translations/master.json` containing all messa
 
 ## Step 3: Sync Keys to Database
 
-Upload the extracted keys to the backend:
+### Automatic Sync
+
+When you run `pnpm saas up`, translation keys are automatically synced from `master.json` 
+during backend startup. This happens after migrations run.
+
+### Manual Sync
+
+To manually sync after extracting new keys:
 
 ```bash
 pnpm translations:sync
 ```
 
-Or combine both steps:
+Or combine extraction and sync:
 
 ```bash
 pnpm translations:extract-and-sync
 ```
 
+:::tip No Authentication Required
+The sync script uses docker exec to run the Django management command directly, 
+so no admin credentials or API tokens are needed for local development.
+:::
+
 :::info CI/CD Integration
-This command runs automatically during CI builds. You can also add it to Git hooks for local development.
+In CI/CD pipelines, you can use the management command directly:
+```bash
+docker compose exec backend python manage.py sync_translations /path/to/master.json
+```
 :::
 
 ---
@@ -218,9 +233,10 @@ Admin → Translations → **Translation Versions**
 ### Keys not appearing in admin
 
 1. Verify extraction: `pnpm extract-intl:master`
-2. Check `master.json` was generated
-3. Run sync: `pnpm translations:sync`
-4. Check backend logs for errors
+2. Check `master.json` was generated in `packages/webapp-libs/webapp-core/src/translations/`
+3. Ensure backend is running: `pnpm saas backend up`
+4. Run sync: `pnpm translations:sync`
+5. Check backend logs: `docker compose logs backend`
 
 ### Translations not loading
 

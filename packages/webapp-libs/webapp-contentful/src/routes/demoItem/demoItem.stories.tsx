@@ -1,6 +1,6 @@
 import { MockedResponse } from '@apollo/client/testing';
 import * as corePath from '@sb/webapp-core/utils/path';
-import { Meta, StoryFn, StoryObj } from '@storybook/react';
+import { Meta, StoryContext, StoryFn, StoryObj } from '@storybook/react';
 import { GraphQLError } from 'graphql';
 import { append } from 'ramda';
 import { Route, Routes } from 'react-router';
@@ -39,7 +39,7 @@ export const Default: StoryObj<typeof meta> = {
       routerProps: createMockRouterProps(RoutesConfig.demoItem, {
         id: defaultItemId,
       }),
-      apolloMocks: append(fillDemoItemQuery(demoItemFactory(), { id: defaultItemId })),
+      apolloMocks: ((mocks: readonly MockedResponse[], storyContext?: StoryContext) => append(fillDemoItemQuery(demoItemFactory(), { id: defaultItemId }), mocks) as readonly MockedResponse[]) as any,
     }),
   ],
 };
@@ -60,7 +60,7 @@ export const NotConfigured: StoryObj<typeof meta> = {
       routerProps: createMockRouterProps(RoutesConfig.demoItem, {
         id: defaultItemId,
       }),
-      apolloMocks: append(networkErrorMock),
+      apolloMocks: ((mocks: readonly MockedResponse[], storyContext?: StoryContext) => append(networkErrorMock, mocks) as readonly MockedResponse[]) as any,
     }),
   ],
 };
@@ -83,7 +83,7 @@ export const WithError: StoryObj<typeof meta> = {
       routerProps: createMockRouterProps(RoutesConfig.demoItem, {
         id: defaultItemId,
       }),
-      apolloMocks: append(graphqlErrorMock),
+      apolloMocks: ((mocks: readonly MockedResponse[], storyContext?: StoryContext) => append(graphqlErrorMock, mocks) as readonly MockedResponse[]) as any,
     }),
   ],
 };

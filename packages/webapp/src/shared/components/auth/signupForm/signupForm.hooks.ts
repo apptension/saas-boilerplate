@@ -46,8 +46,10 @@ export const useSignupForm = (args?: UseApiFormArgs<SignupFormFields>) => {
       reloadCommonQuery();
       navigate(generateLocalePath(RoutesConfig.home));
     },
-    onError: (error) => {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
+    onError: (error: any) => {
+      if (error?.graphQLErrors) {
+        setApolloGraphQLResponseErrors(error.graphQLErrors);
+      }
     },
   });
 

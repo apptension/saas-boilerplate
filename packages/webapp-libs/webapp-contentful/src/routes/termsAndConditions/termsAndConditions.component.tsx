@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client/react';
+import { ApolloErrorLike } from '@sb/webapp-api-client/api/apolloError.types';
 import { SchemaType } from '@sb/webapp-api-client';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Paragraph } from '@sb/webapp-core/components/typography';
@@ -179,7 +180,7 @@ const NotConfiguredState: FC<NotConfiguredStateProps> = ({ onRetry, isRefetching
 };
 
 type ErrorStateProps = {
-  error: Error;
+  error: Error | ApolloErrorLike;
   onRetry: () => void;
   isRefetching: boolean;
 };
@@ -187,8 +188,9 @@ type ErrorStateProps = {
 const ErrorState: FC<ErrorStateProps> = ({ error, onRetry, isRefetching }) => {
   // Check if this is a configuration/network error (Contentful not set up)
   // Only check network errors - don't check env vars here as that's a build-time concern
+  const apolloError = error as ApolloErrorLike;
   const isNetworkError =
-    error?.networkError ||
+    apolloError?.networkError ||
     error?.message?.includes('fetch') ||
     error?.message?.includes('network') ||
     error?.message?.includes('Failed to fetch');

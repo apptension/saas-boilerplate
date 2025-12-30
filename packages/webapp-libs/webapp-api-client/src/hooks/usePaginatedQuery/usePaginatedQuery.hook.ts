@@ -1,8 +1,8 @@
 import { TypedDocumentNode } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
 import type { QueryHookOptions } from '@apollo/client/react';
-import { InputMaybe } from '@sb/webapp-api-client/graphql';
 import { useCallback, useEffect, useState } from 'react';
+import { InputMaybe } from '@sb/webapp-api-client/graphql';
 
 type CursorsInput = {
   first?: InputMaybe<number> | undefined;
@@ -64,14 +64,21 @@ export const usePaginatedQuery = <
   const { data, loading, fetchMore } = useQuery<A, CursorsInput & B>(query, options.hookOptions as any);
 
   useEffect(() => {
-    const currentEndCursor = data?.[options.dataKey]?.pageInfo.endCursor;
+    if (!data) return;
+    const queryData = (data as any)[options.dataKey];
+    const currentEndCursor = queryData?.pageInfo?.endCursor;
     const isFirstEndCursor = cachedCursors.indexOf(currentEndCursor) === 0;
     if (isFirstEndCursor) setCachedCursors([]);
   }, [data, cachedCursors, options.dataKey]);
 
   useEffect(() => {
     setHasPrevious(cachedCursors.length > 0);
-    setHasNext(data?.[options.dataKey]?.pageInfo.hasNextPage ?? false);
+    if (!data) {
+      setHasNext(false);
+      return;
+    }
+    const queryData = (data as any)[options.dataKey];
+    setHasNext(queryData?.pageInfo?.hasNextPage ?? false);
   }, [data, cachedCursors.length, options.dataKey]);
 
   useEffect(() => {
@@ -85,8 +92,9 @@ export const usePaginatedQuery = <
   }, [fetchMore]);
 
   const loadNext = useCallback(() => {
-    const queryData = data?.[options.dataKey];
-    const endCursor = queryData?.pageInfo.endCursor;
+    if (!data) return;
+    const queryData = (data as any)[options.dataKey];
+    const endCursor = queryData?.pageInfo?.endCursor;
 
     fetchMore({
       variables: {

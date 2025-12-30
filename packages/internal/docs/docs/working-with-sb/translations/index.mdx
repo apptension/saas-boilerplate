@@ -26,10 +26,15 @@ import { FormattedMessage } from 'react-intl';
 
 ### Syncing Keys
 
+Translation keys are automatically synced on backend startup when you run `pnpm saas up`. 
+You can also manually sync:
+
 ```bash
 cd packages/webapp
 pnpm translations:extract-and-sync
 ```
+
+This uses docker exec to run the sync command directly in the backend container—no authentication required.
 
 ### Publishing (Admin Panel)
 

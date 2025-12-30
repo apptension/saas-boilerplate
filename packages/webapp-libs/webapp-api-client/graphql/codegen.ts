@@ -80,6 +80,7 @@ const config: CodegenConfig = {
       presetConfig: {
         gqlTagName: 'gql',
         fragmentMasking: { unmaskFunctionName: 'getFragmentData' },
+        dedupeOperationSuffix: true,
       },
     },
   },

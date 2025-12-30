@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client/react';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
+import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useFormatFileSize } from '@sb/webapp-core/components/fileSize';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
@@ -13,6 +14,7 @@ export const useAvatarForm = () => {
   const intl = useIntl();
   const formatFileSize = useFormatFileSize();
   const { toast } = useToast();
+  const { reload: reloadCommonQuery } = useCommonQuery();
 
   const fileTooLargeMessage = intl.formatMessage(
     {
@@ -46,6 +48,7 @@ export const useAvatarForm = () => {
       trackEvent('profile', 'avatar-update');
 
       reset();
+      reloadCommonQuery(); // Reload to update avatar in Avatar component
 
       toast({
         description: intl.formatMessage({
@@ -55,8 +58,10 @@ export const useAvatarForm = () => {
         variant: 'success',
       });
     },
-    onError: (error) => {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
+    onError: (error: any) => {
+      if (error?.graphQLErrors) {
+        setApolloGraphQLResponseErrors(error.graphQLErrors);
+      }
     },
   });
 

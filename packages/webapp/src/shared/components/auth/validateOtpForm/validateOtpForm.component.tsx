@@ -34,16 +34,25 @@ export const ValidateOtpForm = () => {
   const { reload: reloadCommonQuery } = useCommonQuery();
 
   const [commitValidateOtpMutation, { loading }] = useMutation(validateOtpMutation, {
-    onError: (error) => setApolloGraphQLResponseErrors(error.graphQLErrors),
+    onError: (error: any) => {
+      if (error?.graphQLErrors) {
+        setApolloGraphQLResponseErrors(error.graphQLErrors);
+      }
+    },
     onCompleted: () => {
       trackEvent('auth', 'otp-validate');
     },
   });
 
   const handleFormSubmit = async (values: { token: string }) => {
-    const { data } = await commitValidateOtpMutation({ variables: { input: { otpToken: values.token } } });
-    if (data?.validateOtp?.access) {
-      reloadCommonQuery();
+    try {
+      const { data } = await commitValidateOtpMutation({ variables: { input: { otpToken: values.token } } });
+      if (data?.validateOtp?.access) {
+        reloadCommonQuery();
+      }
+    } catch (error) {
+      // Error is handled by onError callback
+      // This catch prevents unhandled promise rejection
     }
   };
 

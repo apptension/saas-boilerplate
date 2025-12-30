@@ -47,7 +47,11 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
   });
 
   const [commitVerifyOtpMutation] = useMutation(verifyOtpMutation, {
-    onError: (error) => setApolloGraphQLResponseErrors(error.graphQLErrors),
+    onError: (error: any) => {
+      if (error?.graphQLErrors) {
+        setApolloGraphQLResponseErrors(error.graphQLErrors);
+      }
+    },
     onCompleted: () => {
       trackEvent('auth', 'otp-verify');
     },
@@ -61,14 +65,19 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
   });
 
   const submitHandler = async (values: { token: string }) => {
-    const { data } = await commitVerifyOtpMutation({ variables: { input: { otpToken: values.token } } });
+    try {
+      const { data } = await commitVerifyOtpMutation({ variables: { input: { otpToken: values.token } } });
 
-    const isOtpVerified = data?.verifyOtp?.otpVerified;
-    if (!isOtpVerified) return;
+      const isOtpVerified = data?.verifyOtp?.otpVerified;
+      if (!isOtpVerified) return;
 
-    reload();
-    closeModal();
-    toast({ description: successMessage, variant: 'success' });
+      reload();
+      closeModal();
+      toast({ description: successMessage, variant: 'success' });
+    } catch (error) {
+      // Error is handled by onError callback
+      // This catch prevents unhandled promise rejection
+    }
   };
 
   const handleCopyKey = async () => {
@@ -100,17 +109,31 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
   }, [otpAuthUrl]);
 
   useEffect(() => {
+    let isMounted = true;
+    
     const getOtpData = async () => {
-      const { data } = await commitGenerateOtpMutation();
+      try {
+        const { data } = await commitGenerateOtpMutation();
 
-      const base32 = data?.generateOtp?.base32;
-      const otpAuthPathUrl = data?.generateOtp?.otpauthUrl;
-      if (!base32 || !otpAuthPathUrl) return;
+        // Only update state if component is still mounted
+        if (!isMounted) return;
 
-      setBase32(base32);
-      setOtpAuthUrl(otpAuthPathUrl);
+        const base32 = data?.generateOtp?.base32;
+        const otpAuthPathUrl = data?.generateOtp?.otpauthUrl;
+        if (!base32 || !otpAuthPathUrl) return;
+
+        setBase32(base32);
+        setOtpAuthUrl(otpAuthPathUrl);
+      } catch (error) {
+        // Error is handled by onError callback if present
+        // This catch prevents unhandled promise rejection and handles AbortError
+      }
     };
     getOtpData();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [commitGenerateOtpMutation]);
 
   return (

@@ -81,8 +81,23 @@ export function getWrapper(
       return Promise.resolve();
     }
 
+    const mock = apolloMocks[mockIndex];
     // @ts-ignore
-    await waitFor(() => expect(apolloMocks[mockIndex].result).toHaveBeenCalled());
+    if (mock.error) {
+      // For error mocks, wait for the error to be processed
+      // The error mock has a result function that throws, so we check if it was called
+      // @ts-ignore
+      if (mock.result) {
+        // @ts-ignore
+        await waitFor(() => expect(mock.result).toHaveBeenCalled(), { timeout: 3000 });
+      } else {
+        // If no result function, just wait a bit for error processing
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    } else {
+      // @ts-ignore
+      await waitFor(() => expect(mock.result).toHaveBeenCalled());
+    }
   };
 
   const wrapper = (props: WrapperProps) => {

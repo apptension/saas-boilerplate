@@ -19,8 +19,10 @@ export const usePasswordResetRequestForm = (onSubmitted?: () => void) => {
       setSubmitted(true);
       onSubmitted?.();
     },
-    onError: (error) => {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
+    onError: (error: any) => {
+      if (error?.graphQLErrors) {
+        setApolloGraphQLResponseErrors(error.graphQLErrors);
+      }
     },
   });
 

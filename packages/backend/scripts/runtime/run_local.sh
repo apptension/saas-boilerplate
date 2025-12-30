@@ -23,6 +23,15 @@ echo "LocalStack fixtures installed"
 python manage.py contentful_sync
 python manage.py migrate
 
+# Sync translation keys from master.json if it exists (mounted from webapp)
+TRANSLATIONS_MASTER_FILE="/app/translations/master.json"
+if [ -f "$TRANSLATIONS_MASTER_FILE" ]; then
+    echo "Syncing translation keys..."
+    python manage.py sync_translations "$TRANSLATIONS_MASTER_FILE"
+else
+    echo "Translation master file not found, skipping sync"
+fi
+
 if (echo "$STRIPE_LIVE_SECRET_KEY" | grep -q "<CHANGE_ME>") && (echo "$STRIPE_TEST_SECRET_KEY" | grep -q "<CHANGE_ME>"); then
     echo "Stripe initialization skipped"
 else

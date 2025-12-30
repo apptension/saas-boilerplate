@@ -49,11 +49,11 @@ const meta: Meta<typeof Template> = {
 export default meta;
 
 export const LoggedOut: StoryObj<typeof meta> = {
-  render: Template,
-  args: { isLoggedIn: false },
+  render: Template as any,
+  args: { isLoggedIn: false } as any,
 };
 
 export const LoggedIn: StoryObj<typeof meta> = {
-  render: Template,
-  args: { isLoggedIn: true },
+  render: Template as any,
+  args: { isLoggedIn: true } as any,
 };

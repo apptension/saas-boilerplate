@@ -17,7 +17,7 @@ const Template: StoryFn = () => {
 
 const meta: Meta<typeof Tooltip> = {
   title: 'Core/UI/Tooltip',
-  component: Template,
+  component: Template as any,
 };
 
 export default meta;

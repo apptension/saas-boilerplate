@@ -24,8 +24,8 @@
     "intl": "^1.2.5",
     "lucide-react": "^0.378.0",
     "qrcode": "^1.5.3",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",

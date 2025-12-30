@@ -28,10 +28,18 @@ This Django app provides runtime-managed translations with admin panel managemen
 # Sync keys from JSON file
 python manage.py sync_translations path/to/master.json
 
+# Dry run (see what would change without making changes)
+python manage.py sync_translations path/to/master.json --dry-run
+
 # Publish translations to CDN
 python manage.py publish_translations en
 python manage.py publish_translations --all
 ```
+
+### Automatic Sync on Startup
+
+When running locally with `pnpm saas up`, the backend automatically syncs translation keys 
+from `packages/webapp-libs/webapp-core/src/translations/master.json` on startup (if the file exists).
 
 ### Environment Variables
 
@@ -46,9 +54,12 @@ OPENAI_MODEL=gpt-4
 
 ### API Endpoints
 
-| Method | Endpoint                  | Description                   |
-| ------ | ------------------------- | ----------------------------- |
-| POST   | `/api/translations/sync/` | Sync keys from frontend build |
+| Method | Endpoint                  | Description                            |
+| ------ | ------------------------- | -------------------------------------- |
+| POST   | `/api/translations/sync/` | Sync keys from frontend build (admin)  |
+
+> **Note**: For local development, prefer using the management command via docker exec 
+> (which is what `pnpm translations:sync` does by default) as it doesn't require authentication.
 
 ### AI Translation (Admin)
 

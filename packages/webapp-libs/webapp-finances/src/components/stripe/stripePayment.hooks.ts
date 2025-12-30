@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client/react';
+import { FetchResult } from '@apollo/client';
 import { StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -107,22 +108,22 @@ export const useStripePaymentIntent = (onError: (error: Error, clientOptions?: a
   ): Promise<{ errors?: readonly GraphQLFormattedError[]; paymentIntent?: StripePaymentIntentType | null }> => {
     if (!currentTenant) return {};
     if (!paymentIntent) {
-      const { data, errors } = await commitCreatePaymentIntentMutation({
+      const result = (await commitCreatePaymentIntentMutation({
         variables: {
           input: {
             product,
             tenantId: currentTenant.id,
           },
         },
-      });
-      if (errors) {
-        return { errors };
+      })) as FetchResult<any>;
+      if (result.errors) {
+        return { errors: result.errors };
       }
-      setPaymentIntent(data?.createPaymentIntent?.paymentIntent);
-      return { paymentIntent: data?.createPaymentIntent?.paymentIntent };
+      setPaymentIntent(result.data?.createPaymentIntent?.paymentIntent);
+      return { paymentIntent: result.data?.createPaymentIntent?.paymentIntent };
     }
 
-    const { data, errors } = await commitUpdatePaymentIntentMutation({
+    const result = (await commitUpdatePaymentIntentMutation({
       variables: {
         input: {
           product,
@@ -130,13 +131,13 @@ export const useStripePaymentIntent = (onError: (error: Error, clientOptions?: a
           tenantId: currentTenant.id,
         },
       },
-    });
+    })) as FetchResult<any>;
 
-    if (errors) {
-      return { errors };
+    if (result.errors) {
+      return { errors: result.errors };
     }
 
-    return { paymentIntent: data?.updatePaymentIntent?.paymentIntent };
+    return { paymentIntent: result.data?.updatePaymentIntent?.paymentIntent };
   };
 
   return { updateOrCreatePaymentIntent, loading: createLoading || updateLoading };
@@ -153,8 +154,10 @@ export const useStripePaymentIntent = (onError: (error: Error, clientOptions?: a
 export const useStripePaymentForm = (onSuccess: (paymentIntent: StripePaymentIntentType) => void) => {
   const { confirmPayment } = useStripePayment();
 
-  const { updateOrCreatePaymentIntent, loading } = useStripePaymentIntent((error) => {
-    setApolloGraphQLResponseErrors(error.graphQLErrors);
+  const { updateOrCreatePaymentIntent, loading } = useStripePaymentIntent((error: any) => {
+    if (error?.graphQLErrors) {
+      setApolloGraphQLResponseErrors(error.graphQLErrors);
+    }
   });
 
   const apiFormControls = useApiForm<StripePaymentFormFields>({

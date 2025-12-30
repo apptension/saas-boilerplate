@@ -33,8 +33,10 @@ export const useEditProfileForm = () => {
         variant: 'success',
       });
     },
-    onError: (error) => {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
+    onError: (error: any) => {
+      if (error?.graphQLErrors) {
+        setApolloGraphQLResponseErrors(error.graphQLErrors);
+      }
     },
   });
 

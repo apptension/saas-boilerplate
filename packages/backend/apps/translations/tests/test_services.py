@@ -75,7 +75,7 @@ class TestTranslationSyncer:
 
     @pytest.mark.django_db
     def test_sync_handles_simple_format(self, db):
-        """Test sync with simple format (key: value instead of key: {defaultMessage: value})."""
+        """Test sync with simple format (key: value instead of key: `{defaultMessage: value}`)."""
         syncer = TranslationSyncer()
 
         master_json = {'Simple / Key': 'Simple value'}

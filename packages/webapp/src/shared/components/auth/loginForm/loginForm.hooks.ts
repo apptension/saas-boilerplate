@@ -52,18 +52,25 @@ export const useLoginForm = () => {
 
       trackEvent('auth', 'log-in');
     },
-    onError: (error) => {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
+    onError: (error: any) => {
+      if (error?.graphQLErrors) {
+        setApolloGraphQLResponseErrors(error.graphQLErrors);
+      }
     },
   });
 
   const handleLogin = handleSubmit(async (data: LoginFormFields) => {
-    await commitLoginMutation({
-      variables: {
-        input: data,
-      },
-    });
-    invalidateApolloStore();
+    try {
+      await commitLoginMutation({
+        variables: {
+          input: data,
+        },
+      });
+      invalidateApolloStore();
+    } catch (error) {
+      // Error is handled by onError callback
+      // This catch prevents unhandled promise rejection
+    }
   });
 
   return { ...form, loading, handleLogin };

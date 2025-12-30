@@ -44,4 +44,7 @@ Thumbs.db
 
 # SaaS Boilerplate
 .saas-boilerplate
+
+# Nx
 .nx/cache
+.nx/workspace-data

@@ -17,7 +17,11 @@ export const useStripeSetupIntent = ({ onSuccess, onError }: UseStripeSetupInten
   const { data: currentTenant } = useCurrentTenant();
   const [commitCreateSetupIntentMutation, { data }] = useMutation(stripeCreateSetupIntentMutation, {
     onCompleted: (data) => onSuccess(data.createSetupIntent?.setupIntent as StripeSetupIntentFragmentFragment),
-    onError: (error) => onError(error.graphQLErrors),
+    onError: (error: any) => {
+      if (error?.graphQLErrors) {
+        onError(error.graphQLErrors);
+      }
+    },
   });
 
   const createSetupIntent = async () => {

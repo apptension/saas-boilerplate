@@ -24,7 +24,7 @@ export const useHandleDrop = () => {
 
       const newEdge = {
         node: cache.writeFragment({
-          data: node,
+          data: node as any,
           fragment: documentListItemFragment,
         }),
       };

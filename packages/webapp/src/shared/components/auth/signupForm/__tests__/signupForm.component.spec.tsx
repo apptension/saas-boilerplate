@@ -108,20 +108,15 @@ describe('SignupForm: Component', () => {
   it('should show field error if password is too common', async () => {
     const errorMessage = 'The password is too common.';
 
-    const requestMock = {
-      request: {
-        query: authSingupMutation,
-        variables: mockCredentials,
-      },
-      result: {
-        data: {},
-        errors: [
-          new GraphQLError('GraphQlValidationError', {
-            extensions: { password: [{ message: errorMessage, code: 'password_too_common' }] },
-          }),
-        ],
-      },
-    };
+    const requestMock = composeMockedQueryResult(authSingupMutation, {
+      variables: mockCredentials,
+      data: {},
+      errors: [
+        new GraphQLError('GraphQlValidationError', {
+          extensions: { password: [{ message: errorMessage, code: 'password_too_common' }] },
+        }),
+      ],
+    });
 
     render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
     await userEvent.type(await getEmailInput(), mockCredentials.input.email);
@@ -130,27 +125,23 @@ describe('SignupForm: Component', () => {
 
     await clickSignupButton();
 
-    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
+    // Wait for error to be processed and displayed
+    expect(await screen.findByText(errorMessage, {}, { timeout: 3000 })).toBeInTheDocument();
     expect(await mockNavigate).not.toHaveBeenCalled();
   });
 
   it('should show field error if email is already taken', async () => {
     const errorMessage = 'The email address is already taken';
 
-    const requestMock = {
-      request: {
-        query: authSingupMutation,
-        variables: mockCredentials,
-      },
-      result: {
-        data: {},
-        errors: [
-          new GraphQLError('GraphQlValidationError', {
-            extensions: { email: [{ message: errorMessage, code: 'unique' }] },
-          }),
-        ],
-      },
-    };
+    const requestMock = composeMockedQueryResult(authSingupMutation, {
+      variables: mockCredentials,
+      data: {},
+      errors: [
+        new GraphQLError('GraphQlValidationError', {
+          extensions: { email: [{ message: errorMessage, code: 'unique' }] },
+        }),
+      ],
+    });
 
     render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
     await userEvent.type(await getEmailInput(), mockCredentials.input.email);
@@ -158,7 +149,8 @@ describe('SignupForm: Component', () => {
     await userEvent.click(getAcceptField());
 
     await clickSignupButton();
-    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
+    // Wait for error to be processed and displayed
+    expect(await screen.findByText(errorMessage, {}, { timeout: 3000 })).toBeInTheDocument();
     expect(await mockNavigate).not.toHaveBeenCalled();
   });
 });

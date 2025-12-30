@@ -2,7 +2,7 @@ import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-clie
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixtures';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 import { times } from 'ramda';
 
 import { Role } from '../../../../../modules/auth/auth.types';
@@ -31,8 +31,12 @@ describe('AvatarForm: Component', () => {
     });
     const file = createImageFile('content');
     const avatarUrl = 'avatar-url';
+    const updatedUser = {
+      ...currentUser,
+      avatar: avatarUrl,
+    };
     const { waitForApolloMocks } = render(<AvatarForm />, {
-      apolloMocks: () => {
+      apolloMocks: (defaultMocks) => {
         return [
           fillCommonQueryWithUser(currentUser),
           composeMockedQueryResult(authUpdateUserProfileMutation, {
@@ -47,30 +51,35 @@ describe('AvatarForm: Component', () => {
                   __typename: 'UserProfileType',
                   id: '1',
                   user: {
-                    ...currentUser,
+                    ...updatedUser,
                     __typename: 'CurrentUserType',
-                    firstName: 'test',
-                    avatar: avatarUrl,
                   },
                 },
               },
             },
           }),
+          fillCommonQueryWithUser(updatedUser), // Refresh query after mutation
         ];
       },
     });
 
     await fireAvatarChange(file);
-    await waitForApolloMocks();
+    // Wait for mutation mock (index 1, after CommonQuery at index 0)
+    await waitForApolloMocks(1); // Wait for mutation
+    
+    // Wait for refresh query (index 2) - reloadCommonQuery() triggers refetch which matches refresh query mock
+    await waitForApolloMocks(2); // Wait for refresh query
 
-    await waitFor(async () => {
-      const image = await screen.findByAltText('user avatar');
-      expect(image.src).toContain(avatarUrl);
-    });
-
-    const toast = await screen.findByTestId('toast-1');
+    // Wait for toast first to confirm mutation completed
+    const toast = await screen.findByTestId('toast-1', {}, { timeout: 3000 });
     expect(toast).toHaveTextContent('Avatar successfully changed.');
     expect(trackEvent).toHaveBeenCalledWith('profile', 'avatar-update');
+
+    // Wait for image to appear with new avatar URL after refresh
+    // The Avatar component re-renders after CommonQuery refreshes with updated user data
+    // Radix UI Avatar.Image renders an <img> tag, so we can query by role
+    const image = await screen.findByRole('img', { name: /user avatar/i }, { timeout: 3000 });
+    expect(image).toHaveAttribute('src', avatarUrl);
   });
 
   it('should show error message if file size exceeds maximum size', async () => {

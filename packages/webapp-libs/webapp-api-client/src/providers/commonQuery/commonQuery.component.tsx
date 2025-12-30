@@ -17,7 +17,16 @@ export const CommonQuery = ({ children }: PropsWithChildren) => {
   const { loading, data, refetch } = useQuery(commonQueryCurrentUserQuery, { nextFetchPolicy: 'network-only' });
 
   const reload = useCallback(async () => {
-    await refetch();
+    try {
+      await refetch();
+    } catch (error) {
+      // Ignore AbortError - this happens when the component unmounts during refetch
+      // which is expected behavior during navigation/login flows
+      if (error instanceof Error && error.name === 'AbortError') {
+        return;
+      }
+      throw error;
+    }
   }, [refetch]);
 
   const value = useMemo(() => ({ data: data || null, reload }), [data, reload]);

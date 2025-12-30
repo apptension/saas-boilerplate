@@ -1,10 +1,6 @@
-import type { StorybookConfig } from '@storybook/react-vite';
-import { mergeConfig } from 'vite';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { mergeConfig } from 'vite';
+import type { StorybookConfig } from '@storybook/react-vite';
 
 const config: StorybookConfig = {
   stories: [
@@ -21,6 +17,14 @@ const config: StorybookConfig = {
           // Resolve stitches.config imports from radix-ui stories to dummy file
           '../../../../stitches.config': path.resolve(__dirname, './stitches.config.ts').replace(/\\/g, '/'),
         },
+        // Deduplicate graphql to ensure single instance - prevents multiple copies being bundled
+        dedupe: ['graphql', '@apollo/client', 'react', 'react-dom'],
+      },
+      optimizeDeps: {
+        include: [
+          'graphql',
+          '@apollo/client',
+        ],
       },
       build: {
         rollupOptions: {

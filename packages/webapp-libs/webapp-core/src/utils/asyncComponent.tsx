@@ -4,7 +4,7 @@ export function asyncComponent<P>(asyncLoader: () => Promise<{ default: Componen
   const Component = lazy(asyncLoader);
 
   return (
-    props: JSX.IntrinsicAttributes &
+    props: React.JSX.IntrinsicAttributes &
       ((PropsWithoutRef<P> & RefAttributes<React.Component<P, any, any>>) | PropsWithRef<P>)
   ) => (
     <Suspense>

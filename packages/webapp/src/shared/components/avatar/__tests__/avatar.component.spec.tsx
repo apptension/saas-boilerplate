@@ -18,7 +18,10 @@ describe('Avatar: Component', () => {
   it('should render user avatar', async () => {
     const { currentUser } = renderWithProfile();
 
-    expect(await screen.findByRole('img')).toHaveAttribute('src', currentUser.avatar);
+    // Wait for image to load (Radix UI Avatar loads image asynchronously)
+    // Radix UI AvatarImage uses <img> tag, so we can find by alt text
+    const image = await screen.findByAltText('user avatar', {}, { timeout: 3000 });
+    expect(image).toHaveAttribute('src', currentUser.avatar);
   });
 
   it('should render user initial', async () => {

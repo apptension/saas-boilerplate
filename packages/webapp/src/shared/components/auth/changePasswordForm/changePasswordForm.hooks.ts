@@ -52,20 +52,27 @@ export const useChangePasswordForm = () => {
         variant: 'success',
       });
     },
-    onError: (error) => {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
+    onError: (error: any) => {
+      if (error?.graphQLErrors) {
+        setApolloGraphQLResponseErrors(error.graphQLErrors);
+      }
     },
   });
 
-  const handleChangePassword = handleSubmit(({ newPassword, oldPassword }: ChangePasswordFormFields) => {
-    commitChangePasswordMutation({
-      variables: {
-        input: {
-          newPassword,
-          oldPassword,
+  const handleChangePassword = handleSubmit(async ({ newPassword, oldPassword }: ChangePasswordFormFields) => {
+    try {
+      await commitChangePasswordMutation({
+        variables: {
+          input: {
+            newPassword,
+            oldPassword,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      // Error is handled by onError callback
+      // This catch prevents unhandled promise rejection
+    }
   });
   return { ...form, loading, handleChangePassword };
 };

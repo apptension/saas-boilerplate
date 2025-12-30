@@ -43,16 +43,16 @@ const meta: Meta<typeof Template> = {
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {
-  render: Template,
-  args: { isLoggedIn: true, isCollapsed: false },
+  render: Template as any,
+  args: { isLoggedIn: true, isCollapsed: false } as any,
 };
 
 export const Collapsed: StoryObj<typeof meta> = {
-  render: Template,
-  args: { isLoggedIn: true, isCollapsed: true },
+  render: Template as any,
+  args: { isLoggedIn: true, isCollapsed: true } as any,
 };
 
 export const LoggedOut: StoryObj<typeof meta> = {
-  render: Template,
-  args: { isLoggedIn: false, isCollapsed: false },
+  render: Template as any,
+  args: { isLoggedIn: false, isCollapsed: false } as any,
 };

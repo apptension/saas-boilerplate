@@ -16,25 +16,6 @@ export const usePasswordResetConfirmForm = (user: string, token: string) => {
   const generateLocalePath = useGenerateLocalePath();
   const intl = useIntl();
 
-  const [commitPasswordResetConfirm, { loading }] = useMutation(authRequestPasswordResetConfirmMutation, {
-    onCompleted: () => {
-      trackEvent('auth', 'reset-password-confirm');
-
-      navigate(generateLocalePath(RoutesConfig.login));
-
-      toast({
-        description: intl.formatMessage({
-          defaultMessage: 'Password reset successfully!',
-          id: 'Auth / Reset password confirm / Success message',
-        }),
-        variant: 'success',
-      });
-    },
-    onError: (error) => {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
-    },
-  });
-
   const form = useApiForm<ResetPasswordFormFields>({
     errorMessages: {
       nonFieldErrors: {
@@ -57,6 +38,27 @@ export const usePasswordResetConfirmForm = (user: string, token: string) => {
     },
   });
   const { handleSubmit, setApolloGraphQLResponseErrors } = form;
+
+  const [commitPasswordResetConfirm, { loading }] = useMutation(authRequestPasswordResetConfirmMutation, {
+    onCompleted: () => {
+      trackEvent('auth', 'reset-password-confirm');
+
+      navigate(generateLocalePath(RoutesConfig.login));
+
+      toast({
+        description: intl.formatMessage({
+          defaultMessage: 'Password reset successfully!',
+          id: 'Auth / Reset password confirm / Success message',
+        }),
+        variant: 'success',
+      });
+    },
+    onError: (error: any) => {
+      if (error?.graphQLErrors) {
+        setApolloGraphQLResponseErrors(error.graphQLErrors);
+      }
+    },
+  });
   const handlePasswordResetConfirm = handleSubmit((data: ResetPasswordFormFields) => {
     commitPasswordResetConfirm({
       variables: {

@@ -1,8 +1,9 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { GraphQLError } from 'graphql/error/GraphQLError';
+import { GraphQLError } from 'graphql';
 
 import { Role } from '../../../../../modules/auth/auth.types';
 import { render } from '../../../../../tests/utils/rendering';
@@ -16,32 +17,6 @@ const formData = {
   lastName: 'updated-last-name',
 };
 
-const requestMock = (error?: GraphQLError[]) => ({
-  request: {
-    query: authUpdateUserProfileMutation,
-    variables: {
-      input: {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-      },
-    },
-  },
-  result: {
-    data: {
-      updateCurrentUser: {
-        userProfile: {
-          id: '1',
-          user: {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-          },
-        },
-      },
-    },
-    errors: error,
-  },
-});
-
 const renderComponent = (error?: GraphQLError[]) => {
   const currentUser = currentUserFactory({
     firstName: 'Jack',
@@ -50,7 +25,30 @@ const renderComponent = (error?: GraphQLError[]) => {
     roles: [Role.ADMIN, Role.USER],
   });
 
-  const apolloMocks = [fillCommonQueryWithUser(currentUser), requestMock(error)];
+  const requestMock = composeMockedQueryResult(authUpdateUserProfileMutation, {
+    variables: {
+      input: {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+      },
+    },
+    data: error
+      ? null
+      : {
+          updateCurrentUser: {
+            userProfile: {
+              id: '1',
+              user: {
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+              },
+            },
+          },
+        },
+    errors: error,
+  });
+
+  const apolloMocks = [fillCommonQueryWithUser(currentUser), requestMock];
 
   return {
     ...render(<EditProfileForm />, { apolloMocks }),
@@ -112,12 +110,32 @@ describe('EditProfileForm: Component', () => {
 
   it('should show generic form error if action throws error', async () => {
     const errorMessage = 'Invalid data';
-    const error = [new GraphQLError(errorMessage)];
-    renderComponent(error);
+    const currentUser = currentUserFactory({
+      firstName: 'Jack',
+      lastName: 'White',
+      email: 'jack.white@mail.com',
+      roles: [Role.ADMIN, Role.USER],
+    });
+
+    const requestMock = composeMockedQueryResult(authUpdateUserProfileMutation, {
+      variables: {
+        input: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+        },
+      },
+      data: {},
+      errors: [new GraphQLError(errorMessage)],
+    });
+
+    render(<EditProfileForm />, {
+      apolloMocks: (defaultMocks) => defaultMocks.concat([fillCommonQueryWithUser(currentUser), requestMock]),
+    });
 
     await fillForm();
     await submitForm();
 
-    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
+    // Wait for error to be processed and displayed
+    expect(await screen.findByText(errorMessage, {}, { timeout: 3000 })).toBeInTheDocument();
   });
 });

@@ -65,6 +65,28 @@ export function composeMockedQueryResult<T extends DocumentNode>(
   query: T,
   { variables, data, errors }: ComposeMockedQueryResultProps
 ): MockedResponse {
+  // If there are errors and no meaningful data, use the error field to trigger onError callback
+  // This ensures Apollo Client's onError is properly called in tests
+  // Apollo Client MockedProvider doesn't reliably trigger onError with result.errors when data is empty
+  if (errors && errors.length > 0 && (!data || Object.keys(data).length === 0 || data === null)) {
+    // Create an error object that matches Apollo Client's error structure
+    // Apollo Client's onError receives an error with graphQLErrors property
+    const error = Object.assign(new Error(errors[0].message || 'GraphQL error'), {
+      graphQLErrors: errors,
+      networkError: null,
+      clientErrors: [],
+      extraInfo: undefined,
+    });
+    
+    return {
+      request: {
+        query,
+        variables,
+      },
+      error: error,
+    };
+  }
+
   const result = {
     data,
     errors,
