@@ -4,8 +4,7 @@ AWS Secrets Manager integration for storing SSO secrets securely.
 
 import json
 import logging
-from typing import Optional, Dict, Any
-from functools import lru_cache
+from typing import Optional, Dict
 
 import boto3
 from botocore.exceptions import ClientError

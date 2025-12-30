@@ -9,6 +9,9 @@ logger = logging.getLogger(__name__)
 
 OPEN_AI_API_ERROR_MSG = "OpenAI service is currently unavailable. Please try again in a couple seconds."
 
+# HTTP status codes
+HTTP_BAD_REQUEST = 400
+
 
 class OpenAIClient:
     # Initialize OpenAI client (singleton pattern)
@@ -72,11 +75,7 @@ Separate ideas with ---"""
                 client = OpenAIClient._get_client()
                 # Ensure model name is valid
                 # Note: gpt-4 may require specific access or different model name
-                if model.startswith('gpt'):
-                    model_name = model
-                else:
-                    # Default to gpt-3.5-turbo which is widely available
-                    model_name = 'gpt-3.5-turbo'
+                model_name = model if model.startswith('gpt') else 'gpt-3.5-turbo'
 
                 # If gpt-4 is requested but might not be available, try alternatives
                 if model_name == 'gpt-4':
@@ -113,7 +112,7 @@ Separate ideas with ---"""
                         try:
                             api_params["max_completion_tokens"] = 2000
                             result = client.chat.completions.create(**api_params)
-                            logger.info(f"Successfully used max_completion_tokens parameter")
+                            logger.info("Successfully used max_completion_tokens parameter")
                         except Exception as param_error:
                             error_str = str(param_error).lower()
                             # If max_completion_tokens is not supported, try max_tokens
@@ -128,7 +127,7 @@ Separate ideas with ---"""
                                 api_params.pop("max_completion_tokens", None)
                                 api_params["max_tokens"] = 2000
                                 result = client.chat.completions.create(**api_params)
-                                logger.info(f"Successfully used max_tokens parameter")
+                                logger.info("Successfully used max_tokens parameter")
                             else:
                                 # Re-raise if it's a different error
                                 raise
@@ -140,7 +139,7 @@ Separate ideas with ---"""
                         last_error = api_error
                         logger.warning(f"Failed to use model {attempt_model}: {api_error}")
                         # If it's not a 400 error (model not found), don't try other models
-                        if hasattr(api_error, 'status_code') and api_error.status_code != 400:
+                        if hasattr(api_error, 'status_code') and api_error.status_code != HTTP_BAD_REQUEST:
                             raise
                         # Continue to next model variant
                         continue
@@ -185,7 +184,7 @@ Separate ideas with ---"""
             # Check if it's an OpenAI API error
             if 'APIError' in error_type or 'openai' in error_type.lower() or 'rate limit' in error_message.lower():
                 # For 400 errors, provide more specific message
-                if '400' in error_message or (hasattr(error, 'status_code') and error.status_code == 400):
+                if '400' in error_message or (hasattr(error, 'status_code') and error.status_code == HTTP_BAD_REQUEST):
                     detailed_error = (
                         f"Invalid request to OpenAI API. Check model name and parameters. Error: {error_message}"
                     )

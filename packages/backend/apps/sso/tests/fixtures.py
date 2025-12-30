@@ -4,7 +4,7 @@ Pytest fixtures for SSO tests.
 
 import pytest
 import pytest_factoryboy
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from . import factories
 

@@ -46,12 +46,10 @@ class TestOpenAIClientGetSaasIdeas:
     def test_api_exception(self, mocker):
         # Reset the client singleton to ensure fresh mock
         OpenAIClient._client = None
-        
+
         # Mock the OpenAI client to raise APIError on both paths
-        api_error = APIError(
-            message="The server had an error while processing your request.", request=None, body=None
-        )
-        
+        api_error = APIError(message="The server had an error while processing your request.", request=None, body=None)
+
         # Create a mock client that raises errors on both completion paths
         mock_client = mocker.Mock()
         mock_chat = mocker.Mock()
@@ -59,12 +57,12 @@ class TestOpenAIClientGetSaasIdeas:
         mock_completions_chat.create.side_effect = api_error
         mock_chat.completions = mock_completions_chat
         mock_client.chat = mock_chat
-        
+
         # Mock completions.create for instruct models
         mock_completions = mocker.Mock()
         mock_completions.create.side_effect = api_error
         mock_client.completions = mock_completions
-        
+
         # Patch OpenAI to return our mock
         mocker.patch.object(OpenAI, '__new__', return_value=mock_client)
 

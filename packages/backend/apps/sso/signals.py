@@ -8,8 +8,6 @@ from django.dispatch import receiver
 
 from .models import (
     TenantSSOConnection,
-    SCIMToken,
-    SSOUserLink,
     UserPasskey,
     SSOAuditLog,
 )
@@ -28,28 +26,27 @@ def on_sso_connection_saved(sender, instance, created, **kwargs):
             sso_connection=instance,
             description=f'SSO connection "{instance.name}" created',
         )
-    else:
-        # Check for status changes
-        if instance.status == SSOConnectionStatus.ACTIVE:
-            SSOAuditLog.log_event(
-                event_type=SSOAuditEventType.IDP_CONFIG_ACTIVATED,
-                tenant=instance.tenant,
-                sso_connection=instance,
-                description=f'SSO connection "{instance.name}" activated',
-            )
+    # Check for status changes
+    elif instance.status == SSOConnectionStatus.ACTIVE:
+        SSOAuditLog.log_event(
+            event_type=SSOAuditEventType.IDP_CONFIG_ACTIVATED,
+            tenant=instance.tenant,
+            sso_connection=instance,
+            description=f'SSO connection "{instance.name}" activated',
+        )
 
-            # Send notification to tenant owners
-            _notify_sso_status_change(instance, activated=True)
+        # Send notification to tenant owners
+        _notify_sso_status_change(instance, activated=True)
 
-        elif instance.status == SSOConnectionStatus.INACTIVE:
-            SSOAuditLog.log_event(
-                event_type=SSOAuditEventType.IDP_CONFIG_DEACTIVATED,
-                tenant=instance.tenant,
-                sso_connection=instance,
-                description=f'SSO connection "{instance.name}" deactivated',
-            )
+    elif instance.status == SSOConnectionStatus.INACTIVE:
+        SSOAuditLog.log_event(
+            event_type=SSOAuditEventType.IDP_CONFIG_DEACTIVATED,
+            tenant=instance.tenant,
+            sso_connection=instance,
+            description=f'SSO connection "{instance.name}" deactivated',
+        )
 
-            _notify_sso_status_change(instance, activated=False)
+        _notify_sso_status_change(instance, activated=False)
 
 
 @receiver(pre_delete, sender=TenantSSOConnection)
@@ -75,7 +72,6 @@ def _notify_sso_status_change(connection, activated: bool):
     """Send notification about SSO status change."""
     try:
         from apps.notifications.sender import NotificationSender
-        from apps.notifications.models import Notification as NotificationModel
 
         notification_type = (
             Notification.SSO_CONNECTION_ACTIVATED.value if activated else Notification.SSO_CONNECTION_DEACTIVATED.value

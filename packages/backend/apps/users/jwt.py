@@ -33,7 +33,7 @@ def blacklist_user_tokens(user):
     """
     # Get all outstanding tokens for the user
     outstanding_tokens = OutstandingToken.objects.filter(user=user)
-    
+
     # Blacklist each token
     for token in outstanding_tokens:
         BlacklistedToken.objects.get_or_create(token=token)

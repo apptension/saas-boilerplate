@@ -4,13 +4,13 @@ Handles automatic user creation and updates during SSO authentication.
 """
 
 import logging
-from typing import Dict, Any, Optional, Tuple
+from typing import Tuple
 
 from django.db import transaction
 from django.utils import timezone
 
-from apps.users.models import User, UserProfile
-from apps.multitenancy.models import Tenant, TenantMembership
+from apps.users.models import User
+from apps.multitenancy.models import TenantMembership
 from apps.multitenancy.constants import TenantUserRole
 from apps.sso.models import (
     TenantSSOConnection,
@@ -120,7 +120,7 @@ class JITProvisioningService:
 
             # Check domain restrictions
             if not self._is_domain_allowed(email):
-                raise ValueError(f'Email domain is not allowed for this SSO connection.')
+                raise ValueError('Email domain is not allowed for this SSO connection.')
 
             # Look for existing user by email
             user = User.objects.filter(email__iexact=email).first()

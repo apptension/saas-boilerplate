@@ -4,14 +4,12 @@ Provides directory synchronization endpoints for user and group provisioning.
 """
 
 import logging
-from typing import Optional, Dict, Any, List, Tuple
-from datetime import datetime
+from typing import Optional, Dict, Any, List
 
 from django.db import transaction
-from django.utils import timezone
 
-from apps.users.models import User, UserProfile
-from apps.multitenancy.models import Tenant, TenantMembership
+from apps.users.models import User
+from apps.multitenancy.models import TenantMembership
 from apps.multitenancy.constants import TenantUserRole
 from apps.sso.models import SCIMToken, SSOUserLink, SSOAuditLog, TenantSSOConnection
 from apps.sso.constants import SSOAuditEventType
@@ -200,12 +198,8 @@ class SCIMService:
         # Check if user with this email exists
         existing_user = User.objects.filter(email__iexact=email).first()
 
-        if existing_user:
-            # Link existing user
-            user = existing_user
-        else:
-            # Create new user
-            user = User.objects.create_user(email=email)
+        # Link existing user or create new one
+        user = existing_user or User.objects.create_user(email=email)
 
         # Update profile
         if hasattr(user, 'profile'):

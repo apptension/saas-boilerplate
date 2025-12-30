@@ -1125,6 +1125,11 @@ export type CurrentUserType = {
 };
 
 /** Deactivate an SSO connection. */
+export type DeactivateSsoConnectionMutation = {
+  __typename?: 'DeactivateSSOConnectionMutation';
+  ssoConnection?: Maybe<SsoConnectionType>;
+};
+
 export type DeclineTenantInvitationMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
@@ -2472,8 +2477,24 @@ export type ResendTenantInvitationMutationPayload = {
 };
 
 /** Revoke all SSO sessions for the current user. */
+export type RevokeAllSessionsMutation = {
+  __typename?: 'RevokeAllSessionsMutation';
+  ok?: Maybe<Scalars['Boolean']['output']>;
+  revokedCount?: Maybe<Scalars['Int']['output']>;
+};
+
 /** Revoke a SCIM token. */
+export type RevokeScimTokenMutation = {
+  __typename?: 'RevokeSCIMTokenMutation';
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
 /** Revoke an SSO session. */
+export type RevokeSessionMutation = {
+  __typename?: 'RevokeSessionMutation';
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export type RollbackTranslationsMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   versionId: Scalars['ID']['input'];

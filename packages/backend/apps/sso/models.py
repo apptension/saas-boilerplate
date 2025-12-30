@@ -1,12 +1,10 @@
 import hashid_field
 import secrets
-import json
 from datetime import timedelta
 
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-from django.core.validators import MinLengthValidator
 
 from common.models import TimestampedMixin
 from apps.multitenancy.models import Tenant
@@ -519,6 +517,9 @@ class WebAuthnChallenge(TimestampedMixin, models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.challenge_type} challenge for {self.user or 'anonymous'}"
 
     @classmethod
     def generate_challenge(cls) -> str:

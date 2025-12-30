@@ -5,14 +5,13 @@ Uses djangosaml2 for SAML protocol handling.
 
 import base64
 import logging
-import xml.etree.ElementTree as ET
 from datetime import datetime
 from typing import Optional, Dict, Any, Tuple
-from urllib.parse import urlencode, quote
+from urllib.parse import urlencode
+
+import defusedxml.ElementTree as ET
 
 from django.conf import settings
-from django.http import HttpRequest
-from django.utils import timezone
 
 from .secrets import get_secrets_service
 

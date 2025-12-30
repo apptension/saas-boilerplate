@@ -139,7 +139,9 @@ class TestTranslationPublisher:
     @patch.object(TranslationPublisher, '_upload_json')
     @patch.object(TranslationPublisher, '_invalidate_cache')
     @patch.object(TranslationPublisher, '_clear_cache')
-    def test_publish(self, mock_clear, mock_invalidate, mock_upload, db, english_locale, translation_keys, user_factory):
+    def test_publish(
+        self, mock_clear, mock_invalidate, mock_upload, db, english_locale, translation_keys, user_factory
+    ):
         publisher = TranslationPublisher()
         publisher.bucket_name = 'test-bucket'
 

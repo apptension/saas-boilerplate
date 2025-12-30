@@ -2,7 +2,6 @@
 SSO Views for SAML, OIDC, SCIM, and WebAuthn endpoints.
 """
 
-import json
 import logging
 from functools import wraps
 
@@ -19,6 +18,11 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 
 from django.db import models
+from graphql_relay import from_global_id
+
+from apps.multitenancy.models import Tenant, TenantMembership
+from apps.multitenancy.constants import TenantUserRole
+
 from .models import TenantSSOConnection, SCIMToken, SSOAuditLog
 from .constants import SSOConnectionStatus, SSOAuditEventType
 from .services import SAMLService, OIDCService, SCIMService, WebAuthnService
@@ -826,10 +830,6 @@ class PasskeyDeleteView(APIView):
 # SSO Connection Management REST Views
 # ==================
 
-from graphql_relay import from_global_id
-from apps.multitenancy.models import Tenant, TenantMembership
-from apps.multitenancy.constants import TenantUserRole
-
 
 def decode_tenant_id(tenant_id):
     """
@@ -1120,9 +1120,9 @@ class SSODiscoverView(APIView):
             # Check if tenant has this domain configured
             # This is a simple check - in production you'd want domain verification
             tenant_domains = getattr(conn.tenant, 'domains', None)
-            if tenant_domains and domain in tenant_domains:
-                matching_connections.append(conn)
-            elif conn.allowed_domains and domain in conn.allowed_domains:
+            domain_matches = tenant_domains and domain in tenant_domains
+            allowed_matches = conn.allowed_domains and domain in conn.allowed_domains
+            if domain_matches or allowed_matches:
                 matching_connections.append(conn)
             # Also check by email pattern in existing users
             from apps.users.models import User

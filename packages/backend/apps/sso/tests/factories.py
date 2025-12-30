@@ -9,7 +9,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 from apps.users.tests.factories import UserFactory
-from apps.multitenancy.tests.factories import TenantFactory, TenantMembershipFactory
+from apps.multitenancy.tests.factories import TenantFactory
 from apps.sso import models, constants
 
 

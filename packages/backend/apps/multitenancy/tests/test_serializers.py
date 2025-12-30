@@ -98,8 +98,12 @@ class TestResendTenantInvitationSerializer:
         mocker.patch("apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token")
         # Mock where it's imported - the serializer imports notifications module and then imports from it in create()
         mock_email_instance = mocker.Mock()
-        mock_send_email = mocker.patch("apps.multitenancy.serializers.notifications.TenantInvitationEmail", return_value=mock_email_instance)
-        mock_send_notification = mocker.patch("apps.multitenancy.serializers.notifications.send_tenant_invitation_notification")
+        mock_send_email = mocker.patch(
+            "apps.multitenancy.serializers.notifications.TenantInvitationEmail", return_value=mock_email_instance
+        )
+        mock_send_notification = mocker.patch(
+            "apps.multitenancy.serializers.notifications.send_tenant_invitation_notification"
+        )
         creator = user_factory()
 
         tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)
@@ -124,8 +128,12 @@ class TestResendTenantInvitationSerializer:
         mocker.patch("apps.multitenancy.tokens.TenantInvitationTokenGenerator.make_token", return_value="token")
         # Mock where it's imported - the serializer imports notifications module and then imports from it in create()
         mock_email_instance = mocker.Mock()
-        mock_send_email = mocker.patch("apps.multitenancy.serializers.notifications.TenantInvitationEmail", return_value=mock_email_instance)
-        mock_send_notification = mocker.patch("apps.multitenancy.serializers.notifications.send_tenant_invitation_notification")
+        mock_send_email = mocker.patch(
+            "apps.multitenancy.serializers.notifications.TenantInvitationEmail", return_value=mock_email_instance
+        )
+        mock_send_notification = mocker.patch(
+            "apps.multitenancy.serializers.notifications.send_tenant_invitation_notification"
+        )
         creator = user_factory()
 
         tenant = tenant_factory(name="Test Tenant", type=TenantType.ORGANIZATION)

@@ -1,4 +1,5 @@
 {
+  "name": "backend",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "root": "packages/backend",
   "projectType": "application",

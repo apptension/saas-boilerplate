@@ -6,11 +6,9 @@ Provides registration and authentication flows for passkeys.
 import base64
 import json
 import logging
-from typing import Dict, Any, Optional, Tuple, List
-from datetime import timedelta
+from typing import Dict, Any, Tuple, List
 
 from django.conf import settings
-from django.utils import timezone
 
 from apps.users.models import User
 from apps.sso.models import UserPasskey, WebAuthnChallenge, SSOAuditLog

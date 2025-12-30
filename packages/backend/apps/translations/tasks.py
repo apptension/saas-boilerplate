@@ -5,8 +5,6 @@ Handles batch AI translation processing with progress tracking.
 """
 
 import logging
-from typing import List, Dict, Any
-from datetime import datetime
 
 from celery import shared_task
 from django.db import transaction
@@ -30,7 +28,7 @@ def process_ai_translation_job(self, job_id: int):
     Args:
         job_id: ID of the AITranslationJob to process
     """
-    from .models import AITranslationJob, TranslationKey, Translation, Locale
+    from .models import AITranslationJob, TranslationKey, Translation
     from .ai_service import AITranslationService, is_openai_configured
 
     # Load the job

@@ -8,7 +8,7 @@ import secrets
 import hashlib
 import base64
 from typing import Optional, Dict, Any, Tuple
-from urllib.parse import urlencode, urlparse
+from urllib.parse import urlencode
 
 import requests
 from django.conf import settings
@@ -340,10 +340,7 @@ class OIDCService:
 
         # Validate ID token
         id_token = tokens.get('id_token')
-        if id_token:
-            claims = self.validate_id_token(id_token, stored_nonce)
-        else:
-            claims = {}
+        claims = self.validate_id_token(id_token, stored_nonce) if id_token else {}
 
         # Get additional user info if needed
         access_token = tokens.get('access_token')

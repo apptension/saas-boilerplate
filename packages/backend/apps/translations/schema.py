@@ -188,7 +188,10 @@ class SyncTranslationKeysMutation(relay.ClientIDMutation):
             created=stats['created'],
             updated=stats['updated'],
             deprecated=stats['deprecated'],
-            message=f"Sync complete: {stats['created']} created, {stats['updated']} updated, {stats['deprecated']} deprecated",
+            message=(
+                f"Sync complete: {stats['created']} created, "
+                f"{stats['updated']} updated, {stats['deprecated']} deprecated"
+            ),
         )
 
 

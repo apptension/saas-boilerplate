@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.utils import timezone
 from hashid_field.rest import HashidSerializerCharField
 
 from apps.multitenancy.constants import TenantUserRole
@@ -91,7 +90,7 @@ class TenantSSOConnectionSerializer(serializers.ModelSerializer):
             if not isinstance(domain, str) or not domain:
                 raise serializers.ValidationError("Each domain must be a non-empty string.")
             # Basic domain validation
-            if ' ' in domain or not '.' in domain:
+            if ' ' in domain or '.' not in domain:
                 raise serializers.ValidationError(f"Invalid domain format: {domain}")
 
         return [d.lower().strip() for d in value]

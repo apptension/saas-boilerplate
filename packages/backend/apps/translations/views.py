@@ -90,7 +90,10 @@ class SyncTranslationsView(APIView):
             {
                 'success': True,
                 'stats': stats,
-                'message': f"Sync complete: {stats['created']} created, {stats['updated']} updated, {stats['deprecated']} deprecated",
+                'message': (
+                    f"Sync complete: {stats['created']} created, "
+                    f"{stats['updated']} updated, {stats['deprecated']} deprecated"
+                ),
             }
         )
 

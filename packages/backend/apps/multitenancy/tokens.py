@@ -72,10 +72,7 @@ class TenantInvitationTokenGenerator(PasswordResetTokenGenerator):
             return False
 
         # Check the timestamp is within limit.
-        if (self._num_seconds(self._now()) - ts) > settings.TENANT_INVITATION_TIMEOUT:
-            return False
-
-        return True
+        return (self._num_seconds(self._now()) - ts) <= settings.TENANT_INVITATION_TIMEOUT
 
 
 tenant_invitation_token = TenantInvitationTokenGenerator()

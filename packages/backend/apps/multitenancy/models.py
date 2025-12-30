@@ -59,6 +59,10 @@ class Tenant(TimestampedMixin, models.Model):
 
     MAX_SAVE_ATTEMPTS = 10
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__original_name = self.name
+
     def __str__(self):
         return self.name
 
@@ -97,10 +101,6 @@ class Tenant(TimestampedMixin, models.Model):
         Returns the list of Users with an owner role.
         """
         return self.members.filter(tenant_memberships__role=constants.TenantUserRole.OWNER).all()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__original_name = self.name
 
 
 class TenantMembership(TimestampedMixin, models.Model):

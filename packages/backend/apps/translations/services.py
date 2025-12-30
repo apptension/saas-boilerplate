@@ -93,11 +93,8 @@ class TranslationPublisher:
         }
 
         for key in keys:
-            if key.id in locale_translations:
-                translations[key.key] = locale_translations[key.id]
-            else:
-                # Fall back to default message
-                translations[key.key] = key.default_message
+            # Use translated value or fall back to default message
+            translations[key.key] = locale_translations.get(key.id, key.default_message)
 
         return translations
 
@@ -308,17 +305,12 @@ class TranslationSyncer:
             if created:
                 stats['created'] += 1
                 logger.debug(f"Created translation key: {key}")
+            # Check if actually updated by comparing old values
+            elif old_default_message != default_message or old_description != description or was_deprecated:
+                stats['updated'] += 1
+                logger.debug(f"Updated translation key: {key}")
             else:
-                # Check if actually updated by comparing old values
-                if (
-                    old_default_message != default_message
-                    or old_description != description
-                    or was_deprecated
-                ):
-                    stats['updated'] += 1
-                    logger.debug(f"Updated translation key: {key}")
-                else:
-                    stats['unchanged'] += 1
+                stats['unchanged'] += 1
 
         # Mark unseen keys as deprecated (don't delete to preserve translations)
         deprecated_count = (

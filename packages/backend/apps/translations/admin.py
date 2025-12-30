@@ -18,8 +18,13 @@ from django import forms
 from django.shortcuts import render
 
 from .models import TranslationKey, Locale, Translation, TranslationVersion, AITranslationJob
-from .services import TranslationPublisher, TranslationSyncer
+from .services import TranslationPublisher
 from .ai_service import is_openai_configured
+
+# Progress bar thresholds and colors
+PROGRESS_THRESHOLD_COMPLETE = 100
+PROGRESS_THRESHOLD_HIGH = 75
+PROGRESS_THRESHOLD_MEDIUM = 50
 
 
 class TranslationInlineForm(forms.ModelForm):
@@ -203,19 +208,19 @@ class LocaleAdmin(admin.ModelAdmin):
         """Display translation progress with progress bar."""
         progress = obj.translation_progress
 
-        if progress >= 100:
+        if progress >= PROGRESS_THRESHOLD_COMPLETE:
             color = '#28a745'
-        elif progress >= 75:
+        elif progress >= PROGRESS_THRESHOLD_HIGH:
             color = '#17a2b8'
-        elif progress >= 50:
+        elif progress >= PROGRESS_THRESHOLD_MEDIUM:
             color = '#ffc107'
         else:
             color = '#dc3545'
 
         return format_html(
             '<div style="width: 100px; background: #e9ecef; border-radius: 4px; overflow: hidden;">'
-            '<div style="width: {}%; background: {}; height: 20px; line-height: 20px; text-align: center; color: white; font-size: 11px;">'
-            '{}%</div></div>',
+            '<div style="width: {}%; background: {}; height: 20px; line-height: 20px; '
+            'text-align: center; color: white; font-size: 11px;">{}%</div></div>',
             min(progress, 100),
             color,
             progress,

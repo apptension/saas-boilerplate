@@ -7,7 +7,7 @@ for high-quality machine translations.
 
 import json
 import logging
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 from dataclasses import dataclass
 
 from django.conf import settings
