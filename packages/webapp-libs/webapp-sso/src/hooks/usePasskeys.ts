@@ -21,7 +21,7 @@ export const PASSKEYS_QUERY = gql(`
 `);
 
 export const RENAME_PASSKEY = gql(`
-  mutation RenamePasskey($id: ID!, $name: String!) {
+  mutation RenameUserPasskey($id: ID!, $name: String!) {
     renamePasskey(id: $id, name: $name) {
       passkey {
         id

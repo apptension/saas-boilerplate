@@ -44,7 +44,7 @@ describe('TwoFactorAuthForm: Component', () => {
       apolloMocks: (apolloMocks) => apolloMocks.concat(generateOtpMock),
     });
 
-    const setupButton = await screen.findByText('Setup 2FA');
+    const setupButton = await screen.findByRole('button', { name: /enable 2fa/i });
     await userEvent.click(setupButton);
 
     expect(await screen.findByText(/Set Up Two-Factor Authentication/i)).toBeInTheDocument();
@@ -61,8 +61,13 @@ describe('TwoFactorAuthForm: Component', () => {
       apolloMocks: (apolloMocks) => apolloMocks.concat(disableOtpMock, refreshQueryMock),
     });
 
-    const disableButton = await screen.findByText('Disable 2FA');
+    // Click the Disable button which opens confirmation dialog
+    const disableButton = await screen.findByRole('button', { name: /disable/i });
     await userEvent.click(disableButton);
+
+    // Confirm in the dialog
+    const confirmButton = await screen.findByRole('button', { name: /continue/i });
+    await userEvent.click(confirmButton);
 
     expect(await screen.findByText(/Two-Factor Auth disabled successfully!/i)).toBeInTheDocument();
     expect(trackEvent).toHaveBeenCalledWith('auth', 'otp-disabled');

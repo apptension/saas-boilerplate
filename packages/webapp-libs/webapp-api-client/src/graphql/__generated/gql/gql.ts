@@ -69,7 +69,7 @@ type Documents = {
     "\n  fragment notificationsListItemFragment on NotificationType {\n    id\n    data\n    createdAt\n    readAt\n    type\n    issuer {\n      id\n      avatar\n      email\n    }\n  }\n": typeof types.NotificationsListItemFragmentFragmentDoc,
     "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n": typeof types.NotificationsListMarkAsReadMutationDocument,
     "\n  query PasskeysQuery {\n    myPasskeys(first: 20) {\n      edges {\n        node {\n          id\n          name\n          authenticatorType\n          transports\n          isActive\n          lastUsedAt\n          useCount\n          createdAt\n        }\n      }\n    }\n  }\n": typeof types.PasskeysQueryDocument,
-    "\n  mutation RenamePasskey($id: ID!, $name: String!) {\n    renamePasskey(id: $id, name: $name) {\n      passkey {\n        id\n        name\n      }\n    }\n  }\n": typeof types.RenamePasskeyDocument,
+    "\n  mutation RenameUserPasskey($id: ID!, $name: String!) {\n    renamePasskey(id: $id, name: $name) {\n      passkey {\n        id\n        name\n      }\n    }\n  }\n": typeof types.RenameUserPasskeyDocument,
     "\n  mutation DeletePasskey($input: DeletePasskeyMutationInput!) {\n    deletePasskey(input: $input) {\n      deletedIds\n    }\n  }\n": typeof types.DeletePasskeyDocument,
     "\n  query SCIMTokensQuery($tenantId: ID!) {\n    scimTokens(first: 50) {\n      edges {\n        node {\n          id\n          name\n          tokenPrefix\n          isActive\n          expiresAt\n          lastUsedAt\n          lastUsedIp\n          requestCount\n          createdAt\n        }\n      }\n    }\n  }\n": typeof types.ScimTokensQueryDocument,
     "\n  mutation CreateSCIMToken($input: CreateSCIMTokenMutationInput!) {\n    createScimToken(input: $input) {\n      scimToken {\n        id\n        name\n        tokenPrefix\n      }\n      rawToken\n    }\n  }\n": typeof types.CreateScimTokenDocument,
@@ -164,7 +164,7 @@ const documents: Documents = {
     "\n  fragment notificationsListItemFragment on NotificationType {\n    id\n    data\n    createdAt\n    readAt\n    type\n    issuer {\n      id\n      avatar\n      email\n    }\n  }\n": types.NotificationsListItemFragmentFragmentDoc,
     "\n  mutation notificationsListMarkAsReadMutation($input: MarkReadAllNotificationsMutationInput!) {\n    markReadAllNotifications(input: $input) {\n      ok\n    }\n  }\n": types.NotificationsListMarkAsReadMutationDocument,
     "\n  query PasskeysQuery {\n    myPasskeys(first: 20) {\n      edges {\n        node {\n          id\n          name\n          authenticatorType\n          transports\n          isActive\n          lastUsedAt\n          useCount\n          createdAt\n        }\n      }\n    }\n  }\n": types.PasskeysQueryDocument,
-    "\n  mutation RenamePasskey($id: ID!, $name: String!) {\n    renamePasskey(id: $id, name: $name) {\n      passkey {\n        id\n        name\n      }\n    }\n  }\n": types.RenamePasskeyDocument,
+    "\n  mutation RenameUserPasskey($id: ID!, $name: String!) {\n    renamePasskey(id: $id, name: $name) {\n      passkey {\n        id\n        name\n      }\n    }\n  }\n": types.RenameUserPasskeyDocument,
     "\n  mutation DeletePasskey($input: DeletePasskeyMutationInput!) {\n    deletePasskey(input: $input) {\n      deletedIds\n    }\n  }\n": types.DeletePasskeyDocument,
     "\n  query SCIMTokensQuery($tenantId: ID!) {\n    scimTokens(first: 50) {\n      edges {\n        node {\n          id\n          name\n          tokenPrefix\n          isActive\n          expiresAt\n          lastUsedAt\n          lastUsedIp\n          requestCount\n          createdAt\n        }\n      }\n    }\n  }\n": types.ScimTokensQueryDocument,
     "\n  mutation CreateSCIMToken($input: CreateSCIMTokenMutationInput!) {\n    createScimToken(input: $input) {\n      scimToken {\n        id\n        name\n        tokenPrefix\n      }\n      rawToken\n    }\n  }\n": types.CreateScimTokenDocument,
@@ -441,7 +441,7 @@ export function gql(source: "\n  query PasskeysQuery {\n    myPasskeys(first: 20
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  mutation RenamePasskey($id: ID!, $name: String!) {\n    renamePasskey(id: $id, name: $name) {\n      passkey {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation RenamePasskey($id: ID!, $name: String!) {\n    renamePasskey(id: $id, name: $name) {\n      passkey {\n        id\n        name\n      }\n    }\n  }\n"];
+export function gql(source: "\n  mutation RenameUserPasskey($id: ID!, $name: String!) {\n    renamePasskey(id: $id, name: $name) {\n      passkey {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation RenameUserPasskey($id: ID!, $name: String!) {\n    renamePasskey(id: $id, name: $name) {\n      passkey {\n        id\n        name\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -592,7 +592,13 @@ export function gql(source: "\n  mutation validateOtp($input: ValidateOTPMutatio
 export function gql(source: "\n  mutation disableOtp($input: DisableOTPMutationInput!) {\n    disableOtp(input: $input) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation disableOtp($input: DisableOTPMutationInput!) {\n    disableOtp(input: $input) {\n      ok\n    }\n  }\n"];
 
 export function gql(source: string) {
-  return (documents as any)[source] ?? {};
+  const document = (documents as any)[source];
+  if (!document) {
+    throw new Error(
+      `GraphQL query not found in documents map. Please run: pnpm nx run webapp-api-client:graphql:generate-types\n\nQuery:\n${source.substring(0, 200)}...`
+    );
+  }
+  return document;
 }
 
 export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;

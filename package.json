@@ -116,7 +116,7 @@
     "react-hook-form": "^7.48.2",
     "react-intl": "^6.5.5",
     "react-loading-skeleton": "^3.3.1",
-    "react-markdown": "^8.0.7",
+    "react-markdown": "^10.1.0",
     "regenerator-runtime": "^0.14.1",
     "rxjs": "^7.8.1",
     "styled-components": "6.1.11"

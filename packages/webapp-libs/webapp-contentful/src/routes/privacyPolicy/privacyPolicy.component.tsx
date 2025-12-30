@@ -291,9 +291,9 @@ const ContentState: FC<ContentStateProps> = ({ markdown }) => {
 
         <Card>
           <CardContent className="py-6">
-            <ReactMarkdown className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-semibold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-muted-foreground prose-li:text-muted-foreground prose-a:text-primary">
-              {markdown}
-            </ReactMarkdown>
+            <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-semibold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:text-muted-foreground prose-li:text-muted-foreground prose-a:text-primary">
+              <ReactMarkdown>{markdown}</ReactMarkdown>
+            </div>
           </CardContent>
         </Card>
       </div>

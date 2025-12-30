@@ -15,7 +15,6 @@ const graphqlFilePath = path.resolve(__dirname, '../src/graphql/__generated/gql/
 // Types that have duplicates (schema type vs document type)
 const duplicateTypes = [
   'DeactivateSsoConnectionMutation',
-  'RenamePasskeyMutation',
   'RevokeAllSessionsMutation',
   'RevokeScimTokenMutation',
   'RevokeSessionMutation',
