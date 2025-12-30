@@ -23,6 +23,11 @@ export const emitter = new Emitter();
 let redirectingToLogin = false;
 let redirectTimeout: NodeJS.Timeout | null = null;
 
+// Flag to track if we're currently refreshing to prevent infinite loops
+let isRefreshing = false;
+// Queue of pending requests waiting for token refresh
+let pendingRequests: Array<() => void> = [];
+
 /**
  * Redirects to the login page when authentication fails.
  * Extracts the current locale from the URL and constructs the login path.
@@ -129,10 +134,12 @@ const handleApiErrors = (
   graphQLErrors?: ReadonlyArray<GraphQLFormattedError>,
   networkError?: Error | null
 ) => {
+  // Check for UNAUTHENTICATED GraphQL errors
   if (graphQLErrors) {
     for (const err of graphQLErrors) {
       switch (err.extensions?.['code']) {
         case 'UNAUTHENTICATED':
+          IS_LOCAL_ENV && console.log('[handleApiErrors] UNAUTHENTICATED error, attempting refresh');
           return callRefresh();
         default:
           IS_LOCAL_ENV && console.log(`[GraphQL error]`, err);
@@ -140,13 +147,10 @@ const handleApiErrors = (
     }
   }
 
+  // Check for 401 network errors - try refresh instead of immediate redirect
   if (networkError && is401Error(networkError)) {
-    if (IS_LOCAL_ENV) {
-      console.log('[handleApiErrors] Detected 401 error, redirecting to login', networkError);
-    }
-    // Redirect immediately - page reload will clear cache
-    redirectToLogin();
-    return;
+    IS_LOCAL_ENV && console.log('[handleApiErrors] 401 error detected, attempting token refresh');
+    return callRefresh();
   }
   
   if (networkError) {
@@ -155,6 +159,7 @@ const handleApiErrors = (
     
     if (serverError.result && typeof serverError.result !== 'string') {
       if (serverError.result?.['code']?.code === 'token_not_valid') {
+        IS_LOCAL_ENV && console.log('[handleApiErrors] Token not valid, attempting refresh');
         return callRefresh();
       }
     }
@@ -165,21 +170,33 @@ const handleApiErrors = (
 const refreshTokenLink = onError((error: any) => {
   const { graphQLErrors, networkError, operation, forward } = error;
   
-  // Check for 401 errors first, before trying to refresh token
-  if (networkError && is401Error(networkError)) {
-    if (IS_LOCAL_ENV) {
-      console.log('[Apollo Error] Detected 401 error, redirecting to login', networkError);
-    }
-    // Redirect immediately - page reload will clear cache
-    redirectToLogin();
-    return;
-  }
-  
   const callRefresh = (): Observable<FetchResult> | void =>
     new Observable((observer) => {
+      // If we're already refreshing, queue this request
+      if (isRefreshing) {
+        IS_LOCAL_ENV && console.log('[refreshTokenLink] Already refreshing, queueing request');
+        pendingRequests.push(() => {
+          const subscriber = {
+            next: observer.next.bind(observer),
+            error: observer.error.bind(observer),
+            complete: observer.complete.bind(observer),
+          };
+          forward(operation).subscribe(subscriber);
+        });
+        return;
+      }
+
+      isRefreshing = true;
+      IS_LOCAL_ENV && console.log('[refreshTokenLink] Starting token refresh');
+
       (async () => {
         try {
           await auth.refreshToken();
+          IS_LOCAL_ENV && console.log('[refreshTokenLink] Token refresh successful');
+
+          // Process any queued requests
+          pendingRequests.forEach((callback) => callback());
+          pendingRequests = [];
 
           // Retry the failed request
           const subscriber = {
@@ -190,10 +207,17 @@ const refreshTokenLink = onError((error: any) => {
 
           forward(operation).subscribe(subscriber);
         } catch (err) {
+          IS_LOCAL_ENV && console.log('[refreshTokenLink] Token refresh failed, redirecting to login', err);
+          
+          // Clear pending requests
+          pendingRequests = [];
+          
           // If refresh token fails, redirect to login
           // Page reload will clear cache automatically
           redirectToLogin();
           observer.error(err);
+        } finally {
+          isRefreshing = false;
         }
       })();
     });
@@ -231,14 +255,10 @@ const maxRetryAttempts = 5;
 const retryLink = new RetryLink({
   delay: () => 1000,
   attempts: (count, operation, error) => {
-    // Don't retry on 401 errors - redirect to login instead
+    // Don't retry on 401 errors - let the refreshTokenLink handle them
     if (error && is401Error(error)) {
-      if (IS_LOCAL_ENV) {
-        console.log('[RetryLink] Detected 401 error, redirecting to login', error);
-      }
-      // Redirect immediately - page reload will clear cache
-      redirectToLogin();
-      return false; // Don't retry
+      IS_LOCAL_ENV && console.log('[RetryLink] 401 error detected, skipping retry (handled by refreshTokenLink)');
+      return false; // Don't retry - refreshTokenLink will handle this
     }
     
     if (count === maxRetryAttempts) {
