@@ -1347,19 +1347,19 @@
     "defaultMessage": "Edit CRUD Example Item"
   },
   "Email / Account Activation / Link label": {
-    "defaultMessage": "Confirm registration"
+    "defaultMessage": "Verify my email"
   },
   "Email / Account Activation / Preheader": {
-    "defaultMessage": "Confirm your email to complete your registration"
+    "defaultMessage": "You're one click away from getting started"
   },
   "Email / Account Activation / Subject": {
-    "defaultMessage": "Confirm registration"
+    "defaultMessage": "Verify your email to get started"
   },
   "Email / Account Activation / Text": {
-    "defaultMessage": "Click the button below to confirm registration."
+    "defaultMessage": "Thanks for signing up! Please confirm your email address to activate your account and start exploring all the features waiting for you."
   },
   "Email / Account Activation / Title": {
-    "defaultMessage": "Finish the registration"
+    "defaultMessage": "Welcome! Let's verify your email"
   },
   "Email / Footer / Privacy": {
     "defaultMessage": "Privacy Policy"
@@ -1374,85 +1374,85 @@
     "defaultMessage": "Unsubscribe"
   },
   "Email / Reset Password / Link label": {
-    "defaultMessage": "Reset the password"
+    "defaultMessage": "Create new password"
   },
   "Email / Reset Password / Preheader": {
-    "defaultMessage": "Reset your password to regain access to your account"
+    "defaultMessage": "This link expires in 24 hours for your security"
   },
   "Email / Reset Password / Subject": {
     "defaultMessage": "Reset your password"
   },
   "Email / Reset Password / Text": {
-    "defaultMessage": "Click the button below to reset the password."
+    "defaultMessage": "We received a request to reset your password. Click the button below to create a new one. If you didn't make this request, you can safely ignore this email."
   },
   "Email / Reset Password / Title": {
-    "defaultMessage": "Reset the password"
+    "defaultMessage": "Reset your password"
   },
   "Email / Subscription Error / Link label": {
-    "defaultMessage": "See subscription details"
+    "defaultMessage": "Update payment method"
   },
   "Email / Subscription Error / Preheader": {
-    "defaultMessage": "Action required: Your subscription payment could not be processed"
+    "defaultMessage": "Let's fix this quickly to keep your access uninterrupted"
   },
   "Email / Subscription Error / Subject": {
-    "defaultMessage": "Subscription payment failed"
+    "defaultMessage": "Action needed: Update your payment method"
   },
   "Email / Subscription Error / Text": {
-    "defaultMessage": "Click the button below to review your payment method details"
+    "defaultMessage": "Don't worry, this happens sometimes. Your payment method may have expired or there might be insufficient funds. Please update your payment details to continue enjoying uninterrupted access to your account."
   },
   "Email / Subscription Error / Title": {
-    "defaultMessage": "Your subscription payment failed"
+    "defaultMessage": "We couldn't process your payment"
   },
   "Email / TenantInvitation / Preheader": {
-    "defaultMessage": "You've been invited to join an organization"
+    "defaultMessage": "Join the team and start collaborating today"
   },
   "Email / TenantInvitation / Subject": {
-    "defaultMessage": "You have a new organization invitation"
+    "defaultMessage": "You're invited to join a team"
   },
   "Email / TenantInvitation / Text": {
-    "defaultMessage": "Click button below to accept or decline new invitation."
+    "defaultMessage": "Great news! You've been invited to join an organization. Click below to view the invitation details and decide whether to accept or decline."
   },
   "Email / TenantInvitation / Title": {
-    "defaultMessage": "You have a new organization invitation"
+    "defaultMessage": "You're invited to join a team"
   },
   "Email / TenantInvitation / View invitation": {
     "defaultMessage": "View invitation"
   },
   "Email / Trial Expires Soon / Link label": {
-    "defaultMessage": "Go to the dashboard"
+    "defaultMessage": "Upgrade now"
   },
   "Email / Trial Expires Soon / Preheader": {
-    "defaultMessage": "Your trial period is ending soon - upgrade to continue"
+    "defaultMessage": "Upgrade now to keep all your data and settings"
   },
   "Email / Trial Expires Soon / Subject": {
-    "defaultMessage": "Your trial is about to expire"
+    "defaultMessage": "Your free trial ends soon — don't lose access"
   },
   "Email / Trial Expires Soon / Text": {
-    "defaultMessage": "Your trial is about to expire on {expiryDate}, please take action"
+    "defaultMessage": "We hope you've been enjoying your trial! Your free access expires on {expiryDate}. Upgrade now to keep all your data, settings, and continue using all the features you love."
   },
   "Email / Trial Expires Soon / Title": {
-    "defaultMessage": "Your trial is about to expire"
+    "defaultMessage": "Your free trial ends soon"
   },
   "Email / User Export / Bottom text": {
-    "defaultMessage": "If you have any questions or concerns about your data, please do not hesitate to contact us."
+    "defaultMessage": "Questions about your data? We're here to help — just reply to this email."
   },
   "Email / User Export / Download": {
-    "defaultMessage": "Download your data"
+    "defaultMessage": "Download my data"
   },
   "Email / User Export / Preheader": {
-    "defaultMessage": "Your personal data export is ready for download"
+    "defaultMessage": "Your download link is ready and valid for 48 hours"
   },
   "Email / User Export / Subject": {
-    "defaultMessage": "Exported user data"
+    "defaultMessage": "Your data export is ready to download"
   },
   "Email / User Export / Text": {
-    "defaultMessage": "We have received your request to export your personal data, in accordance with GDPR regulations. We have processed your request and your data has been compiled into a package that is now available for download."
+    "defaultMessage": "Good news! We've processed your data export request. Your personal data has been securely compiled and is ready for download."
   },
   "Email / User Export / Title": {
-    "defaultMessage": "Exported user data"
+    "defaultMessage": "Your data export is ready"
   },
   "Email / User Export / Warning": {
-    "defaultMessage": "Please note that this package contains sensitive information and should be downloaded to a secure location. This link will remain active for the next 48 hours."
+    "defaultMessage": "For your security, please download this file to a secure location. This link will expire in 48 hours."
   },
   "Email / User Export Admin / Action Header": {
     "defaultMessage": "Action"
@@ -1464,16 +1464,16 @@
     "defaultMessage": "Email"
   },
   "Email / User Export Admin / Preheader": {
-    "defaultMessage": "User data export job completed - download links available"
+    "defaultMessage": "Export complete — all download links included below"
   },
   "Email / User Export Admin / Subject": {
     "defaultMessage": "Exported user data"
   },
   "Email / User Export Admin / Text": {
-    "defaultMessage": "Below are results of user export job. Each user received separate email with the download link."
+    "defaultMessage": "The user data export job has finished successfully. Each user has received an email with their personal download link. Below is a summary with direct download links for your records."
   },
   "Email / User Export Admin / Title": {
-    "defaultMessage": "Exported user data"
+    "defaultMessage": "Data export completed"
   },
   "File Size / Bytes": {
     "defaultMessage": "0 bytes"

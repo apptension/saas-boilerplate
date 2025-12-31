@@ -19,17 +19,19 @@ export const Template = ({ userId, token }: PasswordResetProps) => {
   });
 
   const preheaderText = intl.formatMessage({
-    defaultMessage: 'Reset your password to regain access to your account',
+    defaultMessage: 'This link expires in 24 hours for your security',
     id: 'Email / Reset Password / Preheader',
   });
 
   return (
     <Layout
       preheader={preheaderText}
-      title={<FormattedMessage defaultMessage="Reset the password" id="Email / Reset Password / Title" />}
+      title={
+        <FormattedMessage defaultMessage="Reset your password" id="Email / Reset Password / Title" />
+      }
       text={
         <FormattedMessage
-          defaultMessage="Click the button below to reset the password."
+          defaultMessage="We received a request to reset your password. Click the button below to create a new one. If you didn't make this request, you can safely ignore this email."
           id="Email / Reset Password / Text"
         />
       }
@@ -38,7 +40,7 @@ export const Template = ({ userId, token }: PasswordResetProps) => {
       }}
     >
       <Button linkTo={url}>
-        <FormattedMessage defaultMessage="Reset the password" id="Email / Reset Password / Link label" />
+        <FormattedMessage defaultMessage="Create new password" id="Email / Reset Password / Link label" />
       </Button>
     </Layout>
   );

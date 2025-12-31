@@ -16,7 +16,7 @@ export const Template = ({ token }: TenantInvitationProps) => {
   const url = generateLocalePath(RoutesConfig.tenantInvitation, { token });
 
   const preheaderText = intl.formatMessage({
-    defaultMessage: "You've been invited to join an organization",
+    defaultMessage: 'Join the team and start collaborating today',
     id: 'Email / TenantInvitation / Preheader',
   });
 
@@ -25,13 +25,13 @@ export const Template = ({ token }: TenantInvitationProps) => {
       preheader={preheaderText}
       title={
         <FormattedMessage
-          defaultMessage="You have a new organization invitation"
+          defaultMessage="You're invited to join a team"
           id="Email / TenantInvitation / Title"
         />
       }
       text={
         <FormattedMessage
-          defaultMessage="Click button below to accept or decline new invitation."
+          defaultMessage="Great news! You've been invited to join an organization. Click below to view the invitation details and decide whether to accept or decline."
           id="Email / TenantInvitation / Text"
         />
       }
@@ -47,5 +47,5 @@ export const Template = ({ token }: TenantInvitationProps) => {
 };
 
 export const Subject = () => (
-  <FormattedMessage defaultMessage="You have a new organization invitation" id="Email / TenantInvitation / Subject" />
+  <FormattedMessage defaultMessage="You're invited to join a team" id="Email / TenantInvitation / Subject" />
 );

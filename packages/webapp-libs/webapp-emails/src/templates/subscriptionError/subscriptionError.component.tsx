@@ -10,7 +10,7 @@ export const Template = () => {
   const url = generateLocalePath(RoutesConfig.subscriptions.index);
 
   const preheaderText = intl.formatMessage({
-    defaultMessage: 'Action required: Your subscription payment could not be processed',
+    defaultMessage: "Let's fix this quickly to keep your access uninterrupted",
     id: 'Email / Subscription Error / Preheader',
   });
 
@@ -18,11 +18,14 @@ export const Template = () => {
     <Layout
       preheader={preheaderText}
       title={
-        <FormattedMessage defaultMessage="Your subscription payment failed" id="Email / Subscription Error / Title" />
+        <FormattedMessage
+          defaultMessage="We couldn't process your payment"
+          id="Email / Subscription Error / Title"
+        />
       }
       text={
         <FormattedMessage
-          defaultMessage="Click the button below to review your payment method details"
+          defaultMessage="Don't worry, this happens sometimes. Your payment method may have expired or there might be insufficient funds. Please update your payment details to continue enjoying uninterrupted access to your account."
           id="Email / Subscription Error / Text"
         />
       }
@@ -31,12 +34,15 @@ export const Template = () => {
       }}
     >
       <Button linkTo={url}>
-        <FormattedMessage defaultMessage="See subscription details" id="Email / Subscription Error / Link label" />
+        <FormattedMessage defaultMessage="Update payment method" id="Email / Subscription Error / Link label" />
       </Button>
     </Layout>
   );
 };
 
 export const Subject = () => (
-  <FormattedMessage defaultMessage="Subscription payment failed" id="Email / Subscription Error / Subject" />
+  <FormattedMessage
+    defaultMessage="Action needed: Update your payment method"
+    id="Email / Subscription Error / Subject"
+  />
 );

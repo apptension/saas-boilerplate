@@ -12,17 +12,19 @@ export const Template = ({ data }: UserExportProps) => {
   const intl = useIntl();
 
   const preheaderText = intl.formatMessage({
-    defaultMessage: 'Your personal data export is ready for download',
+    defaultMessage: 'Your download link is ready and valid for 48 hours',
     id: 'Email / User Export / Preheader',
   });
 
   return (
     <Layout
       preheader={preheaderText}
-      title={<FormattedMessage defaultMessage="Exported user data" id="Email / User Export / Title" />}
+      title={
+        <FormattedMessage defaultMessage="Your data export is ready" id="Email / User Export / Title" />
+      }
       text={
         <FormattedMessage
-          defaultMessage="We have received your request to export your personal data, in accordance with GDPR regulations. We have processed your request and your data has been compiled into a package that is now available for download."
+          defaultMessage="Good news! We've processed your data export request. Your personal data has been securely compiled and is ready for download."
           id="Email / User Export / Text"
         />
       }
@@ -32,18 +34,18 @@ export const Template = ({ data }: UserExportProps) => {
     >
       <EmailText variant="secondary" align="center">
         <FormattedMessage
-          defaultMessage="Please note that this package contains sensitive information and should be downloaded to a secure location. This link will remain active for the next 48 hours."
+          defaultMessage="For your security, please download this file to a secure location. This link will expire in 48 hours."
           id="Email / User Export / Warning"
         />
       </EmailText>
 
       <Button linkTo={data.export_url}>
-        <FormattedMessage defaultMessage="Download your data" id="Email / User Export / Download" />
+        <FormattedMessage defaultMessage="Download my data" id="Email / User Export / Download" />
       </Button>
 
       <EmailText variant="muted" align="center">
         <FormattedMessage
-          defaultMessage="If you have any questions or concerns about your data, please do not hesitate to contact us."
+          defaultMessage="Questions about your data? We're here to help — just reply to this email."
           id="Email / User Export / Bottom text"
         />
       </EmailText>
@@ -52,5 +54,5 @@ export const Template = ({ data }: UserExportProps) => {
 };
 
 export const Subject = () => (
-  <FormattedMessage defaultMessage="Exported user data" id="Email / User Export / Subject" />
+  <FormattedMessage defaultMessage="Your data export is ready to download" id="Email / User Export / Subject" />
 );

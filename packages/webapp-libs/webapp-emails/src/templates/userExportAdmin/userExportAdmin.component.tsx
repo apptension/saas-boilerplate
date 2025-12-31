@@ -23,17 +23,19 @@ export const Template = ({ data }: UserExportAdminProps) => {
   const intl = useIntl();
 
   const preheaderText = intl.formatMessage({
-    defaultMessage: 'User data export job completed - download links available',
+    defaultMessage: 'Export complete — all download links included below',
     id: 'Email / User Export Admin / Preheader',
   });
 
   return (
     <Layout
       preheader={preheaderText}
-      title={<FormattedMessage defaultMessage="Exported user data" id="Email / User Export Admin / Title" />}
+      title={
+        <FormattedMessage defaultMessage="Data export completed" id="Email / User Export Admin / Title" />
+      }
       text={
         <FormattedMessage
-          defaultMessage="Below are results of user export job. Each user received separate email with the download link."
+          defaultMessage="The user data export job has finished successfully. Each user has received an email with their personal download link. Below is a summary with direct download links for your records."
           id="Email / User Export Admin / Text"
         />
       }

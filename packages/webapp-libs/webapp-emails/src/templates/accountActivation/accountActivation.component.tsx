@@ -19,17 +19,19 @@ export const Template = ({ userId, token }: AccountActivationProps) => {
   });
 
   const preheaderText = intl.formatMessage({
-    defaultMessage: 'Confirm your email to complete your registration',
+    defaultMessage: "You're one click away from getting started",
     id: 'Email / Account Activation / Preheader',
   });
 
   return (
     <Layout
       preheader={preheaderText}
-      title={<FormattedMessage defaultMessage="Finish the registration" id="Email / Account Activation / Title" />}
+      title={
+        <FormattedMessage defaultMessage="Welcome! Let's verify your email" id="Email / Account Activation / Title" />
+      }
       text={
         <FormattedMessage
-          defaultMessage="Click the button below to confirm registration."
+          defaultMessage="Thanks for signing up! Please confirm your email address to activate your account and start exploring all the features waiting for you."
           id="Email / Account Activation / Text"
         />
       }
@@ -38,12 +40,12 @@ export const Template = ({ userId, token }: AccountActivationProps) => {
       }}
     >
       <Button linkTo={url}>
-        <FormattedMessage defaultMessage="Confirm registration" id="Email / Account Activation / Link label" />
+        <FormattedMessage defaultMessage="Verify my email" id="Email / Account Activation / Link label" />
       </Button>
     </Layout>
   );
 };
 
 export const Subject = () => (
-  <FormattedMessage defaultMessage="Confirm registration" id="Email / Account Activation / Subject" />
+  <FormattedMessage defaultMessage="Verify your email to get started" id="Email / Account Activation / Subject" />
 );

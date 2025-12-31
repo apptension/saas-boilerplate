@@ -16,7 +16,7 @@ export const Template = ({ expiryDate }: TrialExpiresSoonProps) => {
   const url = generateLocalePath(RoutesConfig.home);
 
   const preheaderText = intl.formatMessage({
-    defaultMessage: 'Your trial period is ending soon - upgrade to continue',
+    defaultMessage: 'Upgrade now to keep all your data and settings',
     id: 'Email / Trial Expires Soon / Preheader',
   });
 
@@ -24,11 +24,14 @@ export const Template = ({ expiryDate }: TrialExpiresSoonProps) => {
     <Layout
       preheader={preheaderText}
       title={
-        <FormattedMessage defaultMessage="Your trial is about to expire" id="Email / Trial Expires Soon / Title" />
+        <FormattedMessage
+          defaultMessage="Your free trial ends soon"
+          id="Email / Trial Expires Soon / Title"
+        />
       }
       text={
         <FormattedMessage
-          defaultMessage="Your trial is about to expire on {expiryDate}, please take action"
+          defaultMessage="We hope you've been enjoying your trial! Your free access expires on {expiryDate}. Upgrade now to keep all your data, settings, and continue using all the features you love."
           id="Email / Trial Expires Soon / Text"
           values={{ expiryDate: <FormattedDate value={expiryDate} /> }}
         />
@@ -38,12 +41,15 @@ export const Template = ({ expiryDate }: TrialExpiresSoonProps) => {
       }}
     >
       <Button linkTo={url}>
-        <FormattedMessage defaultMessage="Go to the dashboard" id="Email / Trial Expires Soon / Link label" />
+        <FormattedMessage defaultMessage="Upgrade now" id="Email / Trial Expires Soon / Link label" />
       </Button>
     </Layout>
   );
 };
 
 export const Subject = () => (
-  <FormattedMessage defaultMessage="Your trial is about to expire" id="Email / Trial Expires Soon / Subject" />
+  <FormattedMessage
+    defaultMessage="Your free trial ends soon — don't lose access"
+    id="Email / Trial Expires Soon / Subject"
+  />
 );
