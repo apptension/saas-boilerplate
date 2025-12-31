@@ -1,15 +1,22 @@
-import { useGenerateAbsoluteLocalePath } from '@sb/webapp-core//hooks';
+import { useGenerateAbsoluteLocalePath } from '@sb/webapp-core/hooks';
 import { RoutesConfig } from '@sb/webapp-finances/config/routes';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { Button, Layout } from '../../base';
 
 export const Template = () => {
+  const intl = useIntl();
   const generateLocalePath = useGenerateAbsoluteLocalePath();
   const url = generateLocalePath(RoutesConfig.subscriptions.index);
 
+  const preheaderText = intl.formatMessage({
+    defaultMessage: 'Action required: Your subscription payment could not be processed',
+    id: 'Email / Subscription Error / Preheader',
+  });
+
   return (
     <Layout
+      preheader={preheaderText}
       title={
         <FormattedMessage defaultMessage="Your subscription payment failed" id="Email / Subscription Error / Title" />
       }
@@ -19,6 +26,9 @@ export const Template = () => {
           id="Email / Subscription Error / Text"
         />
       }
+      footer={{
+        companyName: 'SaaS Boilerplate',
+      }}
     >
       <Button linkTo={url}>
         <FormattedMessage defaultMessage="See subscription details" id="Email / Subscription Error / Link label" />

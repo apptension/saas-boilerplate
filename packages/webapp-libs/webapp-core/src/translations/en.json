@@ -573,7 +573,7 @@
     "defaultMessage": "Sign up"
   },
   "Auth / Login / signup prompt": {
-    "defaultMessage": "Don't have an account? {signupLink}"
+    "defaultMessage": "Don't have an account?"
   },
   "Auth / Passkey / button": {
     "defaultMessage": "Sign in with Passkey"
@@ -1346,11 +1346,11 @@
   "EditCrudDemoItem / page title": {
     "defaultMessage": "Edit CRUD Example Item"
   },
-  "Email /  User Export / Download": {
-    "defaultMessage": "Download"
-  },
   "Email / Account Activation / Link label": {
     "defaultMessage": "Confirm registration"
+  },
+  "Email / Account Activation / Preheader": {
+    "defaultMessage": "Confirm your email to complete your registration"
   },
   "Email / Account Activation / Subject": {
     "defaultMessage": "Confirm registration"
@@ -1361,8 +1361,23 @@
   "Email / Account Activation / Title": {
     "defaultMessage": "Finish the registration"
   },
+  "Email / Footer / Privacy": {
+    "defaultMessage": "Privacy Policy"
+  },
+  "Email / Footer / Rights reserved": {
+    "defaultMessage": "All rights reserved."
+  },
+  "Email / Footer / Terms": {
+    "defaultMessage": "Terms of Service"
+  },
+  "Email / Footer / Unsubscribe": {
+    "defaultMessage": "Unsubscribe"
+  },
   "Email / Reset Password / Link label": {
     "defaultMessage": "Reset the password"
+  },
+  "Email / Reset Password / Preheader": {
+    "defaultMessage": "Reset your password to regain access to your account"
   },
   "Email / Reset Password / Subject": {
     "defaultMessage": "Reset your password"
@@ -1376,6 +1391,9 @@
   "Email / Subscription Error / Link label": {
     "defaultMessage": "See subscription details"
   },
+  "Email / Subscription Error / Preheader": {
+    "defaultMessage": "Action required: Your subscription payment could not be processed"
+  },
   "Email / Subscription Error / Subject": {
     "defaultMessage": "Subscription payment failed"
   },
@@ -1384,6 +1402,9 @@
   },
   "Email / Subscription Error / Title": {
     "defaultMessage": "Your subscription payment failed"
+  },
+  "Email / TenantInvitation / Preheader": {
+    "defaultMessage": "You've been invited to join an organization"
   },
   "Email / TenantInvitation / Subject": {
     "defaultMessage": "You have a new organization invitation"
@@ -1400,6 +1421,9 @@
   "Email / Trial Expires Soon / Link label": {
     "defaultMessage": "Go to the dashboard"
   },
+  "Email / Trial Expires Soon / Preheader": {
+    "defaultMessage": "Your trial period is ending soon - upgrade to continue"
+  },
   "Email / Trial Expires Soon / Subject": {
     "defaultMessage": "Your trial is about to expire"
   },
@@ -1410,19 +1434,37 @@
     "defaultMessage": "Your trial is about to expire"
   },
   "Email / User Export / Bottom text": {
-    "defaultMessage": "{br}If you have any questions or concerns about your data, please do not hesitate to contact us. {br}{br} Best regards,"
+    "defaultMessage": "If you have any questions or concerns about your data, please do not hesitate to contact us."
+  },
+  "Email / User Export / Download": {
+    "defaultMessage": "Download your data"
+  },
+  "Email / User Export / Preheader": {
+    "defaultMessage": "Your personal data export is ready for download"
   },
   "Email / User Export / Subject": {
     "defaultMessage": "Exported user data"
   },
   "Email / User Export / Text": {
-    "defaultMessage": "Dear User,{br}{br} We have received your request to export your personal data, in accordance with GDPR regulations. We have processed your request and your data has been compiled into a package that is now available for download. {br}{br} Please note that this package contains sensitive information and should be downloaded to a secure location. {br}{br} To download the package, please click on the download button below. This link will remain active for the next 48 hours. If you do not download the package within this timeframe, you will need to generate a new request."
+    "defaultMessage": "We have received your request to export your personal data, in accordance with GDPR regulations. We have processed your request and your data has been compiled into a package that is now available for download."
   },
   "Email / User Export / Title": {
     "defaultMessage": "Exported user data"
   },
+  "Email / User Export / Warning": {
+    "defaultMessage": "Please note that this package contains sensitive information and should be downloaded to a secure location. This link will remain active for the next 48 hours."
+  },
+  "Email / User Export Admin / Action Header": {
+    "defaultMessage": "Action"
+  },
   "Email / User Export Admin / Download": {
     "defaultMessage": "Download"
+  },
+  "Email / User Export Admin / Email Header": {
+    "defaultMessage": "Email"
+  },
+  "Email / User Export Admin / Preheader": {
+    "defaultMessage": "User data export job completed - download links available"
   },
   "Email / User Export Admin / Subject": {
     "defaultMessage": "Exported user data"
@@ -3013,5 +3055,7 @@
   },
   "Unknown / Key": {
     "defaultMessage": "Fallback Message"
+  },
+  "mock-message-id": {
   }
 }
