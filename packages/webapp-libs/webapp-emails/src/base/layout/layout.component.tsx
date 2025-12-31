@@ -13,22 +13,24 @@ export const Layout = ({ title, text, children }: LayoutProps) => {
   return (
     <Container>
       <Table>
-        <Tr>
-          <Td>
-            <Image style={{ display: 'block', margin: '0 auto', width: 256 }} src="logo.png" />
-          </Td>
-        </Tr>
-        <Tr>
-          <Title>{title}</Title>
-        </Tr>
+        <tbody>
+          <Tr>
+            <Td>
+              <Image style={{ display: 'block', margin: '0 auto', width: 256 }} src="logo.png" />
+            </Td>
+          </Tr>
+          <Tr>
+            <Title>{title}</Title>
+          </Tr>
 
-        <Tr>
-          <Text>{text}</Text>
-        </Tr>
+          <Tr>
+            <Text>{text}</Text>
+          </Tr>
 
-        <Tr>
-          <Td>{children}</Td>
-        </Tr>
+          <Tr>
+            <Td>{children}</Td>
+          </Tr>
+        </tbody>
       </Table>
     </Container>
   );

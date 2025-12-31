@@ -8,7 +8,7 @@ import {
   Subject as TenantInvitationSubject,
 } from './tenantInvitation.component';
 
-const Template: StoryFn<TenantInvitationProps> = (args) => (
+const Template: StoryFn<TenantInvitationProps> = (args: TenantInvitationProps) => (
   <EmailStory type={EmailTemplateType.TENANT_INVITATION} subject={<TenantInvitationSubject />} emailData={args}>
     <TenantInvitationEmail {...args} />
   </EmailStory>
@@ -19,5 +19,11 @@ export default {
   component: TenantInvitationEmail,
 };
 
-export const Primary = Template.bind({});
-Primary.args = {};
+export const Primary = {
+  render: Template,
+
+  args: {
+    token: 'sample-token',
+    tenantMembershipId: 'sample-membership-id',
+  },
+};

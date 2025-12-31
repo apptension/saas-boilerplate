@@ -18,8 +18,9 @@ export const Table = styled(TableBase)`
 
 export const Tr = styled(TrBase)``;
 
-export const Td = styled(TdBase).attrs(() => ({ align: 'center' }))`
+export const Td = styled(TdBase)`
   padding-bottom: ${size.sizeUnits(5)};
+  text-align: center;
 `;
 
 export const Text = styled(Td)`
