@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client/react';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
+import { DEFAULT_LOCALE } from '@sb/webapp-core/config/i18n';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useIntl } from 'react-intl';
@@ -16,6 +17,7 @@ export const useEditProfileForm = () => {
     defaultValues: {
       firstName: currentUser?.firstName ?? '',
       lastName: currentUser?.lastName ?? '',
+      language: currentUser?.language ?? DEFAULT_LOCALE,
     },
   });
 

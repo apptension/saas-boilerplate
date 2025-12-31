@@ -106,7 +106,7 @@ describe('SignupForm: Component', () => {
   });
 
   it('should show field error if password is too common', async () => {
-    const errorMessage = 'The password is too common.';
+    const errorMessage = 'This password is too common. Please choose a more unique password.';
 
     const requestMock = composeMockedQueryResult(authSingupMutation, {
       variables: mockCredentials,

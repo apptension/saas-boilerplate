@@ -866,6 +866,7 @@ type CurrentUserType {
   tenants: [TenantType]
   firstName: String
   lastName: String
+  language: String
   roles: [String]
   avatar: String
 }
@@ -2241,6 +2242,7 @@ input ChangePasswordMutationInput {
 input UpdateCurrentUserMutationInput {
   firstName: String
   lastName: String
+  language: String
   avatar: Upload
   clientMutationId: String
 }

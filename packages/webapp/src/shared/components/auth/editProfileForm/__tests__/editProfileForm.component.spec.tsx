@@ -15,6 +15,7 @@ jest.mock('@sb/webapp-core/services/analytics');
 const formData = {
   firstName: 'updated-first-name',
   lastName: 'updated-last-name',
+  language: 'en',
 };
 
 const renderComponent = (error?: GraphQLError[]) => {
@@ -23,6 +24,7 @@ const renderComponent = (error?: GraphQLError[]) => {
     lastName: 'White',
     email: 'jack.white@mail.com',
     roles: [Role.ADMIN, Role.USER],
+    language: 'en',
   });
 
   const requestMock = composeMockedQueryResult(authUpdateUserProfileMutation, {
@@ -30,6 +32,7 @@ const renderComponent = (error?: GraphQLError[]) => {
       input: {
         firstName: formData.firstName,
         lastName: formData.lastName,
+        language: formData.language,
       },
     },
     data: error
@@ -41,6 +44,7 @@ const renderComponent = (error?: GraphQLError[]) => {
               user: {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
+                language: formData.language,
               },
             },
           },
@@ -115,6 +119,7 @@ describe('EditProfileForm: Component', () => {
       lastName: 'White',
       email: 'jack.white@mail.com',
       roles: [Role.ADMIN, Role.USER],
+      language: 'en',
     });
 
     const requestMock = composeMockedQueryResult(authUpdateUserProfileMutation, {
@@ -122,6 +127,7 @@ describe('EditProfileForm: Component', () => {
         input: {
           firstName: formData.firstName,
           lastName: formData.lastName,
+          language: formData.language,
         },
       },
       data: {},

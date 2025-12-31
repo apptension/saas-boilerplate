@@ -17,7 +17,7 @@ type Documents = {
     "\n  fragment pageCursorsFragment on PageCursors {\n    around {\n      cursor\n      isCurrent\n      page\n    }\n    first {\n      cursor\n      isCurrent\n      page\n    }\n    last {\n      cursor\n      isCurrent\n      page\n    }\n    next {\n      cursor\n      isCurrent\n      page\n    }\n    previous {\n      cursor\n      isCurrent\n      page\n    }\n  }\n": typeof types.PageCursorsFragmentFragmentDoc,
     "\n  query pagedPaginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageCursors {\n        around {\n          cursor\n          isCurrent\n          page\n        }\n        first {\n          cursor\n          isCurrent\n          page\n        }\n        last {\n          cursor\n          isCurrent\n          page\n        }\n        next {\n          cursor\n          isCurrent\n          page\n        }\n        previous {\n          cursor\n          isCurrent\n          page\n        }\n      }\n    }\n  }\n": typeof types.PagedPaginationListTestQueryDocument,
     "\n  query paginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allNotifications(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n": typeof types.PaginationListTestQueryDocument,
-    "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n": typeof types.CommonQueryCurrentUserFragmentFragmentDoc,
+    "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    language\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n": typeof types.CommonQueryCurrentUserFragmentFragmentDoc,
     "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      ...commonQueryMembershipFragment\n    }\n  }\n": typeof types.CommonQueryTenantItemFragmentFragmentDoc,
     "\n  fragment commonQueryMembershipFragment on TenantMembershipType {\n    id\n    role\n    invitationAccepted\n    inviteeEmailAddress\n    invitationToken\n    userId\n    firstName\n    lastName\n    userEmail\n    avatar\n  }\n": typeof types.CommonQueryMembershipFragmentFragmentDoc,
     "\n  query commonQueryCurrentUserQuery {\n    currentUser {\n      ...commonQueryCurrentUserFragment\n      tenants {\n        ...commonQueryTenantItemFragment\n      }\n    }\n  }\n": typeof types.CommonQueryCurrentUserQueryDocument,
@@ -112,7 +112,7 @@ const documents: Documents = {
     "\n  fragment pageCursorsFragment on PageCursors {\n    around {\n      cursor\n      isCurrent\n      page\n    }\n    first {\n      cursor\n      isCurrent\n      page\n    }\n    last {\n      cursor\n      isCurrent\n      page\n    }\n    next {\n      cursor\n      isCurrent\n      page\n    }\n    previous {\n      cursor\n      isCurrent\n      page\n    }\n  }\n": types.PageCursorsFragmentFragmentDoc,
     "\n  query pagedPaginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageCursors {\n        around {\n          cursor\n          isCurrent\n          page\n        }\n        first {\n          cursor\n          isCurrent\n          page\n        }\n        last {\n          cursor\n          isCurrent\n          page\n        }\n        next {\n          cursor\n          isCurrent\n          page\n        }\n        previous {\n          cursor\n          isCurrent\n          page\n        }\n      }\n    }\n  }\n": types.PagedPaginationListTestQueryDocument,
     "\n  query paginationListTestQuery($first: Int, $after: String, $last: Int, $before: String) {\n    allNotifications(first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n        }\n      }\n      pageInfo {\n        startCursor\n        endCursor\n        hasPreviousPage\n        hasNextPage\n      }\n    }\n  }\n": types.PaginationListTestQueryDocument,
-    "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n": types.CommonQueryCurrentUserFragmentFragmentDoc,
+    "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    language\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n": types.CommonQueryCurrentUserFragmentFragmentDoc,
     "\n  fragment commonQueryTenantItemFragment on TenantType {\n    id\n    name\n    type\n    membership {\n      ...commonQueryMembershipFragment\n    }\n  }\n": types.CommonQueryTenantItemFragmentFragmentDoc,
     "\n  fragment commonQueryMembershipFragment on TenantMembershipType {\n    id\n    role\n    invitationAccepted\n    inviteeEmailAddress\n    invitationToken\n    userId\n    firstName\n    lastName\n    userEmail\n    avatar\n  }\n": types.CommonQueryMembershipFragmentFragmentDoc,
     "\n  query commonQueryCurrentUserQuery {\n    currentUser {\n      ...commonQueryCurrentUserFragment\n      tenants {\n        ...commonQueryTenantItemFragment\n      }\n    }\n  }\n": types.CommonQueryCurrentUserQueryDocument,
@@ -233,7 +233,7 @@ export function gql(source: "\n  query paginationListTestQuery($first: Int, $aft
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n"): (typeof documents)["\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n"];
+export function gql(source: "\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    language\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n"): (typeof documents)["\n  fragment commonQueryCurrentUserFragment on CurrentUserType {\n    id\n    email\n    firstName\n    lastName\n    language\n    roles\n    avatar\n    otpVerified\n    otpEnabled\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -592,7 +592,13 @@ export function gql(source: "\n  mutation validateOtp($input: ValidateOTPMutatio
 export function gql(source: "\n  mutation disableOtp($input: DisableOTPMutationInput!) {\n    disableOtp(input: $input) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation disableOtp($input: DisableOTPMutationInput!) {\n    disableOtp(input: $input) {\n      ok\n    }\n  }\n"];
 
 export function gql(source: string) {
-  return (documents as any)[source] ?? {};
+  const document = (documents as any)[source];
+  if (!document) {
+    throw new Error(
+      `GraphQL query not found in documents map. Please run: pnpm nx run webapp-api-client:graphql:generate-types\n\nQuery:\n${source.substring(0, 200)}...`
+    );
+  }
+  return document;
 }
 
 export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;

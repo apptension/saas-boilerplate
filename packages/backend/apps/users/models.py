@@ -92,10 +92,24 @@ class UserAvatar(ImageWithThumbnailMixin, models.Model):
         return str(self.id)
 
 
+class LanguageChoices(models.TextChoices):
+    ENGLISH = 'en', 'English'
+    POLISH = 'pl', 'Polish'
+    GERMAN = 'de', 'German'
+    FRENCH = 'fr', 'French'
+    SPANISH = 'es', 'Spanish'
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     first_name = models.CharField(max_length=40, blank=True, default='')
     last_name = models.CharField(max_length=40, blank=True, default='')
+    language = models.CharField(
+        max_length=5,
+        choices=LanguageChoices.choices,
+        default=LanguageChoices.ENGLISH,
+        help_text="User's preferred language for emails and notifications"
+    )
     avatar = models.OneToOneField(
         UserAvatar, on_delete=models.SET_NULL, null=True, blank=True, related_name="user_profile"
     )

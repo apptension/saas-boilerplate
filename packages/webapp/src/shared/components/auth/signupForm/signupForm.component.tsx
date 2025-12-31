@@ -7,6 +7,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@sb/webapp-core/components/forms';
+import {
+  PasswordRequirements,
+  PasswordStrengthIndicator,
+  validatePassword,
+} from '@sb/webapp-core/components/passwordStrength';
 import { Alert, AlertDescription } from '@sb/webapp-core/components/ui/alert';
 import { Button } from '@sb/webapp-core/components/ui/button';
 import { Input } from '@sb/webapp-core/components/ui/input';
@@ -23,7 +28,6 @@ export const SignupForm = () => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
   const {
-    form: { register },
     form,
     hasGenericErrorOnly,
     genericError,
@@ -32,6 +36,8 @@ export const SignupForm = () => {
   } = useSignupForm({
     defaultValues: {
       acceptTerms: false,
+      email: '',
+      password: '',
     },
   });
 
@@ -47,6 +53,19 @@ export const SignupForm = () => {
         <FormField
           control={form.control}
           name="email"
+          rules={{
+            required: intl.formatMessage({
+              defaultMessage: 'Please enter your email address',
+              id: 'Auth / Signup / Email required',
+            }),
+            pattern: {
+              value: emailPattern,
+              message: intl.formatMessage({
+                defaultMessage: 'Please enter a valid email address',
+                id: 'Auth / Signup / Email format error',
+              }),
+            },
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -58,22 +77,6 @@ export const SignupForm = () => {
               <FormControl>
                 <Input
                   {...field}
-                  {...register('email', {
-                    required: {
-                      value: true,
-                      message: intl.formatMessage({
-                        defaultMessage: 'Please enter your email address',
-                        id: 'Auth / Signup / Email required',
-                      }),
-                    },
-                    pattern: {
-                      value: emailPattern,
-                      message: intl.formatMessage({
-                        defaultMessage: 'Please enter a valid email address',
-                        id: 'Auth / Signup / Email format error',
-                      }),
-                    },
-                  })}
                   type="email"
                   autoComplete="email"
                   required
@@ -92,6 +95,40 @@ export const SignupForm = () => {
         <FormField
           control={form.control}
           name="password"
+          rules={{
+            required: intl.formatMessage({
+              defaultMessage: 'Please enter a password',
+              id: 'Auth / Signup / Password required',
+            }),
+            validate: {
+              minLength: (value) =>
+                value.length >= 8 ||
+                intl.formatMessage({
+                  defaultMessage: 'Password must be at least 8 characters long',
+                  id: 'Auth / Signup / Password too short',
+                }),
+              notCommon: (value) => {
+                const validation = validatePassword(value);
+                return (
+                  validation.notCommon ||
+                  intl.formatMessage({
+                    defaultMessage: 'This password is too common. Please choose a more unique password.',
+                    id: 'Auth / Signup / Password too common',
+                  })
+                );
+              },
+              notNumericOnly: (value) => {
+                const validation = validatePassword(value);
+                return (
+                  validation.notNumericOnly ||
+                  intl.formatMessage({
+                    defaultMessage: "Password can't be entirely numeric.",
+                    id: 'Auth / Signup / Password numeric only',
+                  })
+                );
+              },
+            },
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -103,22 +140,6 @@ export const SignupForm = () => {
               <FormControl>
                 <Input
                   {...field}
-                  {...register('password', {
-                    required: {
-                      value: true,
-                      message: intl.formatMessage({
-                        defaultMessage: 'Please enter a password',
-                        id: 'Auth / Signup / Password required',
-                      }),
-                    },
-                    minLength: {
-                      value: 8,
-                      message: intl.formatMessage({
-                        defaultMessage: 'Password must be at least 8 characters long',
-                        id: 'Auth / Signup / Password too short',
-                      }),
-                    },
-                  })}
                   required
                   type="password"
                   autoComplete="new-password"
@@ -130,6 +151,8 @@ export const SignupForm = () => {
                 />
               </FormControl>
               <FormMessage />
+              <PasswordStrengthIndicator password={field.value || ''} className="mt-2" />
+              <PasswordRequirements password={field.value || ''} className="mt-3" />
             </FormItem>
           )}
         />
@@ -137,22 +160,16 @@ export const SignupForm = () => {
         <FormField
           control={form.control}
           name="acceptTerms"
+          rules={{
+            required: intl.formatMessage({
+              defaultMessage: 'You must accept the terms and conditions to continue',
+              id: 'Auth / Signup / Terms and conditions required',
+            }),
+          }}
           render={({ field }) => (
             <FormItem className="flex flex-row items-center space-x-3 space-y-0">
               <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  {...register('acceptTerms', {
-                    required: {
-                      value: true,
-                      message: intl.formatMessage({
-                        defaultMessage: 'You must accept the terms and conditions to continue',
-                        id: 'Auth / Signup / Terms and conditions required',
-                      }),
-                    },
-                  })}
-                />
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
               </FormControl>
               <div className="space-y-1.5 leading-none">
                 <FormLabel className="!mt-0 cursor-pointer font-normal">

@@ -465,7 +465,7 @@
     "defaultMessage": "Confirm new password"
   },
   "Auth / Change password / Confirm new password placeholder": {
-    "defaultMessage": "Minimum 8 characters"
+    "defaultMessage": "Re-enter your new password"
   },
   "Auth / Change password / Confirm password required": {
     "defaultMessage": "Confirm password is required"
@@ -474,7 +474,7 @@
     "defaultMessage": "New password"
   },
   "Auth / Change password / New password placeholder": {
-    "defaultMessage": "Minimum 8 characters"
+    "defaultMessage": "Create a strong password"
   },
   "Auth / Change password / Old password placeholder": {
     "defaultMessage": "Old password"
@@ -485,11 +485,17 @@
   "Auth / Change password / Password must match": {
     "defaultMessage": "Passwords must match"
   },
+  "Auth / Change password / Password numeric only": {
+    "defaultMessage": "Password can't be entirely numeric."
+  },
   "Auth / Change password / Password required": {
     "defaultMessage": "New password is required"
   },
+  "Auth / Change password / Password too common frontend": {
+    "defaultMessage": "This password is too common. Please choose a more unique password."
+  },
   "Auth / Change password / Password too short": {
-    "defaultMessage": "Password is too short. It must contain at least 8 characters."
+    "defaultMessage": "Password must be at least 8 characters long"
   },
   "Auth / Change password / Submit button": {
     "defaultMessage": "Change password"
@@ -501,10 +507,16 @@
     "defaultMessage": "The password can't be entirely numeric."
   },
   "Auth / Change password / password too common": {
-    "defaultMessage": "The password is too common."
+    "defaultMessage": "This password is too common. Please choose a more unique password."
+  },
+  "Auth / Change password / password too short backend": {
+    "defaultMessage": "Password must be at least 8 characters long."
+  },
+  "Auth / Change password / password too similar": {
+    "defaultMessage": "The password is too similar to your personal information."
   },
   "Auth / Change password / wrong old password": {
-    "defaultMessage": "The password is invalid."
+    "defaultMessage": "The current password is incorrect."
   },
   "Auth / Confirm reset password / description": {
     "defaultMessage": "Please enter your new password below. Make sure it's strong and secure."
@@ -656,11 +668,17 @@
   "Auth / Reset password confirm / Password must match": {
     "defaultMessage": "Passwords do not match"
   },
+  "Auth / Reset password confirm / Password numeric only": {
+    "defaultMessage": "Password can't be entirely numeric."
+  },
   "Auth / Reset password confirm / Password placeholder": {
     "defaultMessage": "Enter your new password"
   },
   "Auth / Reset password confirm / Password required": {
     "defaultMessage": "Please confirm your new password"
+  },
+  "Auth / Reset password confirm / Password too common": {
+    "defaultMessage": "This password is too common. Please choose a more unique password."
   },
   "Auth / Reset password confirm / Password too short": {
     "defaultMessage": "Password must be at least 8 characters long"
@@ -681,7 +699,13 @@
     "defaultMessage": "The password can't be entirely numeric."
   },
   "Auth / Reset password confirm / password too common": {
-    "defaultMessage": "The password is too common."
+    "defaultMessage": "This password is too common. Please choose a more unique password."
+  },
+  "Auth / Reset password confirm / password too short backend": {
+    "defaultMessage": "Password must be at least 8 characters long."
+  },
+  "Auth / Reset password confirm / password too similar": {
+    "defaultMessage": "The password is too similar to your personal information."
   },
   "Auth / Signup / Accept checkbox / Privacy policy link": {
     "defaultMessage": "Privacy Policy"
@@ -713,11 +737,17 @@
   "Auth / Signup / Password label": {
     "defaultMessage": "Password"
   },
+  "Auth / Signup / Password numeric only": {
+    "defaultMessage": "Password can't be entirely numeric."
+  },
   "Auth / Signup / Password placeholder": {
     "defaultMessage": "Create a strong password"
   },
   "Auth / Signup / Password required": {
     "defaultMessage": "Please enter a password"
+  },
+  "Auth / Signup / Password too common": {
+    "defaultMessage": "This password is too common. Please choose a more unique password."
   },
   "Auth / Signup / Password too short": {
     "defaultMessage": "Password must be at least 8 characters long"
@@ -747,7 +777,13 @@
     "defaultMessage": "The password can't be entirely numeric."
   },
   "Auth / Signup / password too common": {
-    "defaultMessage": "The password is too common."
+    "defaultMessage": "This password is too common. Please choose a more unique password."
+  },
+  "Auth / Signup / password too short backend": {
+    "defaultMessage": "Password must be at least 8 characters long."
+  },
+  "Auth / Signup / password too similar": {
+    "defaultMessage": "The password is too similar to your personal information."
   },
   "Auth / Two-factor / Description": {
     "defaultMessage": "Add an extra layer of security to your account by requiring a verification code in addition to your password."
@@ -784,6 +820,15 @@
   },
   "Auth / Update profile / First name label": {
     "defaultMessage": "First name"
+  },
+  "Auth / Update profile / Language description": {
+    "defaultMessage": "Used for email notifications and communications"
+  },
+  "Auth / Update profile / Language label": {
+    "defaultMessage": "Preferred language"
+  },
+  "Auth / Update profile / Language placeholder": {
+    "defaultMessage": "Select language"
   },
   "Auth / Update profile / Last name label": {
     "defaultMessage": "Last name"
@@ -2014,6 +2059,33 @@
   },
   "Passkeys Card / Search Placeholder": {
     "defaultMessage": "Search by user name or email..."
+  },
+  "Password Requirements / Min length": {
+    "defaultMessage": "8+ characters"
+  },
+  "Password Requirements / Not common": {
+    "defaultMessage": "Not a common password"
+  },
+  "Password Requirements / Not numeric only": {
+    "defaultMessage": "Contains letters"
+  },
+  "Password Strength / Aria label": {
+    "defaultMessage": "Password strength: {label}"
+  },
+  "Password Strength / Fair": {
+    "defaultMessage": "Fair"
+  },
+  "Password Strength / Good": {
+    "defaultMessage": "Good"
+  },
+  "Password Strength / Label": {
+    "defaultMessage": "Password strength"
+  },
+  "Password Strength / Strong": {
+    "defaultMessage": "Strong"
+  },
+  "Password Strength / Weak": {
+    "defaultMessage": "Weak"
   },
   "Privacy Policy / Description": {
     "defaultMessage": "How we handle and protect your data"

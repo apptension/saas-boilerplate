@@ -112,7 +112,7 @@ describe('ChangePasswordForm: Component', () => {
   });
 
   it('should show field error if action throws error', async () => {
-    const errorMessage = 'The password is too common.';
+    const errorMessage = 'This password is too common. Please choose a more unique password.';
     const errors = [
       new GraphQLError('GraphQlValidationError', {
         extensions: { newPassword: [{ message: errorMessage, code: 'password_too_common' }] },

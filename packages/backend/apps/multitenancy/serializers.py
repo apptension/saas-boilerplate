@@ -175,6 +175,7 @@ class ResendTenantInvitationSerializer(serializers.Serializer):
         TenantInvitationEmail(
             to=email,
             data={'tenant_membership_id': global_tenant_membership_id, 'token': token},
+            user=membership.user,
         ).send()
 
         if membership.user:

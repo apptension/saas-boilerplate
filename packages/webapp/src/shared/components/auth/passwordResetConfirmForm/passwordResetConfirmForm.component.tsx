@@ -1,4 +1,9 @@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';
+import {
+  PasswordRequirements,
+  PasswordStrengthIndicator,
+  validatePassword,
+} from '@sb/webapp-core/components/passwordStrength';
 import { Alert, AlertDescription } from '@sb/webapp-core/components/ui/alert';
 import { Button } from '@sb/webapp-core/components/ui/button';
 import { Input } from '@sb/webapp-core/components/ui/input';
@@ -15,7 +20,6 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
   const intl = useIntl();
 
   const {
-    form: { register, getValues },
     form,
     genericError,
     hasGenericErrorOnly,
@@ -29,6 +33,40 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
         <FormField
           control={form.control}
           name="newPassword"
+          rules={{
+            required: intl.formatMessage({
+              defaultMessage: 'Please enter a new password',
+              id: 'Auth / Reset password confirm / Old password required',
+            }),
+            validate: {
+              minLength: (value) =>
+                value.length >= 8 ||
+                intl.formatMessage({
+                  defaultMessage: 'Password must be at least 8 characters long',
+                  id: 'Auth / Reset password confirm / Password too short',
+                }),
+              notCommon: (value) => {
+                const validation = validatePassword(value);
+                return (
+                  validation.notCommon ||
+                  intl.formatMessage({
+                    defaultMessage: 'This password is too common. Please choose a more unique password.',
+                    id: 'Auth / Reset password confirm / Password too common',
+                  })
+                );
+              },
+              notNumericOnly: (value) => {
+                const validation = validatePassword(value);
+                return (
+                  validation.notNumericOnly ||
+                  intl.formatMessage({
+                    defaultMessage: "Password can't be entirely numeric.",
+                    id: 'Auth / Reset password confirm / Password numeric only',
+                  })
+                );
+              },
+            },
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -40,22 +78,6 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
               <FormControl>
                 <Input
                   {...field}
-                  {...register('newPassword', {
-                    required: {
-                      value: true,
-                      message: intl.formatMessage({
-                        defaultMessage: 'Please enter a new password',
-                        id: 'Auth / Reset password confirm / Old password required',
-                      }),
-                    },
-                    minLength: {
-                      value: 8,
-                      message: intl.formatMessage({
-                        defaultMessage: 'Password must be at least 8 characters long',
-                        id: 'Auth / Reset password confirm / Password too short',
-                      }),
-                    },
-                  })}
                   type="password"
                   autoComplete="new-password"
                   required
@@ -67,6 +89,8 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
                 />
               </FormControl>
               <FormMessage />
+              <PasswordStrengthIndicator password={field.value || ''} className="mt-2" />
+              <PasswordRequirements password={field.value || ''} className="mt-3" />
             </FormItem>
           )}
         />
@@ -74,6 +98,20 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
         <FormField
           control={form.control}
           name="confirmPassword"
+          rules={{
+            required: intl.formatMessage({
+              defaultMessage: 'Please confirm your new password',
+              id: 'Auth / Reset password confirm / Password required',
+            }),
+            validate: {
+              mustMatch: (value) =>
+                form.getValues().newPassword === value ||
+                intl.formatMessage({
+                  defaultMessage: 'Passwords do not match',
+                  id: 'Auth / Reset password confirm / Password must match',
+                }),
+            },
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -85,22 +123,6 @@ export const PasswordResetConfirmForm = ({ user, token }: PasswordResetConfirmFo
               <FormControl>
                 <Input
                   {...field}
-                  {...register('confirmPassword', {
-                    validate: {
-                      required: (value) =>
-                        value?.length > 0 ||
-                        intl.formatMessage({
-                          defaultMessage: 'Please confirm your new password',
-                          id: 'Auth / Reset password confirm / Password required',
-                        }),
-                      mustMatch: (value) =>
-                        getValues().newPassword === value ||
-                        intl.formatMessage({
-                          defaultMessage: 'Passwords do not match',
-                          id: 'Auth / Reset password confirm / Password must match',
-                        }),
-                    },
-                  })}
                   type="password"
                   autoComplete="new-password"
                   required

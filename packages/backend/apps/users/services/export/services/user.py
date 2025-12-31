@@ -12,17 +12,17 @@ class ExportedUserData(TypedDict):
 
 
 class _ProcessUserDataExport:
-    def __call__(self, user_ids: list[str], admin_email: str):
+    def __call__(self, user_ids: list[str], admin_email: str, admin_user=None):
         entries = []
 
         for user_id in user_ids:
             if user := self._get_user(user_id):
                 entry = self._get_user_export_entry(user)
-                emails.UserDataExportEmail(to=user.email, data={"data": entry}).send()
+                emails.UserDataExportEmail(to=user.email, data={"data": entry}, user=user).send()
                 entries.append(entry)
 
         if entries:
-            emails.AdminDataExportEmail(to=admin_email, data={"data": entries}).send()
+            emails.AdminDataExportEmail(to=admin_email, data={"data": entries}, user=admin_user).send()
 
     @staticmethod
     def _get_user(user_id: str) -> Optional[User]:

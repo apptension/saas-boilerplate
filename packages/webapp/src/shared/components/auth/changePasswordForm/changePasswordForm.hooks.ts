@@ -12,21 +12,34 @@ export const useChangePasswordForm = () => {
   const { toast } = useToast();
 
   const form = useApiForm<ChangePasswordFormFields>({
+    defaultValues: {
+      oldPassword: '',
+      newPassword: '',
+      confirmNewPassword: '',
+    },
     errorMessages: {
       oldPassword: {
         wrong_password: intl.formatMessage({
-          defaultMessage: 'The password is invalid.',
+          defaultMessage: 'The current password is incorrect.',
           id: 'Auth / Change password / wrong old password',
         }),
       },
       newPassword: {
         password_too_common: intl.formatMessage({
-          defaultMessage: 'The password is too common.',
+          defaultMessage: 'This password is too common. Please choose a more unique password.',
           id: 'Auth / Change password / password too common',
         }),
         password_entirely_numeric: intl.formatMessage({
           defaultMessage: "The password can't be entirely numeric.",
           id: 'Auth / Change password / password entirely numeric',
+        }),
+        password_too_short: intl.formatMessage({
+          defaultMessage: 'Password must be at least 8 characters long.',
+          id: 'Auth / Change password / password too short backend',
+        }),
+        password_too_similar: intl.formatMessage({
+          defaultMessage: 'The password is too similar to your personal information.',
+          id: 'Auth / Change password / password too similar',
         }),
       },
     },

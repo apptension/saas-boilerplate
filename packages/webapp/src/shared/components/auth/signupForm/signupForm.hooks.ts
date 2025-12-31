@@ -27,12 +27,20 @@ export const useSignupForm = (args?: UseApiFormArgs<SignupFormFields>) => {
       },
       password: {
         password_too_common: intl.formatMessage({
-          defaultMessage: 'The password is too common.',
+          defaultMessage: 'This password is too common. Please choose a more unique password.',
           id: 'Auth / Signup / password too common',
         }),
         password_entirely_numeric: intl.formatMessage({
           defaultMessage: "The password can't be entirely numeric.",
           id: 'Auth / Signup / password entirely numeric',
+        }),
+        password_too_short: intl.formatMessage({
+          defaultMessage: 'Password must be at least 8 characters long.',
+          id: 'Auth / Signup / password too short backend',
+        }),
+        password_too_similar: intl.formatMessage({
+          defaultMessage: 'The password is too similar to your personal information.',
+          id: 'Auth / Signup / password too similar',
         }),
       },
     },

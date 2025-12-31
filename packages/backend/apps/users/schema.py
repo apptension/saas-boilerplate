@@ -135,13 +135,14 @@ class AuthenticatedMutation(graphene.ObjectType):
 class CurrentUserType(DjangoObjectType):
     first_name = graphene.String()
     last_name = graphene.String()
+    language = graphene.String()
     roles = graphene.List(of_type=graphene.String)
     tenants = graphene.List(of_type=TenantType)
     avatar = graphene.String()
 
     class Meta:
         model = models.User
-        fields = ("id", "email", "first_name", "last_name", "roles", "avatar", "otp_enabled", "otp_verified", "tenants")
+        fields = ("id", "email", "first_name", "last_name", "language", "roles", "avatar", "otp_enabled", "otp_verified", "tenants")
 
     @staticmethod
     def resolve_first_name(parent, info):
@@ -150,6 +151,10 @@ class CurrentUserType(DjangoObjectType):
     @staticmethod
     def resolve_last_name(parent, info):
         return get_user_from_resolver(info).profile.last_name
+
+    @staticmethod
+    def resolve_language(parent, info):
+        return get_user_from_resolver(info).profile.language
 
     @staticmethod
     def resolve_roles(parent, info):
@@ -184,7 +189,7 @@ class UpdateCurrentUserMutation(mutations.UpdateModelMutation):
     class Meta:
         serializer_class = serializers.UserProfileSerializer
         edge_class = CurrentUserConnection.Edge
-        only_fields = ("first_name", "last_name", "avatar")
+        only_fields = ("first_name", "last_name", "avatar", "language")
         model_operations = ("update",)
 
     @classmethod

@@ -1,7 +1,11 @@
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
+import {
+  PasswordRequirements,
+  PasswordStrengthIndicator,
+  validatePassword,
+} from '@sb/webapp-core/components/passwordStrength';
 import { Small } from '@sb/webapp-core/components/typography';
-import { cn } from '@sb/webapp-core/lib/utils';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useChangePasswordForm } from './changePasswordForm.hooks';
@@ -14,12 +18,15 @@ export const ChangePasswordForm = () => {
       formState: { errors },
       register,
       getValues,
+      watch,
     },
     genericError,
     hasGenericErrorOnly,
     loading,
     handleChangePassword,
   } = useChangePasswordForm();
+
+  const newPassword = watch('newPassword') || '';
 
   return (
     <div className="w-full">
@@ -44,8 +51,8 @@ export const ChangePasswordForm = () => {
           />
         </div>
 
-        <div className="flex w-full flex-col gap-6 sm:flex-row">
-          <div className="flex-1">
+        <div className="flex w-full flex-col gap-6">
+          <div className="w-full">
             <Input
               {...register('newPassword', {
                 required: {
@@ -55,12 +62,33 @@ export const ChangePasswordForm = () => {
                     id: 'Auth / Change password / Password required',
                   }),
                 },
-                minLength: {
-                  value: 8,
-                  message: intl.formatMessage({
-                    defaultMessage: 'Password is too short. It must contain at least 8 characters.',
-                    id: 'Auth / Change password / Password too short',
-                  }),
+                validate: {
+                  minLength: (value) =>
+                    value.length >= 8 ||
+                    intl.formatMessage({
+                      defaultMessage: 'Password must be at least 8 characters long',
+                      id: 'Auth / Change password / Password too short',
+                    }),
+                  notCommon: (value) => {
+                    const validation = validatePassword(value);
+                    return (
+                      validation.notCommon ||
+                      intl.formatMessage({
+                        defaultMessage: 'This password is too common. Please choose a more unique password.',
+                        id: 'Auth / Change password / Password too common frontend',
+                      })
+                    );
+                  },
+                  notNumericOnly: (value) => {
+                    const validation = validatePassword(value);
+                    return (
+                      validation.notNumericOnly ||
+                      intl.formatMessage({
+                        defaultMessage: "Password can't be entirely numeric.",
+                        id: 'Auth / Change password / Password numeric only',
+                      })
+                    );
+                  },
                 },
               })}
               type="password"
@@ -69,14 +97,16 @@ export const ChangePasswordForm = () => {
                 id: 'Auth / Change password / New password label',
               })}
               placeholder={intl.formatMessage({
-                defaultMessage: 'Minimum 8 characters',
+                defaultMessage: 'Create a strong password',
                 id: 'Auth / Change password / New password placeholder',
               })}
               error={errors.newPassword?.message}
             />
+            <PasswordStrengthIndicator password={newPassword} className="mt-2" />
+            <PasswordRequirements password={newPassword} className="mt-3" />
           </div>
 
-          <div className="flex-1">
+          <div className="w-full">
             <Input
               {...register('confirmNewPassword', {
                 validate: {
@@ -100,7 +130,7 @@ export const ChangePasswordForm = () => {
                 id: 'Auth / Change password / Confirm new password label',
               })}
               placeholder={intl.formatMessage({
-                defaultMessage: 'Minimum 8 characters',
+                defaultMessage: 'Re-enter your new password',
                 id: 'Auth / Change password / Confirm new password placeholder',
               })}
               error={errors.confirmNewPassword?.message}

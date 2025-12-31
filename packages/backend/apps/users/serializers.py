@@ -27,10 +27,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source="user.email", read_only=True)
     roles = serializers.SerializerMethodField()
     avatar = serializers.FileField(required=False)
+    language = serializers.ChoiceField(
+        choices=models.LanguageChoices.choices,
+        required=False,
+    )
 
     class Meta:
         model = models.UserProfile
-        fields = ("id", "first_name", "last_name", "email", "roles", "avatar")
+        fields = ("id", "first_name", "last_name", "email", "roles", "avatar", "language")
 
     @staticmethod
     def validate_avatar(avatar):

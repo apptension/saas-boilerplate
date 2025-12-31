@@ -9,6 +9,7 @@ export const commonQueryCurrentUserFragment = gql(/* GraphQL */ `
     email
     firstName
     lastName
+    language
     roles
     avatar
     otpVerified
