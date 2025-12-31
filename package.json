@@ -27,8 +27,6 @@
     "@nx/webpack": "19.6.0",
     "@sb/cli": "workspace:*",
     "@sb/core": "workspace:*",
-    "@storybook/addon-actions": "^8.0.9",
-    "@storybook/react": "^8.0.9",
     "@svgr/webpack": "^8.1.0",
     "@swc-node/register": "^1.11.1",
     "@swc/core": "^1.15.7",

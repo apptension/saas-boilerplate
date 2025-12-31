@@ -47,10 +47,8 @@
     "@sb/webapp-generative-ai": "workspace:*",
     "@sb/webapp-notifications": "workspace:*",
     "@sb/webapp-tenants": "workspace:*",
-    "@storybook/addon-essentials": "^8.6.15",
+    "@storybook/addon-docs": "^10.1.11",
     "@storybook/addon-themes": "^10.1.11",
-    "@storybook/cli": "^8.6.15",
-    "@storybook/client-logger": "^8.6.15",
     "@storybook/react-vite": "^10.1.11",
     "@types/qrcode": "^1.5.5",
     "@vitejs/plugin-legacy": "^6.1.1",
@@ -62,8 +60,6 @@
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-polyfill-node": "^0.12.0",
     "storybook": "^10.1.11",
-    "storybook-dark-mode": "^4.0.1",
-    "storybook-react-router": "^1.0.8",
     "stylelint": "^16.6.0",
     "stylelint-config-standard": "^36.0.0"
   }
