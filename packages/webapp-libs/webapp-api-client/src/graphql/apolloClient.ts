@@ -28,12 +28,28 @@ let isRefreshing = false;
 // Queue of pending requests waiting for token refresh
 let pendingRequests: Array<() => void> = [];
 
+// Interface for Apollo client methods we need for auth cleanup
+interface ApolloClientLike {
+  stop: () => void;
+  clearStore: () => Promise<unknown[]>;
+}
+
+// Reference to Apollo client for cache clearing (set after client is created)
+let apolloClientRef: ApolloClientLike | null = null;
+
+/**
+ * Set Apollo client reference for cache clearing on auth failure
+ */
+export const setApolloClientRef = (clientInstance: ApolloClientLike) => {
+  apolloClientRef = clientInstance;
+};
+
 /**
  * Redirects to the login page when authentication fails.
  * Extracts the current locale from the URL and constructs the login path.
- * Calls logout endpoint to properly clear session cookies.
+ * Clears Apollo cache and auth data before redirecting.
  */
-const redirectToLogin = () => {
+export const redirectToLogin = () => {
   // Prevent multiple redirects in quick succession
   if (redirectingToLogin) {
     return;
@@ -60,12 +76,25 @@ const redirectToLogin = () => {
     clearTimeout(redirectTimeout);
   }
   
+  // Clear Apollo cache to prevent stale data on next login
+  // Using clearStore() instead of resetStore() to avoid triggering refetches
+  if (apolloClientRef) {
+    try {
+      apolloClientRef.stop(); // Stop all active queries
+      apolloClientRef.clearStore().catch(() => {
+        // Ignore cache clear errors
+      });
+    } catch {
+      // Ignore errors
+    }
+  }
+  
   // Clear any stale authentication data from storage
   try {
     localStorage.removeItem('token');
     localStorage.removeItem('refresh_token');
     sessionStorage.clear();
-  } catch (e) {
+  } catch {
     // Ignore storage errors (e.g., in private browsing mode)
   }
   
@@ -283,6 +312,9 @@ export const client = new ApolloClient({
     },
   }),
 });
+
+// Set client reference for cache clearing on auth failure
+setApolloClientRef(client);
 
 export const invalidateApolloStore = () => {
   wsLink.reconnect();

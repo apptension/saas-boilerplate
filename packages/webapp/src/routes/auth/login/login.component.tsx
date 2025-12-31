@@ -74,19 +74,12 @@ export const Login = () => {
                 </div>
               )}
               <div className="text-muted-foreground">
-                <FormattedMessage
-                  defaultMessage="Don't have an account? {signupLink}"
-                  id="Auth / Login / signup prompt"
-                  values={{
-                    signupLink: (
-                      <Button variant="link" className="h-auto p-0 text-sm font-semibold" asChild>
-                        <Link to={generateLocalePath(RoutesConfig.signup)}>
-                          <FormattedMessage defaultMessage="Sign up" id="Auth / Login / signup link" />
-                        </Link>
-                      </Button>
-                    ),
-                  }}
-                />
+                <FormattedMessage defaultMessage="Don't have an account?" id="Auth / Login / signup prompt" />{' '}
+                <Button variant="link" className="h-auto p-0 text-sm font-semibold" asChild>
+                  <Link to={generateLocalePath(RoutesConfig.signup)}>
+                    <FormattedMessage defaultMessage="Sign up" id="Auth / Login / signup link" />
+                  </Link>
+                </Button>
               </div>
             </div>
           </CardContent>
