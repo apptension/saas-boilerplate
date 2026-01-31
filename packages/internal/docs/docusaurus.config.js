@@ -24,7 +24,7 @@ module.exports = {
   tagline: 'Build production-ready SaaS applications faster with our comprehensive starter kit',
   url: 'https://docs.demo.saas.apptoku.com',
   baseUrl: '/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn', // Changed from 'throw' - auto-generated TypeDoc docs have internal links that may not resolve
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
   organizationName: 'Apptension',
@@ -105,10 +105,31 @@ module.exports = {
           label: 'How-To Guides',
         },
         {
-          type: 'docSidebar',
-          sidebarId: 'awsSidebar',
+          type: 'dropdown',
+          label: 'Deployment',
           position: 'left',
-          label: 'AWS Deployment',
+          items: [
+            {
+              type: 'docSidebar',
+              sidebarId: 'deploymentSidebar',
+              label: 'All Options',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'awsSidebar',
+              label: 'AWS (CDK)',
+            },
+            {
+              type: 'doc',
+              docId: 'deployment/render',
+              label: 'Render.com',
+            },
+            {
+              type: 'doc',
+              docId: 'deployment/vps',
+              label: 'VPS / Docker',
+            },
+          ],
         },
         {
           type: 'docSidebar',
@@ -161,6 +182,10 @@ module.exports = {
             {
               label: 'How-To Guides',
               to: '/working-with-sb',
+            },
+            {
+              label: 'Deployment Options',
+              to: '/deployment',
             },
             {
               label: 'AWS Deployment',

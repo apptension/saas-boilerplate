@@ -1,18 +1,20 @@
-import { TenantUserRole } from '@sb/webapp-api-client';
 import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import { Paragraph } from '@sb/webapp-core/components/typography';
 import { Button, buttonVariants } from '@sb/webapp-core/components/ui/button';
 import { AlertTriangle } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
-import { useCurrentTenantMembership } from '../../hooks';
+import { usePermissionCheck } from '../../hooks';
 import { useTenantDelete } from './tenantDangerZone.hook';
 
 export const TenantDangerZone = () => {
-  const { currentMembership } = useCurrentTenantMembership();
-  const isOwner = currentMembership?.role === TenantUserRole.OWNER;
+  // Permission check for delete organization
+  const { hasPermission: canDelete, loading: permLoading } = usePermissionCheck('org.delete');
 
   const { deleteTenant, loading } = useTenantDelete();
+
+  // If user cannot delete, show a message explaining why
+  const cannotDeleteMessage = !canDelete && !permLoading;
 
   return (
     <div className="space-y-6">
@@ -32,11 +34,11 @@ export const TenantDangerZone = () => {
                 id="Tenant General Settings / Danger Zone / Delete title"
               />
             </div>
-            {!isOwner ? (
+            {cannotDeleteMessage ? (
               <Paragraph className="text-sm text-muted-foreground">
                 <FormattedMessage
-                  defaultMessage="Only members with the Owner role can delete organization"
-                  id="Tenant General Settings / Danger Zone / Delete owner role subtitle"
+                  defaultMessage="You don't have permission to delete this organization"
+                  id="Tenant General Settings / Danger Zone / Delete no permission"
                 />
               </Paragraph>
             ) : (
@@ -65,7 +67,7 @@ export const TenantDangerZone = () => {
               />
             }
           >
-            <Button disabled={!isOwner || loading} className={buttonVariants({ variant: 'destructive' })}>
+            <Button disabled={!canDelete || loading || permLoading} className={buttonVariants({ variant: 'destructive' })}>
               <FormattedMessage
                 defaultMessage="Delete organization"
                 id="Tenant General Settings / Danger Zone / Tenant Delete Button"

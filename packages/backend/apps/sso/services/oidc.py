@@ -234,8 +234,14 @@ class OIDCService:
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
-            logger.error(f"Token exchange failed: {e}")
-            raise ValueError(f"Failed to exchange code for tokens: {e}")
+            # SECURITY: Log error without exposing sensitive details like client_secret
+            # The exception message may contain request payload data
+            logger.error(
+                f"Token exchange failed for connection {self.connection.id}: "
+                f"{type(e).__name__} - status: {getattr(e.response, 'status_code', 'N/A') if hasattr(e, 'response') else 'N/A'}"
+            )
+            # Return generic error message to prevent information disclosure
+            raise ValueError("Failed to exchange authorization code for tokens")
 
     def validate_id_token(
         self,
@@ -319,7 +325,12 @@ class OIDCService:
         code_verifier: str = None,
     ) -> Dict[str, Any]:
         """
-        Process the OAuth callback.
+        Process the OAuth callback with full security validation.
+
+        Security validations:
+        1. State parameter validation (CSRF protection)
+        2. ID token validation (REQUIRED for authentication)
+        3. Nonce validation (replay protection)
 
         Args:
             code: Authorization code
@@ -330,26 +341,48 @@ class OIDCService:
 
         Returns:
             Dict containing user attributes
+
+        Raises:
+            ValueError: If any security validation fails
         """
-        # Validate state
-        if state != stored_state:
+        # SECURITY: Validate state (CSRF protection)
+        if not state or not stored_state:
+            raise ValueError("Missing state parameter")
+
+        # Use constant-time comparison to prevent timing attacks
+        import secrets
+
+        if not secrets.compare_digest(state, stored_state):
             raise ValueError("State mismatch - possible CSRF attack")
 
         # Exchange code for tokens
         tokens = self.exchange_code_for_tokens(code, code_verifier)
 
-        # Validate ID token
+        # SECURITY: ID token is REQUIRED for authentication
+        # This prevents authentication bypass when IdP doesn't return id_token
         id_token = tokens.get('id_token')
-        claims = self.validate_id_token(id_token, stored_nonce) if id_token else {}
+        if not id_token:
+            logger.error("OIDC token response missing id_token")
+            raise ValueError("ID token required but not provided by identity provider")
 
-        # Get additional user info if needed
+        # Validate ID token with nonce
+        claims = self.validate_id_token(id_token, stored_nonce)
+
+        if not claims:
+            raise ValueError("ID token validation returned empty claims")
+
+        # Get additional user info if needed (supplementary, not for auth)
         access_token = tokens.get('access_token')
         if access_token:
             try:
                 userinfo = self.get_userinfo(access_token)
-                claims.update(userinfo)
+                # Only add non-critical claims from userinfo
+                for key in ['name', 'picture', 'locale', 'updated_at']:
+                    if key in userinfo and key not in claims:
+                        claims[key] = userinfo[key]
             except Exception as e:
-                logger.warning(f"Failed to fetch userinfo: {e}")
+                # Log but don't fail - userinfo is supplementary
+                logger.warning(f"Failed to fetch userinfo (non-critical): {e}")
 
         # Map claims to user attributes
         return self._map_claims(claims)

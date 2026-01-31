@@ -26,7 +26,7 @@ interface SSODiscoveryProps {
 
 /**
  * SSO Discovery Component
- * 
+ *
  * Automatically discovers SSO options based on the user's email domain.
  * Shows SSO login buttons when the user's organization has SSO configured.
  */
@@ -50,7 +50,7 @@ export const SSODiscovery = ({ email, onSSORequired }: SSODiscoveryProps) => {
     setLastCheckedEmail(emailToCheck);
 
     try {
-      const response = await fetch(`/api/sso/discover?email=${encodeURIComponent(emailToCheck)}`, {
+      const response = await fetch(`${ENV.BASE_API_URL}/sso/discover?email=${encodeURIComponent(emailToCheck)}`, {
         credentials: 'include',
       });
 
@@ -93,9 +93,15 @@ export const SSODiscovery = ({ email, onSSORequired }: SSODiscoveryProps) => {
     const urlParams = new URLSearchParams(window.location.search);
     const intendedDestination = urlParams.get('next') || '/';
     const next = encodeURIComponent(intendedDestination);
-    
+
+    // The backend returns a relative URL like /api/sso/saml/{id}/login
+    // We need to prepend the API base URL when webapp and API are on different domains
+    const loginUrl = connection.login_url.startsWith('http')
+      ? connection.login_url
+      : `${ENV.BASE_API_URL}${connection.login_url.replace(/^\/api/, '')}`;
+
     // Redirect to SSO login endpoint
-    window.location.href = `${connection.login_url}?next=${next}&login_hint=${encodeURIComponent(email)}`;
+    window.location.href = `${loginUrl}?next=${next}&login_hint=${encodeURIComponent(email)}`;
   };
 
   if (!discoveryResult?.sso_available) {

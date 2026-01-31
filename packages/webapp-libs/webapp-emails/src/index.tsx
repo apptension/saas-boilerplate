@@ -1,6 +1,7 @@
 import { TranslationMessages } from '@sb/webapp-core/config/i18n';
 import { camelCaseKeys } from '@sb/webapp-core/utils/object';
 import { UnknownObject } from '@sb/webapp-core/utils/types';
+import { decode } from 'he';
 import juice from 'juice';
 import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
@@ -26,7 +27,9 @@ export const renderEmail = (
   const email = buildEmail({ name, data, lang, messages });
 
   const sheet = new ServerStyleSheet();
-  const subject = renderToString(email.subject);
+  // Decode HTML entities in subject since email subjects are plain text, not HTML.
+  // renderToString escapes characters like apostrophes to &#x27; which appear as literal text in email clients.
+  const subject = decode(renderToString(email.subject));
   const bodyHtml = renderToString(<StyleSheetManager sheet={sheet.instance}>{email.template}</StyleSheetManager>);
   const styleTags = sheet.getStyleTags();
   sheet.seal();

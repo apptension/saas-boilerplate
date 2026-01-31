@@ -24,6 +24,8 @@ export type TenantFormProps = {
   cancelUrl?: string;
   /** Hide cancel button */
   hideCancel?: boolean;
+  /** Disable the form (read-only mode) */
+  disabled?: boolean;
 };
 
 export const TenantForm = ({
@@ -34,6 +36,7 @@ export const TenantForm = ({
   submitLabel,
   cancelUrl,
   hideCancel,
+  disabled,
 }: TenantFormProps) => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
@@ -88,6 +91,7 @@ export const TenantForm = ({
                     id: 'Tenant form / Name placeholder',
                   })}
                   error={errors.name?.message}
+                  disabled={disabled}
                 />
               </FormControl>
             </FormItem>
@@ -111,7 +115,7 @@ export const TenantForm = ({
             </Link>
           )}
 
-          <Button type="submit" disabled={loading} className="w-full sm:w-fit">
+          <Button type="submit" disabled={loading || disabled} className="w-full sm:w-fit">
             {submitLabel ?? (
               <FormattedMessage defaultMessage="Save changes" id="Tenant form / Submit button" />
             )}

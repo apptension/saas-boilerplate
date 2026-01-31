@@ -6,6 +6,24 @@ alwaysApply: false
 
 # Import Conventions
 
+## Apollo Client (IMPORTANT)
+
+**Always import Apollo hooks from `@apollo/client/react`, NOT from `@apollo/client`:**
+
+```tsx
+// ✅ CORRECT - Always use /react subpath
+import { useMutation, useQuery } from '@apollo/client/react';
+
+// ❌ WRONG - Will cause runtime errors
+import { useMutation, useQuery } from '@apollo/client';
+```
+
+For GraphQL gql tag, use the workspace package:
+
+```tsx
+import { gql } from '@sb/webapp-api-client/graphql';
+```
+
 ## Workspace Aliases
 
 Use `@sb/` workspace aliases for cross-package imports:
@@ -48,6 +66,8 @@ Organize imports in this order:
 ## Example
 
 ```tsx
+import { useMutation, useQuery } from '@apollo/client/react';
+import { gql } from '@sb/webapp-api-client/graphql';
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { Link } from '@sb/webapp-core/components/buttons';
 import { Button } from '@sb/webapp-core/components/ui/button';

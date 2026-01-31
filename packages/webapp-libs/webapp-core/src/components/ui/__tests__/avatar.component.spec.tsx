@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 
 import { render } from '../../../tests/utils/rendering';
 import { Avatar, AvatarFallback, AvatarImage } from '../avatar';
@@ -8,10 +8,12 @@ describe('UI/Avatar: Component', () => {
     render(
       <Avatar>
         <AvatarImage />
-        <AvatarFallback>Test</AvatarFallback>
+        <AvatarFallback delayMs={0}>Test</AvatarFallback>
       </Avatar>
     );
 
-    expect(await screen.findByText('Test')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Test')).toBeInTheDocument();
+    });
   });
 });

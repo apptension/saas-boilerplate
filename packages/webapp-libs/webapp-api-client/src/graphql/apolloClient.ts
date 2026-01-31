@@ -1,4 +1,5 @@
-import { ApolloClient, HttpLink, InMemoryCache, Observable, from, split, FetchResult } from '@apollo/client';
+import { ApolloClient, ApolloLink, HttpLink, InMemoryCache, Observable, from, split, FetchResult } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { getMainDefinition, relayStylePagination } from '@apollo/client/utilities';
@@ -47,6 +48,7 @@ export const setApolloClientRef = (clientInstance: ApolloClientLike) => {
 /**
  * Redirects to the login page when authentication fails.
  * Extracts the current locale from the URL and constructs the login path.
+ * Preserves the current URL as a redirect parameter for post-login navigation.
  * Clears Apollo cache and auth data before redirecting.
  */
 export const redirectToLogin = () => {
@@ -60,13 +62,25 @@ export const redirectToLogin = () => {
   const localeMatch = pathname.match(/^\/([a-z]{2})\//);
   const locale = localeMatch ? localeMatch[1] : 'en'; // Default to 'en' if no locale found
   
-  // Construct login path with locale
-  const loginPath = `/${locale}/${RoutesConfig.login}`;
-  
-  // Check if we're already on the login page to avoid redirect loops
-  if (pathname.includes('/auth/login')) {
+  // Check if we're already on the login page or logout page to avoid issues
+  if (pathname.includes('/auth/login') || pathname.includes('/auth/logout')) {
+    // For logout page, just redirect to login without a redirect param
+    if (pathname.includes('/auth/logout')) {
+      const loginPath = `/${locale}/${RoutesConfig.login}`;
+      redirectingToLogin = true;
+      setTimeout(() => {
+        window.location.replace(loginPath);
+      }, 100);
+    }
     return;
   }
+  
+  // Preserve current URL as redirect parameter (include pathname and search params)
+  const currentUrl = pathname + window.location.search;
+  const redirectParam = encodeURIComponent(currentUrl);
+  
+  // Construct login path with locale and redirect parameter
+  const loginPath = `/${locale}/${RoutesConfig.login}?redirect=${redirectParam}`;
   
   // Set flag to prevent multiple redirects
   redirectingToLogin = true;
@@ -117,6 +131,31 @@ export const redirectToLogin = () => {
 const httpApiLink = new UploadHttpLink({
   uri: apiURL('/graphql/'),
   credentials: 'include', // Required for cookie-based authentication
+});
+
+/**
+ * Auth link that adds Authorization header from localStorage as fallback.
+ * 
+ * This is essential for Safari and mobile browsers that block third-party cookies
+ * due to Intelligent Tracking Prevention (ITP). When cookies are blocked,
+ * we fall back to sending the access token via Authorization header.
+ * 
+ * The backend accepts both:
+ * 1. Cookie-based auth (via JSONWebTokenCookieAuthentication)
+ * 2. Header-based auth (via JWTAuthentication with Authorization: Bearer token)
+ */
+const authLink = setContext((_, { headers }) => {
+  // Get token from localStorage (set by login, SSO callback, etc.)
+  const token = localStorage.getItem('token');
+  
+  // Return headers with Authorization if token exists
+  // Cookies are still sent via credentials: 'include', so this is additive
+  return {
+    headers: {
+      ...headers,
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
+    },
+  };
 });
 
 // Helper function to check if an error is a 401
@@ -258,7 +297,8 @@ const httpContentfulLink = new HttpLink({
   uri: `https://graphql.contentful.com/content/v1/spaces/${ENV.CONTENTFUL_SPACE}/environments/${ENV.CONTENTFUL_ENV}?access_token=${ENV.CONTENTFUL_TOKEN}`,
 });
 
-const apiLinkChain = from([refreshTokenLink, httpApiLink]);
+// Chain: refreshTokenLink -> authLink (adds Authorization header) -> httpApiLink
+const apiLinkChain = from([refreshTokenLink, authLink, httpApiLink]);
 const splitHttpLink = split(
   (operation) => {
     const { schemaType = SchemaType.API } = operation.getContext();

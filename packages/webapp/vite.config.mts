@@ -94,8 +94,8 @@ export default defineConfig(({ mode }): UserConfig => {
       // Defaults are now: ['module', 'browser', 'development|production']
       conditions: ['module', 'browser', 'development', 'production'],
       alias: {
-        fs: require.resolve('rollup-plugin-node-builtins'),
-        path: require.resolve('rollup-plugin-node-builtins'),
+        'fs': require.resolve('rollup-plugin-node-builtins'),
+        'path': require.resolve('rollup-plugin-node-builtins'),
       },
     },
   };

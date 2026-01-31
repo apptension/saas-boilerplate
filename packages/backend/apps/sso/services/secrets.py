@@ -20,15 +20,30 @@ class SecretsService:
     - SAML certificates
     - OIDC client secrets
     - SP signing keys
+
+    If AWS is not configured, the service will log warnings and return None
+    for all operations (graceful degradation).
     """
 
     def __init__(self):
-        self.client = boto3.client(
-            'secretsmanager',
-            region_name=getattr(settings, 'AWS_REGION', 'us-east-1'),
-            endpoint_url=getattr(settings, 'AWS_ENDPOINT_URL', None),
-        )
+        self.client = None
         self.prefix = f"{getattr(settings, 'ENVIRONMENT_NAME', 'dev')}/sso"
+        self._init_client()
+
+    def _init_client(self):
+        """Initialize the boto3 client, handling missing AWS configuration gracefully."""
+        try:
+            self.client = boto3.client(
+                'secretsmanager',
+                region_name=getattr(settings, 'AWS_REGION', 'us-east-1'),
+                endpoint_url=getattr(settings, 'AWS_ENDPOINT_URL', None),
+            )
+        except Exception as e:
+            logger.warning(
+                f"Failed to initialize AWS Secrets Manager client: {e}. "
+                "Secrets Manager features will be unavailable."
+            )
+            self.client = None
 
     def _get_secret_name(self, tenant_id: str, secret_type: str) -> str:
         """Generate a standardized secret name."""
@@ -40,7 +55,7 @@ class SecretsService:
         secret_type: str,
         secret_value: str,
         description: str = '',
-    ) -> str:
+    ) -> Optional[str]:
         """
         Store a secret in AWS Secrets Manager.
 
@@ -51,8 +66,12 @@ class SecretsService:
             description: Human-readable description
 
         Returns:
-            The ARN of the stored secret
+            The ARN of the stored secret, or None if unavailable
         """
+        if not self.client:
+            logger.warning("AWS Secrets Manager client not available, cannot store secret")
+            return None
+
         secret_name = self._get_secret_name(tenant_id, secret_type)
 
         try:
@@ -81,7 +100,7 @@ class SecretsService:
                 return describe_response['ARN']
             else:
                 logger.error(f"Error storing secret: {e}")
-                raise
+                return None
 
     def get_secret(self, secret_arn: str) -> Optional[str]:
         """
@@ -91,8 +110,12 @@ class SecretsService:
             secret_arn: The ARN or name of the secret
 
         Returns:
-            The secret value, or None if not found
+            The secret value, or None if not found/unavailable
         """
+        if not self.client:
+            logger.debug("AWS Secrets Manager client not available, skipping secret retrieval")
+            return None
+
         try:
             response = self.client.get_secret_value(SecretId=secret_arn)
             return response.get('SecretString')
@@ -102,7 +125,7 @@ class SecretsService:
                 return None
             else:
                 logger.error(f"Error retrieving secret: {e}")
-                raise
+                return None  # Gracefully return None instead of raising
 
     def delete_secret(self, secret_arn: str, force: bool = False) -> bool:
         """
@@ -115,6 +138,10 @@ class SecretsService:
         Returns:
             True if deleted successfully
         """
+        if not self.client:
+            logger.warning("AWS Secrets Manager client not available, cannot delete secret")
+            return False
+
         try:
             self.client.delete_secret(
                 SecretId=secret_arn,
@@ -192,6 +219,10 @@ class SecretsService:
         Returns:
             True if rotated successfully
         """
+        if not self.client:
+            logger.warning("AWS Secrets Manager client not available, cannot rotate secret")
+            return False
+
         try:
             self.client.put_secret_value(
                 SecretId=secret_arn,

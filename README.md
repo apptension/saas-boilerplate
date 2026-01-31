@@ -119,13 +119,12 @@ repository, with single command:
 pnpm install
 ```
 
-:::tip Environment Files
-Make sure you have the necessary `.env` files from your team. If not, copy from `.env.shared` templates:
-```sh
-cp .env.shared .env
-cp packages/backend/.env.shared packages/backend/.env
-```
-:::
+> 💡 **Environment Files:** Make sure you have the necessary `.env` files from your team. If not, copy from `.env.shared` templates:
+>
+> ```sh
+> cp .env.shared .env
+> cp packages/backend/.env.shared packages/backend/.env
+> ```
 
 ### Start the app
 
@@ -167,20 +166,20 @@ pnpm saas down
 
 After starting the application, you'll have these services available:
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| **Web App** | [http://localhost:3000](http://localhost:3000) | Your SaaS frontend |
-| **Backend API** | [http://localhost:5001](http://localhost:5001) | Django + GraphQL API |
-| **Admin Panel** | [http://admin.localhost:5001](http://admin.localhost:5001) | Django admin interface |
-| **Mailcatcher** | [http://localhost:1080](http://localhost:1080) | Catches all emails locally |
-| **Docs** | [http://localhost:3006](http://localhost:3006) | Local documentation |
-| **Workers** | [http://localhost:3005](http://localhost:3005) | Workers trigger server |
+| Service         | URL                                                        | Description                |
+| --------------- | ---------------------------------------------------------- | -------------------------- |
+| **Web App**     | [http://localhost:3000](http://localhost:3000)             | Your SaaS frontend         |
+| **Backend API** | [http://localhost:5001](http://localhost:5001)             | Django + GraphQL API       |
+| **Admin Panel** | [http://admin.localhost:5001](http://admin.localhost:5001) | Django admin interface     |
+| **Mailcatcher** | [http://localhost:1080](http://localhost:1080)             | Catches all emails locally |
+| **Docs**        | [http://localhost:3006](http://localhost:3006)             | Local documentation        |
+| **Workers**     | [http://localhost:3005](http://localhost:3005)             | Workers trigger server     |
 
-:::tip First Steps
-1. Open [http://localhost:3000](http://localhost:3000) and create an account
-2. Check [http://localhost:1080](http://localhost:1080) for the verification email
-3. Log in to the Admin Panel at [http://admin.localhost:5001](http://admin.localhost:5001) using credentials from your `.env` file
-:::
+> 💡 **First Steps:**
+>
+> 1. Open [http://localhost:3000](http://localhost:3000) and create an account
+> 2. Check [http://localhost:1080](http://localhost:1080) for the verification email
+> 3. Log in to the Admin Panel at [http://admin.localhost:5001](http://admin.localhost:5001) using credentials from your `.env` file
 
 ## Features
 
@@ -344,6 +343,81 @@ This boilerplate includes plenty of ready to use features that you can adjust to
     </ul>
   </details>
 
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/management-dashboard">Management Dashboard</a>
+    </summary><br/>
+    <ul>
+      <li>Complete financial management module (example module)</li>
+      <li>Projects, iterations, revenue & cost tracking</li>
+      <li>AI-powered CSV import with intelligent column mapping</li>
+      <li>Financial forecasting with backtesting and scenarios</li>
+      <li>Multi-currency support with FX rate management</li>
+      <li>Excel-like timesheet with copy/paste and fill handle</li>
+      <li>CFO Command Center with KPI dashboards</li>
+    </ul>
+  </details>
+
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/rbac">RBAC Permissions</a>
+    </summary><br/>
+    <ul>
+      <li>Fine-grained role-based access control</li>
+      <li>Custom organization roles with color coding</li>
+      <li>Permission categories (organization, members, security, billing, features)</li>
+      <li>Frontend and backend permission enforcement</li>
+    </ul>
+  </details>
+
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/activity-logs">Activity Logs</a>
+    </summary><br/>
+    <ul>
+      <li>Comprehensive audit trail for all actions</li>
+      <li>Field-level change tracking (old value → new value)</li>
+      <li>Multiple actor types (User, AI Agent, System)</li>
+      <li>Export to CSV for compliance</li>
+    </ul>
+  </details>
+
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/ai-agent">AI Agent (MCP)</a>
+    </summary><br/>
+    <ul>
+      <li>Model Context Protocol integration for AI assistants</li>
+      <li>Natural language data queries and mutations</li>
+      <li>RBAC-aware tool execution</li>
+      <li>WebSocket streaming for real-time responses</li>
+    </ul>
+  </details>
+
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/session-management">Session Management</a>
+    </summary><br/>
+    <ul>
+      <li>Cross-origin cookie support for separate frontend/backend domains</li>
+      <li>Safari/iOS authentication fallback with Authorization headers</li>
+      <li>Multi-device session tracking and remote revocation</li>
+      <li>Activity logging for authentication events</li>
+    </ul>
+  </details>
+
+  <details open>
+    <summary>
+      <a href="https://docs.demo.saas.apptoku.com/introduction/features/storage-backends">Storage Backends</a>
+    </summary><br/>
+    <ul>
+      <li>Flexible file storage with AWS S3, Cloudflare R2, Backblaze B2</li>
+      <li>Dynamic backend selection based on environment</li>
+      <li>Public and private storage separation</li>
+      <li>CDN integration for translations and assets</li>
+    </ul>
+  </details>
+
 ---
 
 </details>
@@ -367,9 +441,7 @@ Front-end stack:
 - [jest](https://github.com/jestjs/jest)
 - [Storybook](https://github.com/storybookjs/storybook) 10.x
 
-:::info Styling Approach
-**Tailwind CSS** is the primary styling solution for all components. Use Tailwind utility classes with the `cn()` helper for conditional styling. [styled-components](https://github.com/styled-components/styled-components) is included as a dependency for internal theme infrastructure and email template rendering, but developers should use Tailwind CSS for all new component styling. See the [shadcn/ui guide](https://docs.demo.saas.apptoku.com/working-with-sb/shadcn) for component styling patterns.
-:::
+> ℹ️ **Styling Approach:** **Tailwind CSS** is the primary styling solution for all components. Use Tailwind utility classes with the `cn()` helper for conditional styling. [styled-components](https://github.com/styled-components/styled-components) is included as a dependency for internal theme infrastructure and email template rendering, but developers should use Tailwind CSS for all new component styling. See the [shadcn/ui guide](https://docs.demo.saas.apptoku.com/working-with-sb/shadcn) for component styling patterns.
 
 Back-end stack:
 

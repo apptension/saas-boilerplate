@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client/react';
 import { FetchResult } from '@apollo/client';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { StripePaymentIntentType } from '@sb/webapp-api-client/graphql';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -154,9 +155,10 @@ export const useStripePaymentIntent = (onError: (error: Error, clientOptions?: a
 export const useStripePaymentForm = (onSuccess: (paymentIntent: StripePaymentIntentType) => void) => {
   const { confirmPayment } = useStripePayment();
 
-  const { updateOrCreatePaymentIntent, loading } = useStripePaymentIntent((error: any) => {
-    if (error?.graphQLErrors) {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
+  const { updateOrCreatePaymentIntent, loading } = useStripePaymentIntent((error) => {
+    const graphQLErrors = extractGraphQLErrors(error);
+    if (graphQLErrors) {
+      setApolloGraphQLResponseErrors(graphQLErrors);
     }
   });
 

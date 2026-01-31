@@ -2,48 +2,37 @@
 Translation publishing and syncing services.
 
 Provides functionality for:
-- Publishing translations to S3/CDN
+- Publishing translations to cloud storage (S3/R2/B2/MinIO)
 - Syncing translation keys from the build process
 - Version management and rollback
+
+Storage is agnostic - uses the same STORAGE_BACKEND as the rest of the app.
 """
 
 import json
 import hashlib
 import logging
+import os
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-from django.conf import settings
 from django.db import transaction
 from django.core.cache import cache
+from django.core.files.base import ContentFile
 
+from common.storages import get_translations_storage
 from .models import Locale, Translation, TranslationKey, TranslationVersion
-from .constants import TRANSLATIONS_S3_PREFIX, TRANSLATIONS_CACHE_TTL
+from .constants import TRANSLATIONS_CACHE_TTL
 
 logger = logging.getLogger(__name__)
 
 
-def get_s3_client():
-    """Get boto3 S3 client with proper configuration."""
-    import boto3
-
-    return boto3.client(
-        's3',
-        endpoint_url=getattr(settings, 'AWS_ENDPOINT_URL', None),
-        region_name=getattr(settings, 'AWS_REGION', None),
-    )
-
-
-def get_cloudfront_client():
-    """Get boto3 CloudFront client."""
-    import boto3
-
-    return boto3.client('cloudfront', region_name=getattr(settings, 'AWS_REGION', None))
-
-
 class TranslationPublisher:
     """
-    Handles publishing translations to S3 and CDN cache invalidation.
+    Handles publishing translations to cloud storage.
+
+    Uses Django's storage framework for agnostic cloud storage support.
+    Automatically uses the same backend as STORAGE_BACKEND (s3, r2, b2, minio, local).
 
     Usage:
         publisher = TranslationPublisher()
@@ -51,22 +40,20 @@ class TranslationPublisher:
     """
 
     def __init__(self):
-        self.bucket_name = getattr(settings, 'TRANSLATIONS_BUCKET_NAME', None)
-        self.cloudfront_distribution_id = getattr(settings, 'TRANSLATIONS_CLOUDFRONT_ID', None)
-        self._s3_client = None
-        self._cloudfront_client = None
+        self._storage = None
 
     @property
-    def s3_client(self):
-        if self._s3_client is None:
-            self._s3_client = get_s3_client()
-        return self._s3_client
+    def storage(self):
+        """Lazy-load the storage backend."""
+        if self._storage is None:
+            self._storage = get_translations_storage()
+        return self._storage
 
     @property
-    def cloudfront_client(self):
-        if self._cloudfront_client is None:
-            self._cloudfront_client = get_cloudfront_client()
-        return self._cloudfront_client
+    def is_cloud_storage(self):
+        """Check if using cloud storage (not local filesystem)."""
+        backend = os.environ.get('STORAGE_BACKEND', 's3')
+        return backend != 'local'
 
     def generate_translation_bundle(self, locale: Locale) -> Dict[str, str]:
         """
@@ -114,7 +101,9 @@ class TranslationPublisher:
     @transaction.atomic
     def publish(self, locale: Locale, user) -> TranslationVersion:
         """
-        Publish translations for a locale to S3.
+        Publish translations for a locale to cloud storage.
+
+        Uses Django's storage framework - automatically works with S3, R2, B2, MinIO, or local.
 
         Args:
             locale: The locale to publish
@@ -128,26 +117,28 @@ class TranslationPublisher:
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
         version_string = f"v{timestamp}-{version_hash}"
 
-        # S3 keys
-        versioned_key = f"{TRANSLATIONS_S3_PREFIX}/{locale.code}/{version_string}.json"
-        current_key = f"{TRANSLATIONS_S3_PREFIX}/{locale.code}.json"
+        # Storage paths (relative to storage location which is already 'translations/')
+        versioned_path = f"{locale.code}/{version_string}.json"
+        current_path = f"{locale.code}.json"
 
-        if self.bucket_name:
-            # Upload versioned file (for history/rollback)
-            self._upload_json(versioned_key, translations)
+        backend = os.environ.get('STORAGE_BACKEND', 's3')
+        logger.info(f"Publishing translations for {locale.code} using {backend} storage backend")
 
-            # Upload current file (served to clients)
-            self._upload_json(current_key, translations)
+        # Upload versioned file (for history/rollback)
+        self._upload_json(versioned_path, translations)
+        logger.info(f"  Uploaded versioned file: {versioned_path}")
 
-            logger.info(f"Published translations for {locale.code} to S3: {versioned_key}")
-        else:
-            logger.warning("TRANSLATIONS_BUCKET_NAME not configured, skipping S3 upload")
+        # Upload current file (served to clients)
+        self._upload_json(current_path, translations)
+        logger.info(f"  Uploaded current file: {current_path}")
 
-        # Create version record
+        logger.info(f"Published {len(translations)} translations for {locale.code}")
+
+        # Create version record (store path for potential rollback)
         version = TranslationVersion.objects.create(
             locale=locale,
             version=version_string,
-            s3_key=versioned_key,
+            s3_key=versioned_path,  # Storage path (relative to translations/ location)
             published_by=user,
             translation_count=len(translations),
             content_hash=version_hash,
@@ -155,10 +146,6 @@ class TranslationPublisher:
 
         # Activate this version
         self.activate_version(version)
-
-        # Invalidate CDN cache
-        if self.bucket_name:
-            self._invalidate_cache(current_key)
 
         # Clear local cache
         self._clear_cache(locale)
@@ -182,61 +169,38 @@ class TranslationPublisher:
 
     def rollback_to(self, version: TranslationVersion):
         """
-        Rollback to a previous version.
+        Rollback to a previous version by copying the versioned file to current.
 
         Args:
             version: The version to rollback to
         """
-        if not self.bucket_name:
-            logger.warning("TRANSLATIONS_BUCKET_NAME not configured, skipping S3 rollback")
-            self.activate_version(version)
-            return
+        # Read the versioned file content
+        try:
+            versioned_content = self.storage.open(version.s3_key, 'r').read()
+            translations = json.loads(versioned_content)
+        except Exception as e:
+            logger.error(f"Failed to read versioned file {version.s3_key}: {e}")
+            raise
 
-        # Copy versioned file to current
-        current_key = f"{TRANSLATIONS_S3_PREFIX}/{version.locale.code}.json"
-
-        self.s3_client.copy_object(
-            Bucket=self.bucket_name,
-            CopySource={'Bucket': self.bucket_name, 'Key': version.s3_key},
-            Key=current_key,
-            ContentType='application/json',
-            MetadataDirective='REPLACE',
-            CacheControl='public, max-age=3600',
-        )
+        # Upload as current
+        current_path = f"{version.locale.code}.json"
+        self._upload_json(current_path, translations)
 
         self.activate_version(version)
-        self._invalidate_cache(current_key)
         self._clear_cache(version.locale)
 
         logger.info(f"Rolled back {version.locale.code} to version {version.version}")
 
-    def _upload_json(self, key: str, data: Dict[str, Any]):
-        """Upload JSON to S3."""
-        self.s3_client.put_object(
-            Bucket=self.bucket_name,
-            Key=key,
-            Body=json.dumps(data, ensure_ascii=False, indent=2),
-            ContentType='application/json',
-            CacheControl='public, max-age=3600',
-        )
+    def _upload_json(self, path: str, data: Dict[str, Any]):
+        """Upload JSON to storage."""
+        content = json.dumps(data, ensure_ascii=False, indent=2)
 
-    def _invalidate_cache(self, key: str):
-        """Invalidate CloudFront cache for a specific path."""
-        if not self.cloudfront_distribution_id:
-            logger.debug("CloudFront distribution ID not configured, skipping invalidation")
-            return
+        # Delete existing file if it exists (for overwrite)
+        if self.storage.exists(path):
+            self.storage.delete(path)
 
-        try:
-            self.cloudfront_client.create_invalidation(
-                DistributionId=self.cloudfront_distribution_id,
-                InvalidationBatch={
-                    'Paths': {'Quantity': 1, 'Items': [f'/{key}']},
-                    'CallerReference': str(datetime.now().timestamp()),
-                },
-            )
-            logger.info(f"Created CloudFront invalidation for /{key}")
-        except Exception as e:
-            logger.error(f"Failed to invalidate CloudFront cache: {e}")
+        # Save new content
+        self.storage.save(path, ContentFile(content.encode('utf-8')))
 
     def _clear_cache(self, locale: Locale):
         """Clear local cache for a locale."""

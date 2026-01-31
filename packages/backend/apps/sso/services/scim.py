@@ -1,6 +1,11 @@
 """
 SCIM 2.0 (System for Cross-domain Identity Management) implementation.
 Provides directory synchronization endpoints for user and group provisioning.
+
+Security Features:
+- Secure filter parsing with whitelist validation
+- Safe logging without PII exposure
+- Input validation and bounds checking
 """
 
 import logging
@@ -13,6 +18,7 @@ from apps.multitenancy.models import TenantMembership
 from apps.multitenancy.constants import TenantUserRole
 from apps.sso.models import SCIMToken, SSOUserLink, SSOAuditLog, TenantSSOConnection
 from apps.sso.constants import SSOAuditEventType
+from apps.sso.security import sanitize_scim_filter
 
 logger = logging.getLogger(__name__)
 
@@ -469,16 +475,38 @@ class SCIMService:
         ).first()
 
     def _apply_user_filter(self, queryset, filter_expr: str):
-        """Apply SCIM filter to user queryset."""
-        # Simple filter parsing - production should use a proper SCIM filter parser
-        filter_expr = filter_expr.strip()
+        """
+        Apply SCIM filter to user queryset with secure parsing.
 
-        if filter_expr.startswith('userName eq'):
-            value = filter_expr.split('eq', 1)[1].strip().strip('"\'')
+        Uses whitelist-based filter validation to prevent injection attacks.
+
+        Args:
+            queryset: The base queryset to filter
+            filter_expr: The SCIM filter expression
+
+        Returns:
+            Filtered queryset
+        """
+        if not filter_expr:
+            return queryset
+
+        # SECURITY: Use secure filter parser with whitelist validation
+        parsed = sanitize_scim_filter(filter_expr)
+
+        if not parsed:
+            # Invalid or unsupported filter - return unfiltered
+            # (logged by sanitize_scim_filter)
+            return queryset
+
+        attribute = parsed['attribute']
+        value = parsed['value']
+
+        if attribute in ('username', 'email'):
             queryset = queryset.filter(user__email__iexact=value)
-        elif filter_expr.startswith('externalId eq'):
-            value = filter_expr.split('eq', 1)[1].strip().strip('"\'')
+        elif attribute == 'externalid':
             queryset = queryset.filter(idp_user_id=value)
+        elif attribute == 'active':
+            queryset = queryset.filter(user__is_active=value)
 
         return queryset
 

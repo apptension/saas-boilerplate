@@ -5,6 +5,7 @@ import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Paragraph } from '@sb/webapp-core/components/typography';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
+import { PermissionGate } from '@sb/webapp-tenants/hooks';
 import { FileText, Upload } from 'lucide-react';
 import { isEmpty } from 'ramda';
 import { Helmet } from 'react-helmet-async';
@@ -27,37 +28,39 @@ export const ListContent = ({ data }: ListContentProps) => {
 
   return (
     <>
-      {/* Upload Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5" />
-            <FormattedMessage defaultMessage="Upload documents" id="Documents / Upload title" />
-          </CardTitle>
-          <CardDescription>
-            <FormattedMessage
-              defaultMessage="Drag and drop files here, or click to browse. Maximum 10 documents allowed."
-              id="Documents / Upload description"
+      {/* Upload Card - Only shown to users with manage permission */}
+      <PermissionGate permissions="features.documents.manage">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Upload className="h-5 w-5" />
+              <FormattedMessage defaultMessage="Upload documents" id="Documents / Upload title" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Drag and drop files here, or click to browse. Maximum 10 documents allowed."
+                id="Documents / Upload description"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Dropzone
+              onDrop={handleDrop}
+              maxFiles={1}
+              maxSize={MAX_FILE_SIZE}
+              disabled={isMaximumSizeExceeded}
+              label={
+                isMaximumSizeExceeded ? (
+                  <FormattedMessage
+                    defaultMessage="Cannot upload more than 10 documents"
+                    id="Documents / Maximum size exceeded"
+                  />
+                ) : undefined
+              }
             />
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Dropzone
-            onDrop={handleDrop}
-            maxFiles={1}
-            maxSize={MAX_FILE_SIZE}
-            disabled={isMaximumSizeExceeded}
-            label={
-              isMaximumSizeExceeded ? (
-                <FormattedMessage
-                  defaultMessage="Cannot upload more than 10 documents"
-                  id="Documents / Maximum size exceeded"
-                />
-              ) : undefined
-            }
-          />
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </PermissionGate>
 
       {/* Documents List Card */}
       <Card>
@@ -135,24 +138,26 @@ export const Documents = () => {
           <ListContent data={data} />
         ) : (
           <>
-            {/* Upload Card Skeleton */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Upload className="h-5 w-5" />
-                  <FormattedMessage defaultMessage="Upload documents" id="Documents / Upload title" />
-                </CardTitle>
-                <CardDescription>
-                  <FormattedMessage
-                    defaultMessage="Drag and drop files here, or click to browse. Maximum 10 documents allowed."
-                    id="Documents / Upload description"
-                  />
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Dropzone disabled />
-              </CardContent>
-            </Card>
+            {/* Upload Card Skeleton - Only shown to users with manage permission */}
+            <PermissionGate permissions="features.documents.manage">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Upload className="h-5 w-5" />
+                    <FormattedMessage defaultMessage="Upload documents" id="Documents / Upload title" />
+                  </CardTitle>
+                  <CardDescription>
+                    <FormattedMessage
+                      defaultMessage="Drag and drop files here, or click to browse. Maximum 10 documents allowed."
+                      id="Documents / Upload description"
+                    />
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Dropzone disabled />
+                </CardContent>
+              </Card>
+            </PermissionGate>
 
             {/* Documents List Card Skeleton */}
             <Card>

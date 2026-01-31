@@ -11,6 +11,13 @@ import { crudDemoItemFactory, fillCrudDemoItemPaginationListQuery } from '../../
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { CrudDemoItemList } from '../crudDemoItemList.component';
 
+// Mock PermissionGate to always render children (simulate having permission)
+jest.mock('@sb/webapp-tenants/hooks', () => ({
+  ...jest.requireActual('@sb/webapp-tenants/hooks'),
+  PermissionGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  usePermissionCheck: () => ({ hasPermission: true, loading: false }),
+}));
+
 describe('CrudDemoItemList: Component', () => {
   const Component = () => (
     <Routes>

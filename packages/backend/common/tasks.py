@@ -1,3 +1,17 @@
+"""
+Task Execution Module
+
+This module provides the LambdaTask class for AWS Lambda-based task execution,
+as well as utilities for using the platform-agnostic task backend.
+
+For new code, prefer using the task_backends module:
+    from common.task_backends import get_task_backend
+    backend = get_task_backend()
+    backend.send_task('task_name', {'key': 'value'})
+
+The LambdaTask class is kept for backwards compatibility with existing code.
+"""
+
 import json
 import logging
 import uuid
@@ -8,6 +22,20 @@ import requests
 from django.conf import settings
 
 logger = logging.getLogger(__name__)
+
+
+def get_task_backend():
+    """
+    Get the configured task backend.
+
+    This is a convenience re-export from task_backends module.
+
+    Returns:
+        BaseTaskBackend instance based on TASK_BACKEND setting
+    """
+    from common.task_backends import get_task_backend as _get_task_backend
+
+    return _get_task_backend()
 
 
 class LambdaTask:

@@ -7,6 +7,7 @@ import { Paragraph } from '@sb/webapp-core/components/typography';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
+import { PermissionGate } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { Database, Plus } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
@@ -107,14 +108,16 @@ export const CrudDemoItemList = () => {
                 defaultMessage="Get started by creating your first CRUD example item"
               />
             </p>
-            <Link
-              to={generateLocalePath(RoutesConfig.crudDemoItem.add)}
-              variant={ButtonVariant.PRIMARY}
-              className="gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              <FormattedMessage id="CrudDemoItemList / Add first item" defaultMessage="Add your first item" />
-            </Link>
+            <PermissionGate permissions="features.crud.manage">
+              <Link
+                to={generateLocalePath(RoutesConfig.crudDemoItem.add)}
+                variant={ButtonVariant.PRIMARY}
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                <FormattedMessage id="CrudDemoItemList / Add first item" defaultMessage="Add your first item" />
+              </Link>
+            </PermissionGate>
           </div>
         </CardContent>
       </Card>
@@ -148,16 +151,18 @@ export const CrudDemoItemList = () => {
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end">
-          <Link
-            to={generateLocalePath(RoutesConfig.crudDemoItem.add)}
-            variant={ButtonVariant.PRIMARY}
-            className="gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            <FormattedMessage id="CrudDemoItemList / Add new" defaultMessage="Add new item" />
-          </Link>
-        </div>
+        <PermissionGate permissions="features.crud.manage">
+          <div className="flex justify-end">
+            <Link
+              to={generateLocalePath(RoutesConfig.crudDemoItem.add)}
+              variant={ButtonVariant.PRIMARY}
+              className="gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              <FormattedMessage id="CrudDemoItemList / Add new" defaultMessage="Add new item" />
+            </Link>
+          </div>
+        </PermissionGate>
 
         {/* Content */}
         {loading ? (

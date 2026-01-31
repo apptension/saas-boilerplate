@@ -1,23 +1,72 @@
+import { useMutation, useQuery } from '@apollo/client/react';
+import { gql } from '@sb/webapp-api-client/graphql';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { Loader2, Monitor, Smartphone, Tablet, XCircle } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-interface Session {
+// GraphQL queries and mutations
+const SESSIONS_QUERY = gql(`
+  query ActiveSessionsQuery {
+    mySessions(first: 50) {
+      edges {
+        node {
+          id
+          sessionId
+          deviceName
+          deviceType
+          browser
+          operatingSystem
+          ipAddress
+          location
+          isActive
+          isCurrent
+          lastActivityAt
+          expiresAt
+          createdAt
+        }
+      }
+    }
+  }
+`);
+
+const REVOKE_SESSION_MUTATION = gql(`
+  mutation RevokeSessionMutation($sessionId: String!, $reason: String) {
+    revokeSession(sessionId: $sessionId, reason: $reason) {
+      ok
+    }
+  }
+`);
+
+const REVOKE_ALL_SESSIONS_MUTATION = gql(`
+  mutation RevokeAllSessionsMutation {
+    revokeAllSessions {
+      ok
+      revokedCount
+    }
+  }
+`);
+
+interface SessionNode {
   id: string;
-  deviceType: 'desktop' | 'mobile' | 'tablet';
+  sessionId: string;
+  deviceName: string;
+  deviceType: string;
   browser: string;
-  os: string;
+  operatingSystem: string;
   ipAddress: string;
-  location?: string;
-  lastActive: string;
+  location: string;
+  isActive: boolean;
   isCurrent: boolean;
+  lastActivityAt: string;
+  expiresAt: string;
+  createdAt: string;
 }
 
-const getDeviceIcon = (deviceType: Session['deviceType']) => {
-  switch (deviceType) {
+const getDeviceIcon = (deviceType: string) => {
+  switch (deviceType?.toLowerCase()) {
     case 'mobile':
       return <Smartphone className="h-5 w-5" />;
     case 'tablet':
@@ -58,42 +107,17 @@ const formatLastActive = (dateStr: string, intl: ReturnType<typeof useIntl>) => 
 export const ActiveSessions = () => {
   const { toast } = useToast();
   const intl = useIntl();
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [revoking, setRevoking] = useState(false);
   const [revokingId, setRevokingId] = useState<string | null>(null);
 
-  const fetchSessions = useCallback(async () => {
-    // TODO: Integrate with backend API to fetch actual sessions
-    // For now, show current session placeholder
-    setLoading(true);
-    try {
-      // Simulated current session - replace with actual API call
-      setSessions([
-        {
-          id: 'current',
-          deviceType: 'desktop',
-          browser: 'Current Browser',
-          os: navigator.platform || 'Unknown OS',
-          ipAddress: '',
-          lastActive: new Date().toISOString(),
-          isCurrent: true,
-        },
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Fetch sessions from backend
+  const { data, loading, refetch } = useQuery(SESSIONS_QUERY, {
+    fetchPolicy: 'cache-and-network',
+  });
 
-  useEffect(() => {
-    fetchSessions();
-  }, [fetchSessions]);
-
-  const handleRevokeSession = async (sessionId: string) => {
-    setRevokingId(sessionId);
-    try {
-      // TODO: Integrate with backend mutation to revoke specific session
-      setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+  // Mutations
+  const [revokeSession] = useMutation(REVOKE_SESSION_MUTATION, {
+    onCompleted: () => {
+      refetch();
       toast({
         description: intl.formatMessage({
           defaultMessage: 'Session has been signed out.',
@@ -101,30 +125,66 @@ export const ActiveSessions = () => {
         }),
         variant: 'success',
       });
+    },
+    onError: () => {
+      toast({
+        description: intl.formatMessage({
+          defaultMessage: 'Failed to sign out session.',
+          id: 'Sessions / Revoke Error',
+        }),
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const [revokeAllSessions, { loading: revokingAll }] = useMutation(REVOKE_ALL_SESSIONS_MUTATION, {
+    onCompleted: (result) => {
+      refetch();
+      const count = result?.revokeAllSessions?.revokedCount || 0;
+      toast({
+        description: intl.formatMessage(
+          {
+            defaultMessage: '{count, plural, =0 {No sessions} =1 {1 session} other {# sessions}} signed out.',
+            id: 'Sessions / All Sessions Revoked',
+          },
+          { count }
+        ),
+        variant: 'success',
+      });
+    },
+    onError: () => {
+      toast({
+        description: intl.formatMessage({
+          defaultMessage: 'Failed to sign out sessions.',
+          id: 'Sessions / Revoke All Error',
+        }),
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // Parse sessions from query result
+  const sessions: SessionNode[] = (data?.mySessions?.edges || [])
+    .map((edge) => edge?.node)
+    .filter((node): node is SessionNode => node != null);
+  const activeSessions = sessions.filter((s) => s.isActive);
+  const otherSessions = activeSessions.filter((s) => !s.isCurrent);
+  const currentSession = activeSessions.find((s) => s.isCurrent);
+
+  const handleRevokeSession = async (session: SessionNode) => {
+    setRevokingId(session.id);
+    try {
+      await revokeSession({
+        variables: { sessionId: session.sessionId, reason: 'User requested' },
+      });
     } finally {
       setRevokingId(null);
     }
   };
 
   const handleSignOutAllSessions = async () => {
-    setRevoking(true);
-    try {
-      // TODO: Integrate with backend mutation to revoke all other sessions
-      setSessions((prev) => prev.filter((s) => s.isCurrent));
-      toast({
-        description: intl.formatMessage({
-          defaultMessage: 'All other sessions have been signed out.',
-          id: 'Sessions / All Sessions Revoked',
-        }),
-        variant: 'success',
-      });
-    } finally {
-      setRevoking(false);
-    }
+    await revokeAllSessions();
   };
-
-  const otherSessions = sessions.filter((s) => !s.isCurrent);
-  const currentSession = sessions.find((s) => s.isCurrent);
 
   if (loading) {
     return (
@@ -146,14 +206,16 @@ export const ActiveSessions = () => {
             <div>
               <div className="flex items-center gap-2">
                 <p className="text-sm font-medium">
-                  <FormattedMessage defaultMessage="Current Session" id="Sessions / Current Session" />
+                  {currentSession.deviceName || (
+                    <FormattedMessage defaultMessage="Current Session" id="Sessions / Current Session" />
+                  )}
                 </p>
                 <Badge variant="default" className="text-xs">
                   <FormattedMessage defaultMessage="This device" id="Sessions / This Device Badge" />
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                {formatLastActive(currentSession.lastActive, intl)}
+                {formatLastActive(currentSession.lastActivityAt, intl)}
               </p>
             </div>
           </div>
@@ -175,20 +237,20 @@ export const ActiveSessions = () => {
                   </div>
                   <div>
                     <p className="text-sm font-medium">
-                      {session.browser} on {session.os}
+                      {session.deviceName || `${session.browser} on ${session.operatingSystem}`}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {session.ipAddress}
                       {session.location && ` • ${session.location}`}
                       {' • '}
-                      {formatLastActive(session.lastActive, intl)}
+                      {formatLastActive(session.lastActivityAt, intl)}
                     </p>
                   </div>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => handleRevokeSession(session.id)}
+                  onClick={() => handleRevokeSession(session)}
                   disabled={revokingId === session.id}
                 >
                   {revokingId === session.id ? (
@@ -210,9 +272,9 @@ export const ActiveSessions = () => {
             variant="destructive"
             size="sm"
             onClick={handleSignOutAllSessions}
-            disabled={revoking}
+            disabled={revokingAll}
           >
-            {revoking && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {revokingAll && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             <XCircle className="mr-2 h-4 w-4" />
             <FormattedMessage
               defaultMessage="Sign out all other sessions"

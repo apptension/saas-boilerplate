@@ -3,7 +3,9 @@ import type { MockedProviderProps } from '@apollo/client/testing/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import * as coreUtils from '@sb/webapp-core/tests/utils/rendering';
 import { CoreTestProviders, CoreTestProvidersProps } from '@sb/webapp-core/tests/utils/rendering';
-import { StoryContext } from '@storybook/react';
+// Use a minimal type for StoryContext to avoid requiring @storybook/react as a dependency
+ 
+type StoryContext = any;
 import { Queries, queries } from '@testing-library/dom';
 import { RenderOptions, RenderResult, render, renderHook, waitFor } from '@testing-library/react';
 import { ComponentClass, ComponentType, FC, PropsWithChildren, ReactElement } from 'react';

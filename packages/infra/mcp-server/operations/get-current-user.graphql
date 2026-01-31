@@ -1,0 +1,20 @@
+# @tool(name: "get_current_user", description: "Get the current authenticated user's profile information including email, name, and tenant memberships. This is the user's own data.")
+query GetCurrentUser {
+  currentUser {
+    id
+    email
+    firstName
+    lastName
+    language
+    avatar
+    otpEnabled
+    otpVerified
+    roles
+    tenants {
+      id
+      name
+      slug
+      type
+    }
+  }
+}

@@ -35,20 +35,38 @@ function generateMasterTranslations() {
 
   try {
     // Run formatjs extract with extended format to get descriptions
-    // Using the --format option to get full message descriptors
-    execSync(
-      `npx formatjs extract ` +
-      `'src/**/!(*.d).(js|jsx|ts|tsx)' ` +
-      `'../webapp-libs/*/src/**/!(*.d).(js|jsx|ts|tsx)' ` +
-      `--id-interpolation-pattern '[sha512:contenthash:base64:6]' ` +
-      `--out-file ${OUTPUT_PATH} ` +
-      `--ignore 'src/tests/mocks/**' ` +
-      `--ignore '../webapp-libs/*/src/tests/mocks/**'`,
-      {
-        cwd: path.join(__dirname, '..'),
-        stdio: 'inherit',
-      }
-    );
+    // Using explicit file patterns to ensure all webapp-libs are included
+    // Glob patterns must NOT have extra quotes when shell expansion is used
+    const sourcePatterns = [
+      'src/**/*.tsx',
+      '../webapp-libs/webapp-ai-assistant/src/**/*.tsx',
+      '../webapp-libs/webapp-core/src/**/*.tsx',
+      '../webapp-libs/webapp-api-client/src/**/*.tsx',
+      '../webapp-libs/webapp-contentful/src/**/*.tsx',
+      '../webapp-libs/webapp-crud-demo/src/**/*.tsx',
+      '../webapp-libs/webapp-documents/src/**/*.tsx',
+      '../webapp-libs/webapp-emails/src/**/*.tsx',
+      '../webapp-libs/webapp-finances/src/**/*.tsx',
+      '../webapp-libs/webapp-generative-ai/src/**/*.tsx',
+      '../webapp-libs/webapp-notifications/src/**/*.tsx',
+      '../webapp-libs/webapp-sso/src/**/*.tsx',
+      '../webapp-libs/webapp-tenants/src/**/*.tsx',
+    ];
+
+    const command = [
+      'npx formatjs extract',
+      ...sourcePatterns.map(p => `'${p}'`),
+      "--id-interpolation-pattern '[sha512:contenthash:base64:6]'",
+      `--out-file '${OUTPUT_PATH}'`,
+      "--ignore '**/*.spec.tsx'",
+      "--ignore '**/tests/mocks/**'",
+    ].join(' ');
+
+    execSync(command, {
+      cwd: path.join(__dirname, '..'),
+      stdio: 'inherit',
+      shell: '/bin/bash',  // Ensure proper shell with glob expansion
+    });
 
     // Check if the file was created
     if (!fs.existsSync(OUTPUT_PATH)) {

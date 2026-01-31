@@ -16,11 +16,28 @@ from . import serializers
 from .services.users import get_user_from_resolver, get_role_names, get_user_avatar_url
 
 
+def _create_session_for_user(user, request):
+    """
+    Create an SSOSession for the user and return the session_id.
+    Returns None if session creation fails.
+    """
+    try:
+        from apps.sso.services import SessionService
+
+        session_service = SessionService(user)
+        session, session_id = session_service.create_session(request)
+        return session_id
+    except Exception:
+        # Don't fail login if session creation fails
+        return None
+
+
 class ObtainTokenMutation(mutations.SerializerMutation):
     class Meta:
         serializer_class = serializers.CookieTokenObtainPairSerializer
 
     @classmethod
+    @ratelimit.ratelimit(key="ip", rate="30/min")
     def mutate_and_get_payload(cls, root, info, **input):
         mutation = super().mutate_and_get_payload(root, info, **input)
 
@@ -29,10 +46,36 @@ class ObtainTokenMutation(mutations.SerializerMutation):
                 settings.OTP_AUTH_TOKEN_COOKIE: mutation.otp_auth_token,
             }
         else:
-            info.context._request.set_auth_cookie = {
+            # Create session for tracking
+            user = getattr(mutation, '_user', None)
+            if not user:
+                # Try to get user from serializer
+                serializer = cls._meta.serializer_class
+                if hasattr(serializer, 'user'):
+                    user = serializer.user
+
+            # Get user from validated data - need to look it up by email
+            email = input.get('email')
+            if email and not user:
+                try:
+                    user = models.User.objects.get(email__iexact=email)
+                except models.User.DoesNotExist:
+                    user = None
+
+            session_id = None
+            if user:
+                session_id = _create_session_for_user(user, info.context._request)
+
+            auth_cookies = {
                 settings.ACCESS_TOKEN_COOKIE: mutation.access,
                 settings.REFRESH_TOKEN_COOKIE: mutation.refresh,
             }
+
+            # Add session_id cookie if session was created
+            if session_id:
+                auth_cookies[settings.SESSION_ID_COOKIE] = session_id
+
+            info.context._request.set_auth_cookie = auth_cookies
 
         return mutation
 
@@ -42,12 +85,32 @@ class SingUpMutation(mutations.SerializerMutation):
         serializer_class = serializers.UserSignupSerializer
 
     @classmethod
+    @ratelimit.ratelimit(key="ip", rate="10/min")
     def mutate_and_get_payload(cls, root, info, **input):
         mutation = super().mutate_and_get_payload(root, info, **input)
-        info.context._request.set_auth_cookie = {
+
+        # Create session for the new user
+        email = input.get('email')
+        user = None
+        if email:
+            try:
+                user = models.User.objects.get(email__iexact=email)
+            except models.User.DoesNotExist:
+                pass
+
+        session_id = None
+        if user:
+            session_id = _create_session_for_user(user, info.context._request)
+
+        auth_cookies = {
             settings.ACCESS_TOKEN_COOKIE: mutation.access,
             settings.REFRESH_TOKEN_COOKIE: mutation.refresh,
         }
+
+        if session_id:
+            auth_cookies[settings.SESSION_ID_COOKIE] = session_id
+
+        info.context._request.set_auth_cookie = auth_cookies
 
         return mutation
 
@@ -97,10 +160,21 @@ class ValidateOTPMutation(mutations.SerializerMutation):
             cls._delete_otp_auth_token_cookie(info)
             raise error
 
-        info.context._request.set_auth_cookie = {
+        # Try to get user from OTP auth token to create session
+        user = cls._get_user_from_otp_token(info, input)
+        session_id = None
+        if user:
+            session_id = _create_session_for_user(user, info.context._request)
+
+        auth_cookies = {
             settings.ACCESS_TOKEN_COOKIE: mutation.access,
             settings.REFRESH_TOKEN_COOKIE: mutation.refresh,
         }
+
+        if session_id:
+            auth_cookies[settings.SESSION_ID_COOKIE] = session_id
+
+        info.context._request.set_auth_cookie = auth_cookies
         cls._delete_otp_auth_token_cookie(info)
 
         return mutation
@@ -108,6 +182,27 @@ class ValidateOTPMutation(mutations.SerializerMutation):
     @classmethod
     def _delete_otp_auth_token_cookie(cls, info):
         info.context._request.delete_cookies = [settings.OTP_AUTH_TOKEN_COOKIE]
+
+    @classmethod
+    def _get_user_from_otp_token(cls, info, input):
+        """Extract user from OTP auth token."""
+        from rest_framework_simplejwt import tokens as jwt_tokens, exceptions as jwt_exceptions
+
+        request = info.context._request
+        raw_otp_auth_token = request.COOKIES.get(settings.OTP_AUTH_TOKEN_COOKIE) or input.get('otp_auth_token')
+
+        if not raw_otp_auth_token:
+            return None
+
+        try:
+            otp_auth_token = jwt_tokens.AccessToken(raw_otp_auth_token)
+            user_id = otp_auth_token.get("user_id")
+            if user_id:
+                return models.User.objects.get(id=user_id)
+        except (jwt_exceptions.InvalidToken, jwt_exceptions.TokenError, models.User.DoesNotExist):
+            pass
+
+        return None
 
 
 class DisableOTPMutation(mutations.SerializerMutation):
@@ -142,7 +237,18 @@ class CurrentUserType(DjangoObjectType):
 
     class Meta:
         model = models.User
-        fields = ("id", "email", "first_name", "last_name", "language", "roles", "avatar", "otp_enabled", "otp_verified", "tenants")
+        fields = (
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "language",
+            "roles",
+            "avatar",
+            "otp_enabled",
+            "otp_verified",
+            "tenants",
+        )
 
     @staticmethod
     def resolve_first_name(parent, info):
@@ -174,10 +280,32 @@ class CurrentUserType(DjangoObjectType):
 
 
 class UserProfileType(DjangoObjectType):
+    # Convenience fields that proxy to the user model
+    email = graphene.String()
+    avatar = graphene.String()
+    user_id = graphene.String(description="The hashid of the associated user")
+
     class Meta:
         model = models.UserProfile
         interfaces = (relay.Node,)
         fields = "__all__"
+
+    def resolve_email(self, info):
+        """Return the user's email."""
+        return self.user.email if self.user else None
+
+    def resolve_avatar(self, info):
+        """Return the user's avatar URL."""
+        if self.avatar and hasattr(self.avatar, 'thumbnail'):
+            try:
+                return self.avatar.thumbnail.url
+            except ValueError:
+                return None
+        return None
+
+    def resolve_user_id(self, info):
+        """Return the user's hashid."""
+        return str(self.user.id) if self.user else None
 
 
 class CurrentUserConnection(graphene.Connection):

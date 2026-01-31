@@ -1,0 +1,220 @@
+---
+title: Deployment Options
+description: Deploy the SaaS Boilerplate to AWS, Render.com, VPS, or other platforms
+---
+
+import { QuickLink, FeatureGrid, FeatureCard } from '../shared/components';
+
+# Deployment Options
+
+The SaaS Boilerplate supports multiple deployment platforms. Choose the option that best fits your needs.
+
+## Supported Platforms
+
+<FeatureGrid>
+  <FeatureCard
+    title="AWS (CDK)"
+    description="Enterprise-grade deployment with auto-scaling, managed services, and full AWS integration."
+    link="/aws"
+  />
+  <FeatureCard
+    title="Render.com"
+    description="One-click deployment with managed PostgreSQL, Redis, and automatic SSL."
+    link="/deployment/render"
+  />
+  <FeatureCard
+    title="VPS / Docker"
+    description="Full control with Docker Compose, Traefik, and Let's Encrypt on any VPS provider."
+    link="/deployment/vps"
+  />
+</FeatureGrid>
+
+## Platform Comparison
+
+| Feature | AWS | Render | VPS |
+|---------|-----|--------|-----|
+| Auto-scaling | ✅ ECS Fargate | ✅ Built-in | ❌ Manual |
+| Managed Database | ✅ RDS | ✅ Render PostgreSQL | ❌ Self-managed |
+| SSL Certificates | ✅ ACM | ✅ Automatic | ✅ Let's Encrypt |
+| CDN | ✅ CloudFront | ⚠️ Use Cloudflare | ⚠️ Use Cloudflare |
+| Secrets Management | ✅ SSM/Secrets Manager | ✅ Env Groups | ❌ .env files |
+| Distributed Tracing | ✅ X-Ray | ⚠️ Sentry only | ⚠️ Sentry only |
+| Setup Time | ~2 hours | ~30 minutes | ~1 hour |
+| Monthly Cost | $85-175 | $42-67 | $20-50 |
+
+## Configuration Variables
+
+The SaaS Boilerplate uses environment variables to configure platform-specific backends:
+
+| Variable | Default | Options | Description |
+|----------|---------|---------|-------------|
+| `STORAGE_BACKEND` | `s3` | `s3`, `r2`, `b2`, `minio`, `local` | File storage provider |
+| `EMAIL_BACKEND` | `django_ses.SESBackend` | SES, SendGrid, SMTP | Email provider |
+| `TASK_BACKEND` | `lambda` | `lambda`, `celery` | Background task runner |
+| `TRACING_BACKEND` | `xray` | `xray`, `otel`, `none` | Distributed tracing |
+| `DATABASE_URL` | - | URL string | Alternative to DB_CONNECTION JSON |
+
+See the [Environment Variables Reference](/deployment/environment-variables) for complete documentation.
+
+## Architecture Diagrams
+
+### AWS Deployment
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         AWS Cloud                            │
+├─────────────────────────────────────────────────────────────┤
+│  CloudFront ──► S3 (Static)                                 │
+│       │                                                      │
+│       ▼                                                      │
+│  ALB ──► ECS Fargate (Django) ──► RDS PostgreSQL            │
+│                  │                                           │
+│                  ├──► ElastiCache Redis                      │
+│                  │                                           │
+│                  ├──► Lambda (Workers) ◄── EventBridge       │
+│                  │                                           │
+│                  └──► MCP Server (AI Assistant) [optional]   │
+│                                                              │
+│  SES (Email)    X-Ray (Tracing)    SSM (Secrets)            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Render.com Deployment
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Render.com                              │
+├─────────────────────────────────────────────────────────────┤
+│  Static Site (Webapp)                                        │
+│       │                                                      │
+│       ▼                                                      │
+│  Web Service (Django API) ──► PostgreSQL                    │
+│          │                                                   │
+│          ├──► Redis                                          │
+│          │                                                   │
+│          └──► MCP Server (AI Assistant) [optional]           │
+│                                                              │
+│  Worker (Celery) ◄───┘                                      │
+│  Worker (Celery Beat)                                        │
+└─────────────────────────────────────────────────────────────┘
+           │
+           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  External: Cloudflare (CDN/DNS) • R2 (Storage) • SendGrid   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### VPS Deployment
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    VPS (Hetzner/DO/Linode)                   │
+├─────────────────────────────────────────────────────────────┤
+│  Traefik (Reverse Proxy + SSL)                              │
+│       │                                                      │
+│       ├──► Nginx (Webapp Static)                            │
+│       │                                                      │
+│       └──► Django API ──► PostgreSQL                        │
+│                  │                                           │
+│                  ├──► Redis                                  │
+│                  │                                           │
+│                  └──► MCP Server (AI Assistant) [optional]   │
+│                                                              │
+│  Celery Worker ◄───┘                                        │
+│  Celery Beat                                                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## Quick Start with CLI
+
+The SaaS Boilerplate CLI provides a unified deployment experience across all platforms:
+
+```bash
+# Interactive deployment - choose your platform
+saas deploy
+
+# Direct platform deployment
+saas deploy --platform=aws
+saas deploy --platform=render
+saas deploy --platform=vps
+```
+
+### AWS Deployment
+
+```bash
+# Set your environment stage
+saas aws set-env production
+
+# Deploy to AWS
+saas deploy --platform=aws
+
+# Or preview changes first
+saas deploy --diff
+```
+
+See the [AWS Deployment Guide](/aws) for the full CDK-based deployment.
+
+### Render.com Deployment
+
+```bash
+# One-time setup (stores API key + Docker registry)
+saas render setup
+
+# Deploy from connected repository
+saas render deploy
+
+# Deploy local code (no repo required!)
+saas render deploy --local
+
+# Check service status
+saas render status
+```
+
+Or deploy via Blueprint:
+1. Fork this repository
+2. Create a [Render.com](https://render.com) account
+3. Go to Dashboard → Blueprints → New Blueprint Instance
+4. Connect your repository (it will detect `render.yaml`)
+
+[Full Render.com Guide →](/deployment/render)
+
+### VPS Deployment
+
+```bash
+# One-time setup (configures SSH connection)
+saas vps setup
+
+# Deploy via SSH + Docker Compose
+saas vps deploy
+
+# Build locally and deploy
+saas vps deploy --build
+
+# Deploy with migrations
+saas vps deploy --migrate
+
+# Check service status
+saas vps status
+
+# SSH directly into VPS
+saas vps ssh
+```
+
+[Full VPS Guide →](/deployment/vps)
+
+## CLI Command Reference
+
+| Command | Description |
+|---------|-------------|
+| `saas deploy` | Interactive platform selection and deployment |
+| `saas deploy --platform=<aws\|render\|vps>` | Deploy to specific platform |
+| `saas deploy --diff` | Preview AWS changes (dry run) |
+| `saas render setup` | Configure Render.com API + Docker registry |
+| `saas render deploy` | Deploy from connected repository |
+| `saas render deploy --local` | Build & deploy local code |
+| `saas render status` | Check Render.com service status |
+| `saas vps setup` | Configure VPS SSH connection |
+| `saas vps deploy` | Deploy to VPS via Docker Compose |
+| `saas vps deploy --build` | Build images locally before deploying |
+| `saas vps status` | Check VPS service status |
+| `saas vps ssh` | SSH into configured VPS |

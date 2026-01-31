@@ -5,6 +5,7 @@ from apps.finances import schema as finances_schema
 from apps.notifications import schema as notifications_schema
 from apps.users import schema as users_schema
 from apps.integrations import schema as integrations_schema
+from apps.integrations.ai_assistant import subscription as ai_assistant_subscription
 from apps.multitenancy import schema as multitenancy_schema
 from apps.sso import schema as sso_schema
 from apps.translations import schema as translations_schema
@@ -33,6 +34,7 @@ schema = graphene.Schema(
             users_schema.Mutation,
             finances_schema.Mutation,
             integrations_schema.Mutation,
+            ai_assistant_subscription.Mutation,
             multitenancy_schema.Mutation,
             multitenancy_schema.TenantOwnerMutation,
             sso_schema.Mutation,
@@ -40,7 +42,12 @@ schema = graphene.Schema(
             translations_schema.TranslationsMutation,
         ]
     ),
-    subscription=graphql_subscription(([notifications_schema.Subscription])),
+    subscription=graphql_subscription(
+        [
+            notifications_schema.Subscription,
+            ai_assistant_subscription.Subscription,
+        ]
+    ),
 )
 
 subscriptions_schema = graphene.Schema(query=graphql_subscription(([notifications_schema.Subscription])))

@@ -74,11 +74,11 @@ class TestTokenRefresh:
 
 
 class TestLogout:
-    def test_raise_error_if_no_cookie_or_payload_is_sent(self, api_client):
+    def test_graceful_logout_without_token(self, api_client):
+        """Logout should succeed even without a valid token - it's a graceful operation."""
         response = api_client.post(reverse('logout'))
-        assert response.json() == {
-            'non_field_errors': ["No valid token found in cookie 'refresh_token' or field 'refresh'"]
-        }
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json() == {'ok': True}
 
     def test_clear_cookies(self, api_client, user: models.User):
         refresh = RefreshToken.for_user(user)

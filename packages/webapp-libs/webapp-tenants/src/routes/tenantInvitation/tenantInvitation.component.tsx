@@ -3,11 +3,12 @@ import { getFragmentData } from '@sb/webapp-api-client';
 import { commonQueryMembershipFragment, useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast';
+import { MailOpen } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -110,25 +111,31 @@ export const TenantInvitation = () => {
 
   return (
     <PageLayout>
-      <Card className="max-w-2xl">
+      <Card>
         <CardHeader>
-          <CardTitle>
-            <FormattedMessage defaultMessage="Invitation" id="Tenant Invitation / Page headline" />
+          <CardTitle className="flex items-center gap-2">
+            <MailOpen className="h-5 w-5" />
+            <FormattedMessage defaultMessage="Organization Invitation" id="Tenant Invitation / Page headline" />
           </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div>
+          <CardDescription>
             <FormattedMessage
-              defaultMessage="You are invited to join the organization: {organizationName}"
-              id="Tenant Invitation / Invitation message"
-              values={{ organizationName: tenant.name }}
+              defaultMessage="You've been invited to join an organization"
+              id="Tenant Invitation / Card description"
             />
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="rounded-lg border bg-muted/50 p-4">
+            <p className="text-sm text-muted-foreground mb-1">
+              <FormattedMessage defaultMessage="Organization" id="Tenant Invitation / Organization label" />
+            </p>
+            <p className="text-lg font-medium">{tenant.name}</p>
           </div>
-          <div className="flex justify-start gap-2 mt-4">
-            <Button color="primary" onClick={handleAccept} disabled={isLoading}>
-              <FormattedMessage defaultMessage="Accept" id="Tenant Invitation / Accept button" />
+          <div className="flex gap-3">
+            <Button onClick={handleAccept} disabled={isLoading}>
+              <FormattedMessage defaultMessage="Accept invitation" id="Tenant Invitation / Accept button" />
             </Button>
-            <Button variant="secondary" onClick={handleDecline} disabled={isLoading}>
+            <Button variant="outline" onClick={handleDecline} disabled={isLoading}>
               <FormattedMessage defaultMessage="Decline" id="Tenant Invitation / Decline button" />
             </Button>
           </div>

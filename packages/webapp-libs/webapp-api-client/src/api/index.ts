@@ -2,6 +2,7 @@ import { client as apiClient, emitter as apiEmitter, setupStoreInterceptors } fr
 
 export * from './types';
 export * from './helpers';
+export * from './apolloError.types';
 export * as auth from './auth';
 export * as subscription from './subscription';
 //<-- IMPORT MODULE API -->

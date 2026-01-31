@@ -42,7 +42,7 @@ export const TenantInvitationCreated = ({
       title={issuer?.email}
       content={
         <FormattedMessage
-          defaultMessage={'You have been invited to "{tenant_name}"'}
+          defaultMessage='You have been invited to "{tenant_name}"'
           id="Notifications / Tenant / Invitation Created"
           values={{ tenant_name }}
         />

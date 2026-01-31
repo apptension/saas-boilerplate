@@ -1,7 +1,19 @@
 import { cva } from 'class-variance-authority';
 
 export const toastVariants = cva(
-  'data-[swipe=move]:transition-none group relative pointer-events-auto flex w-full items-center justify-between gap-3 overflow-hidden rounded-lg border py-4 px-4 pr-10 shadow-lg transition-all data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full data-[state=closed]:slide-out-to-right-full',
+  [
+    // Base styles
+    'group relative pointer-events-auto flex w-full items-center justify-between gap-3 overflow-hidden rounded-lg border py-4 px-4 pr-10 shadow-lg',
+    // Transition for all properties (smooth stacking)
+    'transition-all duration-300 ease-out',
+    // Swipe handling
+    'data-[swipe=move]:transition-none data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)]',
+    // Open animation - slide in from bottom
+    'data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom-full data-[state=open]:fade-in-0',
+    // Close animation - fade out and slide down
+    'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-4 data-[state=closed]:zoom-out-95',
+    'data-[swipe=end]:animate-out data-[swipe=end]:slide-out-to-right-full',
+  ].join(' '),
   {
     variants: {
       variant: {

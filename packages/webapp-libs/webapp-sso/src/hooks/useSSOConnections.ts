@@ -64,7 +64,7 @@ export const ACTIVATE_SSO_CONNECTION = gql(`
 `);
 
 export const DEACTIVATE_SSO_CONNECTION = gql(`
-  mutation DeactivateSSOConnection($id: ID!) {
+  mutation DeactivateSSOConnectionOp($id: ID!) {
     deactivateSsoConnection(id: $id) {
       ssoConnection {
         id

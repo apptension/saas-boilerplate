@@ -44,7 +44,9 @@ Thumbs.db
 
 # SaaS Boilerplate
 .saas-boilerplate
-
+.saas-cli
+.env.prod
+.env.prod.example
 # Nx
 .nx/cache
 .nx/workspace-data

@@ -1,8 +1,9 @@
-import { apiClient } from '@sb/webapp-api-client/api';
+import { apiClient, apiURL } from '@sb/webapp-api-client/api';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
 import { Button } from '@sb/webapp-core/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { Input } from '@sb/webapp-core/components/ui/input';
+import { DatePicker } from '@sb/webapp-core/components/ui/datePicker';
 import {
   Select,
   SelectContent,
@@ -234,7 +235,7 @@ export const AuditLogCard = () => {
       try {
         const queryParams = buildQueryParams(page, fetchFilterOptions);
         const response = await apiClient.get<AuditLogResponse>(
-          `/api/sso/tenant/${tenantId}/audit-logs/?${queryParams}`
+          apiURL(`/sso/tenant/${tenantId}/audit-logs/?${queryParams}`)
         );
         setLogs(response.data.logs || []);
         setTotalCount(response.data.totalCount || 0);
@@ -249,7 +250,10 @@ export const AuditLogCard = () => {
           }));
         }
       } catch (error) {
-        console.error('Failed to fetch audit logs:', error);
+        // Silently handle errors - audit logs may not be accessible due to permissions
+        if (process.env['NODE_ENV'] === 'development') {
+          console.warn('Failed to fetch audit logs (this is expected if user lacks permissions):', error);
+        }
       } finally {
         setInitialLoading(false);
         setIsFetching(false);
@@ -531,10 +535,13 @@ export const AuditLogCard = () => {
                   <label className="text-xs font-medium text-muted-foreground">
                     <FormattedMessage defaultMessage="From Date" id="Audit / Filter Start Date" />
                   </label>
-                  <Input
-                    type="date"
+                  <DatePicker
                     value={filters.startDate}
-                    onChange={(e) => handleFilterChange('startDate', e.target.value)}
+                    onChange={(value) => handleFilterChange('startDate', value || '')}
+                    placeholder={intl.formatMessage({
+                      defaultMessage: 'Select start date',
+                      id: 'Audit / Start Date Placeholder',
+                    })}
                   />
                 </div>
 
@@ -543,10 +550,13 @@ export const AuditLogCard = () => {
                   <label className="text-xs font-medium text-muted-foreground">
                     <FormattedMessage defaultMessage="To Date" id="Audit / Filter End Date" />
                   </label>
-                  <Input
-                    type="date"
+                  <DatePicker
                     value={filters.endDate}
-                    onChange={(e) => handleFilterChange('endDate', e.target.value)}
+                    onChange={(value) => handleFilterChange('endDate', value || '')}
+                    placeholder={intl.formatMessage({
+                      defaultMessage: 'Select end date',
+                      id: 'Audit / End Date Placeholder',
+                    })}
                   />
                 </div>
               </div>

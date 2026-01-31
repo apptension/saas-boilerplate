@@ -1,9 +1,14 @@
-import { apiClient } from '@sb/webapp-api-client/api';
+import { apiClient, apiURL } from '@sb/webapp-api-client/api';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
-import { Dialog, DialogContent } from '@sb/webapp-core/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from '@sb/webapp-core/components/ui/dialog';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { Fingerprint, Key, Loader2, Plus, Search, Trash2, User } from 'lucide-react';
@@ -25,10 +30,10 @@ type Passkey = {
 };
 
 export type PasskeysCardProps = {
-  canManageSSO?: boolean;
+  canManagePasskeys?: boolean;
 };
 
-export const PasskeysCard = ({ canManageSSO = false }: PasskeysCardProps) => {
+export const PasskeysCard = ({ canManagePasskeys = false }: PasskeysCardProps) => {
   const { isOpen: isModalOpen, setIsOpen: setIsModalOpen } = useOpenState(false);
   const { toast } = useToast();
   const intl = useIntl();
@@ -50,20 +55,27 @@ export const PasskeysCard = ({ canManageSSO = false }: PasskeysCardProps) => {
     try {
       // If user can manage SSO (owner/admin), fetch all tenant passkeys
       // Otherwise, fetch only their own passkeys
-      const endpoint = canManageSSO
-        ? `/api/sso/tenant/${tenantId}/passkeys/`
-        : '/api/sso/passkeys/';
+      // Use apiURL helper to construct full URL with correct base
+      const endpoint = canManagePasskeys
+        ? apiURL(`/sso/tenant/${tenantId}/passkeys/`)
+        : apiURL('/sso/passkeys/');
 
       const response = await apiClient.get(endpoint);
       const data = Array.isArray(response.data) ? response.data : [];
       setPasskeys(data);
       setFilteredPasskeys(data);
-    } catch (error) {
-      console.error('Failed to fetch passkeys:', error);
+    } catch (error: unknown) {
+      // Silently handle errors - passkeys feature may not be available
+      // This prevents console noise when the backend SSO app is not configured
+      if (process.env['NODE_ENV'] === 'development') {
+        console.warn('Passkeys fetch failed (this is expected if SSO is not configured):', error);
+      }
+      setPasskeys([]);
+      setFilteredPasskeys([]);
     } finally {
       setIsLoading(false);
     }
-  }, [tenantId, canManageSSO]);
+  }, [tenantId, canManagePasskeys]);
 
   useEffect(() => {
     fetchPasskeys();
@@ -90,9 +102,10 @@ export const PasskeysCard = ({ canManageSSO = false }: PasskeysCardProps) => {
     setDeletingId(passkeyId);
     try {
       // Use tenant endpoint for admin deletion, user endpoint for self deletion
-      const endpoint = canManageSSO
-        ? `/api/sso/tenant/${tenantId}/passkeys/${passkeyId}`
-        : `/api/sso/passkeys/${passkeyId}`;
+      // Use apiURL helper to construct full URL with correct base
+      const endpoint = canManagePasskeys
+        ? apiURL(`/sso/tenant/${tenantId}/passkeys/${passkeyId}`)
+        : apiURL(`/sso/passkeys/${passkeyId}`);
 
       await apiClient.delete(endpoint);
 
@@ -148,7 +161,7 @@ export const PasskeysCard = ({ canManageSSO = false }: PasskeysCardProps) => {
                 )}
               </CardTitle>
               <CardDescription>
-                {canManageSSO ? (
+                {canManagePasskeys ? (
                   <FormattedMessage
                     defaultMessage="Manage passkeys for all users in your organization"
                     id="Tenant Security Settings / Passkeys Admin Description"
@@ -165,7 +178,7 @@ export const PasskeysCard = ({ canManageSSO = false }: PasskeysCardProps) => {
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Search Input - only show for admins with passkeys */}
-          {canManageSSO && passkeys.length > 0 && (
+          {canManagePasskeys && passkeys.length > 0 && (
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -210,7 +223,7 @@ export const PasskeysCard = ({ canManageSSO = false }: PasskeysCardProps) => {
                         defaultMessage="Try a different search term"
                         id="Tenant Security Settings / No Match Hint"
                       />
-                    ) : canManageSSO ? (
+                    ) : canManagePasskeys ? (
                       <FormattedMessage
                         defaultMessage="No users in your organization have registered passkeys yet"
                         id="Tenant Security Settings / Passkey Admin Hint"
@@ -224,7 +237,7 @@ export const PasskeysCard = ({ canManageSSO = false }: PasskeysCardProps) => {
                   </p>
                 </div>
               </div>
-              {!canManageSSO && (
+              {!canManagePasskeys && (
                 <Button variant="outline" size="sm" onClick={() => setIsModalOpen(true)}>
                   <Plus className="mr-2 h-4 w-4" />
                   <FormattedMessage
@@ -256,7 +269,7 @@ export const PasskeysCard = ({ canManageSSO = false }: PasskeysCardProps) => {
                       </div>
                       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         {/* Show user info for admin view */}
-                        {canManageSSO && passkey.userEmail && (
+                        {canManagePasskeys && passkey.userEmail && (
                           <>
                             <span className="flex items-center gap-1">
                               <User className="h-3 w-3" />
@@ -303,7 +316,7 @@ export const PasskeysCard = ({ canManageSSO = false }: PasskeysCardProps) => {
                 </div>
               ))}
 
-              {!canManageSSO && (
+              {!canManagePasskeys && (
                 <Button
                   variant="outline"
                   size="sm"
@@ -323,7 +336,17 @@ export const PasskeysCard = ({ canManageSSO = false }: PasskeysCardProps) => {
       </Card>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[450px]">
+        <DialogContent className="sm:max-w-[450px]" aria-describedby="passkey-dialog-description">
+          {/* Visually hidden but accessible title and description for screen readers */}
+          <DialogTitle className="sr-only">
+            <FormattedMessage defaultMessage="Register a Passkey" id="Add Passkey Modal / Title" />
+          </DialogTitle>
+          <DialogDescription id="passkey-dialog-description" className="sr-only">
+            <FormattedMessage
+              defaultMessage="Secure, passwordless sign-in"
+              id="Add Passkey Modal / Subtitle"
+            />
+          </DialogDescription>
           <AddPasskeyModal closeModal={() => setIsModalOpen(false)} onSuccess={handleRegistrationSuccess} />
         </DialogContent>
       </Dialog>

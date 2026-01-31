@@ -40,9 +40,11 @@ class OpenAIClient:
 
         try:
             # If using a completion model, use completions API
-            if 'instruct' in model or 'davinci' in model or 'curie' in model or 'babbage' in model or 'ada' in model:
+            instruct_models = ['instruct', 'davinci', 'curie', 'babbage', 'ada']
+            if any(m in model for m in instruct_models):
                 # Use completions API for instruct models
-                prompt = f"""You are a SaaS product strategist. Generate 3-5 creative SaaS product ideas for: {keywords_str}
+                prompt = f"""You are a SaaS product strategist. \
+Generate 3-5 creative SaaS product ideas for: {keywords_str}
 
 Format each idea as:
 
@@ -97,11 +99,22 @@ Separate ideas with ---"""
                             "messages": [
                                 {
                                     "role": "system",
-                                    "content": "You are a SaaS product strategist. Generate creative SaaS product ideas in plain text. Do not write code.",
+                                    "content": (
+                                        "You are a SaaS product strategist. Generate creative SaaS "
+                                        "product ideas in plain text. Do not write code."
+                                    ),
                                 },
                                 {
                                     "role": "user",
-                                    "content": f"Generate 3-5 creative SaaS product ideas for: {keywords_str}\n\nFormat each idea as:\n\nProduct Name: [name]\nDescription: [what it does]\nTarget Market: [who uses it]\nKey Features:\n- [feature 1]\n- [feature 2]\n- [feature 3]\nMonetization: [pricing]\n\nSeparate ideas with ---",
+                                    "content": (
+                                        f"Generate 3-5 creative SaaS product ideas for: {keywords_str}"
+                                        "\n\nFormat each idea as:\n\n"
+                                        "Product Name: [name]\n"
+                                        "Description: [what it does]\n"
+                                        "Target Market: [who uses it]\n"
+                                        "Key Features:\n- [feature 1]\n- [feature 2]\n- [feature 3]\n"
+                                        "Monetization: [pricing]\n\nSeparate ideas with ---"
+                                    ),
                                 },
                             ],
                             "temperature": 0.8,

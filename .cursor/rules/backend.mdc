@@ -138,6 +138,26 @@ if not my_token_generator.check_token(email, token, obj):
 
 ## Backend Test Patterns
 
+### CRITICAL: Use pytest fixtures, NOT django.test.TestCase
+
+```python
+# ❌ WRONG - Can cause DB connection issues (InterfaceError: connection already closed)
+from django.test import TestCase
+
+class MyTests(TestCase):
+    def test_something(self):
+        pass
+
+# ✅ CORRECT - Use pytest fixtures
+import pytest
+
+pytestmark = pytest.mark.django_db
+
+class TestMyFeature:
+    def test_something(self, user_factory, tenant_factory):
+        pass
+```
+
 ### Testing Serializers
 
 ```python
@@ -183,6 +203,65 @@ class TestMySerializer:
         assert not serializer.is_valid()
 ```
 
+### Testing API Views with Authentication
+
+```python
+import pytest
+from rest_framework.test import APIClient
+
+pytestmark = pytest.mark.django_db
+
+class TestMyAPIView:
+    def test_authenticated_request(self, user_factory, tenant_factory):
+        user = user_factory()
+        tenant = tenant_factory()
+        
+        client = APIClient()
+        client.force_authenticate(user=user)
+        
+        response = client.post(
+            f"/api/my-endpoint/{tenant.id}/",
+            {"key": "value"},
+            format="json"
+        )
+        
+        assert response.status_code == 200
+
+    def test_streaming_response(self, user_factory, tenant_factory):
+        """Testing StreamingHttpResponse views"""
+        user = user_factory()
+        tenant = tenant_factory()
+        
+        client = APIClient()
+        client.force_authenticate(user=user)
+        
+        response = client.post(
+            f"/api/streaming-endpoint/{tenant.id}/",
+            {"message": "test"},
+            format="json"
+        )
+        
+        # For streaming responses, read content as bytes
+        assert response.status_code == 200
+        content = b"".join(response.streaming_content)
+        assert b"expected_data" in content
+```
+
+### Factory Boy: Avoiding Duplicate Creation
+
+```python
+from factory.django import DjangoModelFactory
+import factory
+
+class OrganizationSettingsFactory(DjangoModelFactory):
+    class Meta:
+        model = OrganizationSettings
+        # CRITICAL: Prevents duplicate creation errors
+        django_get_or_create = ("tenant",)
+    
+    tenant = factory.SubFactory(TenantFactory)
+```
+
 ## Permission Patterns
 
 Use decorators for permission control:
@@ -201,3 +280,43 @@ class TenantOwnerMutation(graphene.ObjectType):
 class TenantAdminMutation(graphene.ObjectType):
     admin_action = AdminMutation.Field()
 ```
+
+## GraphQL Schema Workflow
+
+When adding new GraphQL mutations or queries, follow this workflow:
+
+1. **Update Backend Schema** (`packages/backend/apps/<app>/schema.py`)
+   - Create mutation class with Arguments, return types, and mutate method
+   - Register in appropriate Mutation class (TenantOwnerMutation, etc.)
+
+2. **Download Updated Schema** (backend must be running!)
+   ```bash
+   pnpm nx run webapp-api-client:graphql:download-schema
+   ```
+
+3. **Add Frontend GraphQL Operations** (`packages/webapp-libs/webapp-<lib>/src/.../feature.graphql.ts`)
+   ```typescript
+   export const myMutation = gql(/* GraphQL */ `
+     mutation MyMutation($tenantId: ID!, $input: SomeInput!) {
+       myMutation(tenantId: $tenantId, input: $input) {
+         success
+         result { id }
+       }
+     }
+   `);
+   ```
+
+4. **Generate TypeScript Types**
+   ```bash
+   pnpm nx run webapp-api-client:graphql:generate-types
+   ```
+
+5. **Use in Components**
+   ```typescript
+   import { useMutation } from '@apollo/client';
+   import { myMutation } from './feature.graphql';
+   
+   const [commitMutation, { loading }] = useMutation(myMutation);
+   ```
+
+**Important**: The backend server must be running (`pnpm saas up`) for schema download to work!

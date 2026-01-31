@@ -1,0 +1,328 @@
+---
+title: Management Dashboard
+description: A comprehensive financial management and forecasting module for SaaS applications
+---
+
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Management Dashboard
+
+<ProjectName /> includes a complete **Management Dashboard** module - a production-ready financial management system that demonstrates advanced patterns for building complex business applications.
+
+:::tip Example Module
+The Management Dashboard serves as an **example module** that showcases how to build sophisticated features in the SaaS Boilerplate. Use it as a reference for building your own complex modules, or customize it for your business needs.
+:::
+
+## Overview
+
+The Management Dashboard provides:
+
+- **Project Management**: Track projects, clients, iterations, and team members
+- **Revenue & Cost Tracking**: Record and categorize financial data with multi-currency support
+- **Financial Forecasting**: AI-powered predictions with backtesting and scenario analysis
+- **Timesheet Management**: Excel-like timesheet with copy/paste, fill handle, and undo/redo
+- **Invoice Management**: Track invoices and correction requests
+- **FX Rate Management**: Multi-currency support with automatic rate fetching
+- **AI-Powered CSV Import**: Import data from spreadsheets with intelligent parsing
+
+## Key Features
+
+### Project & Iteration Management
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     PROJECT HIERARCHY                            │
+├─────────────────────────────────────────────────────────────────┤
+│  Client                                                          │
+│  └── Project                                                     │
+│      ├── Billing Type: T&M, Fixed Price, Retainer               │
+│      ├── Budget & Profitability Tracking                        │
+│      └── Iterations                                              │
+│          ├── Fixed-Price Iterations                              │
+│          └── Timesheet Iterations                                │
+│              └── Time Entries (with rate multipliers)            │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+- **Project Codes**: Auto-generated unique codes (e.g., `ACM-MAD-001`)
+- **Iteration Probability**: Track likelihood of projects closing (0-100%)
+- **Status Workflow**: Planned → In Progress → Completed → Invoiced → Paid
+
+### Revenue & Cost Lines
+
+Track all financial data with source attribution:
+
+| Source Type | Description |
+|-------------|-------------|
+| `RETAINER` | Monthly retainer payments |
+| `FIXED_PRICE` | Fixed-price project budgets |
+| `TIMESHEET_ACTUAL` | Revenue from completed timesheet work |
+| `TIMESHEET_PLANNED` | Forecasted revenue from planned work |
+| `INVOICE` | Invoice-based revenue |
+| `MANUAL` | Manually entered financial data |
+
+### Multi-Currency Support
+
+- **Base Currency**: Organization-wide base currency (e.g., USD)
+- **FX Rate Management**: Monthly exchange rates with fallback lookup
+- **Automatic Conversion**: All amounts converted to base currency for reporting
+- **FX Rate Sync**: Scheduled task fetches rates from public APIs
+
+### CFO Command Center
+
+Real-time KPI dashboard with:
+
+- **Monthly Totals**: Revenue, costs, and profitability by month
+- **AI Predictions**: Forecasted values with confidence intervals
+- **Trend Analysis**: Period-over-period comparisons
+- **Drill-Down**: Click any metric to see detailed breakdown
+
+### Financial Forecasting
+
+Advanced forecasting engine with:
+
+```python
+# Forecasting features
+- Time-decay weighting (recent data weighted more)
+- Conformal prediction intervals
+- Backtesting with WAPE/sMAPE metrics
+- Scenario analysis (optimistic/pessimistic/most likely)
+- Source-type segmentation
+```
+
+### Excel-Like Timesheet
+
+The timesheet component supports:
+
+- **Multi-cell Selection**: Click and drag to select multiple cells
+- **Copy/Paste**: Ctrl+C/V support with clipboard integration
+- **Fill Handle**: Drag to copy values to adjacent cells
+- **Undo/Redo**: Full history with Ctrl+Z/Y support
+- **Rate Multipliers**: Different billing rates per time entry
+
+### AI-Powered CSV Import
+
+Import financial data from spreadsheets:
+
+1. **Upload**: Drop CSV/Excel files
+2. **AI Analysis**: GPT parses and maps columns intelligently
+3. **Preview**: Review and edit mappings before import
+4. **Process**: Batch import with progress tracking
+
+## Architecture
+
+### Backend Structure
+
+```
+packages/backend/apps/management_dashboard/
+├── models.py              # Django models
+├── schema.py              # GraphQL mutations
+├── schema_forecast.py     # Forecasting queries
+├── serializers.py         # DRF serializers
+├── services/
+│   ├── calculations.py    # Financial calculations
+│   ├── sync.py           # Revenue line sync
+│   ├── fx.py             # FX rate handling
+│   ├── forecast.py       # Prediction logic
+│   ├── forecasting/      # Advanced forecasting
+│   │   ├── engine.py     # Core prediction engine
+│   │   ├── backtesting.py # Model validation
+│   │   └── scenarios.py  # Scenario analysis
+│   ├── ai_csv_parser.py  # AI import parser
+│   └── project_code.py   # Code generation
+└── tasks.py              # Celery tasks
+```
+
+### Frontend Structure
+
+```
+packages/webapp-libs/webapp-management-dashboard/
+├── src/
+│   ├── routes/
+│   │   ├── dashboard/       # Main dashboard views
+│   │   │   ├── overview/    # KPI overview
+│   │   │   ├── profitability/ # Profitability analysis
+│   │   │   └── forecasting/  # Forecast views
+│   │   ├── financialData/   # Revenue/cost management
+│   │   ├── masterData/      # Projects, clients, etc.
+│   │   └── imports/         # CSV import wizard
+│   ├── components/
+│   │   ├── dataTable/       # Reusable data table
+│   │   ├── metricCard/      # KPI card component
+│   │   └── monthlyDetailsTable/ # Drill-down table
+│   └── hooks/
+│       └── usePrediction.ts # Forecasting hook
+```
+
+## Data Models
+
+### Core Entities
+
+| Entity | Purpose |
+|--------|---------|
+| `Client` | Customer/account organization |
+| `Project` | Billable project with budget |
+| `Person` | Team member with rates |
+| `Role` | Job role (developer, designer, etc.) |
+| `Iteration` | Time-boxed project phase |
+| `TimeEntry` | Individual time log entry |
+| `RevenueLine` | Revenue record by month/source |
+| `CostLine` | Cost record by month/type |
+| `FxRate` | Monthly exchange rate |
+| `FinancialType` | Custom categorization |
+
+### Relationships
+
+```
+Client 1:N Project
+Project N:1 Client
+Project 1:N Iteration
+Iteration 1:N TimeEntry
+TimeEntry N:1 Person
+Person 1:N PersonRate (by date)
+```
+
+## GraphQL API
+
+### Key Queries
+
+```graphql
+# Get dashboard overview
+query DashboardOverview($tenantId: ID!, $startMonth: Date!, $endMonth: Date!) {
+  dashboardMonthlyTotals(tenantId: $tenantId, startMonth: $startMonth, endMonth: $endMonth) {
+    edges {
+      node {
+        month
+        totalRevenue
+        totalCost
+        profitability
+        predictions {
+          predictedRevenue
+          confidenceInterval
+        }
+      }
+    }
+  }
+}
+
+# Get forecast with scenarios
+query ForecastScenarios($tenantId: ID!, $horizon: Int) {
+  forecastScenarios(tenantId: $tenantId, horizonMonths: $horizon) {
+    optimistic { month, revenue, cost }
+    pessimistic { month, revenue, cost }
+    mostLikely { month, revenue, cost }
+  }
+}
+```
+
+### Key Mutations
+
+```graphql
+# Create revenue line
+mutation CreateRevenueLine($input: CreateRevenueLineMutationInput!) {
+  createRevenueLine(input: $input) {
+    revenueLine {
+      id
+      amount
+      amountBase
+    }
+  }
+}
+
+# Sync project revenue
+mutation SyncProjectRevenue($projectId: ID!) {
+  syncProjectRevenue(projectId: $projectId) {
+    ok
+    created
+    updated
+  }
+}
+```
+
+## Usage
+
+### Enabling the Module
+
+The Management Dashboard is included in the SaaS Boilerplate by default. Enable it in your webapp routes:
+
+```tsx
+// packages/webapp/src/app/config/routes.ts
+import { RoutesConfig as ManagementRoutes } from '@sb/webapp-management-dashboard';
+
+export const ROUTES = {
+  // ... other routes
+  management: ManagementRoutes,
+};
+```
+
+### Required Permissions
+
+The module uses RBAC permissions:
+
+| Permission | Description |
+|------------|-------------|
+| `management.view` | View dashboard and reports |
+| `management.edit` | Create/edit financial data |
+| `management.admin` | Full access including settings |
+
+### Environment Variables
+
+```bash
+# Optional: OpenAI for AI CSV import
+OPENAI_API_KEY=sk-...
+
+# Optional: Enable forecasting
+ENABLE_FORECASTING=true
+```
+
+## Customization
+
+### Adding Custom Financial Types
+
+Financial types allow categorizing revenue and costs:
+
+```python
+# Via admin or GraphQL mutation
+FinancialType.objects.create(
+    tenant=tenant,
+    name="Software License",
+    category="revenue",
+    icon="license",
+    color="#4F46E5"
+)
+```
+
+### Extending the Forecasting Engine
+
+The forecasting engine uses a modular architecture:
+
+```python
+from apps.management_dashboard.services.forecasting import ForecastEngine
+
+class CustomForecastEngine(ForecastEngine):
+    def get_benchmark_cost_ratio(self, source_types):
+        # Custom cost ratio logic
+        return Decimal('0.70')
+```
+
+### Adding Custom KPI Cards
+
+Create new dashboard metrics:
+
+```tsx
+import { MetricCard } from '@sb/webapp-management-dashboard';
+
+<MetricCard
+  title="Custom KPI"
+  value={formatCurrency(value)}
+  trend={{ direction: 'up', percentage: 12.5 }}
+  prediction={{ value: predicted, confidence: 0.85 }}
+/>
+```
+
+## Related Documentation
+
+- [Activity Logs](/introduction/features/activity-logs) - Track all changes
+- [RBAC Permissions](/introduction/features/rbac) - Role-based access
+- [AI Integration](/introduction/features/openai) - AI-powered features
+- [Multi-tenancy](/introduction/features/multi-tenancy) - Tenant isolation

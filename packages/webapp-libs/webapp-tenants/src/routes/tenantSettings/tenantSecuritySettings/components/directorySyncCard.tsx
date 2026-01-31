@@ -1,4 +1,4 @@
-import { apiClient } from '@sb/webapp-api-client/api';
+import { apiClient, apiURL } from '@sb/webapp-api-client/api';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
@@ -89,19 +89,22 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
 
     try {
       // Fetch SSO connections
-      const connectionsResponse = await apiClient.get(`/api/sso/tenant/${tenantId}/connections/`);
+      const connectionsResponse = await apiClient.get(apiURL(`/sso/tenant/${tenantId}/connections/`));
       setConnections(Array.isArray(connectionsResponse.data) ? connectionsResponse.data : []);
 
       // Fetch SCIM tokens
       try {
-        const tokensResponse = await apiClient.get(`/api/sso/tenant/${tenantId}/scim-tokens/`);
+        const tokensResponse = await apiClient.get(apiURL(`/sso/tenant/${tenantId}/scim-tokens/`));
         setTokens(Array.isArray(tokensResponse.data) ? tokensResponse.data : []);
       } catch (e) {
         // SCIM tokens endpoint might not exist yet
         setTokens([]);
       }
     } catch (error) {
-      console.error('Failed to fetch SCIM data:', error);
+      // Silently handle errors - SCIM data may not be accessible due to permissions
+      if (process.env['NODE_ENV'] === 'development') {
+        console.warn('Failed to fetch SCIM data (this is expected if user lacks permissions):', error);
+      }
     } finally {
       setLoading(false);
     }
@@ -111,12 +114,28 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
     fetchData();
   }, [fetchData]);
 
+  // Listen for SSO connection changes from the SSO card
+  useEffect(() => {
+    const handleSSOChange = (event: Event) => {
+      const customEvent = event as CustomEvent<{ tenantId: string }>;
+      // Only refetch if the change was for this tenant
+      if (customEvent.detail.tenantId === tenantId) {
+        fetchData();
+      }
+    };
+
+    window.addEventListener('sso-connections-changed', handleSSOChange);
+    return () => {
+      window.removeEventListener('sso-connections-changed', handleSSOChange);
+    };
+  }, [fetchData, tenantId]);
+
   const handleGenerateToken = async () => {
     if (!tokenName.trim() || !tenantId) return;
 
     setGenerating(true);
     try {
-      const response = await apiClient.post(`/api/sso/tenant/${tenantId}/scim-tokens/`, {
+      const response = await apiClient.post(apiURL(`/sso/tenant/${tenantId}/scim-tokens/`), {
         name: tokenName,
       });
 
@@ -143,7 +162,7 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
 
     setRevokingId(tokenId);
     try {
-      await apiClient.delete(`/api/sso/tenant/${tenantId}/scim-tokens/${tokenId}`);
+      await apiClient.delete(apiURL(`/sso/tenant/${tenantId}/scim-tokens/${tokenId}`));
 
       // Refetch to update the list properly
       await fetchData();
@@ -190,8 +209,7 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
     }).format(new Date(dateStr));
   };
 
-  const scimEndpointUrl =
-    typeof window !== 'undefined' ? `${window.location.origin}/api/sso/scim/v2` : '/api/sso/scim/v2';
+  const scimEndpointUrl = apiURL('/sso/scim/v2');
 
   return (
     <TooltipProvider>

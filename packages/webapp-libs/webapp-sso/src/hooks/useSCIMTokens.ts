@@ -35,7 +35,7 @@ export const CREATE_SCIM_TOKEN = gql(`
 `);
 
 export const REVOKE_SCIM_TOKEN = gql(`
-  mutation RevokeSCIMToken($id: ID!) {
+  mutation RevokeSCIMTokenOp($id: ID!) {
     revokeScimToken(id: $id) {
       ok
     }

@@ -112,11 +112,21 @@ class JSONWebTokenCookieMiddleware:
             # Token is expired or invalid - proceed without user
             return None
 
+    def _get_raw_token(self, scope):
+        """Extract raw JWT token from cookies in scope headers."""
+        for name, value in scope.get("headers", []):
+            if name == b"cookie":
+                cookies = parse_cookie(value.decode("latin1"))
+                return cookies.get(settings.ACCESS_TOKEN_COOKIE)
+        return None
+
     async def __call__(self, scope, receive, send):
         scope = dict(scope)
         result = await self.authenticate(scope)
         if result is not None:
-            user, _ = result
+            user, validated_token = result
             scope["user"] = user
+            # Store the raw JWT token string for downstream use (e.g., AI assistant MCP)
+            scope["jwt_token"] = self._get_raw_token(scope)
 
         return await self.app(scope, receive, send)

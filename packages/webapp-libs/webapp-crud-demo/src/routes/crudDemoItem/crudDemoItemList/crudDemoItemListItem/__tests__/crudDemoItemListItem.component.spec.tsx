@@ -24,6 +24,13 @@ const crudDemoItemListItemTestQuery = gql(/* GraphQL */ `
 
 jest.mock('@sb/webapp-core/services/analytics');
 
+// Mock PermissionGate to always render children (simulate having permission)
+jest.mock('@sb/webapp-tenants/hooks', () => ({
+  ...jest.requireActual('@sb/webapp-tenants/hooks'),
+  PermissionGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  usePermissionCheck: () => ({ hasPermission: true, loading: false }),
+}));
+
 const tenantId = 'tenantId';
 
 describe('CrudDemoItemListItem: Component', () => {

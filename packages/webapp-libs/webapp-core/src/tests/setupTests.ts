@@ -116,7 +116,7 @@ window.HTMLElement.prototype.hasPointerCapture = jest.fn();
 
 // Mock addEventListener for HTMLImageElement (required by Radix UI Avatar)
 // Radix UI Avatar uses addEventListener('load') and addEventListener('error') on image elements
-const imageEventListeners = new WeakMap<HTMLImageElement, Map<string, Set<() => void>>>();
+const imageEventListeners = new WeakMap<HTMLImageElement, Map<string, Set<(event: Event) => void>>>();
 
 Object.defineProperty(HTMLImageElement.prototype, 'addEventListener', {
   value: function (this: HTMLImageElement, event: string, handler: (event: Event) => void) {

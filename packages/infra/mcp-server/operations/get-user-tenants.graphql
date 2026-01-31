@@ -1,0 +1,28 @@
+# @tool(name: "get_user_tenants", description: "Get all organizations/tenants the current user is a member of. Returns tenant details and user's membership role in each.")
+query GetUserTenants($first: Int = 50) {
+  allTenants(first: $first) {
+    edges {
+      node {
+        id
+        name
+        slug
+        type
+        billingEmail
+        membership {
+          id
+          role
+          organizationRoles {
+            id
+            name
+            systemRoleType
+            isOwnerRole
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

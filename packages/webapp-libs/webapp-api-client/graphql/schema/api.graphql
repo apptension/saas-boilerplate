@@ -16,6 +16,12 @@ Use of this type is *not recommended* as you lose the benefits of having a defin
 schema (one of the key benefits of GraphQL).
 """
 scalar JSONString
+"""
+The `GenericScalar` scalar type represents a generic
+GraphQL scalar value that could be:
+String, Boolean, Int, Float, List or Object.
+"""
+scalar GenericScalar
 "The `Decimal` scalar type represents a python Decimal."
 scalar Decimal
 """
@@ -24,12 +30,6 @@ The `BigInt` scalar type represents non-fractional whole numeric values.
 compatible type.
 """
 scalar BigInt
-"""
-The `GenericScalar` scalar type represents a generic
-GraphQL scalar value that could be:
-String, Boolean, Int, Float, List or Object.
-"""
-scalar GenericScalar
 """
 Create scalar that ignores normal serialization/deserialization, since
 that will be handled by the multipart request spec
@@ -53,6 +53,28 @@ type Query {
   myDevices(before: String, after: String, first: Int, last: Int): UserDeviceConnection
   allTenants(before: String, after: String, first: Int, last: Int): TenantConnection
   tenant(id: ID): TenantType
+  allActionLogs(tenantId: ID!, 
+    "Filter by entity type"
+    entityType: String,
+    "Filter by action type"
+    actionType: String,
+    "Filter by actor email"
+    actorEmail: String,
+    "Filter logs from this datetime"
+    fromDatetime: DateTime,
+    "Filter logs until this datetime"
+    toDatetime: DateTime,
+    "Search in entity name, actor email, or metadata"
+    search: String,before: String, after: String, first: Int, last: Int  ): ActionLogConnection
+  allPermissions(
+    "Filter by category"
+    category: PermissionCategory,before: String, after: String, first: Int, last: Int  ): PermissionConnection
+  allOrganizationRoles(tenantId: ID!, before: String, after: String, first: Int, last: Int): OrganizationRoleConnection
+  organizationRole(id: ID!): OrganizationRoleType
+  "Get all permission codes for the current user in a tenant"
+  currentUserPermissions(tenantId: ID!): [String]
+  "Get all organization roles for the current user in a tenant"
+  currentUserOrganizationRoles(tenantId: ID!): [OrganizationRoleType]
   allSubscriptionPlans(before: String, after: String, first: Int, last: Int): StripePriceConnection
   activeSubscription(tenantId: ID): SubscriptionScheduleType
   allPaymentMethods(tenantId: ID, before: String, after: String, first: Int, last: Int): PaymentMethodConnection
@@ -267,6 +289,7 @@ type SSOSessionEdge {
 type SSOSessionType implements Node {
   createdAt: DateTime!
   id: ID!
+  sessionId: String!
   deviceName: String!
   deviceType: String!
   browser: String!
@@ -274,11 +297,11 @@ type SSOSessionType implements Node {
   ipAddress: String
   location: String!
   isActive: Boolean!
-  isCurrent: Boolean!
   lastActivityAt: DateTime!
   expiresAt: DateTime!
   isValid: Boolean
   isExpired: Boolean
+  isCurrent: Boolean
 }
 type UserDeviceConnection {
   "Pagination data for this connection."
@@ -327,6 +350,7 @@ type TenantType implements Node {
   slug: String
   type: String
   billingEmail: String
+  actionLoggingEnabled: Boolean
   userMemberships: [TenantMembershipType]
   membership: TenantMembershipType!
 }
@@ -341,6 +365,116 @@ type TenantMembershipType implements Node {
   lastName: String
   userEmail: String
   avatar: String
+  organizationRoles: [OrganizationRoleType]
+  effectivePermissions: [String]
+}
+"GraphQL type for OrganizationRole - custom roles per tenant."
+type OrganizationRoleType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+  "Display name of the role"
+  name: String!
+  "Description of the role's purpose"
+  description: String!
+  systemRoleType: SystemRoleType
+  color: RoleColor
+  permissions: [PermissionType]
+  isSystemRole: Boolean
+  isOwnerRole: Boolean
+  memberCount: Int
+}
+"GraphQL type for Permission model - available permissions in the system."
+type PermissionType implements Node {
+  id: ID!
+  "Unique permission code (e.g., 'dashboard.projects.edit')"
+  code: String!
+  "Human-readable name for display"
+  name: String!
+  "Detailed description of what this permission allows"
+  description: String!
+  category: PermissionCategory
+  "System permissions cannot be deleted"
+  isSystem: Boolean!
+  "Order within category for UI display"
+  sortOrder: Int!
+}
+"Connection class for paginated ActionLog lists."
+type ActionLogConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [ActionLogEdge]!
+  totalCount: Int
+}
+"A Relay edge containing a `ActionLog` and its cursor."
+type ActionLogEdge {
+  "The item at the end of the edge"
+  node: ActionLogType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for ActionLog model - audit trail of actions."
+type ActionLogType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  "The ID of the object"
+  id: ID!
+  tenant: TenantType!
+  "Type of action performed"
+  actionType: MultitenancyActionLogActionTypeChoices!
+  "Type of entity affected (e.g., client, project, user)"
+  entityType: String!
+  "ID of the affected entity"
+  entityId: String!
+  "Human-readable name of the entity for display"
+  entityName: String!
+  "Type of actor that performed the action"
+  actorType: MultitenancyActionLogActorTypeChoices!
+  "User who performed the action (null for system actions)"
+  actorUser: CurrentUserType
+  "Email of the actor (stored for historical reference)"
+  actorEmail: String!
+  changes: GenericScalar
+  metadata: GenericScalar
+}
+type CurrentUserType {
+  id: ID!
+  email: String!
+  otpEnabled: Boolean!
+  otpVerified: Boolean!
+  tenants: [TenantType]
+  firstName: String
+  lastName: String
+  language: String
+  roles: [String]
+  avatar: String
+}
+type PermissionConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [PermissionEdge]!
+}
+"A Relay edge containing a `Permission` and its cursor."
+type PermissionEdge {
+  "The item at the end of the edge"
+  node: PermissionType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+type OrganizationRoleConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [OrganizationRoleEdge]!
+}
+"A Relay edge containing a `OrganizationRole` and its cursor."
+type OrganizationRoleEdge {
+  "The item at the end of the edge"
+  node: OrganizationRoleType
+  "A cursor for use in pagination"
+  cursor: String!
 }
 type StripePriceConnection {
   "Pagination data for this connection."
@@ -858,18 +992,6 @@ type StripeChargeTypeEdge {
   "A cursor for use in pagination"
   cursor: String!
 }
-type CurrentUserType {
-  id: ID!
-  email: String!
-  otpEnabled: Boolean!
-  otpVerified: Boolean!
-  tenants: [TenantType]
-  firstName: String
-  lastName: String
-  language: String
-  roles: [String]
-  avatar: String
-}
 type NotificationConnection {
   "Pagination data for this connection."
   pageInfo: PageInfo!
@@ -1022,7 +1144,7 @@ type ApiMutation {
   revokeScimToken(id: ID!): RevokeSCIMTokenMutation
   "Revoke an SSO session."
   revokeSession(reason: String, sessionId: String!): RevokeSessionMutation
-  "Revoke all SSO sessions for the current user."
+  "Revoke all SSO sessions for the current user except the current session."
   revokeAllSessions: RevokeAllSessionsMutation
   "Mark a device as trusted."
   trustDevice(id: ID!): TrustDeviceMutation
@@ -1040,10 +1162,82 @@ type ApiMutation {
   createTenantInvitation(input: CreateTenantInvitationMutationInput!): CreateTenantInvitationMutationPayload
   resendTenantInvitation(input: ResendTenantInvitationMutationInput!): ResendTenantInvitationMutationPayload
   updateTenantMembership(input: UpdateTenantMembershipMutationInput!): UpdateTenantMembershipMutationPayload
+  "Mutation to enable or disable action logging for a tenant."
+  updateTenantActionLogging(enabled: Boolean!, tenantId: ID!): UpdateTenantActionLoggingMutation
+  """
+  Mutation to trigger an async export of action logs.
+  
+  Creates an export job that processes in the background.
+  User receives a notification when the export is ready.
+  """
+  exportActionLogs(actionType: String, actorEmail: String, entityType: String, fromDatetime: DateTime, search: String, tenantId: ID!, toDatetime: DateTime): ExportActionLogsMutation
+  """
+  Create a new custom organization role.
+  
+  SECURITY:
+  - Requires 'org.roles.manage' permission
+  - Users can only create roles with permissions they themselves have (except owners)
+  """
+  createOrganizationRole(color: RoleColor, description: String, name: String!, permissionIds: [ID]!, tenantId: ID!): CreateOrganizationRoleMutation
+  """
+  Update an existing organization role.
+  
+  SECURITY:
+  - Requires 'org.roles.manage' permission
+  - Cannot modify the Owner role
+  - Users can only add permissions they themselves have (except owners)
+  """
+  updateOrganizationRole(color: RoleColor, description: String, id: ID!, name: String, permissionIds: [ID], tenantId: ID!): UpdateOrganizationRoleMutation
+  """
+  Delete an organization role.
+  
+  If there are members with this role, a replacement_role_id must be provided.
+  
+  SECURITY:
+  - Requires 'org.roles.manage' permission
+  - Cannot delete system roles (Owner, Admin, Member)
+  """
+  deleteOrganizationRole(id: ID!, 
+    "Role to assign to affected members"
+    replacementRoleId: ID,tenantId: ID!  ): DeleteOrganizationRoleMutation
+  """
+  Assign one or more organization roles to a member.
+  
+  SECURITY:
+  - Requires 'members.roles.edit' permission
+  - Only owners can assign the Owner role
+  - Users can only assign roles with permissions they themselves have
+  - Users cannot remove their own owner role if they're the last owner
+  """
+  assignRolesToMember(membershipId: ID!, roleIds: [ID]!, tenantId: ID!): AssignRolesToMemberMutation
+  """
+  Remove a specific role from a member.
+  
+  SECURITY:
+  - Requires 'members.roles.edit' permission
+  - Only owners can remove the Owner role
+  - Cannot remove the last owner's owner role
+  - Non-owners cannot modify owner memberships
+  """
+  removeRoleFromMember(membershipId: ID!, roleId: ID!, tenantId: ID!): RemoveRoleFromMemberMutation
   createTenant(input: CreateTenantMutationInput!): CreateTenantMutationPayload
   acceptTenantInvitation(input: AcceptTenantInvitationMutationInput!): AcceptTenantInvitationMutationPayload
   declineTenantInvitation(input: DeclineTenantInvitationMutationInput!): DeclineTenantInvitationMutationPayload
+  """
+  Delete/remove a member from the organization.
+  
+  SECURITY:
+  - Requires 'members.remove' permission to remove other members
+  - Users can always remove themselves (leave organization)
+  - Only owners can remove other owners
+  - Cannot remove the last owner
+  """
   deleteTenantMembership(input: DeleteTenantMembershipMutationInput!): DeleteTenantMembershipMutationPayload
+  """
+  Mutation to send a message to the AI assistant.
+  The response is streamed via the AiChatSubscription.
+  """
+  sendAiMessage(conversationId: String!, history: [JSONString], message: String!, tenantId: String!): SendAiMessageMutation
   generateSaasIdeas(input: GenerateSaasIdeasMutationInput!): GenerateSaasIdeasMutationPayload
   changeActiveSubscription(input: ChangeActiveSubscriptionMutationInput!): ChangeActiveSubscriptionMutationPayload
   cancelActiveSubscription(input: CancelActiveSubscriptionMutationInput!): CancelActiveSubscriptionMutationPayload
@@ -1211,7 +1405,7 @@ type RevokeSCIMTokenMutation {
 type RevokeSessionMutation {
   ok: Boolean
 }
-"Revoke all SSO sessions for the current user."
+"Revoke all SSO sessions for the current user except the current session."
 type RevokeAllSessionsMutation {
   ok: Boolean
   revokedCount: Int
@@ -1248,9 +1442,6 @@ type DeleteTenantMutationPayload {
   clientMutationId: String
 }
 type CreateTenantInvitationMutationPayload {
-  email: String
-  role: TenantUserRole
-  tenantId: String
   ok: Boolean
   clientMutationId: String
 }
@@ -1262,6 +1453,105 @@ type UpdateTenantMembershipMutationPayload {
   tenantMembership: TenantMembershipType
   tenantMembershipEdge: TenantEdge
   clientMutationId: String
+}
+"Mutation to enable or disable action logging for a tenant."
+type UpdateTenantActionLoggingMutation {
+  tenant: TenantType
+  ok: Boolean
+}
+"""
+Mutation to trigger an async export of action logs.
+
+Creates an export job that processes in the background.
+User receives a notification when the export is ready.
+"""
+type ExportActionLogsMutation {
+  export: ActionLogExportType
+  ok: Boolean
+}
+"GraphQL type for ActionLogExport model."
+type ActionLogExportType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  "The ID of the object"
+  id: ID!
+  tenant: TenantType!
+  requestedBy: CurrentUserType!
+  status: MultitenancyActionLogExportStatusChoices!
+  errorMessage: String!
+  startedAt: DateTime
+  completedAt: DateTime
+  filters: GenericScalar
+  "Path to the generated file in storage"
+  filePath: String!
+  "Size of the generated file in bytes"
+  fileSize: BigInt
+  "Number of logs in the export"
+  logCount: Int
+  celeryTaskId: String!
+  downloadUrl: String
+}
+"""
+Create a new custom organization role.
+
+SECURITY:
+- Requires 'org.roles.manage' permission
+- Users can only create roles with permissions they themselves have (except owners)
+"""
+type CreateOrganizationRoleMutation {
+  role: OrganizationRoleType
+  ok: Boolean
+}
+"""
+Update an existing organization role.
+
+SECURITY:
+- Requires 'org.roles.manage' permission
+- Cannot modify the Owner role
+- Users can only add permissions they themselves have (except owners)
+"""
+type UpdateOrganizationRoleMutation {
+  role: OrganizationRoleType
+  ok: Boolean
+}
+"""
+Delete an organization role.
+
+If there are members with this role, a replacement_role_id must be provided.
+
+SECURITY:
+- Requires 'org.roles.manage' permission
+- Cannot delete system roles (Owner, Admin, Member)
+"""
+type DeleteOrganizationRoleMutation {
+  ok: Boolean
+  affectedMemberCount: Int
+}
+"""
+Assign one or more organization roles to a member.
+
+SECURITY:
+- Requires 'members.roles.edit' permission
+- Only owners can assign the Owner role
+- Users can only assign roles with permissions they themselves have
+- Users cannot remove their own owner role if they're the last owner
+"""
+type AssignRolesToMemberMutation {
+  membership: TenantMembershipType
+  ok: Boolean
+}
+"""
+Remove a specific role from a member.
+
+SECURITY:
+- Requires 'members.roles.edit' permission
+- Only owners can remove the Owner role
+- Cannot remove the last owner's owner role
+- Non-owners cannot modify owner memberships
+"""
+type RemoveRoleFromMemberMutation {
+  membership: TenantMembershipType
+  ok: Boolean
 }
 type CreateTenantMutationPayload {
   tenant: TenantType
@@ -1276,9 +1566,26 @@ type DeclineTenantInvitationMutationPayload {
   ok: Boolean
   clientMutationId: String
 }
+"""
+Delete/remove a member from the organization.
+
+SECURITY:
+- Requires 'members.remove' permission to remove other members
+- Users can always remove themselves (leave organization)
+- Only owners can remove other owners
+- Cannot remove the last owner
+"""
 type DeleteTenantMembershipMutationPayload {
   deletedIds: [ID]
   clientMutationId: String
+}
+"""
+Mutation to send a message to the AI assistant.
+The response is streamed via the AiChatSubscription.
+"""
+type SendAiMessageMutation {
+  ok: Boolean
+  error: String
 }
 type GenerateSaasIdeasMutationPayload {
   response: String
@@ -1373,6 +1680,12 @@ type UserProfileType implements Node {
   user: CurrentUserType!
   firstName: String!
   lastName: String!
+  "User's preferred language for emails and notifications"
+  language: UsersUserProfileLanguageChoices!
+  avatar: String
+  email: String
+  "The hashid of the associated user"
+  userId: String
 }
 "A Relay edge containing a `CurrentUser` and its cursor."
 type CurrentUserEdge {
@@ -1470,9 +1783,35 @@ type DeleteFavoriteContentfulDemoItemMutationPayload {
   clientMutationId: String
 }
 type ApiSubscription {
+  aiChat(conversationId: String!): AiChatSubscription
   notificationCreated: NotificationCreatedSubscription
 }
-"Simple GraphQL subscription."
+"""
+GraphQL subscription for AI chat streaming.
+Receives events as the AI processes messages.
+"""
+type AiChatSubscription {
+  event: AiChatEventType
+}
+"Event sent during AI chat streaming."
+type AiChatEventType {
+  eventType: String!
+  message: String
+  toolName: String
+  toolDisplayName: String
+  success: Boolean
+  hasData: Boolean
+  text: String
+  toolsUsed: [String]
+  conversationId: String
+}
+"""
+GraphQL subscription for real-time notification updates.
+
+SECURITY: Ensures only authenticated users can subscribe to their own
+notifications. The subscribe method verifies authentication and prevents
+users from subscribing to other users' notification streams.
+"""
 type NotificationCreatedSubscription {
   notification: NotificationType
 }
@@ -1564,6 +1903,10 @@ enum SsoSSOAuditLogEventTypeChoices {
   PASSKEY_AUTH_SUCCESS
   "Passkey Auth Failed"
   PASSKEY_AUTH_FAILED
+  "Passkey Clone Detected"
+  PASSKEY_CLONE_DETECTED
+  "Security Anomaly Detected"
+  SECURITY_ANOMALY
 }
 """
 
@@ -1577,6 +1920,73 @@ enum TenantUserRole {
   OWNER
   ADMIN
   MEMBER
+}
+"System role types that serve as templates."
+enum SystemRoleType {
+  OWNER
+  ADMIN
+  MEMBER
+}
+"Predefined colors for organization roles."
+enum RoleColor {
+  BLUE
+  GREEN
+  RED
+  YELLOW
+  PURPLE
+  ORANGE
+  PINK
+  TEAL
+  GRAY
+}
+"Categories for grouping permissions in the UI."
+enum PermissionCategory {
+  ORGANIZATION
+  MEMBERS
+  SECURITY
+  BILLING
+  FEATURES
+  DASHBOARD
+}
+"An enumeration."
+enum MultitenancyActionLogActionTypeChoices {
+  "Create"
+  CREATE
+  "Update"
+  UPDATE
+  "Delete"
+  DELETE
+  "Settings Change"
+  SETTINGS_CHANGE
+  "Import"
+  IMPORT
+  "Sync"
+  SYNC
+  "Bulk Delete"
+  BULK_DELETE
+  "Bulk Update"
+  BULK_UPDATE
+  "Activate"
+  ACTIVATE
+  "Deactivate"
+  DEACTIVATE
+  "Revoke"
+  REVOKE
+}
+"An enumeration."
+enum MultitenancyActionLogActorTypeChoices {
+  "User"
+  USER
+  "AI Agent"
+  AI_AGENT
+  "System (Sync)"
+  SYSTEM_SYNC
+  "System (Import)"
+  SYSTEM_IMPORT
+  "System (Scheduled Task)"
+  SYSTEM_SCHEDULED_TASK
+  "System (Migration)"
+  SYSTEM_MIGRATION
 }
 "An enumeration."
 enum DjstripeProductTypeChoices {
@@ -2013,6 +2423,17 @@ enum saml_name_id_format {
   URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_UNSPECIFIED
 }
 "An enumeration."
+enum MultitenancyActionLogExportStatusChoices {
+  "Pending"
+  PENDING
+  "Processing"
+  PROCESSING
+  "Completed"
+  COMPLETED
+  "Failed"
+  FAILED
+}
+"An enumeration."
 enum DjstripeSetupIntentCancellationReasonChoices {
   "Abandoned"
   ABANDONED
@@ -2042,6 +2463,19 @@ enum DjstripeSetupIntentUsageChoices {
   OFF_SESSION
   "On session"
   ON_SESSION
+}
+"An enumeration."
+enum UsersUserProfileLanguageChoices {
+  "English"
+  EN
+  "Polish"
+  PL
+  "German"
+  DE
+  "French"
+  FR
+  "Spanish"
+  ES
 }
 input PublishTranslationsMutationInput {
   localeCode: String!
@@ -2155,7 +2589,9 @@ input DeleteTenantMutationInput {
 }
 input CreateTenantInvitationMutationInput {
   email: String!
-  role: TenantUserRole!
+  role: TenantUserRole
+  "List of organization role IDs to assign to the invited member"
+  organizationRoleIds: [String]
   tenantId: String!
   clientMutationId: String
 }
@@ -2242,8 +2678,8 @@ input ChangePasswordMutationInput {
 input UpdateCurrentUserMutationInput {
   firstName: String
   lastName: String
-  language: String
   avatar: Upload
+  language: String
   clientMutationId: String
 }
 input GenerateOTPMutationInput {

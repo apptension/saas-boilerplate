@@ -20,6 +20,7 @@ import {
   Globe,
   Lock,
   Key,
+  KeyRound,
   Workflow,
   Layers,
   Terminal,
@@ -48,6 +49,11 @@ import {
   Play,
   Clock,
   Languages,
+  Activity,
+  BarChart3,
+  MessageSquareMore,
+  HardDrive,
+  Fingerprint,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -164,6 +170,7 @@ export {
   Globe,
   Lock,
   Key,
+  KeyRound,
   Workflow,
   Layers,
   Terminal,
@@ -192,6 +199,11 @@ export {
   Play,
   Clock,
   Languages,
+  Activity,
+  BarChart3,
+  MessageSquareMore,
+  HardDrive,
+  Fingerprint,
 };
 
 

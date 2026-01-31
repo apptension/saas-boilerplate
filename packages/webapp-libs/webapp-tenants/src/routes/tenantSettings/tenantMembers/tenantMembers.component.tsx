@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { TenantMembersList } from '../../../components/tenantMembersList';
 import { RoutesConfig } from '../../../config/routes';
-import { useGenerateTenantPath } from '../../../hooks';
+import { useGenerateTenantPath, usePermissionCheck } from '../../../hooks';
 import { useCurrentTenant } from '../../../providers';
 import { InvitationForm } from './invitationForm';
 
@@ -21,6 +21,9 @@ export const TenantMembers = () => {
   const generateLocalePath = useGenerateLocalePath();
   const navigate = useNavigate();
   const isPersonal = useCurrentTenant().data?.type === TenantType.PERSONAL;
+
+  // Permission checks
+  const { hasPermission: canInvite } = usePermissionCheck('members.invite');
 
   const handleNewTenantClick = () => {
     navigate(generateLocalePath(RootRoutesConfig.addTenant));
@@ -31,17 +34,25 @@ export const TenantMembers = () => {
       <div className="space-y-6">
         {isPersonal ? (
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                <FormattedMessage defaultMessage="Members" id="Tenant Members / Header" />
-              </CardTitle>
-              <CardDescription>
-                <FormattedMessage
-                  defaultMessage="View and manage organization members"
-                  id="Tenant Members / Subheader"
-                />
-              </CardDescription>
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <Users className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">
+                      <FormattedMessage defaultMessage="Members" id="Tenant Members / Header" />
+                    </CardTitle>
+                    <CardDescription className="mt-0.5">
+                      <FormattedMessage
+                        defaultMessage="View and manage organization members"
+                        id="Tenant Members / Subheader"
+                      />
+                    </CardDescription>
+                  </div>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
               <Alert className="py-8" data-testid="tenant-members-alert">
@@ -68,19 +79,28 @@ export const TenantMembers = () => {
           </Card>
         ) : (
           <div data-testid="tenant-members-list" className="space-y-6">
-            <InvitationForm />
+            {/* Show invitation form only if user has members.invite permission */}
+            {canInvite && <InvitationForm />}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  <FormattedMessage defaultMessage="Members" id="Tenant Members / Header" />
-                </CardTitle>
-                <CardDescription>
-                  <FormattedMessage
-                    defaultMessage="View and manage organization members"
-                    id="Tenant Members / Subheader"
-                  />
-                </CardDescription>
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                      <Users className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">
+                        <FormattedMessage defaultMessage="Members" id="Tenant Members / Header" />
+                      </CardTitle>
+                      <CardDescription className="mt-0.5">
+                        <FormattedMessage
+                          defaultMessage="View and manage organization members"
+                          id="Tenant Members / Subheader"
+                        />
+                      </CardDescription>
+                    </div>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
                 <TenantMembersList />

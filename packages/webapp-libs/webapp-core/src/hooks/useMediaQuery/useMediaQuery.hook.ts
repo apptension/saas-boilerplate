@@ -21,7 +21,7 @@ interface QueryResult {
 
 export const useMediaQuery = ({ above, below, matches }: BreakpointQuery): QueryResult => {
   const theme = useTheme();
-  const activeBreakpoint: media.Breakpoint = theme.activeBreakpoint ?? media.Breakpoint.MOBILE;
+  const activeBreakpoint: media.Breakpoint = theme['activeBreakpoint'] ?? media.Breakpoint.MOBILE;
 
   const arrayToMatch = Array.isArray(matches) ? matches : [matches];
   const matchesExplicitProp = isNil(matches) || arrayToMatch.includes(activeBreakpoint);

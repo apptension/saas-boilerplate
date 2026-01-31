@@ -30,7 +30,9 @@ export const createRefreshTokenInterceptor = (props?: CreateRefreshTokenIntercep
       return Promise.reject(error);
     }
 
-    if (error.config?.url === AUTH_URL.REFRESH_TOKEN) {
+    // Don't try to refresh tokens for auth-related endpoints
+    // These should fail gracefully without triggering refresh loops
+    if (error.config?.url === AUTH_URL.REFRESH_TOKEN || error.config?.url === AUTH_URL.LOGOUT) {
       return Promise.reject(error);
     }
 

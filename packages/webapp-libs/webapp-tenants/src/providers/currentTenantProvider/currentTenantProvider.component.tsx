@@ -47,7 +47,7 @@ export const CurrentTenantProvider = ({ children }: CurrentTenantProviderProps) 
 
   const value = useMemo(
     () => ({ data: currentTenant || null }),
-    [currentTenant?.id, currentMembership?.role, currentTenant?.name]
+    [currentTenant?.id, currentMembership?.role, currentTenant?.name, currentTenant?.actionLoggingEnabled]
   );
 
   return <currentTenantContext.Provider value={value}>{children}</currentTenantContext.Provider>;

@@ -26,7 +26,10 @@
     "src/**/*.spec.tsx",
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
+    "src/**/*.stories.ts",
+    "src/**/*.stories.tsx",
     "src/tests/**/*.ts",
-    "src/tests/**/*.tsx"
+    "src/tests/**/*.tsx",
+    "src/utils/storybook.tsx"
   ]
 }

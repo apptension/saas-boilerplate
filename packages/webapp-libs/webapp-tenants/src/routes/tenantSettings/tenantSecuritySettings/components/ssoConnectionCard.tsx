@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { apiClient } from '@sb/webapp-api-client/api';
+import { apiClient, apiURL } from '@sb/webapp-api-client/api';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
-import { Dialog, DialogContent } from '@sb/webapp-core/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@sb/webapp-core/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +32,10 @@ import {
   Users,
   Calendar,
   Activity,
+  FlaskConical,
+  AlertTriangle,
+  Info,
+  Globe,
 } from 'lucide-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -46,10 +50,27 @@ type SSOConnection = {
   isActive: boolean;
   isSaml: boolean;
   isOidc: boolean;
+  allowedDomains: string[];
   createdAt: string;
   lastLoginAt: string | null;
   loginCount: number;
   spMetadataUrl: string | null;
+};
+
+type TestCheck = {
+  name: string;
+  status: 'success' | 'warning' | 'error';
+  message: string;
+  details?: Record<string, string | number>;
+};
+
+type TestResult = {
+  connectionId: string;
+  connectionName: string;
+  connectionType: string;
+  overallStatus: 'success' | 'warning' | 'error';
+  checks: TestCheck[];
+  testedAt: string;
 };
 
 export type SSOConnectionCardProps = {
@@ -58,6 +79,7 @@ export type SSOConnectionCardProps = {
 
 export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
   const { isOpen: isModalOpen, setIsOpen: setIsModalOpen } = useOpenState(false);
+  const { isOpen: isTestDialogOpen, setIsOpen: setIsTestDialogOpen } = useOpenState(false);
   const { toast } = useToast();
   const intl = useIntl();
   const { data: currentTenant } = useCurrentTenant();
@@ -67,6 +89,8 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [toggling, setToggling] = useState<string | null>(null);
+  const [testing, setTesting] = useState<string | null>(null);
+  const [testResult, setTestResult] = useState<TestResult | null>(null);
 
   const fetchConnections = useCallback(async () => {
     if (!canManageSSO || !tenantId) {
@@ -75,10 +99,13 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
     }
 
     try {
-      const response = await apiClient.get(`/api/sso/tenant/${tenantId}/connections/`);
+      const response = await apiClient.get(apiURL(`/sso/tenant/${tenantId}/connections/`));
       setConnections(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
-      console.error('Failed to fetch SSO connections:', error);
+      // Silently handle errors - SSO connections may not be accessible due to permissions
+      if (process.env['NODE_ENV'] === 'development') {
+        console.warn('Failed to fetch SSO connections (this is expected if user lacks permissions):', error);
+      }
     } finally {
       setLoading(false);
     }
@@ -93,7 +120,7 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
     
     setDeleting(connectionId);
     try {
-      await apiClient.delete(`/api/sso/tenant/${tenantId}/connections/${connectionId}`);
+      await apiClient.delete(apiURL(`/sso/tenant/${tenantId}/connections/${connectionId}`));
       setConnections((prev) => prev.filter((c) => c.id !== connectionId));
       toast({
         description: intl.formatMessage({
@@ -102,6 +129,8 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
         }),
         variant: 'success',
       });
+      // Dispatch event to notify other components (like SCIM card) about SSO changes
+      window.dispatchEvent(new CustomEvent('sso-connections-changed', { detail: { tenantId } }));
     } catch (error) {
       toast({
         description: intl.formatMessage({
@@ -122,7 +151,7 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
     const endpoint = connection.isActive ? 'deactivate' : 'activate';
     
     try {
-      const response = await apiClient.post(`/api/sso/tenant/${tenantId}/connections/${connection.id}/${endpoint}`);
+      const response = await apiClient.post(apiURL(`/sso/tenant/${tenantId}/connections/${connection.id}/${endpoint}`));
       const data = response.data;
       setConnections((prev) =>
         prev.map((c) =>
@@ -143,6 +172,8 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
             }),
         variant: 'success',
       });
+      // Dispatch event to notify other components (like SCIM card) about SSO changes
+      window.dispatchEvent(new CustomEvent('sso-connections-changed', { detail: { tenantId } }));
     } catch (error) {
       toast({
         description: intl.formatMessage({
@@ -153,6 +184,66 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
       });
     } finally {
       setToggling(null);
+    }
+  };
+
+  const handleTestConnection = async (connection: SSOConnection) => {
+    if (!tenantId) return;
+    
+    setTesting(connection.id);
+    setTestResult(null);
+    
+    try {
+      const response = await apiClient.post(apiURL(`/sso/tenant/${tenantId}/connections/${connection.id}/test`));
+      setTestResult(response.data as TestResult);
+      setIsTestDialogOpen(true);
+    } catch (error) {
+      toast({
+        description: intl.formatMessage({
+          defaultMessage: 'Failed to test SSO connection.',
+          id: 'SSO Card / Test Error',
+        }),
+        variant: 'destructive',
+      });
+    } finally {
+      setTesting(null);
+    }
+  };
+
+  const getTestStatusIcon = (status: 'success' | 'warning' | 'error') => {
+    switch (status) {
+      case 'success':
+        return <CheckCircle2 className="h-4 w-4 text-emerald-500" />;
+      case 'warning':
+        return <AlertTriangle className="h-4 w-4 text-amber-500" />;
+      case 'error':
+        return <XCircle className="h-4 w-4 text-red-500" />;
+    }
+  };
+
+  const getOverallStatusBadge = (status: 'success' | 'warning' | 'error') => {
+    switch (status) {
+      case 'success':
+        return (
+          <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20">
+            <CheckCircle2 className="mr-1 h-3 w-3" />
+            <FormattedMessage defaultMessage="All checks passed" id="SSO Card / Test All Passed" />
+          </Badge>
+        );
+      case 'warning':
+        return (
+          <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/20">
+            <AlertTriangle className="mr-1 h-3 w-3" />
+            <FormattedMessage defaultMessage="Some warnings" id="SSO Card / Test Warnings" />
+          </Badge>
+        );
+      case 'error':
+        return (
+          <Badge className="bg-red-500/15 text-red-700 dark:text-red-400 border-red-500/20">
+            <XCircle className="mr-1 h-3 w-3" />
+            <FormattedMessage defaultMessage="Configuration issues" id="SSO Card / Test Errors" />
+          </Badge>
+        );
     }
   };
 
@@ -386,6 +477,32 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
                             </>
                           )}
                         </div>
+
+                        {/* Allowed Domains */}
+                        {connection.allowedDomains && connection.allowedDomains.length > 0 && (
+                          <div className="flex items-center gap-2 flex-wrap mt-2">
+                            <Globe className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                            <span className="text-xs text-muted-foreground">
+                              <FormattedMessage defaultMessage="Domains:" id="SSO Card / Domains Label" />
+                            </span>
+                            {connection.allowedDomains.map((domain) => (
+                              <Badge key={domain} variant="secondary" className="text-xs font-normal">
+                                {domain}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                        {(!connection.allowedDomains || connection.allowedDomains.length === 0) && (
+                          <div className="flex items-center gap-2 mt-2">
+                            <AlertTriangle className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                            <span className="text-xs text-amber-600 dark:text-amber-400">
+                              <FormattedMessage
+                                defaultMessage="No domains configured - SSO discovery won't work"
+                                id="SSO Card / No Domains Warning"
+                              />
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -404,6 +521,18 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem
+                          onClick={() => handleTestConnection(connection)}
+                          disabled={testing === connection.id}
+                        >
+                          {testing === connection.id ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <FlaskConical className="mr-2 h-4 w-4" />
+                          )}
+                          <FormattedMessage defaultMessage="Test connection" id="SSO Card / Test Connection" />
+                        </DropdownMenuItem>
+
                         <DropdownMenuItem
                           onClick={() => handleToggleActive(connection)}
                           disabled={toggling === connection.id}
@@ -477,7 +606,19 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
       </Card>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[550px]">
+        <DialogContent className="sm:max-w-[550px]" aria-describedby="sso-connection-dialog-description">
+          <DialogTitle className="sr-only">
+            <FormattedMessage
+              defaultMessage="Add SSO Connection"
+              id="SSO Connection Card / Dialog Title"
+            />
+          </DialogTitle>
+          <DialogDescription id="sso-connection-dialog-description" className="sr-only">
+            <FormattedMessage
+              defaultMessage="Configure SAML or OIDC single sign-on for your organization"
+              id="SSO Connection Card / Dialog Description"
+            />
+          </DialogDescription>
           {tenantId && (
             <AddSSOConnectionModal
               closeModal={() => setIsModalOpen(false)}
@@ -485,6 +626,99 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
               tenantId={tenantId}
             />
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Test Results Dialog */}
+      <Dialog open={isTestDialogOpen} onOpenChange={setIsTestDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[85vh] flex flex-col">
+          <DialogHeader className="shrink-0">
+            <DialogTitle className="flex items-center gap-2">
+              <FlaskConical className="h-5 w-5" />
+              <FormattedMessage
+                defaultMessage="Connection Test Results"
+                id="SSO Card / Test Results Title"
+              />
+            </DialogTitle>
+            <DialogDescription>
+              {testResult && (
+                <span className="flex items-center gap-2 mt-1">
+                  <FormattedMessage
+                    defaultMessage="{name} ({type})"
+                    id="SSO Card / Test Results Subtitle"
+                    values={{
+                      name: testResult.connectionName,
+                      type: testResult.connectionType.toUpperCase(),
+                    }}
+                  />
+                </span>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          {testResult && (
+            <div className="flex-1 overflow-hidden flex flex-col gap-4 min-h-0">
+              {/* Overall Status */}
+              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 shrink-0">
+                <span className="text-sm font-medium">
+                  <FormattedMessage defaultMessage="Overall Status" id="SSO Card / Test Overall Status" />
+                </span>
+                {getOverallStatusBadge(testResult.overallStatus)}
+              </div>
+
+              {/* Checks List - Scrollable */}
+              <div className="flex-1 overflow-y-auto min-h-0 pr-2">
+                <div className="space-y-2">
+                  {testResult.checks.map((check, index) => (
+                    <div
+                      key={index}
+                      className={cn(
+                        'p-3 rounded-lg border transition-colors',
+                        check.status === 'success' && 'border-emerald-500/20 bg-emerald-500/5',
+                        check.status === 'warning' && 'border-amber-500/20 bg-amber-500/5',
+                        check.status === 'error' && 'border-red-500/20 bg-red-500/5'
+                      )}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="mt-0.5 shrink-0">{getTestStatusIcon(check.status)}</div>
+                        <div className="flex-1 min-w-0">
+                          <span className="font-medium text-sm">{check.name}</span>
+                          <p className="text-sm text-muted-foreground mt-0.5">{check.message}</p>
+                          {check.details && (
+                            <div className="mt-2 p-2 rounded bg-background/50 text-xs font-mono space-y-1 overflow-hidden">
+                              {Object.entries(check.details).map(([key, value]) => (
+                                <div key={key} className="flex flex-col sm:flex-row sm:gap-2">
+                                  <span className="text-muted-foreground shrink-0">{key}:</span>
+                                  <span className="break-all">{String(value)}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Info Footer */}
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-blue-500/10 text-blue-700 dark:text-blue-400 shrink-0">
+                <Info className="h-4 w-4 mt-0.5 shrink-0" />
+                <p className="text-xs">
+                  <FormattedMessage
+                    defaultMessage="This test validates your SSO configuration. A successful test doesn't guarantee login will work - you should also test an actual SSO login."
+                    id="SSO Card / Test Info"
+                  />
+                </p>
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end pt-4 shrink-0 border-t">
+            <Button variant="outline" onClick={() => setIsTestDialogOpen(false)}>
+              <FormattedMessage defaultMessage="Close" id="SSO Card / Test Close" />
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </TooltipProvider>

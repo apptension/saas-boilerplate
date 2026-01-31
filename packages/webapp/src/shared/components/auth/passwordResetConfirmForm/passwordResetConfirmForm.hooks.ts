@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client/react';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -65,9 +66,10 @@ export const usePasswordResetConfirmForm = (user: string, token: string) => {
 
       navigate(generateLocalePath(RoutesConfig.login));
     },
-    onError: (error: any) => {
-      if (error?.graphQLErrors) {
-        setApolloGraphQLResponseErrors(error.graphQLErrors);
+    onError: (error) => {
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        setApolloGraphQLResponseErrors(graphQLErrors);
       }
     },
   });

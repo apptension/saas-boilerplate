@@ -9,6 +9,7 @@
     "type-check": "tsc --noEmit --project tsconfig.lib.json"
   },
   "dependencies": {
+    "@radix-ui/react-checkbox": "1.3.3",
     "@sb/webapp-api-client": "workspace:*",
     "@sb/webapp-core": "workspace:*",
     "@sb/webapp-notifications": "workspace:*",

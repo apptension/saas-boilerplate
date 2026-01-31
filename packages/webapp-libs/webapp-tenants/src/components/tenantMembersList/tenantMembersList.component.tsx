@@ -3,7 +3,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from '@sb/webapp-c
 import { FormattedMessage } from 'react-intl';
 
 import { useCurrentTenant } from '../../providers';
-import { MembershipEntry } from './membershipEntry';
+import { MembershipEntry, MembershipEntryProps } from './membershipEntry';
 import { tenantMembersListQuery } from './tenantMembersList.graphql';
 
 export const TenantMembersList = () => {
@@ -39,7 +39,13 @@ export const TenantMembersList = () => {
       <TableBody>
         {memberships.map(
           (membership) =>
-            membership && <MembershipEntry membership={membership} key={membership.id} onAfterUpdate={refetch} />
+            membership && (
+              <MembershipEntry
+                membership={membership as MembershipEntryProps['membership']}
+                key={membership.id}
+                onAfterUpdate={refetch}
+              />
+            )
         )}
       </TableBody>
     </Table>

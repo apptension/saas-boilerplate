@@ -1,0 +1,8 @@
+{
+  "name": "webapp-ai-assistant",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/webapp-libs/webapp-ai-assistant/src",
+  "projectType": "library",
+  "targets": {},
+  "tags": []
+}

@@ -19,5 +19,13 @@ module.exports = {
       __dirname,
       'packages/webapp-libs/webapp-api-client/src/tests/mocks/apolloUploadClient.ts'
     ),
+    // Mock uuid ESM module for Jest compatibility (pnpm structure causes issues)
+    // Use the CJS dist path for uuid to avoid ESM parsing issues
+    '^uuid$': path.join(__dirname, 'node_modules/.pnpm/uuid@9.0.1/node_modules/uuid/dist/commonjs-browser/index.js'),
+    // Mock Vite env helper for Jest (avoids import.meta.env parsing issues)
+    '.*/env\\.vite$': path.join(
+      __dirname,
+      'packages/webapp-libs/webapp-core/src/tests/mocks/envVite.ts'
+    ),
   },
 };

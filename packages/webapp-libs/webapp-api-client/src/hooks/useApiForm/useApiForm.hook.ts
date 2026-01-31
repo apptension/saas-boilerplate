@@ -26,12 +26,17 @@ import { useTranslatedErrors } from './useTranslatedErrors';
  *
  *
  * ```ts
+ * import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
+ *
  * const { setApolloGraphQLResponseErrors } = useApiForm<LoginFormFields>();
  *
  * const [commitLoginMutation] = useMutation(authSignInMutation, {
  *   onError: (error) => {
  *     // highlight-next-line
- *     setApolloGraphQLResponseErrors(error.graphQLErrors);
+ *     const graphQLErrors = extractGraphQLErrors(error);
+ *     if (graphQLErrors) {
+ *       setApolloGraphQLResponseErrors(graphQLErrors);
+ *     }
  *   },
  * });
  *

@@ -12,6 +12,8 @@ export const TenantInvitationAccepted = ({
   issuer,
   ...restProps
 }: TenantInvitationAcceptedProps) => {
+  const displayName = name || issuer?.email || '';
+
   return (
     <Notification
       {...restProps}
@@ -19,9 +21,9 @@ export const TenantInvitationAccepted = ({
       title={issuer?.email}
       content={
         <FormattedMessage
-          defaultMessage={'Your invitation to "{tenant_name}" has been accepted by "{name}"'}
+          defaultMessage='Your invitation to "{tenant_name}" has been accepted by "{name}"'
           id="Notifications / Tenant / Invitation Accepted"
-          values={{ tenant_name, name }}
+          values={{ tenant_name, name: displayName }}
         />
       }
     />

@@ -16,7 +16,6 @@ import { Alert, AlertDescription } from '@sb/webapp-core/components/ui/alert';
 import { Button } from '@sb/webapp-core/components/ui/button';
 import { Input } from '@sb/webapp-core/components/ui/input';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
@@ -29,7 +28,6 @@ export const SignupForm = () => {
   const generateLocalePath = useGenerateLocalePath();
   const {
     form,
-    hasGenericErrorOnly,
     genericError,
     loading,
     handleSignup,
@@ -46,9 +44,7 @@ export const SignupForm = () => {
       <form
         noValidate
         className="flex w-full flex-col gap-6"
-        onSubmit={(e) => {
-          handleSignup(e).catch(reportError);
-        }}
+        onSubmit={handleSignup}
       >
         <FormField
           control={form.control}
@@ -180,7 +176,7 @@ export const SignupForm = () => {
                     },
                     {
                       termsLink: (
-                        <Button variant="link" className="inline h-auto p-0 text-sm underline" asChild>
+                        <Button key="terms" variant="link" className="inline h-auto p-0 text-sm underline" asChild>
                           <Link to={generateLocalePath(RoutesConfig.termsAndConditions)}>
                             <FormattedMessage
                               id="Auth / Signup / Accept checkbox / T&C link"
@@ -190,7 +186,7 @@ export const SignupForm = () => {
                         </Button>
                       ),
                       policyLink: (
-                        <Button variant="link" className="inline h-auto p-0 text-sm underline" asChild>
+                        <Button key="policy" variant="link" className="inline h-auto p-0 text-sm underline" asChild>
                           <Link to={generateLocalePath(RoutesConfig.privacyPolicy)}>
                             <FormattedMessage
                               id="Auth / Signup / Accept checkbox / Privacy policy link"
@@ -208,7 +204,7 @@ export const SignupForm = () => {
           )}
         />
 
-        {hasGenericErrorOnly && (
+        {genericError && (
           <Alert variant="destructive">
             <AlertDescription>{genericError}</AlertDescription>
           </Alert>

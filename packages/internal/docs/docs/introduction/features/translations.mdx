@@ -1,483 +1,385 @@
 ---
-title: Dynamic Translations (i18n)
-description: Manage translations through the admin panel without code changes
+title: Translations & i18n
+description: Dynamic internationalization with cloud publishing and AI-powered translation
 ---
 
 import ProjectName from '../../shared/components/ProjectName.component';
 
-<ProjectName /> includes a comprehensive internationalization (i18n) system that goes beyond static translation files. You can manage all translations dynamically through the Django Admin panel—no redeployment required.
+# Translations & Internationalization
+
+<ProjectName /> includes a comprehensive i18n system that goes beyond static translation files. Translations can be managed through Django Admin, published to cloud storage (S3/R2/B2), and automatically generated using OpenAI.
 
 ## Key Features
 
 | Feature | Description |
 |---------|-------------|
-| **Admin-managed translations** | Add, edit, and publish translations via Django Admin |
-| **AI-powered translation** | Automatically translate to new languages using OpenAI |
-| **Dynamic locales** | Languages are fetched from the API—no frontend code changes needed |
-| **Default locale control** | Set the default language in Admin—controls initial redirect |
-| **Version history** | Track changes and rollback to previous versions |
-| **CDN distribution** | Translations served via CloudFront for fast global delivery |
-| **Development mode** | Hot-reload translations during development |
-| **Fallback support** | Graceful fallback to bundled defaults if CDN fails |
-| **Progress tracking** | Visual indicators show translation completion per locale |
+| **Dynamic Translations** | Update translations via admin without redeploying |
+| **Cloud Publishing** | Translations served from S3/CloudFront/R2 for optimal performance |
+| **AI Translation** | Automatically translate using OpenAI with context awareness |
+| **Build-Time Sync** | Extract keys from source code and sync to database |
+| **Version Control** | Rollback to previous translation versions |
+| **RTL Support** | Full right-to-left language support (Arabic, Hebrew) |
 
----
+## Architecture
 
-## Quick Start
+```
+┌────────────────────────────────────────────────────────────────────────────┐
+│                      TRANSLATION SYSTEM                                    │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│  BUILD TIME                          RUNTIME                               │
+│  ══════════                          ═══════                               │
+│                                                                            │
+│  ┌─────────────┐   formatjs     ┌─────────────┐                           │
+│  │ Source Code │───extract────►│ master.json │                           │
+│  │ (.tsx)      │                └──────┬──────┘                           │
+│  └─────────────┘                       │                                   │
+│                                        │ sync                              │
+│                                        ▼                                   │
+│  ┌─────────────┐               ┌─────────────┐      ┌──────────────┐      │
+│  │ Django      │◄──translate──►│  PostgreSQL │      │   Frontend   │      │
+│  │ Admin       │   via AI      │  (Keys,     │      │   (React)    │      │
+│  └──────┬──────┘               │  Translations│      └──────┬───────┘      │
+│         │                      └──────┬──────┘             │               │
+│         │ publish                     │                    │ fetch         │
+│         ▼                             ▼                    ▼               │
+│  ┌─────────────────────────────────────────────────────────────────┐      │
+│  │                    Cloud Storage (S3/R2/B2)                     │      │
+│  │  translations/en.json  translations/pl.json  translations/de.json│      │
+│  └─────────────────────────────────────────────────────────────────┘      │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+```
 
-### Automatic Sync on Startup
+## Build-Time Key Extraction
 
-When you run `pnpm saas up`, translation keys are **automatically synced** from the codebase 
-to the database during backend startup. This happens after migrations run.
+Translation keys are extracted from source code using `formatjs`:
 
-### Manual Sync
-
-To manually extract and sync translation keys:
+```tsx
+// Source code with FormattedMessage
+<FormattedMessage 
+  defaultMessage="Welcome back, {name}!" 
+  id="Dashboard / Welcome message"
+/>
+```
 
 ```bash
+# Extract all keys to master.json
 cd packages/webapp
+pnpm extract-intl:master
+
+# Sync keys to database (uses docker exec)
+pnpm translations:sync
+
+# Or combine both steps
 pnpm translations:extract-and-sync
 ```
 
-This will:
-- Extract ~1000+ translation keys from all `FormattedMessage` and `intl.formatMessage` usages
-- Sync them to the backend database using docker exec (no authentication required)
-- Make them available in Django Admin for translation
+The extraction covers all webapp packages:
+- `webapp/src/**/*.tsx`
+- `webapp-libs/webapp-core/src/**/*.tsx`
+- `webapp-libs/webapp-tenants/src/**/*.tsx`
+- `webapp-libs/webapp-management-dashboard/src/**/*.tsx`
+- ... and all other webapp-libs
 
-:::tip CI/CD Integration
-In CI/CD pipelines, you can run the sync directly via the management command:
+### Deployment Bundle
+
+For deployments, a `translations_export.json` bundle is generated:
+
+```javascript
+// packages/webapp/scripts/exportTranslations.js
+const exportData = {
+  locales: data.locales,      // All active locales with metadata
+  translations: data.translations,  // All translations per locale
+};
+fs.writeFileSync('translations_export.json', JSON.stringify(exportData));
+```
+
+This bundle enables:
+- Pre-populating databases in new environments
+- CI/CD pipelines without database access
+- Backup/restore of translation data
+
+## Cloud Storage Publishing
+
+Translations are published to cloud storage for optimal frontend loading:
+
+```python
+# packages/backend/apps/translations/services.py
+class TranslationPublisher:
+    def publish(self, locale: Locale, user) -> TranslationVersion:
+        # Generate translation JSON
+        translations = self.generate_translation_bundle(locale)
+        version_hash = self.generate_version_hash(translations)
+        
+        # Upload to storage (S3, R2, B2, or local)
+        versioned_path = f"{locale.code}/{version_string}.json"
+        current_path = f"{locale.code}.json"
+        
+        self._upload_json(versioned_path, translations)  # For history
+        self._upload_json(current_path, translations)    # Current version
+        
+        # Create version record for rollback
+        version = TranslationVersion.objects.create(
+            locale=locale,
+            version=version_string,
+            s3_key=versioned_path,
+            content_hash=version_hash,
+        )
+        return version
+```
+
+### Storage Backend Support
+
+Uses the same storage backend as the rest of the application:
+
+| Backend | Configuration | Use Case |
+|---------|--------------|----------|
+| **AWS S3** | `STORAGE_BACKEND=s3` | Production with CloudFront CDN |
+| **Cloudflare R2** | `STORAGE_BACKEND=r2` | Cost-effective with global CDN |
+| **Backblaze B2** | `STORAGE_BACKEND=b2` | Budget-friendly option |
+| **Local** | `STORAGE_BACKEND=local` | Development only |
+
+### Version History & Rollback
+
+Every publish creates a versioned snapshot:
+
+```
+translations/
+├── en.json                    # Current version
+├── pl.json                    # Current version
+├── en/
+│   ├── v20260113120000-a1b2c3.json
+│   └── v20260112100000-d4e5f6.json
+└── pl/
+    ├── v20260113120000-x7y8z9.json
+    └── v20260112100000-m1n2o3.json
+```
+
+Rollback via admin:
+1. Go to **Admin → Translations → Translation Versions**
+2. Select the version to restore
+3. Click **Activate this version**
+
+## AI-Powered Translation
+
+Automatically translate your app using OpenAI:
+
+```python
+# packages/backend/apps/translations/ai_service.py
+class AITranslationService:
+    def translate_batch(
+        self,
+        keys_with_text: List[Dict[str, str]],
+        source_locale: str,
+        target_locale: str,
+        app_context: str = "a modern SaaS web application",
+    ) -> List[TranslationResult]:
+        # Build context-aware prompt
+        prompt = self._build_translation_prompt(keys_with_text, ...)
+        
+        response = self.client.chat.completions.create(
+            model=self.model,  # gpt-4 default
+            messages=[
+                {"role": "system", "content": self._get_system_prompt(...)},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.3,  # Low for consistent translations
+            response_format={"type": "json_object"},
+        )
+        # ...
+```
+
+### AI Translation Features
+
+- **Context Awareness**: Message ID and description passed to AI
+- **Placeholder Preservation**: `{name}`, `{count}` kept intact
+- **Batch Processing**: Efficient API usage with configurable batch sizes
+- **Progress Tracking**: Real-time progress via admin UI
+- **Browser Polling**: No Celery required - works with any deployment
+- **Error Recovery**: Failed keys tracked for retry
+
+### Supported Languages
+
+```python
+LANGUAGE_NAMES = {
+    'en': 'English', 'pl': 'Polish', 'de': 'German', 'fr': 'French',
+    'es': 'Spanish', 'it': 'Italian', 'pt': 'Portuguese', 'nl': 'Dutch',
+    'ru': 'Russian', 'ja': 'Japanese', 'ko': 'Korean', 'zh': 'Chinese',
+    'ar': 'Arabic', 'he': 'Hebrew', 'tr': 'Turkish', 'hi': 'Hindi',
+    # ... and more
+}
+```
+
+## Data Models
+
+### TranslationKey
+
+Represents a unique translation key extracted from source code:
+
+```python
+class TranslationKey(models.Model):
+    key = models.CharField(max_length=512, unique=True)  # Message ID
+    default_message = models.TextField()  # English default
+    description = models.TextField(blank=True)  # Context for translators
+    is_deprecated = models.BooleanField(default=False)  # Key removed from code
+    first_seen_at = models.DateTimeField(auto_now_add=True)
+    last_seen_at = models.DateTimeField(auto_now=True)
+```
+
+### Locale
+
+Supported language/locale configuration:
+
+```python
+class Locale(models.Model):
+    code = models.CharField(max_length=10)  # 'en', 'pl', 'en-US'
+    name = models.CharField(max_length=100)  # 'English', 'Polish'
+    native_name = models.CharField(max_length=100)  # 'English', 'Polski'
+    is_default = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    rtl = models.BooleanField(default=False)  # Right-to-left
+    sort_order = models.PositiveIntegerField(default=0)
+```
+
+### Translation
+
+Individual translation for a key in a locale:
+
+```python
+class Translation(models.Model):
+    class Status(models.TextChoices):
+        DRAFT = 'draft'
+        REVIEW = 'review'
+        APPROVED = 'approved'
+        PUBLISHED = 'published'
+
+    key = models.ForeignKey(TranslationKey, on_delete=models.CASCADE)
+    locale = models.ForeignKey(Locale, on_delete=models.CASCADE)
+    value = models.TextField()
+    status = models.CharField(choices=Status.choices, default=Status.DRAFT)
+    translated_by = models.ForeignKey(User, null=True)
+```
+
+## API Endpoints
+
+### Public Endpoints
+
 ```bash
-docker compose exec backend python manage.py sync_translations /path/to/master.json
-```
-:::
+# Get translations for a locale (cached)
+GET /api/translations/{locale_code}.json
 
----
-
-## Architecture Overview
-
-The translation system works in three phases:
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     BUILD TIME                               │
-├─────────────────────────────────────────────────────────────┤
-│  1. formatjs extract → master.json                          │
-│  2. python manage.py sync_translations → database           │
-│     (automatic on backend startup, or via docker exec)      │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│                    ADMIN PANEL                               │
-├─────────────────────────────────────────────────────────────┤
-│  1. Translator views keys with English defaults             │
-│  2. Adds/edits translations for each locale                 │
-│  3. Admin publishes → JSON uploaded to S3/CDN               │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│                      RUNTIME                                 │
-├─────────────────────────────────────────────────────────────┤
-│  1. App fetches /api/translations/locales/ for defaults     │
-│  2. Redirects to default locale from Admin                  │
-│  3. Fetches /translations/{locale}.json from CDN            │
-│  4. Falls back to bundled defaults on failure               │
-└─────────────────────────────────────────────────────────────┘
+# List available locales
+GET /api/translations/locales/
 ```
 
----
+### Admin Endpoints
 
-## Frontend Usage
+```bash
+# Sync translation keys from master.json
+POST /api/translations/sync/
+Content-Type: application/json
+{"translations": {...}}
 
-### Message Definition
+# Publish translations to CDN
+POST /api/translations/publish/
+{"locale_code": "pl"}
 
-Use `react-intl` for all user-facing text:
+# Get translation status
+GET /api/translations/status/
+
+# AI Translation Jobs
+POST /api/translations/ai-jobs/
+GET /api/translations/ai-jobs/{job_id}/
+POST /api/translations/ai-jobs/{job_id}/process-batch/
+```
+
+## Frontend Integration
+
+### Loading Translations
+
+```typescript
+// Translations loaded at app startup from CDN
+const messages = await fetch(`${TRANSLATIONS_URL}/${locale}.json`).then(r => r.json());
+
+// Provided to react-intl
+<IntlProvider locale={locale} messages={messages}>
+  <App />
+</IntlProvider>
+```
+
+### Using Translations
 
 ```tsx
 import { FormattedMessage, useIntl } from 'react-intl';
 
 // In JSX
 <FormattedMessage 
-  defaultMessage="Welcome to the dashboard" 
-  id="Home / Welcome message" 
+  defaultMessage="Hello, {name}!" 
+  id="Greeting / Hello message"
+  values={{ name: user.name }}
 />
 
-// For props/attributes
+// In code
 const intl = useIntl();
 const label = intl.formatMessage({
-  defaultMessage: 'Save changes',
-  id: 'Form / Save button',
+  defaultMessage: 'Submit',
+  id: 'Form / Submit button',
 });
 ```
 
+## Environment Variables
+
+```bash
+# Backend
+OPENAI_API_KEY=sk-...              # For AI translation
+OPENAI_MODEL=gpt-4                 # AI model (default: gpt-4)
+STORAGE_BACKEND=s3                 # Storage for published translations
+
+# Frontend
+VITE_TRANSLATIONS_URL=https://cdn.example.com/translations
+VITE_TRANSLATIONS_POLLING=true     # Enable polling in development
+```
+
+## Best Practices
+
 ### Message ID Convention
 
-Use the pattern `"Section / Description"`:
-
-- `"Home / Welcome message"`
-- `"Profile / Edit button"`
-- `"Sidebar / Settings link"`
-
-### Language Switcher
-
-The built-in language switcher dynamically fetches available locales from the API:
-
-- **Header** (logged-in): Globe icon with flag and language name
-- **Auth pages**: Settings menu in the floating button (bottom-right)
-
-The switcher displays:
-- Flag emoji for each locale
-- Native language name (e.g., "Deutsch" for German)
-- English name as subtitle
-- Check mark for current selection
-
-:::info Dynamic Languages
-The language switcher only shows locales marked as **Active** in the Admin panel. Add new languages via Admin → Locales without any frontend code changes.
-:::
-
----
-
-## Default Locale
-
-The default locale controls where users are redirected when visiting the root URL (e.g., `https://yourapp.com/`).
-
-### Setting the Default Locale
-
-1. Navigate to **Admin → Translations → Locales**
-2. Click on the locale you want as default (e.g., "Polish")
-3. Check **Is default**
-4. Click **Save**
-
-:::note Single Default
-Only one locale can be the default at a time. Setting a new default automatically unsets the previous one.
-:::
-
-### How It Works
-
-When a user visits the app without a locale in the URL:
-
-1. The app fetches available locales from `/api/translations/locales/`
-2. Finds the locale with `is_default: true`
-3. Redirects to `/{default_locale}/` (e.g., `/pl/` for Polish)
-
 ```
-https://yourapp.com/           → https://yourapp.com/pl/
-https://yourapp.com/?ref=123   → https://yourapp.com/pl/?ref=123
+"Section / Description"
 ```
 
----
+Examples:
+- `"Dashboard / Welcome message"`
+- `"Profile / Save button"`
+- `"Auth / Login error"`
 
-## Backend (Admin Panel)
-
-### Accessing the Admin
-
-Navigate to `/admin/translations/` to manage translations.
-
-### Models
-
-| Model | Purpose |
-|-------|---------|
-| **Locales** | Supported languages (en, pl, de, etc.) with default/active flags |
-| **Translation Keys** | Auto-synced message IDs from codebase |
-| **Translations** | Actual translations per locale |
-| **Translation Versions** | Published version history for rollback |
-| **AI Translation Jobs** | Batch AI translation task tracking |
-
-### Locale Properties
-
-| Property | Description |
-|----------|-------------|
-| **Code** | ISO 639-1 code (e.g., `en`, `pl`, `de`) |
-| **Name** | English name (e.g., "German") |
-| **Native Name** | Native name (e.g., "Deutsch") |
-| **Is Default** | Redirect target for root URL |
-| **Is Active** | Shown in language switcher |
-| **RTL** | Right-to-left language support |
-| **Sort Order** | Display order in language switcher |
-
-### Translation Workflow
-
-1. **Keys sync automatically** during build (CI/CD)
-2. **Translators** open Admin → Translation Keys
-3. Click a key to see/add translations for each locale
-4. Set status to **Published** when ready
-5. Go to **Locales** → click **Publish** button
-6. Translations are uploaded to S3 and CDN cache is invalidated
-
----
-
-## Configuration
-
-### Backend Environment Variables
-
-```bash
-# S3 bucket for published translation JSON files
-TRANSLATIONS_BUCKET_NAME=my-project-translations
-
-# CloudFront distribution ID for cache invalidation
-TRANSLATIONS_CLOUDFRONT_ID=ABCD1234567890
-```
-
-### Frontend Environment Variables
-
-By default, the app uses remote translations in production and bundled translations in development.
-
-```bash
-# Override remote translation behavior (default: true in production, false in development)
-VITE_USE_REMOTE_TRANSLATIONS=true
-
-# Base URL for translations (default: /api/translations)
-# In production, set this to your CDN URL
-VITE_TRANSLATIONS_URL=https://d123456.cloudfront.net/translations
-
-# Enable polling in development for live updates (default: false)
-VITE_TRANSLATIONS_POLLING=true
-```
-
-:::note Default Behavior
-- **Production**: Fetches translations from `VITE_TRANSLATIONS_URL` (remote)
-- **Development**: Uses bundled translations for faster startup
-- Set `VITE_USE_REMOTE_TRANSLATIONS=true` in development to test remote translations
-:::
-
----
-
-## AI-Powered Translation
-
-When `OPENAI_API_KEY` is configured, you can automatically translate all keys from one locale to another using OpenAI.
-
-### How It Works
-
-1. Navigate to **Admin → Translations → Locales**
-2. Click the **AI Translate** button
-3. Select source and target locales
-4. Configure options:
-   - **Overwrite existing**: Re-translate keys that already have translations
-   - **Auto-publish**: Set translations to Published status automatically
-   - **Batch size**: Keys per API call (1-50)
-5. Click **Start Translation**
-
-### Features
-
-- **Context-aware**: Passes key ID, description, and app context to OpenAI for better translations
-- **Batch processing**: Translates keys in configurable batches to handle large codebases
-- **Browser-based execution**: Runs via browser polling—no Celery required
-- **Live progress tracking**: Real-time progress bar with batch-by-batch updates
-- **Resume capability**: Failed or paused jobs can be resumed from where they left off
-- **Cancel support**: Running jobs can be cancelled at any time
-- **Placeholder preservation**: Maintains `{variable}` placeholders in translations
-
-### Progress Tracking
-
-The AI translation panel shows:
-- **Progress bar**: Visual completion percentage
-- **Stats**: Total keys, processed, translated, failed
-- **Live log**: Terminal-style output of batch processing
-- **Status banner**: Current state (running, completed, failed, cancelled)
-
-### Environment Variables
-
-```bash
-# Required for AI translation
-OPENAI_API_KEY=sk-your-openai-key
-
-# Optional: Specify model (default: gpt-4)
-OPENAI_MODEL=gpt-4
-```
-
-### Best Practices
-
-1. **Review AI translations** before publishing—set `auto_publish` to false for review workflow
-2. **Use smaller batch sizes** (10-20) for complex texts with context
-3. **Start with one locale** to verify quality before batch-translating all languages
-4. **Provide descriptions** in your `FormattedMessage` for better context
-
----
-
-## Adding a New Language
-
-Languages are managed entirely through the Django Admin—no code changes required.
-
-1. **Django Admin** → Translations → Locales → **Add Locale**
-   - Code: `de` (ISO 639-1)
-   - Name: `German`
-   - Native name: `Deutsch`
-   - Active: ✓
-
-2. **Translate keys** using one of these methods:
-   - **Manual**: Edit translations in Admin → Translation Keys
-   - **AI-powered**: Use the "AI Translate" button to auto-translate from English
-
-3. **Publish** the new locale to make translations available
-
-The language switcher automatically shows all active locales from the database.
-
-:::tip No Frontend Changes Needed
-When you add a new locale in the Admin panel, it immediately appears in the language switcher. The frontend dynamically fetches available locales from the API.
-:::
-
----
-
-## Hooks & Components
-
-### `useAvailableLocales`
-
-Fetches available locales from the API:
+### Placeholders
 
 ```tsx
-import { useAvailableLocales } from '@sb/webapp-core/hooks';
+// ✅ Good - uses named placeholders
+<FormattedMessage 
+  defaultMessage="You have {count} notifications" 
+  values={{ count: 5 }}
+/>
 
-const MyComponent = () => {
-  const { locales, defaultLocale, isLoading, getFlag } = useAvailableLocales();
-  
-  return (
-    <ul>
-      {locales.map((locale) => (
-        <li key={locale.code}>
-          {getFlag(locale.code)} {locale.native_name}
-          {locale.is_default && ' (default)'}
-        </li>
-      ))}
-    </ul>
-  );
-};
+// ❌ Bad - no placeholder support
+<span>You have {count} notifications</span>
 ```
 
-**Returns:**
-| Property | Type | Description |
-|----------|------|-------------|
-| `locales` | `RemoteLocale[]` | Array of active locales from API |
-| `defaultLocale` | `string` | Code of the default locale (e.g., `"en"`) |
-| `isLoading` | `boolean` | True while fetching |
-| `isError` | `boolean` | True if fetch failed |
-| `getFlag` | `(code: string) => string` | Returns flag emoji for locale code |
+### Don't Include Emojis
 
-### `RemoteLocale` Type
+```tsx
+// ❌ Bad - emojis in translations
+<FormattedMessage defaultMessage="🎉 Success!" />
 
-```typescript
-interface RemoteLocale {
-  id: number;
-  code: string;           // "en", "pl", "de"
-  name: string;           // "English", "Polish"
-  native_name: string;    // "English", "Polski"
-  is_default: boolean;    // Is default locale
-  is_active: boolean;     // Shown in switcher
-  rtl: boolean;           // Right-to-left
-  translation_progress: number; // 0-100
-}
+// ✅ Good - use toast variants for visual feedback
+toast({ description: 'Success!', variant: 'success' });
 ```
 
----
+## Related Documentation
 
-## API Endpoints
-
-### REST API
-
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `GET` | `/api/translations/locales/` | List available locales | Public |
-| `GET` | `/api/translations/{locale}.json` | Get translations for locale | Public |
-| `POST` | `/api/translations/sync/` | Sync keys from build | Admin |
-| `POST` | `/api/translations/publish/` | Publish to CDN | Admin |
-| `GET` | `/api/translations/status/` | Get sync status | Admin |
-| `GET` | `/api/translations/ai-jobs/` | List AI translation jobs | Admin |
-| `POST` | `/api/translations/ai-jobs/` | Create AI translation job | Admin |
-| `POST` | `/api/translations/ai-jobs/{id}/process-batch/` | Process next batch | Admin |
-| `DELETE` | `/api/translations/ai-jobs/{id}/` | Cancel AI translation job | Admin |
-
-### GraphQL
-
-```graphql
-query {
-  availableLocales {
-    code
-    name
-    nativeName
-    isDefault
-    translationProgress
-  }
-}
-
-mutation {
-  publishTranslations(input: { localeCode: "en" }) {
-    success
-    version
-    message
-  }
-}
-```
-
----
-
-## CLI Commands
-
-### Extract & Sync
-
-```bash
-cd packages/webapp
-
-# Extract all translation keys from code
-pnpm extract-intl:master
-
-# Sync to database (uses docker exec - no auth required)
-pnpm translations:sync
-
-# Both in one command
-pnpm translations:extract-and-sync
-```
-
-:::tip Automatic on Startup
-Translation keys are automatically synced when the backend starts (`pnpm saas up`).
-The above commands are useful when you've added new translation keys and want to sync
-them without restarting the backend.
-:::
-
-### Django Management Commands
-
-```bash
-# Sync from JSON file (run inside backend container or with docker exec)
-docker compose exec backend python manage.py sync_translations /app/translations/master.json
-
-# Dry run - see what would change
-docker compose exec backend python manage.py sync_translations /path/to/master.json --dry-run
-
-# Publish translations
-docker compose exec backend python manage.py publish_translations en
-docker compose exec backend python manage.py publish_translations --all
-```
-
-### Environment Variables for Sync Script
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `TRANSLATIONS_SYNC_MODE` | `docker` | Sync method: `docker` (recommended) or `api` |
-| `TRANSLATIONS_SYNC_API_URL` | `http://localhost:5001/api/translations/sync/` | API URL (only for `api` mode) |
-| `TRANSLATIONS_API_TOKEN` | - | Bearer token (only for `api` mode) |
-
----
-
-## Related Guides
-
-| Guide | Description |
-|-------|-------------|
-| [Manage Translations](/working-with-sb/translations/manage-translations) | Step-by-step translation workflow |
-| [Add a Language](/working-with-sb/translations/add-language) | Add support for a new locale |
-| [AI Translation](/working-with-sb/translations/ai-translate) | Automated translation with OpenAI |
-
----
-
-## Summary
-
-The dynamic translations system provides:
-
-- ✅ No-code translation management via Admin panel
-- ✅ AI-powered batch translation with OpenAI
-- ✅ Dynamic locale configuration (no frontend code changes)
-- ✅ Admin-controlled default locale for redirects
-- ✅ Automatic key extraction from codebase
-- ✅ Version history and rollback capability
-- ✅ CDN-cached delivery for performance
-- ✅ Resume/cancel for AI translation jobs
-- ✅ Development mode with live updates
-- ✅ Built-in dynamic language switcher UI
-- ✅ REST and GraphQL APIs
-- ✅ CLI tools for CI/CD integration
+- [Manage Translations Guide](/working-with-sb/translations/manage-translations)
+- [Add a Language](/working-with-sb/translations/add-language)
+- [AI Translation Guide](/working-with-sb/translations/ai-translate)
+- [Storage Backends](/introduction/features/storage-backends)

@@ -109,6 +109,18 @@
         "parallel": false
       }
     },
+    "deploy:mcp-server": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": [
+          "pnpm cdk deploy *McpServerStack",
+          "pnpm nx run tools:upload-service-version mcp-server \"url=https://${SB_DOMAIN_MCP}\""
+        ],
+        "parallel": false
+      }
+    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
@@ -147,6 +159,15 @@
         "cwd": "packages/backend",
         "color": true,
         "commands": ["cdk diff *CeleryStack"],
+        "parallel": false
+      }
+    },
+    "diff:mcp-server": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["cdk diff *McpServerStack"],
         "parallel": false
       }
     },

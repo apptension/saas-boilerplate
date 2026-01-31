@@ -193,6 +193,7 @@ export const createProductMutation = gql(/* GraphQL */ `
 ```ts title="packages/webapp/src/routes/productForm/productForm.hooks.ts" showLineNumbers
 // highlight-start
 import { useMutation } from '@apollo/client';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 
 import { createProductMutation } from './productForm.graphql';
@@ -205,7 +206,10 @@ export const useCreateProductForm = () => {
 // highlight-start
   const [commitMutation] = useMutation(createProductMutation, {
     onError: (error) => {
-      form.setApolloGraphQLResponseErrors(error.graphQLErrors);
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        form.setApolloGraphQLResponseErrors(graphQLErrors);
+      }
     }
   });
 // highlight-end

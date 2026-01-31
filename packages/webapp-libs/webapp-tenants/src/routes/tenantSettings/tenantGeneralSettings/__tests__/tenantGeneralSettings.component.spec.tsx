@@ -2,14 +2,26 @@ import { TenantType as TenantTypeField } from '@sb/webapp-api-client/constants';
 import { commonQueryCurrentUserQuery } from '@sb/webapp-api-client/providers';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
 import { RoutesConfig } from '../../../../config/routes';
+import { currentUserPermissionsQuery } from '../../tenantRoles/tenantRoles.graphql';
 import { tenantFactory } from '../../../../tests/factories/tenant';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { TenantGeneralSettings } from '../tenantGeneralSettings.component';
 import { updateTenantMutation } from '../tenantGeneralSettings.graphql';
+
+const MOCKED_TENANT_ID = '1';
+
+const createPermissionsMock = (permissions: string[] = []) => {
+  return composeMockedQueryResult(currentUserPermissionsQuery, {
+    variables: { tenantId: MOCKED_TENANT_ID },
+    data: {
+      currentUserPermissions: permissions,
+    },
+  });
+};
 
 describe('TenantGeneralSettings: Component', () => {
   const Component = () => <TenantGeneralSettings />;
@@ -19,18 +31,20 @@ describe('TenantGeneralSettings: Component', () => {
       tenants: [
         tenantFactory({
           name: 'name',
-          id: '1',
+          id: MOCKED_TENANT_ID,
         }),
       ],
     });
     const commonQueryMock = fillCommonQueryWithUser(user);
+    // Mock permissions to allow editing
+    const permissionsMock = createPermissionsMock(['org.settings.edit', 'org.delete']);
 
     const variables = {
-      input: { id: '1', name: 'name - new item name' },
+      input: { id: MOCKED_TENANT_ID, name: 'name - new item name' },
     };
 
     const data = {
-      createTenant: {
+      updateTenant: {
         tenant: variables.input,
       },
     };
@@ -45,7 +59,7 @@ describe('TenantGeneralSettings: Component', () => {
       tenants: [
         ...(user.tenants ?? []),
         tenantFactory({
-          id: '1',
+          id: MOCKED_TENANT_ID,
           name: variables.input.name,
           type: TenantTypeField.ORGANIZATION,
         }),
@@ -56,11 +70,17 @@ describe('TenantGeneralSettings: Component', () => {
       data: currentUserRefetchData,
     });
 
-    const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.general, { tenantId: '1' });
+    const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.general, { tenantId: MOCKED_TENANT_ID });
 
-    render(<Component />, { apolloMocks: [commonQueryMock, requestMock, refetchMock], routerProps });
+    render(<Component />, { apolloMocks: [commonQueryMock, permissionsMock, requestMock, refetchMock], routerProps });
 
-    await userEvent.type(await screen.findByPlaceholderText(/name/i), ' - new item name');
+    // Wait for permissions to load and form to be enabled
+    const nameInput = await screen.findByPlaceholderText(/name/i);
+    await waitFor(() => {
+      expect(nameInput).not.toBeDisabled();
+    });
+
+    await userEvent.type(nameInput, ' - new item name');
     await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
     // Wait for the toast first (proves mutation completed), then verify mock was called

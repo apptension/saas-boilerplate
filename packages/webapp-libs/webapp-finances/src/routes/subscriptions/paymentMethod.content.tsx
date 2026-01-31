@@ -4,7 +4,7 @@ import { Link } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { TabsContent } from '@sb/webapp-core/components/ui/tabs';
 import { mapConnection } from '@sb/webapp-core/utils/graphql';
-import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
+import { useGenerateTenantPath, usePermissionCheck } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { CreditCard, Wallet } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
@@ -16,6 +16,9 @@ import { subscriptionActivePlanDetailsQuery, subscriptionActiveSubscriptionFragm
 
 const PaymentMethodContent = () => {
   const generateTenantPath = useGenerateTenantPath();
+  
+  // Permission check for managing billing
+  const { hasPermission: canManageBilling } = usePermissionCheck('billing.manage');
 
   const { allPaymentMethods } = useActiveSubscriptionDetails();
   const { data: currentTenant } = useCurrentTenant();
@@ -86,21 +89,23 @@ const PaymentMethodContent = () => {
           <CardContent className="space-y-4">
             {defaultMethod && renderCardDetails()}
             {paymentMethods.length === 0 && renderEmptyList()}
-            <div>
-              <Link to={generateTenantPath(RoutesConfig.subscriptions.paymentMethods.edit)} variant="default">
-                {paymentMethods.length ? (
-                  <FormattedMessage
-                    defaultMessage="Edit payment methods"
-                    id="My subscription / Edit payment method button"
-                  />
-                ) : (
-                  <FormattedMessage
-                    defaultMessage="Add payment methods"
-                    id="My subscription / Add payment method button"
-                  />
-                )}
-              </Link>
-            </div>
+            {canManageBilling && (
+              <div>
+                <Link to={generateTenantPath(RoutesConfig.subscriptions.paymentMethods.edit)} variant="default">
+                  {paymentMethods.length ? (
+                    <FormattedMessage
+                      defaultMessage="Edit payment methods"
+                      id="My subscription / Edit payment method button"
+                    />
+                  ) : (
+                    <FormattedMessage
+                      defaultMessage="Add payment methods"
+                      id="My subscription / Add payment method button"
+                    />
+                  )}
+                </Link>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

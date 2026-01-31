@@ -51,7 +51,7 @@ export const Notifications: FC<NotificationsProps> = ({ templates, events }) => 
             fragment: notificationsListItemFragment,
           });
 
-          // Add to connection and update unread flag
+          // Add to connection and update unread flag + count
           cache.modify({
             fields: {
               allNotifications(existingConnection) {
@@ -62,6 +62,9 @@ export const Notifications: FC<NotificationsProps> = ({ templates, events }) => 
               },
               hasUnreadNotifications() {
                 return true;
+              },
+              unreadNotificationsCount(existingCount = 0) {
+                return existingCount + 1;
               },
             },
           });

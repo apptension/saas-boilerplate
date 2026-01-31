@@ -1,10 +1,14 @@
 import { useState, useCallback } from 'react';
 import { Button } from '@sb/webapp-core/components/buttons';
+import { ENV } from '@sb/webapp-core/config/env';
 import { Input } from '@sb/webapp-core/components/forms';
 import { Label } from '@sb/webapp-core/components/ui/label';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { Fingerprint, Smartphone, Key, Shield, Loader2, CheckCircle2, XCircle } from 'lucide-react';
 import { FormattedMessage, useIntl } from 'react-intl';
+
+// Use the configured API base URL to ensure requests go to the backend, not the webapp
+const API_BASE = ENV.BASE_API_URL;
 
 export type AddPasskeyModalProps = {
   closeModal: () => void;
@@ -68,7 +72,7 @@ export const AddPasskeyModal = ({ closeModal, onSuccess }: AddPasskeyModalProps)
 
     try {
       // Step 1: Get registration options from the server
-      const optionsResponse = await fetch('/api/sso/passkeys/register/options', {
+      const optionsResponse = await fetch(`${API_BASE}/sso/passkeys/register/options`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -120,7 +124,7 @@ export const AddPasskeyModal = ({ closeModal, onSuccess }: AddPasskeyModalProps)
       const response = credential.response as AuthenticatorAttestationResponse;
 
       // Step 4: Send the credential to the server for verification
-      const verifyResponse = await fetch('/api/sso/passkeys/register/verify', {
+      const verifyResponse = await fetch(`${API_BASE}/sso/passkeys/register/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

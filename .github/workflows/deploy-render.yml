@@ -1,0 +1,498 @@
+# =============================================================================
+# Render.com Smart Deployment Workflow
+# =============================================================================
+#
+# This workflow intelligently deploys only the services that have changed,
+# saving Render build minutes by skipping unchanged infrastructure.
+#
+# Features:
+# - Path-based change detection for selective deployments
+# - CI checks run before deployment
+# - Parallel deployments for independent services
+# - Manual deployment with service selection
+# - Environment-based configuration (production/staging)
+#
+# Required Secrets (set in GitHub repository settings):
+# - RENDER_DEPLOY_HOOK_BACKEND_API: Deploy hook URL for backend-api service
+# - RENDER_DEPLOY_HOOK_WEBAPP: Deploy hook URL for webapp service
+# - RENDER_DEPLOY_HOOK_CELERY_WORKER: Deploy hook URL for celery-worker service
+# - RENDER_DEPLOY_HOOK_CELERY_BEAT: Deploy hook URL for celery-beat service
+# - RENDER_DEPLOY_HOOK_MCP_SERVER: Deploy hook URL for mcp-server service
+#
+# Optional Secrets (for staging environment):
+# - RENDER_STAGING_DEPLOY_HOOK_BACKEND_API
+# - RENDER_STAGING_DEPLOY_HOOK_WEBAPP
+# - etc.
+#
+# To get deploy hooks:
+# 1. Go to Render Dashboard > Your Service > Settings
+# 2. Scroll to "Deploy Hook" section
+# 3. Copy the URL and add it as a GitHub secret
+# =============================================================================
+
+name: "Deploy to Render"
+
+on:
+  # Automatic deployment on merge to main branch
+  push:
+    branches:
+      - main
+      - master
+
+  # Manual deployment with service selection
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+      deploy_backend:
+        description: 'Deploy Backend API'
+        required: false
+        type: boolean
+        default: false
+      deploy_webapp:
+        description: 'Deploy Webapp'
+        required: false
+        type: boolean
+        default: false
+      deploy_celery_worker:
+        description: 'Deploy Celery Worker'
+        required: false
+        type: boolean
+        default: false
+      deploy_celery_beat:
+        description: 'Deploy Celery Beat'
+        required: false
+        type: boolean
+        default: false
+      deploy_mcp_server:
+        description: 'Deploy MCP Server'
+        required: false
+        type: boolean
+        default: false
+      deploy_all:
+        description: 'Deploy ALL services (overrides individual selections)'
+        required: false
+        type: boolean
+        default: false
+      skip_ci_checks:
+        description: 'Skip CI checks (use with caution)'
+        required: false
+        type: boolean
+        default: false
+
+# Prevent concurrent deployments to the same environment
+concurrency:
+  group: render-deploy-${{ github.event.inputs.environment || 'production' }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: 20
+
+jobs:
+  # ===========================================================================
+  # Detect Changed Paths
+  # ===========================================================================
+  detect-changes:
+    name: "Detect Changes"
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.changes.outputs.backend }}
+      webapp: ${{ steps.changes.outputs.webapp }}
+      workers: ${{ steps.changes.outputs.workers }}
+      mcp_server: ${{ steps.changes.outputs.mcp_server }}
+      any_changes: ${{ steps.changes.outputs.any_changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect file changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - 'packages/backend/**'
+              - 'docker-compose*.yml'
+            webapp:
+              - 'packages/webapp/**'
+              - 'packages/webapp-libs/**'
+            workers:
+              - 'packages/workers/**'
+              - 'packages/backend/**'
+            mcp_server:
+              - 'packages/infra/mcp-server/**'
+
+      - name: Set any_changes output
+        id: any
+        run: |
+          if [[ "${{ steps.changes.outputs.backend }}" == "true" ]] || \
+             [[ "${{ steps.changes.outputs.webapp }}" == "true" ]] || \
+             [[ "${{ steps.changes.outputs.workers }}" == "true" ]] || \
+             [[ "${{ steps.changes.outputs.mcp_server }}" == "true" ]]; then
+            echo "any_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "any_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+  # ===========================================================================
+  # CI Checks - Backend
+  # ===========================================================================
+  ci-backend:
+    name: "CI: Backend"
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: |
+      (needs.detect-changes.outputs.backend == 'true' || 
+       github.event.inputs.deploy_backend == 'true' ||
+       github.event.inputs.deploy_all == 'true') &&
+      github.event.inputs.skip_ci_checks != 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pnpm install \
+            --include-workspace-root \
+            --frozen-lockfile \
+            --filter=backend...
+
+      - name: Lint infra
+        run: pnpm nx run backend:lint:js
+
+      - name: Lint & test backend
+        run: pnpm nx run backend:test
+
+  # ===========================================================================
+  # CI Checks - Webapp
+  # ===========================================================================
+  ci-webapp:
+    name: "CI: Webapp"
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: |
+      (needs.detect-changes.outputs.webapp == 'true' || 
+       github.event.inputs.deploy_webapp == 'true' ||
+       github.event.inputs.deploy_all == 'true') &&
+      github.event.inputs.skip_ci_checks != 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pnpm install \
+            --include-workspace-root \
+            --frozen-lockfile \
+            --filter=webapp...
+
+      - name: Lint
+        run: pnpm nx run webapp:lint
+
+      - name: Type check
+        run: pnpm nx run webapp:type-check
+
+      - name: Test
+        run: pnpm nx run webapp:test --watchAll=false --maxWorkers=20%
+
+      - name: Build
+        run: pnpm nx run webapp:build
+
+  # ===========================================================================
+  # CI Checks - Workers (for Celery services)
+  # ===========================================================================
+  ci-workers:
+    name: "CI: Workers"
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: |
+      (needs.detect-changes.outputs.workers == 'true' || 
+       needs.detect-changes.outputs.backend == 'true' ||
+       github.event.inputs.deploy_celery_worker == 'true' ||
+       github.event.inputs.deploy_celery_beat == 'true' ||
+       github.event.inputs.deploy_all == 'true') &&
+      github.event.inputs.skip_ci_checks != 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pnpm install \
+            --include-workspace-root \
+            --frozen-lockfile \
+            --filter=workers...
+
+      - name: Lint workers
+        run: pnpm nx run workers:lint
+
+      - name: Test workers
+        run: pnpm nx run workers:test
+
+  # ===========================================================================
+  # Deploy Backend API
+  # ===========================================================================
+  deploy-backend-api:
+    name: "Deploy: Backend API"
+    runs-on: ubuntu-latest
+    needs: [detect-changes, ci-backend]
+    # Run if CI passed (or was skipped) AND (changes detected OR manually selected)
+    if: |
+      always() &&
+      (needs.ci-backend.result == 'success' || needs.ci-backend.result == 'skipped') &&
+      (needs.detect-changes.outputs.backend == 'true' || 
+       github.event.inputs.deploy_backend == 'true' ||
+       github.event.inputs.deploy_all == 'true')
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine deploy hook
+        id: hook
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "staging" ]]; then
+            echo "url=${{ secrets.RENDER_STAGING_DEPLOY_HOOK_BACKEND_API }}" >> $GITHUB_OUTPUT
+          else
+            echo "url=${{ secrets.RENDER_DEPLOY_HOOK_BACKEND_API }}" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: ./.github/workflows/actions/render-deploy
+        with:
+          service-name: backend-api
+          deploy-hook-url: ${{ steps.hook.outputs.url }}
+
+  # ===========================================================================
+  # Deploy Webapp
+  # ===========================================================================
+  deploy-webapp:
+    name: "Deploy: Webapp"
+    runs-on: ubuntu-latest
+    needs: [detect-changes, ci-webapp]
+    if: |
+      always() &&
+      (needs.ci-webapp.result == 'success' || needs.ci-webapp.result == 'skipped') &&
+      (needs.detect-changes.outputs.webapp == 'true' || 
+       github.event.inputs.deploy_webapp == 'true' ||
+       github.event.inputs.deploy_all == 'true')
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine deploy hook
+        id: hook
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "staging" ]]; then
+            echo "url=${{ secrets.RENDER_STAGING_DEPLOY_HOOK_WEBAPP }}" >> $GITHUB_OUTPUT
+          else
+            echo "url=${{ secrets.RENDER_DEPLOY_HOOK_WEBAPP }}" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: ./.github/workflows/actions/render-deploy
+        with:
+          service-name: webapp
+          deploy-hook-url: ${{ steps.hook.outputs.url }}
+
+  # ===========================================================================
+  # Deploy Celery Worker
+  # ===========================================================================
+  deploy-celery-worker:
+    name: "Deploy: Celery Worker"
+    runs-on: ubuntu-latest
+    needs: [detect-changes, ci-backend, ci-workers]
+    if: |
+      always() &&
+      (needs.ci-backend.result == 'success' || needs.ci-backend.result == 'skipped') &&
+      (needs.ci-workers.result == 'success' || needs.ci-workers.result == 'skipped') &&
+      (needs.detect-changes.outputs.backend == 'true' || 
+       needs.detect-changes.outputs.workers == 'true' ||
+       github.event.inputs.deploy_celery_worker == 'true' ||
+       github.event.inputs.deploy_all == 'true')
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine deploy hook
+        id: hook
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "staging" ]]; then
+            echo "url=${{ secrets.RENDER_STAGING_DEPLOY_HOOK_CELERY_WORKER }}" >> $GITHUB_OUTPUT
+          else
+            echo "url=${{ secrets.RENDER_DEPLOY_HOOK_CELERY_WORKER }}" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: ./.github/workflows/actions/render-deploy
+        with:
+          service-name: celery-worker
+          deploy-hook-url: ${{ steps.hook.outputs.url }}
+
+  # ===========================================================================
+  # Deploy Celery Beat
+  # ===========================================================================
+  deploy-celery-beat:
+    name: "Deploy: Celery Beat"
+    runs-on: ubuntu-latest
+    needs: [detect-changes, ci-backend]
+    if: |
+      always() &&
+      (needs.ci-backend.result == 'success' || needs.ci-backend.result == 'skipped') &&
+      (needs.detect-changes.outputs.backend == 'true' ||
+       github.event.inputs.deploy_celery_beat == 'true' ||
+       github.event.inputs.deploy_all == 'true')
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine deploy hook
+        id: hook
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "staging" ]]; then
+            echo "url=${{ secrets.RENDER_STAGING_DEPLOY_HOOK_CELERY_BEAT }}" >> $GITHUB_OUTPUT
+          else
+            echo "url=${{ secrets.RENDER_DEPLOY_HOOK_CELERY_BEAT }}" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: ./.github/workflows/actions/render-deploy
+        with:
+          service-name: celery-beat
+          deploy-hook-url: ${{ steps.hook.outputs.url }}
+
+  # ===========================================================================
+  # Deploy MCP Server
+  # ===========================================================================
+  deploy-mcp-server:
+    name: "Deploy: MCP Server"
+    runs-on: ubuntu-latest
+    needs: [detect-changes]
+    if: |
+      needs.detect-changes.outputs.mcp_server == 'true' ||
+      github.event.inputs.deploy_mcp_server == 'true' ||
+      github.event.inputs.deploy_all == 'true'
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine deploy hook
+        id: hook
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "staging" ]]; then
+            echo "url=${{ secrets.RENDER_STAGING_DEPLOY_HOOK_MCP_SERVER }}" >> $GITHUB_OUTPUT
+          else
+            echo "url=${{ secrets.RENDER_DEPLOY_HOOK_MCP_SERVER }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if deploy hook is configured
+        id: check
+        run: |
+          if [[ -z "${{ steps.hook.outputs.url }}" ]]; then
+            echo "::warning::Deploy hook not configured for mcp-server, skipping..."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: ./.github/workflows/actions/render-deploy
+        if: steps.check.outputs.skip != 'true'
+        with:
+          service-name: mcp-server
+          deploy-hook-url: ${{ steps.hook.outputs.url }}
+
+  # ===========================================================================
+  # Deployment Summary
+  # ===========================================================================
+  summary:
+    name: "Deployment Summary"
+    runs-on: ubuntu-latest
+    needs: 
+      - detect-changes
+      - deploy-backend-api
+      - deploy-webapp
+      - deploy-celery-worker
+      - deploy-celery-beat
+      - deploy-mcp-server
+    if: always()
+    steps:
+      - name: Generate summary
+        run: |
+          echo "## 🚀 Render Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|" >> $GITHUB_STEP_SUMMARY
+          
+          # Backend API
+          if [[ "${{ needs.deploy-backend-api.result }}" == "success" ]]; then
+            echo "| Backend API | ✅ Deployed |" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ needs.deploy-backend-api.result }}" == "skipped" ]]; then
+            echo "| Backend API | ⏭️ Skipped (no changes) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Backend API | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Webapp
+          if [[ "${{ needs.deploy-webapp.result }}" == "success" ]]; then
+            echo "| Webapp | ✅ Deployed |" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ needs.deploy-webapp.result }}" == "skipped" ]]; then
+            echo "| Webapp | ⏭️ Skipped (no changes) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Webapp | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Celery Worker
+          if [[ "${{ needs.deploy-celery-worker.result }}" == "success" ]]; then
+            echo "| Celery Worker | ✅ Deployed |" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ needs.deploy-celery-worker.result }}" == "skipped" ]]; then
+            echo "| Celery Worker | ⏭️ Skipped (no changes) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Celery Worker | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Celery Beat
+          if [[ "${{ needs.deploy-celery-beat.result }}" == "success" ]]; then
+            echo "| Celery Beat | ✅ Deployed |" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ needs.deploy-celery-beat.result }}" == "skipped" ]]; then
+            echo "| Celery Beat | ⏭️ Skipped (no changes) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Celery Beat | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # MCP Server
+          if [[ "${{ needs.deploy-mcp-server.result }}" == "success" ]]; then
+            echo "| MCP Server | ✅ Deployed |" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ needs.deploy-mcp-server.result }}" == "skipped" ]]; then
+            echo "| MCP Server | ⏭️ Skipped (no changes) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| MCP Server | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Detected Changes" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend: ${{ needs.detect-changes.outputs.backend }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Webapp: ${{ needs.detect-changes.outputs.webapp }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Workers: ${{ needs.detect-changes.outputs.workers }}" >> $GITHUB_STEP_SUMMARY
+          echo "- MCP Server: ${{ needs.detect-changes.outputs.mcp_server }}" >> $GITHUB_STEP_SUMMARY

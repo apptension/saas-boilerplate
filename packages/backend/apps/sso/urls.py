@@ -27,6 +27,11 @@ urlpatterns = [
         views.SSOConnectionDeactivateView.as_view(),
         name='sso-connection-deactivate',
     ),
+    path(
+        'tenant/<str:tenant_id>/connections/<str:connection_id>/test',
+        views.SSOConnectionTestView.as_view(),
+        name='sso-connection-test',
+    ),
     # SAML endpoints
     path('saml/<str:connection_id>/metadata', views.SAMLMetadataView.as_view(), name='saml-metadata'),
     path('saml/<str:connection_id>/login', views.SAMLLoginView.as_view(), name='saml-login'),

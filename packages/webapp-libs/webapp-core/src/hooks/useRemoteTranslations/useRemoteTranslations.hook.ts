@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useState, useMemo } from 'react';
 
-import { Locale, DEFAULT_LOCALE, translationMessages, TranslationMessages } from '../../config/i18n';
+import { Locale, DEFAULT_LOCALE, translationMessages, TranslationMessages, translationsConfig } from '../../config/i18n';
+import { getViteEnv } from '../../config/env.vite';
+
+/**
+ * Check if running in development mode.
+ */
+const env = getViteEnv();
+const IS_DEV_MODE = env.MODE === 'development' || env.DEV === true;
 
 export interface RemoteTranslationsConfig {
   /**
@@ -30,47 +37,15 @@ export interface RemoteTranslationsConfig {
 }
 
 /**
- * Get environment variable safely across different environments.
+ * Get the default configuration using the centralized translationsConfig.
+ * This ensures consistency with other translation hooks.
  */
-// Helper to safely access import.meta (works in both Vite and Jest/Node)
-const getImportMeta = (): { env?: Record<string, string> } | undefined => {
-  // In Jest/Node, import.meta is not available, so we check via globalThis mock
-  if (typeof globalThis !== 'undefined' && (globalThis as any).__importMetaMock) {
-    return (globalThis as any).__importMetaMock;
-  }
-  
-  // In Vite, import.meta is available
-  try {
-    // Use Function constructor to avoid syntax error in Jest
-    const getMeta = new Function('return typeof import !== "undefined" ? import.meta : undefined');
-    return getMeta();
-  } catch {
-    return undefined;
-  }
-};
-
-const getEnvVar = (key: string, defaultValue: string = ''): string => {
-  // Try import.meta.env (Vite) first
-  const importMeta = getImportMeta();
-  if (importMeta?.env) {
-    const value = importMeta.env[key];
-    if (value !== undefined) return String(value);
-  }
-  
-  // Node environment
-  if (typeof process !== 'undefined' && process.env) {
-    return process.env[key] || defaultValue;
-  }
-  return defaultValue;
-};
-
 const getDefaultConfig = (): RemoteTranslationsConfig => ({
-  translationsBaseUrl: getEnvVar('VITE_TRANSLATIONS_URL', '/api/translations'),
-  enablePolling:
-    getEnvVar('MODE', getEnvVar('NODE_ENV')) === 'development' &&
-    getEnvVar('VITE_TRANSLATIONS_POLLING') === 'true',
-  pollingInterval: 5000,
-  enabled: getEnvVar('VITE_USE_REMOTE_TRANSLATIONS') === 'true',
+  // Use the centralized translationsConfig which properly derives URL from VITE_BASE_API_URL
+  translationsBaseUrl: translationsConfig.translationsBaseUrl,
+  enablePolling: translationsConfig.enablePolling,
+  pollingInterval: translationsConfig.pollingInterval,
+  enabled: translationsConfig.enabled,
 });
 
 /**
@@ -206,12 +181,7 @@ export function useRemoteTranslations(
 export function useDevTranslationOverrides(locale: Locale) {
   const [overrides, setOverrides] = useState<Partial<TranslationMessages>>({});
 
-  const isDevMode = useMemo(() => {
-    return (
-      getEnvVar('MODE', getEnvVar('NODE_ENV')) === 'development' ||
-      getEnvVar('NODE_ENV') === 'development'
-    );
-  }, []);
+  const isDevMode = IS_DEV_MODE;
 
   useEffect(() => {
     if (!isDevMode) return;

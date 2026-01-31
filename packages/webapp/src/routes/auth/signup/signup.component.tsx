@@ -1,6 +1,7 @@
 import { Button } from '@sb/webapp-core/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { Separator } from '@sb/webapp-core/components/ui/separator';
+import { ENV } from '@sb/webapp-core/config/env';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -14,6 +15,9 @@ import { SignupButtonsVariant } from '../../../shared/components/auth/socialLogi
 
 export const Signup = () => {
   const generateLocalePath = useGenerateLocalePath();
+
+  // Check which auth methods are enabled
+  const showSocialLogin = ENV.ENABLE_SOCIAL_LOGIN;
 
   return (
     <>
@@ -35,18 +39,20 @@ export const Signup = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <SocialLoginButtons variant={SignupButtonsVariant.SIGNUP} />
+            {showSocialLogin && <SocialLoginButtons variant={SignupButtonsVariant.SIGNUP} />}
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <Separator />
+            {showSocialLogin && (
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <Separator />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    <FormattedMessage defaultMessage="Or continue with email" id="Auth / Signup / or" />
+                  </span>
+                </div>
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  <FormattedMessage defaultMessage="Or continue with email" id="Auth / Signup / or" />
-                </span>
-              </div>
-            </div>
+            )}
 
             <SignupForm />
 
@@ -56,7 +62,7 @@ export const Signup = () => {
                 id="Auth / Signup / login prompt"
                 values={{
                   loginLink: (
-                    <Button variant="link" className="h-auto p-0 text-sm font-semibold" asChild>
+                    <Button key="login" variant="link" className="h-auto p-0 text-sm font-semibold" asChild>
                       <Link to={generateLocalePath(RoutesConfig.login)}>
                         <FormattedMessage defaultMessage="Sign in" id="Auth / Signup / login link" />
                       </Link>

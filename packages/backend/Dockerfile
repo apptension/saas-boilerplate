@@ -11,14 +11,14 @@ FROM ${SB_MIRROR_REPOSITORY}segment/chamber:2 AS chamber
 ##
 FROM ${SB_PULL_THROUGH_CACHE_REPOSITORY}python:3.11-slim-bullseye AS backend_build
 
-ENV PYTHONUNBUFFERED 1
-ENV PIP_NO_CACHE_DIR off
+ENV PYTHONUNBUFFERED=1
+ENV PIP_NO_CACHE_DIR=off
 
 
 RUN apt-get update && apt-get install -y gcc postgresql-client ca-certificates jq curl \
   && update-ca-certificates \
   && pip install --upgrade pip \
-  && pip install --no-cache-dir setuptools pdm~=2.5.2 awscli==1.32.24
+  && pip install --no-cache-dir setuptools pdm~=2.22 awscli==1.32.24
 
 
 RUN curl -fsS https://deb.nodesource.com/setup_20.x | bash - \

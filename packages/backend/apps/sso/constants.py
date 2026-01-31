@@ -75,6 +75,10 @@ class SSOAuditEventType(models.TextChoices):
     PASSKEY_REMOVED = "passkey_removed", "Passkey Removed"
     PASSKEY_AUTH_SUCCESS = "passkey_auth_success", "Passkey Auth Success"
     PASSKEY_AUTH_FAILED = "passkey_auth_failed", "Passkey Auth Failed"
+    PASSKEY_CLONE_DETECTED = "passkey_clone_detected", "Passkey Clone Detected"
+
+    # Security events
+    SECURITY_ANOMALY = "security_anomaly", "Security Anomaly Detected"
 
 
 class Notification(Enum):

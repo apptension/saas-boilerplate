@@ -14,10 +14,15 @@ export class GlobalECR extends Construct {
   static ECRPublicCacheRuleUpstreamRegistryUrl = 'public.ecr.aws';
 
   backendRepository: ecr.Repository;
+  mcpServerRepository: ecr.Repository;
   ecrPublicCacheRule: ecr.CfnPullThroughCacheRule;
 
   static getBackendRepositoryName(envSettings: EnvironmentSettings) {
     return `${envSettings.projectName}-backend`;
+  }
+
+  static getMcpServerRepositoryName(envSettings: EnvironmentSettings) {
+    return `${envSettings.projectName}-mcp-server`;
   }
 
   static getPublicECRIamPolicyStatements() {
@@ -60,6 +65,11 @@ export class GlobalECR extends Construct {
     this.backendRepository = new ecr.Repository(this, 'ECRBackendRepository', {
       repositoryName: GlobalECR.getBackendRepositoryName(props.envSettings),
     });
+
+    this.mcpServerRepository = new ecr.Repository(this, 'ECRMcpServerRepository', {
+      repositoryName: GlobalECR.getMcpServerRepositoryName(props.envSettings),
+    });
+
     this.ecrPublicCacheRule = new ecr.CfnPullThroughCacheRule(
       this,
       'ECRPublicCacheRule',

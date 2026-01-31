@@ -60,14 +60,24 @@ export const TenantSwitchSidebar = ({ collapsed = false }: TenantSwitchSidebarPr
     navigate(generateLocalePath(RoutesConfig.addTenant));
   };
 
+  const hasPendingInvitations = (organizationTenants?.invitations?.length ?? 0) > 0;
+
   const triggerButton = collapsed ? (
-    <Button variant="ghost" size="icon" className="h-9 w-9">
+    <Button variant="ghost" size="icon" className="relative h-9 w-9">
       <Building2 className="h-4 w-4" />
+      {hasPendingInvitations && (
+        <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-primary" />
+      )}
     </Button>
   ) : (
-    <Button variant="outline" className="w-full justify-between overflow-hidden text-left font-normal">
+    <Button variant="outline" className="relative w-full justify-between overflow-hidden text-left font-normal">
       <div className="flex min-w-0 flex-1 items-center gap-2">
-        <Building2 className="h-4 w-4 shrink-0" />
+        <div className="relative shrink-0">
+          <Building2 className="h-4 w-4" />
+          {hasPendingInvitations && (
+            <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-primary" />
+          )}
+        </div>
         <span className="truncate">{currentTenant?.name}</span>
       </div>
       <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -120,7 +130,10 @@ export const TenantSwitchSidebar = ({ collapsed = false }: TenantSwitchSidebarPr
         )}
         {organizationTenants?.invitations?.map((invitation) => (
           <DropdownMenuItem key={invitation?.id} onClick={handleInvitationClick(invitation)} className="gap-2">
-            <UserPlus className="h-4 w-4" />
+            <div className="relative">
+              <UserPlus className="h-4 w-4" />
+              <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-primary" />
+            </div>
             {invitation?.name}
           </DropdownMenuItem>
         ))}

@@ -1,23 +1,18 @@
-import { TenantUserRole } from '@sb/webapp-api-client';
-
-import { useTenantRoleAccessCheck } from '../../../hooks';
-import {
-  SSOConnectionCard,
-  DirectorySyncCard,
-  AuditLogCard,
-} from './components';
+import { usePermissionCheck } from '../../../hooks';
+import { SSOConnectionCard, DirectorySyncCard, PasskeysCard, AuditLogCard } from './components';
 
 export const TenantSecuritySettings = () => {
-  const { isAllowed: canManageSSO } = useTenantRoleAccessCheck([
-    TenantUserRole.OWNER,
-    TenantUserRole.ADMIN,
-  ]);
+  // Permission checks
+  const { hasPermission: canManageSSO } = usePermissionCheck('security.sso.manage');
+  const { hasPermission: canManagePasskeys } = usePermissionCheck('security.passkeys.manage');
+  const { hasPermission: canViewLogs } = usePermissionCheck('security.logs.view');
 
   return (
     <div className="space-y-6">
       <SSOConnectionCard canManageSSO={canManageSSO} />
       <DirectorySyncCard canManageSSO={canManageSSO} />
-      {canManageSSO && <AuditLogCard />}
+      <PasskeysCard canManagePasskeys={canManagePasskeys} />
+      {canViewLogs && <AuditLogCard />}
     </div>
   );
 };

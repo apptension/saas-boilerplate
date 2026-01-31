@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client/react';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { UseApiFormArgs, useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
@@ -7,6 +8,7 @@ import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
+import { triggerWelcomeModal } from '../../welcomeModal';
 import { authSingupMutation } from './signUpForm.graphql';
 import { SignupFormFields } from './signupForm.types';
 
@@ -51,25 +53,34 @@ export const useSignupForm = (args?: UseApiFormArgs<SignupFormFields>) => {
     onCompleted: () => {
       trackEvent('auth', 'sign-up');
 
+      // Trigger the welcome modal to show on dashboard
+      triggerWelcomeModal();
+
       reloadCommonQuery();
       navigate(generateLocalePath(RoutesConfig.home));
     },
-    onError: (error: any) => {
-      if (error?.graphQLErrors) {
-        setApolloGraphQLResponseErrors(error.graphQLErrors);
+    onError: (error) => {
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        setApolloGraphQLResponseErrors(graphQLErrors);
       }
     },
   });
 
   const handleSignup = handleSubmit(async (data: SignupFormFields) => {
-    await commitSignupMutation({
-      variables: {
-        input: {
-          email: data.email,
-          password: data.password,
+    try {
+      await commitSignupMutation({
+        variables: {
+          input: {
+            email: data.email,
+            password: data.password,
+          },
         },
-      },
-    });
+      });
+    } catch {
+      // Error is handled by onError callback
+      // This catch prevents unhandled promise rejection
+    }
   });
 
   return { ...form, loading, handleSignup };

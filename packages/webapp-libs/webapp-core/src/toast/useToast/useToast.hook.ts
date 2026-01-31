@@ -3,8 +3,6 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { ToastActionType, ToastContext, ToasterToast } from '../toastProvider';
 
-const DEFAULT_TOAST_ONSCREEN_TIME = 5000;
-
 export type ToasterToastProps = Omit<ToasterToast, 'id'>;
 
 export const useToast = () => {
@@ -30,7 +28,7 @@ export const useToast = () => {
   );
 
   const toast = useCallback(
-    ({ ...props }: ToasterToastProps, { hideDelay = DEFAULT_TOAST_ONSCREEN_TIME }: { hideDelay?: number } = {}) => {
+    ({ ...props }: ToasterToastProps) => {
       const newToastId = ++ref.current.lastToastId;
       const action: ToastActionType = {
         type: 'ADD_TOAST',
@@ -45,9 +43,8 @@ export const useToast = () => {
       };
       dispatch(action);
 
-      setTimeout(() => {
-        dispatch({ type: 'DISMISS_TOAST', payload: newToastId });
-      }, hideDelay);
+      // Auto-dismiss is now handled by the Toaster component
+      // which supports pause-on-hover functionality
     },
     [dispatch, hideToast]
   );

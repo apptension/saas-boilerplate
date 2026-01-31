@@ -5,7 +5,7 @@ from django.db import models
 
 from common.acl.helpers import CommonGroups
 from common.models import ImageWithThumbnailMixin
-from common.storages import UniqueFilePathGenerator, PublicS3Boto3StorageWithCDN
+from common.storages import UniqueFilePathGenerator, get_public_storage
 from apps.multitenancy.models import TenantMembership
 
 
@@ -78,11 +78,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class UserAvatar(ImageWithThumbnailMixin, models.Model):
-    original = models.ImageField(
-        storage=PublicS3Boto3StorageWithCDN, upload_to=UniqueFilePathGenerator("avatars"), null=True
-    )
+    original = models.ImageField(storage=get_public_storage(), upload_to=UniqueFilePathGenerator("avatars"), null=True)
     thumbnail = models.ImageField(
-        storage=PublicS3Boto3StorageWithCDN, upload_to=UniqueFilePathGenerator("avatars/thumbnails"), null=True
+        storage=get_public_storage(), upload_to=UniqueFilePathGenerator("avatars/thumbnails"), null=True
     )
 
     THUMBNAIL_SIZE = (128, 128)
@@ -108,7 +106,7 @@ class UserProfile(models.Model):
         max_length=5,
         choices=LanguageChoices.choices,
         default=LanguageChoices.ENGLISH,
-        help_text="User's preferred language for emails and notifications"
+        help_text="User's preferred language for emails and notifications",
     )
     avatar = models.OneToOneField(
         UserAvatar, on_delete=models.SET_NULL, null=True, blank=True, related_name="user_profile"

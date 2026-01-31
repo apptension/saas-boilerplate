@@ -16,16 +16,14 @@ ENV DEST_CLI_PATH=$APP_PATH/$SRC_CLI_PATH
 ENV SRC_WORKERS_PATH=packages/workers
 ENV DEST_WORKERS_PATH=$APP_PATH/$SRC_WORKERS_PATH
 
-RUN apt-get update && apt-get install -y wget gnupg curl unzip make xz-utils build-essential
+RUN apt-get update && apt-get install -y wget gnupg curl unzip make xz-utils build-essential \
+  && pip install --upgrade pip \
+  && pip install --no-cache-dir pdm~=2.22
 
-RUN \
-  echo "deb https://deb.nodesource.com/node_18.x buster main" > /etc/apt/sources.list.d/nodesource.list && \
-  wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
-  apt-get update && \
-  apt-get install -yqq nodejs && \
-  pip install -U pip~=23.0.1 && pip install "urllib3<2" pdm~=2.5.2 && \
-  npm i -g npm@^8 pnpm@~10.13.0 && \
-  rm -rf /var/lib/apt/lists/*
+RUN curl -fsS https://deb.nodesource.com/setup_20.x | bash - \
+  && apt-get --no-install-recommends install -y nodejs \
+  && npm i -g npm@^8 pnpm@~10.13.0 \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=chamber /chamber /bin/chamber
 

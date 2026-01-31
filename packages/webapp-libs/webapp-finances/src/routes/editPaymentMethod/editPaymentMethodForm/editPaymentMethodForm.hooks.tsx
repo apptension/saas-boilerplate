@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client/react';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { StripePaymentMethodType } from '@sb/webapp-api-client/api/stripe/paymentMethod';
 import { StripeSetupIntentFragmentFragment } from '@sb/webapp-api-client/graphql';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
@@ -17,9 +18,10 @@ export const useStripeSetupIntent = ({ onSuccess, onError }: UseStripeSetupInten
   const { data: currentTenant } = useCurrentTenant();
   const [commitCreateSetupIntentMutation, { data }] = useMutation(stripeCreateSetupIntentMutation, {
     onCompleted: (data) => onSuccess(data.createSetupIntent?.setupIntent as StripeSetupIntentFragmentFragment),
-    onError: (error: any) => {
-      if (error?.graphQLErrors) {
-        onError(error.graphQLErrors);
+    onError: (error) => {
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        onError(graphQLErrors);
       }
     },
   });

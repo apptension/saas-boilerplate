@@ -33,6 +33,11 @@ The codebase follows a modular monorepo structure:
 6. **Responsive First**: Consider mobile and collapsed states in UI components
 7. **Theme Aware**: Always consider both light and dark themes
 8. **Interactive Feedback**: Add hover, focus, and active states to interactive elements
+9. **NEVER USE** Updating graphql by hand, we have download schema and generate types functions for that. 
+The command pnpm nx run webapp-api-client:graphql:download-schema does:
+Introspects the GraphQL schema from the running backend
+Writes it to graphql/schema/api.graphql
+Runs the codegen to generate TypeScript types
 
 ## Code Quality
 

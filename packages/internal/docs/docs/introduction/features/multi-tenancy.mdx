@@ -48,6 +48,25 @@ members receive notifications and can accept or decline invitations.
   <img src={useBaseUrl("img/features/multi-tenancy/multi-tenancy3.png")} alt="Organization members" />
 </p>
 
+#### Invitation Notification Dots
+
+Pending invitations are visually highlighted throughout the UI:
+
+- **Sidebar**: A notification dot appears on the organization switcher when invitations are pending
+- **Header**: The organization dropdown shows a badge count for pending invitations
+- **Notifications**: In-app notifications alert users about new invitations
+
+This ensures users never miss an invitation, even if they're working in a different organization.
+
+#### Invitation Actions
+
+| Action | Description |
+|--------|-------------|
+| **Accept** | User joins the organization with the assigned role |
+| **Decline** | Invitation is rejected and removed |
+| **Resend** | Owners can resend expired invitations |
+| **Revoke** | Owners can cancel pending invitations |
+
 ---
 
 ## Technical Implementation

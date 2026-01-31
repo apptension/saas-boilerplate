@@ -1,0 +1,501 @@
+---
+title: Deploy to VPS
+description: Deploy the SaaS Boilerplate to a VPS with Docker Compose and Traefik
+---
+
+import { Steps, Step } from '../shared/components';
+
+# Deploy to VPS with Docker Compose
+
+This guide walks you through deploying the SaaS Boilerplate to a VPS using Docker Compose with Traefik for automatic SSL.
+
+## Prerequisites
+
+- A VPS (Hetzner, DigitalOcean, Linode, Vultr, etc.)
+  - Minimum: 2 vCPU, 4GB RAM, 40GB SSD
+  - Recommended: 4 vCPU, 8GB RAM, 80GB SSD
+- A domain name pointed to your VPS IP
+- SSH access to your VPS
+
+## VPS Provider Recommendations
+
+| Provider | Recommended Plan | Monthly Cost |
+|----------|-----------------|--------------|
+| Hetzner | CX21 (2 vCPU, 4GB) | ~€5/month |
+| DigitalOcean | Basic Droplet 4GB | ~$24/month |
+| Linode | Linode 4GB | ~$24/month |
+| Vultr | Cloud Compute 4GB | ~$24/month |
+
+## Quick Start with CLI
+
+Deploy from your local machine using the SaaS Boilerplate CLI:
+
+```bash
+# One-time setup - configures SSH connection and generates docker-compose
+saas vps setup
+
+# Deploy to VPS (uploads files, pulls images, starts services)
+saas vps deploy
+
+# Run migrations after first deploy
+saas vps deploy --migrate
+
+# Check service status
+saas vps status
+
+# SSH into VPS for manual commands
+saas vps ssh
+```
+
+The setup wizard will guide you through:
+1. Configuring SSH connection (host, user, key path)
+2. Generating `docker-compose.prod.yml` with your domain
+3. Creating secure credentials
+
+## Manual Deployment
+
+If you prefer manual control, follow these steps:
+
+<Steps>
+<Step title="Initial Server Setup">
+
+SSH into your VPS and install Docker:
+
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Docker
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+
+# Install Docker Compose plugin
+sudo apt install docker-compose-plugin -y
+
+# Install useful tools
+sudo apt install git htop -y
+
+# Log out and back in for docker group
+exit
+```
+
+</Step>
+
+<Step title="Configure DNS">
+
+Point your domain to your VPS IP:
+
+| Type | Name | Value |
+|------|------|-------|
+| A | @ | YOUR_VPS_IP |
+| A | api | YOUR_VPS_IP |
+
+Wait for DNS propagation (5-15 minutes).
+
+</Step>
+
+<Step title="Clone Repository">
+
+```bash
+# Create app directory
+sudo mkdir -p /opt/saas-app
+sudo chown $USER:$USER /opt/saas-app
+cd /opt/saas-app
+
+# Clone repository
+git clone https://github.com/your-org/your-fork.git .
+```
+
+</Step>
+
+<Step title="Configure Environment">
+
+Copy the example environment file and customize:
+
+```bash
+cp .env.vps.example .env.prod
+```
+
+Edit `.env.prod` with your values:
+
+```bash
+nano .env.prod
+```
+
+:::tip Quick Reference
+See `.env.vps.example` in the project root for all available options with detailed comments.
+:::
+
+**Required variables:**
+
+```bash
+# Domain configuration
+DOMAIN=example.com
+ACME_EMAIL=admin@example.com
+
+# Security secrets (generate unique values!)
+DJANGO_SECRET_KEY=<generate-me>
+HASHID_FIELD_SALT=<generate-me>
+POSTGRES_PASSWORD=<generate-me>
+
+# Email configuration
+EMAIL_BACKEND=sendgrid_backend.SendgridBackend
+SENDGRID_API_KEY=SG.your-api-key
+EMAIL_FROM_ADDRESS=noreply@example.com
+```
+
+**Generate secure secrets:**
+
+```bash
+# Django secret key
+python3 -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+
+# Hashid salt and Postgres password
+openssl rand -hex 32
+```
+
+For complete environment variable reference, see [Environment Variables](/deployment/environment-variables).
+
+</Step>
+
+<Step title="Deploy">
+
+```bash
+# Start all services
+docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
+
+# Check status
+docker compose -f docker-compose.prod.yml ps
+
+# View logs
+docker compose -f docker-compose.prod.yml logs -f
+```
+
+</Step>
+
+<Step title="Run Migrations">
+
+```bash
+docker compose -f docker-compose.prod.yml exec backend python manage.py migrate
+```
+
+</Step>
+
+<Step title="Create Superuser">
+
+```bash
+docker compose -f docker-compose.prod.yml exec backend python manage.py createsuperuser
+```
+
+</Step>
+</Steps>
+
+## Storage Options
+
+### Local Filesystem (Default)
+
+Files are stored in a Docker volume. Good for small deployments.
+
+```bash
+STORAGE_BACKEND=local
+```
+
+### Cloudflare R2
+
+For production, use R2 for durability and CDN integration:
+
+```bash
+STORAGE_BACKEND=r2
+R2_ENDPOINT_URL=https://account-id.r2.cloudflarestorage.com
+R2_ACCESS_KEY_ID=your-key
+R2_SECRET_ACCESS_KEY=your-secret
+R2_BUCKET_NAME=your-bucket
+```
+
+### MinIO (Self-Hosted S3)
+
+Add MinIO to your docker-compose.prod.yml:
+
+```yaml
+services:
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    networks:
+      - internal
+
+volumes:
+  minio_data:
+```
+
+## AI Assistant (MCP Server) - Optional
+
+The MCP Server enables AI assistants to interact with your application's data. It's included in `docker-compose.prod.yml` and will start automatically with your other services.
+
+### Configuration
+
+The MCP server is pre-configured to connect to your backend. Add these variables to `.env.prod` if you want to enable AI features:
+
+```bash
+# AI Assistant Configuration
+OPENAI_API_KEY=sk-your-openai-api-key
+
+# MCP Server is accessible internally at http://mcp-server:4000
+# The backend uses this URL to proxy AI requests
+```
+
+### Verifying MCP Server
+
+After deployment, check that the MCP server is running:
+
+```bash
+# Check container status
+docker compose -f docker-compose.prod.yml ps mcp-server
+
+# View logs
+docker compose -f docker-compose.prod.yml logs mcp-server
+```
+
+### Disabling MCP Server
+
+If you don't need AI features, you can exclude the MCP server from deployment:
+
+```bash
+# Start all services except mcp-server
+docker compose -f docker-compose.prod.yml up -d --scale mcp-server=0
+```
+
+Or remove the `mcp-server` service from your `docker-compose.prod.yml`.
+
+## Backups
+
+### Database Backup Script
+
+Create `/opt/saas-app/scripts/backup-db.sh`:
+
+```bash
+#!/bin/bash
+BACKUP_DIR="/opt/backups/postgres"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+mkdir -p $BACKUP_DIR
+
+docker compose -f /opt/saas-app/docker-compose.prod.yml exec -T db \
+    pg_dump -U backend backend | gzip > "$BACKUP_DIR/backup_$TIMESTAMP.sql.gz"
+
+# Keep only last 7 days
+find $BACKUP_DIR -name "*.sql.gz" -mtime +7 -delete
+```
+
+Add to crontab:
+
+```bash
+# Run daily at 3 AM
+0 3 * * * /opt/saas-app/scripts/backup-db.sh
+```
+
+### Cloud Backups with Restic
+
+```bash
+# Install restic
+sudo apt install restic
+
+# Initialize repository (Backblaze B2 example)
+export B2_ACCOUNT_ID="your-account-id"
+export B2_ACCOUNT_KEY="your-account-key"
+restic -r b2:your-bucket:/backups init
+
+# Backup
+restic -r b2:your-bucket:/backups backup /opt/backups
+```
+
+## Updates and Deployments
+
+### Manual Update
+
+```bash
+cd /opt/saas-app
+
+# Pull latest code
+git pull origin main
+
+# Rebuild and restart services
+docker compose -f docker-compose.prod.yml --env-file .env.prod build
+docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
+
+# Run migrations
+docker compose -f docker-compose.prod.yml exec backend python manage.py migrate
+```
+
+### Automated Updates with Watchtower
+
+Add Watchtower to your docker-compose.prod.yml:
+
+```yaml
+services:
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=300
+    restart: unless-stopped
+```
+
+## Monitoring
+
+### Uptime Monitoring with Uptime Kuma
+
+Add to docker-compose.prod.yml:
+
+```yaml
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    volumes:
+      - uptime_data:/app/data
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.uptime.rule=Host(`status.${DOMAIN}`)"
+      - "traefik.http.routers.uptime.tls.certresolver=letsencrypt"
+```
+
+### View Logs
+
+```bash
+# All services
+docker compose -f docker-compose.prod.yml logs -f
+
+# Specific service
+docker compose -f docker-compose.prod.yml logs -f backend
+
+# Last 100 lines
+docker compose -f docker-compose.prod.yml logs --tail=100 backend
+```
+
+### Resource Monitoring
+
+```bash
+# Container stats
+docker stats
+
+# System resources
+htop
+df -h
+```
+
+## Security
+
+### Firewall Configuration
+
+```bash
+# Install UFW
+sudo apt install ufw
+
+# Allow SSH, HTTP, HTTPS
+sudo ufw allow 22/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+# Enable firewall
+sudo ufw enable
+```
+
+### Fail2ban
+
+```bash
+# Install
+sudo apt install fail2ban
+
+# Configure for SSH
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban
+```
+
+### Automatic Security Updates
+
+```bash
+sudo apt install unattended-upgrades
+sudo dpkg-reconfigure -plow unattended-upgrades
+```
+
+## Troubleshooting
+
+### Container Won't Start
+
+```bash
+# Check logs
+docker compose -f docker-compose.prod.yml logs backend
+
+# Check container status
+docker compose -f docker-compose.prod.yml ps
+
+# Inspect container
+docker inspect saas-backend
+```
+
+### Database Connection Issues
+
+```bash
+# Check database is running
+docker compose -f docker-compose.prod.yml exec db pg_isready
+
+# Connect to database
+docker compose -f docker-compose.prod.yml exec db psql -U backend
+```
+
+### SSL Certificate Issues
+
+```bash
+# Check Traefik logs
+docker compose -f docker-compose.prod.yml logs traefik
+
+# Verify DNS
+dig +short api.yourdomain.com
+```
+
+## Scaling
+
+### Scale Celery Workers
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --scale celery_worker=3
+```
+
+### Vertical Scaling
+
+Upgrade your VPS to a larger plan, then restart containers:
+
+```bash
+docker compose -f docker-compose.prod.yml restart
+```
+
+## Cost Estimate
+
+| Component | Hetzner | DigitalOcean |
+|-----------|---------|--------------|
+| VPS (4GB RAM) | €5-10/mo | $24/mo |
+| Backups (B2) | ~$1/mo | ~$1/mo |
+| Domain | ~$12/year | ~$12/year |
+| **Total** | **~$20/mo** | **~$26/mo** |
+
+Add for optional services:
+- Cloudflare R2: ~$0-5/mo
+- SendGrid: free tier or ~$10/mo
+- Sentry: free tier available
+
+## Next Steps
+
+1. Set up automated backups to cloud storage
+2. Configure monitoring with Uptime Kuma
+3. Enable Sentry for error tracking
+4. Set up CI/CD with GitHub Actions
+5. Configure Cloudflare for CDN and DDoS protection

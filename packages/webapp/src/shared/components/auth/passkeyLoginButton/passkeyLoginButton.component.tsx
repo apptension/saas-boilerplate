@@ -13,7 +13,7 @@ const base64UrlToUint8Array = (base64url: string): Uint8Array => {
     .replace(/-/g, '+')
     .replace(/_/g, '/')
     .padEnd(base64url.length + (4 - (base64url.length % 4)) % 4, '=');
-  
+
   const binaryString = atob(base64);
   const bytes = new Uint8Array(binaryString.length);
   for (let i = 0; i < binaryString.length; i++) {
@@ -34,7 +34,7 @@ const uint8ArrayToBase64Url = (bytes: Uint8Array): string => {
 
 /**
  * Passkey Login Button
- * 
+ *
  * Allows users to authenticate using WebAuthn passkeys (biometrics, security keys).
  * Only shown if ENABLE_PASSKEYS feature flag is enabled.
  */
@@ -59,7 +59,7 @@ export const PasskeyLoginButton = () => {
 
     try {
       // 1. Get authentication options from backend
-      const optionsResponse = await fetch('/api/sso/passkeys/authenticate/options', {
+      const optionsResponse = await fetch(`${ENV.BASE_API_URL}/sso/passkeys/authenticate/options`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({}),
@@ -97,7 +97,7 @@ export const PasskeyLoginButton = () => {
       const response = credential.response as AuthenticatorAssertionResponse;
 
       // 4. Verify with backend (using base64url encoding)
-      const verifyResponse = await fetch('/api/sso/passkeys/authenticate/verify', {
+      const verifyResponse = await fetch(`${ENV.BASE_API_URL}/sso/passkeys/authenticate/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -106,7 +106,7 @@ export const PasskeyLoginButton = () => {
           authenticatorData: uint8ArrayToBase64Url(new Uint8Array(response.authenticatorData)),
           clientDataJSON: uint8ArrayToBase64Url(new Uint8Array(response.clientDataJSON)),
           signature: uint8ArrayToBase64Url(new Uint8Array(response.signature)),
-          userHandle: response.userHandle 
+          userHandle: response.userHandle
             ? uint8ArrayToBase64Url(new Uint8Array(response.userHandle))
             : null,
         }),
@@ -121,12 +121,17 @@ export const PasskeyLoginButton = () => {
       // Backend sets cookies directly, we just need to redirect
       trackEvent('auth', 'passkey-login');
 
-      // Parse the 'next' param from search if available
+      // Parse the 'redirect' param from search if available (consistent with regular login)
       const params = new URLSearchParams(search);
-      const next = params.get('next') || '/en/';
-      
+      const redirect = params.get('redirect');
+
+      // Get locale for default redirect
+      const localeMatch = window.location.pathname.match(/^\/([a-z]{2})\//);
+      const locale = localeMatch ? localeMatch[1] : 'en';
+      const defaultRedirect = `/${locale}/`;
+
       // Force a full page reload to reinitialize with new auth cookies
-      window.location.href = next;
+      window.location.href = redirect || defaultRedirect;
 
     } catch (err) {
       console.error('Passkey login error:', err);

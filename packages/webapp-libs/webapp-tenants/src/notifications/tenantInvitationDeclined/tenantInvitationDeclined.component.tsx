@@ -12,6 +12,8 @@ export const TenantInvitationDeclined = ({
   issuer,
   ...restProps
 }: TenantInvitationDeclinedProps) => {
+  const displayName = name || issuer?.email || '';
+
   return (
     <Notification
       {...restProps}
@@ -19,9 +21,9 @@ export const TenantInvitationDeclined = ({
       title={issuer?.email}
       content={
         <FormattedMessage
-          defaultMessage={'Your invitation to "{tenant_name}" has been declined by "{name}"'}
+          defaultMessage='Your invitation to "{tenant_name}" has been declined by "{name}"'
           id="Notifications / Tenant / Invitation Declined"
-          values={{ tenant_name, name }}
+          values={{ tenant_name, name: displayName }}
         />
       }
     />

@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client/react';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
@@ -32,7 +33,6 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
 
   const {
     handleSubmit,
-    hasGenericErrorOnly,
     genericError,
     setApolloGraphQLResponseErrors,
     form: {
@@ -47,9 +47,10 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
   });
 
   const [commitVerifyOtpMutation] = useMutation(verifyOtpMutation, {
-    onError: (error: any) => {
-      if (error?.graphQLErrors) {
-        setApolloGraphQLResponseErrors(error.graphQLErrors);
+    onError: (error) => {
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        setApolloGraphQLResponseErrors(graphQLErrors);
       }
     },
     onCompleted: () => {
@@ -110,7 +111,7 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     const getOtpData = async () => {
       try {
         const { data } = await commitGenerateOtpMutation();
@@ -130,7 +131,7 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
       }
     };
     getOtpData();
-    
+
     return () => {
       isMounted = false;
     };
@@ -284,7 +285,7 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
               className="w-full max-w-[160px] text-center font-mono text-lg tracking-widest"
             />
 
-            {hasGenericErrorOnly && (
+            {genericError && (
               <div className="text-sm text-destructive">
                 <Small>{genericError}</Small>
               </div>

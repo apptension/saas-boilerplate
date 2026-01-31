@@ -12,7 +12,7 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      'bg-muted text-muted-foreground inline-flex h-10 items-center justify-center rounded-md p-1',
+      'inline-flex h-auto items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground',
       className
     )}
     {...props}
@@ -27,7 +27,24 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      'ring-offset-background focus-visible:ring-ring data-[state=active]:bg-background data-[state=active]:text-foreground inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm',
+      // Base styles
+      'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md px-3 py-1.5',
+      'text-sm font-medium',
+      // Smooth transitions for all interactive states
+      'transition-all duration-200 ease-out',
+      // Inactive state - muted appearance
+      'text-muted-foreground',
+      'border border-transparent',
+      // Hover state - lift effect with background
+      'hover:text-foreground hover:bg-accent/60',
+      // Active/Selected state - darker gray background with dark text and white border
+      'data-[state=active]:bg-foreground/5 data-[state=active]:text-foreground data-[state=active]:border-foreground/20 data-[state=active]:shadow-sm',
+      // Active hover - slightly darker
+      'data-[state=active]:hover:bg-foreground/10',
+      // Focus state for accessibility
+      'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+      // Disabled state
+      'disabled:pointer-events-none disabled:opacity-50',
       className
     )}
     {...props}
@@ -42,7 +59,7 @@ const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      'ring-offset-background focus-visible:ring-ring mt-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+      'mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
       className
     )}
     {...props}

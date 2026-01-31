@@ -38,7 +38,7 @@ export const InvitationForm = () => {
       variables: {
         input: {
           email: formData.email,
-          role: formData.role,
+          organizationRoleIds: formData.organizationRoleIds,
           tenantId: currentTenant.data!.id,
         },
       },

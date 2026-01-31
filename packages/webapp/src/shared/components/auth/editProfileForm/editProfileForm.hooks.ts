@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client/react';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { DEFAULT_LOCALE } from '@sb/webapp-core/config/i18n';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -35,9 +36,10 @@ export const useEditProfileForm = () => {
         variant: 'success',
       });
     },
-    onError: (error: any) => {
-      if (error?.graphQLErrors) {
-        setApolloGraphQLResponseErrors(error.graphQLErrors);
+    onError: (error) => {
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        setApolloGraphQLResponseErrors(graphQLErrors);
       }
     },
   });

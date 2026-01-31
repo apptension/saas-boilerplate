@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client/react';
 import { setUserId } from '@sb/webapp-core/services/analytics';
 import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from 'react';
 
+import { extractGraphQLErrors } from '../../api/apolloError.types';
 import { CurrentUserType } from '../../graphql';
 import commonDataContext from './commonQuery.context';
 import { commonQueryCurrentUserQuery } from './commonQuery.graphql';
@@ -43,10 +44,11 @@ export const CommonQuery = ({ children }: PropsWithChildren) => {
   // This is a fallback to prevent blank pages if the redirect didn't happen
   useEffect(() => {
     if (error && !data && !loading && !redirectAttempted.current) {
+      const graphQLErrors = extractGraphQLErrors(error);
       const isAuthError =
         error.message?.includes('401') ||
         error.message?.includes('Unauthorized') ||
-        error.graphQLErrors?.some((e) => e.extensions?.['code'] === 'UNAUTHENTICATED');
+        graphQLErrors?.some((e) => e.extensions?.['code'] === 'UNAUTHENTICATED');
 
       if (isAuthError) {
         redirectAttempted.current = true;
@@ -55,7 +57,11 @@ export const CommonQuery = ({ children }: PropsWithChildren) => {
         const pathname = window.location.pathname;
         const localeMatch = pathname.match(/^\/([a-z]{2})\//);
         const locale = localeMatch ? localeMatch[1] : 'en';
-        const loginPath = `/${locale}/auth/login`;
+        
+        // Preserve current URL as redirect parameter (include pathname and search params)
+        const currentUrl = pathname + window.location.search;
+        const redirectParam = encodeURIComponent(currentUrl);
+        const loginPath = `/${locale}/auth/login?redirect=${redirectParam}`;
 
         // Only redirect if not already on login page
         if (!pathname.includes('/auth/login')) {

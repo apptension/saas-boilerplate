@@ -2,9 +2,11 @@
  * WebAuthn hook for passkey registration and authentication.
  */
 
+import { ENV } from '@sb/webapp-core/config/env';
 import { useState, useCallback } from 'react';
 
-const API_BASE = '/api/sso';
+// Use the configured API base URL to ensure requests go to the backend, not the webapp
+const API_BASE = `${ENV.BASE_API_URL}/sso`;
 
 interface RegistrationOptions {
   challenge: string;

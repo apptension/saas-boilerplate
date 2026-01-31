@@ -93,13 +93,18 @@ export const TenantSwitch = () => {
     </Tooltip>
   );
 
+  const hasPendingInvitations = (organizationTenants?.invitations?.length ?? 0) > 0;
+
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="overflow-hidden">
+          <Button variant="outline" className="relative overflow-hidden">
             <div className="overflow-ellipsis overflow-hidden whitespace-nowrap max-w-full">{currentTenant?.name}</div>
             <ChevronDown className="ml-2 mr--2" />
+            {hasPendingInvitations && (
+              <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-primary" />
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -138,8 +143,12 @@ export const TenantSwitch = () => {
             </>
           )}
           {organizationTenants?.invitations?.map((invitation) => (
-            <DropdownMenuItem key={invitation?.id} onClick={handleInvitationClick(invitation)}>
-              <UserPlus className="mr-2" size="16" /> {invitation?.name}
+            <DropdownMenuItem key={invitation?.id} onClick={handleInvitationClick(invitation)} className="gap-2">
+              <div className="relative">
+                <UserPlus className="h-4 w-4" />
+                <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-primary" />
+              </div>
+              {invitation?.name}
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />

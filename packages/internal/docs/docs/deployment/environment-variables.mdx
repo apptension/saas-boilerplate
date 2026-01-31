@@ -1,0 +1,606 @@
+---
+title: Environment Variables
+description: Complete reference for all environment variables used in the SaaS Boilerplate
+---
+
+# Environment Variables Reference
+
+Complete reference for all environment variables used in the SaaS Boilerplate.
+
+## Platform Selection
+
+These variables control which platform-specific implementations are used.
+
+| Variable | Default | Options | Description |
+|----------|---------|---------|-------------|
+| `STORAGE_BACKEND` | `s3` | `s3`, `r2`, `b2`, `minio`, `local` | File storage backend |
+| `EMAIL_BACKEND` | `django_ses.SESBackend` | See Email section | Email sending backend |
+| `TASK_BACKEND` | `lambda` | `lambda`, `celery` | Background task execution |
+| `TRACING_BACKEND` | `xray` | `xray`, `otel`, `none` | Distributed tracing |
+
+**When to use which task backend:**
+
+| Deployment | `TASK_BACKEND` | Why |
+|------------|---------------|-----|
+| **AWS (ECS/Lambda)** | `lambda` | Uses EventBridge + Lambda for serverless task execution |
+| **Render.com** | `celery` | Uses Celery workers with Redis |
+| **VPS (Docker)** | `celery` | Uses Celery workers with Redis |
+| **Local Dev** | `celery` | Uses Docker Celery container |
+
+## Core Django Settings
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `DJANGO_SECRET_KEY` | ✅ | - | Django secret key for cryptographic signing |
+| `DJANGO_DEBUG` | | `False` | Enable debug mode (never in production) |
+| `DJANGO_ALLOWED_HOSTS` | ✅ | `[]` | Comma-separated list of allowed hosts |
+| `DJANGO_LOG_LEVEL` | | `INFO` | Logging level |
+| `ENVIRONMENT_NAME` | | `` | Environment name (local, staging, production) |
+| `CSRF_TRUSTED_ORIGINS` | | `[]` | Trusted origins for CSRF |
+| `HASHID_FIELD_SALT` | ✅ | - | Salt for hashid field encoding |
+
+**Generate secrets:**
+
+```bash
+# Generate DJANGO_SECRET_KEY
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+
+# Generate HASHID_FIELD_SALT
+openssl rand -hex 32
+```
+
+**URL formatting rules:**
+
+| Variable | Format | Example |
+|----------|--------|---------|
+| `DJANGO_ALLOWED_HOSTS` | Hostnames only, no protocol | `api.example.com,backend.onrender.com` |
+| `CSRF_TRUSTED_ORIGINS` | Full URLs with protocol | `https://example.com,https://www.example.com` |
+| `WEB_APP_URL` / `API_URL` | Full URL with protocol | `https://api.example.com` |
+
+## Database
+
+### Option 1: DATABASE_URL (Render, Railway, Heroku)
+
+| Variable | Required | Format |
+|----------|----------|--------|
+| `DATABASE_URL` | ✅ | `postgresql://user:password@host:5432/dbname` |
+
+### Option 2: DB_CONNECTION (AWS RDS)
+
+| Variable | Required | Format |
+|----------|----------|--------|
+| `DB_CONNECTION` | ✅ | JSON: `{"host":"...","port":5432,"dbname":"...","username":"...","password":"..."}` |
+| `DB_PROXY_ENDPOINT` | | RDS Proxy endpoint if using connection pooling |
+
+### Connection Settings
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DB_CONN_MAX_AGE` | `60` | How long to keep database connections open (seconds). **Critical for Render.com**: Set to `0` to close connections after each request and prevent connection exhaustion on limited plans |
+| `HEALTH_CHECK_CACHE_TTL` | `30` | Cache duration for health check migrations query (seconds). Reduces database load from frequent health checks |
+
+:::warning Render.com Connection Management
+For Render.com with `basic-1gb` PostgreSQL (22-25 max connections):
+- Set `DB_CONN_MAX_AGE=0` for backend-api to close connections after each request
+- This prevents "too many connections" errors when multiple services share the database
+- The connection math: Backend (2 workers) + Celery Worker (2 processes) + Celery Beat (1) + Headroom (3) = ~8-10 connections
+:::
+
+## Redis
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `REDIS_CONNECTION` | ✅ | Redis connection URL (e.g., `redis://localhost:6379`) |
+
+## Storage Backends
+
+### AWS S3 (`STORAGE_BACKEND=s3`)
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `AWS_STORAGE_BUCKET_NAME` | ✅ | - | S3 bucket name for file uploads |
+| `AWS_EXPORTS_STORAGE_BUCKET_NAME` | | - | Separate bucket for user data exports (optional) |
+| `AWS_REGION` | ✅ | - | AWS region (e.g., `us-east-1`) |
+| `AWS_S3_ENDPOINT_URL` | | - | Custom S3 endpoint (for LocalStack or compatible services) |
+| `AWS_S3_CUSTOM_DOMAIN` | | - | CloudFront distribution domain for serving files (e.g., `cdn.example.com`) |
+| `AWS_S3_URL_PROTOCOL` | | `https:` | Protocol for S3 URLs |
+| `AWS_QUERYSTRING_EXPIRE` | | `86400` | Pre-signed URL expiration in seconds (default: 24 hours) |
+
+### CloudFront Signed URLs (Optional)
+
+For private content distribution with CloudFront signed URLs:
+
+| Variable | Description |
+|----------|-------------|
+| `AWS_CLOUDFRONT_KEY_ID` | CloudFront key pair ID for signing URLs |
+| `AWS_CLOUDFRONT_KEY` | Private key content (PEM format) for signing URLs |
+
+### Cloudflare R2 (`STORAGE_BACKEND=r2`)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `R2_ENDPOINT_URL` | ✅ | `https://<account-id>.r2.cloudflarestorage.com` |
+| `R2_ACCESS_KEY_ID` | ✅ | R2 API access key |
+| `R2_SECRET_ACCESS_KEY` | ✅ | R2 API secret key |
+| `R2_BUCKET_NAME` | ✅ | R2 bucket name |
+| `R2_CUSTOM_DOMAIN` | | Custom domain for public access |
+
+**How to get R2 credentials:**
+
+1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com) → **R2 Object Storage**
+2. Create a bucket if you haven't already
+3. Click **Manage R2 API Tokens** → **Create API token**
+4. Select **Object Read & Write** permission
+5. Copy the **Access Key ID** and **Secret Access Key** (secret shown only once!)
+6. Your Account ID is visible in the dashboard URL or R2 Overview page
+
+For detailed instructions, see the [Cloudflare R2 API Tokens documentation](https://developers.cloudflare.com/r2/api/tokens/).
+
+### Backblaze B2 (`STORAGE_BACKEND=b2`)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `B2_ENDPOINT_URL` | ✅ | `https://s3.<region>.backblazeb2.com` |
+| `B2_ACCESS_KEY_ID` | ✅ | B2 application key ID |
+| `B2_SECRET_ACCESS_KEY` | ✅ | B2 application key |
+| `B2_BUCKET_NAME` | ✅ | B2 bucket name |
+
+### MinIO (`STORAGE_BACKEND=minio`)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `MINIO_ENDPOINT_URL` | ✅ | MinIO endpoint (e.g., `http://minio:9000`) |
+| `MINIO_ACCESS_KEY_ID` | ✅ | MinIO access key |
+| `MINIO_SECRET_ACCESS_KEY` | ✅ | MinIO secret key |
+| `MINIO_BUCKET_NAME` | ✅ | MinIO bucket name |
+
+### Local Filesystem (`STORAGE_BACKEND=local`)
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `MEDIA_ROOT` | | `BASE_DIR/media` | Path to media files directory |
+| `MEDIA_URL` | | `/media/` | URL prefix for media files |
+
+## Email Backends
+
+### AWS SES (`EMAIL_BACKEND=django_ses.SESBackend`)
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `AWS_SES_REGION_NAME` | | `AWS_REGION` | SES region |
+| `USE_SES_V2` | | `True` | Use SES v2 API |
+| `EMAIL_FROM_ADDRESS` | ✅ | - | Sender email address |
+
+### SendGrid (`EMAIL_BACKEND=sendgrid_backend.SendgridBackend`)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `SENDGRID_API_KEY` | ✅ | SendGrid API key (starts with `SG.`) |
+| `EMAIL_FROM_ADDRESS` | ✅ | Verified sender email |
+| `SENDGRID_SANDBOX_MODE_IN_DEBUG` | | Enable sandbox mode in debug |
+
+### SMTP (`EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend`)
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `EMAIL_HOST` | ✅ | - | SMTP server hostname |
+| `EMAIL_PORT` | | `587` | SMTP port |
+| `EMAIL_HOST_USER` | ✅ | - | SMTP username |
+| `EMAIL_HOST_PASSWORD` | ✅ | - | SMTP password |
+| `EMAIL_USE_TLS` | | `True` | Use TLS encryption |
+| `EMAIL_USE_SSL` | | `False` | Use SSL encryption |
+| `EMAIL_FROM_ADDRESS` | ✅ | - | Sender email address |
+| `EMAIL_REPLY_ADDRESS` | | Same as FROM | Reply-to address (comma-separated for multiple)
+
+## Stripe (Payments)
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `STRIPE_LIVE_SECRET_KEY` | | `sk_<CHANGE_ME>` | Live API secret key |
+| `STRIPE_TEST_SECRET_KEY` | | `sk_test_<CHANGE_ME>` | Test API secret key |
+| `STRIPE_LIVE_MODE` | | `False` | Use live mode |
+| `DJSTRIPE_WEBHOOK_SECRET` | | - | Webhook signing secret |
+| `STRIPE_CHECKS_ENABLED` | | `True` | Enable Stripe key validation |
+| `SUBSCRIPTION_TRIAL_PERIOD_DAYS` | | `7` | Trial period in days |
+
+## OAuth (Social Login)
+
+### Google
+
+| Variable | Description |
+|----------|-------------|
+| `SOCIAL_AUTH_GOOGLE_OAUTH2_KEY` | Google OAuth client ID |
+| `SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET` | Google OAuth client secret |
+
+### Facebook
+
+| Variable | Description |
+|----------|-------------|
+| `SOCIAL_AUTH_FACEBOOK_KEY` | Facebook App ID |
+| `SOCIAL_AUTH_FACEBOOK_SECRET` | Facebook App Secret |
+
+### Common
+
+| Variable | Description |
+|----------|-------------|
+| `SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS` | Allowed redirect hosts |
+| `SOCIAL_AUTH_REDIRECT_IS_HTTPS` | Force HTTPS redirects (default: True) |
+
+## URLs and Domains
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `WEB_APP_URL` | `http://localhost:3000` | Frontend URL |
+| `API_URL` | `http://localhost:5001` | API URL |
+| `PARENT_HOST` | - | Parent host for subdomains |
+
+## CORS (Cross-Origin Resource Sharing)
+
+:::warning Critical for Render.com and Other Split-Domain Deployments
+When your frontend and backend are on different domains (e.g., Render.com), you **must** configure CORS. Without it, authentication will fail!
+:::
+
+| Variable | Format | Description |
+|----------|--------|-------------|
+| `CORS_ALLOWED_ORIGINS` | Full URLs with `https://` | Origins allowed to make cross-origin requests |
+| `CSRF_TRUSTED_ORIGINS` | Full URLs with `https://` | Origins trusted for CSRF protection |
+
+**When is CORS needed?**
+
+| Deployment Type | Frontend URL | Backend URL | CORS Required? |
+|-----------------|--------------|-------------|----------------|
+| **Render.com** | `https://webapp-xxx.onrender.com` | `https://backend-xxx.onrender.com` | ✅ Yes |
+| **VPS (Traefik)** | `https://example.com` | `https://api.example.com` | ❌ No (same parent domain) |
+| **AWS (CloudFront)** | `https://app.example.com` | `https://api.example.com` | ❌ No (same parent domain) |
+
+**Example for Render.com:**
+
+```bash
+# Both must include https:// prefix
+CORS_ALLOWED_ORIGINS=https://webapp-abc123.onrender.com
+CSRF_TRUSTED_ORIGINS=https://webapp-abc123.onrender.com,https://backend-abc123.onrender.com
+```
+
+## Monitoring
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SENTRY_DSN` | - | Sentry DSN for error tracking |
+| `SENTRY_TRACES_SAMPLE_RATE` | `0.2` | Sentry trace sample rate |
+
+## Celery Workers (when using `TASK_BACKEND=celery`)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CELERY_WORKER_MAX_TASKS_PER_CHILD` | `50` | Number of tasks a worker executes before restarting. Lower = more memory cleanup, higher = less overhead. Recommended: 50 for memory-constrained environments |
+
+:::tip Celery Memory Management
+For Render.com or other memory-constrained environments:
+- `CELERY_WORKER_MAX_TASKS_PER_CHILD=50` restarts workers after 50 tasks to release memory
+- Database connections are automatically closed after each task
+- `CELERY_WORKER_PREFETCH_MULTIPLIER=1` (hardcoded) prevents task prefetching
+:::
+
+## AWS Services (when using AWS)
+
+| Variable | Description |
+|----------|-------------|
+| `AWS_REGION` | AWS region (e.g., `us-east-1`, `eu-west-1`) |
+| `AWS_ENDPOINT_URL` | Custom AWS endpoint for LocalStack or compatible services |
+| `WORKERS_EVENT_BUS_NAME` | EventBridge bus name for Lambda workers (required when `TASK_BACKEND=lambda`) |
+| `PROJECT_NAME` | Project name used in X-Ray tracing names |
+| `LAMBDA_TASKS_BASE_HANDLER` | Task handler class. Default: `common.tasks.LambdaTask`. Use `common.tasks.LambdaTaskLocalInvoke` for local dev |
+| `LAMBDA_TASKS_LOCAL_URL` | URL for local workers container (e.g., `http://workers:3005`) |
+
+## Cookie Settings (Cross-Origin Authentication)
+
+:::danger Critical for Render.com
+These settings are **required** when frontend and backend are on different domains. Without them, login will fail because cookies won't be sent with cross-origin requests!
+:::
+
+| Variable | Default | Options | Description |
+|----------|---------|---------|-------------|
+| `COOKIE_SAMESITE` | `Lax` | `Lax`, `Strict`, `None` | Cookie SameSite attribute |
+| `COOKIE_SECURE` | `True` (prod) | `True`, `False` | Require HTTPS for cookies |
+
+**When to use which value:**
+
+| Deployment | `COOKIE_SAMESITE` | `COOKIE_SECURE` | Why |
+|------------|-------------------|-----------------|-----|
+| **Render.com** | `None` | `True` | Cross-origin: different subdomains |
+| **VPS (Traefik)** | `Lax` | `True` | Same parent domain |
+| **AWS (CloudFront)** | `Lax` | `True` | Same parent domain |
+| **Local Dev** | `Lax` | `False` | HTTP localhost |
+
+## JWT Authentication
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `ACCESS_TOKEN_LIFETIME_MINUTES` | `5` | Access token lifetime in minutes. Short for security - tokens refresh automatically |
+| `REFRESH_TOKEN_LIFETIME_DAYS` | `7` | Refresh token lifetime in days. Users stay logged in this long without re-authenticating |
+
+## SSO (Enterprise Single Sign-On)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SSO_SP_ENTITY_ID_BASE` | - | Base URL for SAML Service Provider Entity ID (e.g., `https://api.yourdomain.com`) |
+| `WEB_APP_URL` | `http://localhost:3000` | Frontend URL for SSO redirects |
+| `API_URL` | `http://localhost:5001` | Backend URL for SSO metadata |
+
+## Multi-Tenancy
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `TENANT_INVITATION_TIMEOUT` | `1209600` | How long tenant invitations remain valid (seconds). Default: 14 days |
+
+## Document & Upload Limits
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `UPLOADED_DOCUMENT_SIZE_LIMIT` | `10485760` | Maximum file upload size in bytes (default: 10MB) |
+| `USER_DOCUMENTS_NUMBER_LIMIT` | `10` | Maximum number of documents per user |
+| `USER_DATA_EXPORT_EXPIRY_SECONDS` | `172800` | How long user data export links remain valid (seconds). Default: 2 days |
+
+## OTP (Two-Factor Auth)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `OTP_AUTH_ISSUER_NAME` | - | Issuer name for TOTP apps |
+| `OTP_AUTH_TOKEN_LIFETIME_MINUTES` | `5` | OTP token lifetime |
+
+## OpenAI & AI Assistant
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `OPENAI_API_KEY` | - | OpenAI API key for AI features |
+| `OPENAI_MODEL` | `gpt-5.1` | OpenAI model to use. Options: `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`, `gpt-5.1` |
+| `MCP_SERVER_URL` | `http://mcp-server:4000` | URL of the MCP (Model Context Protocol) server for AI Assistant |
+
+:::tip AI Model Selection
+- **gpt-5.1** (default): Best for features requiring both JSON mode and vision
+- **gpt-4o**: Good all-around performance
+- **gpt-4o-mini**: Faster and cheaper for simpler tasks
+- **gpt-4** and **gpt-4-vision-preview**: Do NOT support JSON mode with vision
+:::
+
+## MCP Server Configuration
+
+The MCP (Model Context Protocol) Server is an optional service that enables AI assistants to interact with your GraphQL API. It exposes GraphQL operations as MCP tools that AI models can use.
+
+### MCP Server Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `GRAPHQL_ENDPOINT` | `http://backend:5001/api/graphql/` | Backend GraphQL endpoint URL |
+| `MCP_LOG_LEVEL` | `info` | Log level: `debug`, `info`, `warn`, `error` |
+| `MUTATION_MODE` | `explicit` | Mutation permissions: `none`, `explicit`, `all` |
+
+### Mutation Modes
+
+| Mode | Description | Use Case |
+|------|-------------|----------|
+| `none` | No mutations allowed | Read-only AI access |
+| `explicit` | Only pre-defined mutations in `/operations` | **Recommended** - Controlled write access |
+| `all` | AI can build any GraphQL mutation | Full access (use with caution) |
+
+### AWS Infrastructure Variables (CDK)
+
+When deploying to AWS with AI features enabled:
+
+| Variable | Description |
+|----------|-------------|
+| `SB_AI_ENABLED` | Set to `true` to enable MCP Server deployment |
+| `SB_MCP_SERVER_URL` | URL where MCP server will be accessible |
+| `SB_DOMAIN_MCP` | Domain for MCP server (e.g., `mcp.staging.example.com`) |
+
+### AWS Secrets Manager
+
+For AWS deployments, create a secret named `env-{projectName}-{envStage}-ai-secrets` with:
+
+```json
+{
+  "OPENAI_API_KEY": "sk-..."
+}
+```
+
+### Platform-Specific MCP Configuration
+
+| Platform | MCP Server URL | Notes |
+|----------|---------------|-------|
+| **Local Dev** | `http://mcp-server:4000` | Via Docker Compose |
+| **Render.com** | `https://mcp-server-xxx.onrender.com` | Separate service |
+| **VPS** | `http://mcp-server:4000` | Internal Docker network |
+| **AWS** | `https://mcp.{stage}.{domain}` | ECS Fargate service |
+
+---
+
+## Frontend (Vite) Environment Variables
+
+All frontend environment variables must be prefixed with `VITE_` to be accessible in the browser.
+
+### Core Configuration
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VITE_ENVIRONMENT_NAME` | `local` | Environment name displayed in the app |
+| `VITE_BASE_API_URL` | `/api` | Backend API URL. **For Render.com**: Must include `/api` suffix (e.g., `https://backend-xxx.onrender.com/api`) |
+| `VITE_WEB_APP_URL` | `http://localhost:3000` | Web application URL (used for generating absolute links in emails) |
+| `VITE_EMAIL_ASSETS_URL` | `/email-assets` | URL for email template assets (images, styles) |
+
+### Authentication Feature Flags
+
+Control which authentication methods are shown on the login page:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VITE_ENABLE_SSO` | `true` | Show SSO discovery (enterprise single sign-on) |
+| `VITE_ENABLE_PASSKEYS` | `true` | Show "Sign in with Passkey" (WebAuthn) |
+| `VITE_ENABLE_SOCIAL_LOGIN` | `true` | Show Google/Facebook social login buttons |
+| `VITE_ENABLE_PASSWORD_LOGIN` | `true` | Show email/password login form |
+
+**Example: Passkey-only authentication:**
+```bash
+VITE_ENABLE_PASSKEYS=true
+VITE_ENABLE_SSO=false
+VITE_ENABLE_SOCIAL_LOGIN=false
+VITE_ENABLE_PASSWORD_LOGIN=false
+```
+
+### Payments
+
+| Variable | Description |
+|----------|-------------|
+| `VITE_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key (starts with `pk_test_` or `pk_live_`) |
+
+### Remote Translations
+
+Enable loading translations from backend/CDN instead of bundled files:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VITE_USE_REMOTE_TRANSLATIONS` | `false` | Enable fetching translations from backend |
+| `VITE_TRANSLATIONS_URL` | `/api/translations` | Base URL for fetching translations. In production, can be a CloudFront CDN URL |
+| `VITE_TRANSLATIONS_POLLING` | `false` | Enable polling for translation updates (development only) |
+
+### Contentful CMS (Optional)
+
+| Variable | Description |
+|----------|-------------|
+| `VITE_CONTENTFUL_SPACE` | Contentful Space ID |
+| `VITE_CONTENTFUL_TOKEN` | Content Delivery API token |
+| `VITE_CONTENTFUL_ENV` | Environment (`develop`, `master`) |
+
+### Monitoring
+
+| Variable | Description |
+|----------|-------------|
+| `VITE_SENTRY_DSN` | Sentry DSN for frontend error tracking |
+| `VITE_GOOGLE_ANALYTICS_TRACKING_ID` | Google Analytics 4 Measurement ID |
+
+---
+
+## Example Configurations
+
+### Development (Minimal)
+
+```bash
+DJANGO_SECRET_KEY=dev-secret-key
+HASHID_FIELD_SALT=dev-salt
+DATABASE_URL=postgresql://backend:backend@db:5432/backend
+REDIS_CONNECTION=redis://redis:6379
+STORAGE_BACKEND=local
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+TASK_BACKEND=celery
+TRACING_BACKEND=none
+STRIPE_CHECKS_ENABLED=False
+```
+
+### Production (Render.com)
+
+See `.env.render.example` files in `packages/backend/` and `packages/webapp/` for complete examples.
+
+```bash
+# Required secrets
+DJANGO_SECRET_KEY=<generated>
+HASHID_FIELD_SALT=<generated>
+DJANGO_ALLOWED_HOSTS=backend-api-xxx.onrender.com
+
+# Auto-configured by Render (don't set manually)
+# DATABASE_URL=<from-render>
+# REDIS_CONNECTION=<from-render>
+
+# Platform backends
+STORAGE_BACKEND=r2
+EMAIL_BACKEND=sendgrid_backend.SendgridBackend
+TASK_BACKEND=celery
+TRACING_BACKEND=none
+
+# Cloudflare R2 Storage
+R2_ENDPOINT_URL=https://xxx.r2.cloudflarestorage.com
+R2_ACCESS_KEY_ID=<key>
+R2_SECRET_ACCESS_KEY=<secret>
+R2_BUCKET_NAME=uploads
+
+# Email
+SENDGRID_API_KEY=SG.xxx
+EMAIL_FROM_ADDRESS=noreply@example.com
+
+# URLs - CRITICAL for cross-origin auth!
+WEB_APP_URL=https://webapp-xxx.onrender.com
+API_URL=https://backend-api-xxx.onrender.com
+CORS_ALLOWED_ORIGINS=https://webapp-xxx.onrender.com
+CSRF_TRUSTED_ORIGINS=https://webapp-xxx.onrender.com,https://backend-api-xxx.onrender.com
+
+# Stripe (optional)
+STRIPE_LIVE_MODE=False
+STRIPE_TEST_SECRET_KEY=sk_test_xxx
+DJSTRIPE_WEBHOOK_SECRET=whsec_xxx
+
+# Monitoring (optional)
+SENTRY_DSN=https://xxx@sentry.io/xxx
+```
+
+### Production (VPS with Docker Compose)
+
+See `.env.vps.example` in the project root for a complete example.
+
+```bash
+# Domain configuration
+DOMAIN=example.com
+ACME_EMAIL=admin@example.com
+
+# Required secrets
+DJANGO_SECRET_KEY=<generated>
+HASHID_FIELD_SALT=<generated>
+POSTGRES_PASSWORD=<generated>
+
+# Platform backends
+STORAGE_BACKEND=local  # or r2, b2, minio
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+TASK_BACKEND=celery
+TRACING_BACKEND=none
+
+# Email (SMTP)
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=your-username
+EMAIL_HOST_PASSWORD=your-password
+EMAIL_FROM_ADDRESS=noreply@example.com
+
+# Stripe (optional)
+STRIPE_LIVE_MODE=False
+STRIPE_TEST_SECRET_KEY=sk_test_xxx
+DJSTRIPE_WEBHOOK_SECRET=whsec_xxx
+
+# Monitoring (optional)
+SENTRY_DSN=https://xxx@sentry.io/xxx
+```
+
+### Production (AWS)
+
+```bash
+DJANGO_SECRET_KEY=<from-ssm>
+HASHID_FIELD_SALT=<from-ssm>
+DJANGO_ALLOWED_HOSTS=api.example.com
+DB_CONNECTION=<from-ssm>
+DB_PROXY_ENDPOINT=<rds-proxy-endpoint>
+REDIS_CONNECTION=redis://elasticache:6379
+
+STORAGE_BACKEND=s3
+AWS_STORAGE_BUCKET_NAME=my-app-uploads
+AWS_REGION=us-east-1
+AWS_S3_CUSTOM_DOMAIN=cdn.example.com
+
+EMAIL_BACKEND=django_ses.SESBackend
+EMAIL_FROM_ADDRESS=noreply@example.com
+
+TASK_BACKEND=lambda
+WORKERS_EVENT_BUS_NAME=my-app-events
+TRACING_BACKEND=xray
+
+STRIPE_LIVE_MODE=True
+STRIPE_LIVE_SECRET_KEY=<from-ssm>
+DJSTRIPE_WEBHOOK_SECRET=<from-ssm>
+
+SENTRY_DSN=https://xxx@sentry.io/xxx
+```

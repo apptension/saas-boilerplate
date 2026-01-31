@@ -2,7 +2,12 @@ import { apiClient } from '@sb/webapp-api-client/api';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
-import { Dialog, DialogContent } from '@sb/webapp-core/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from '@sb/webapp-core/components/ui/dialog';
 import { Label } from '@sb/webapp-core/components/ui/label';
 import { ENV } from '@sb/webapp-core/config/env';
 import { useOpenState } from '@sb/webapp-core/hooks';
@@ -92,10 +97,17 @@ export const PasskeysForm = () => {
     }
 
     try {
-      const response = await apiClient.get('/api/sso/passkeys/');
-      setPasskeys(response.data || []);
-    } catch (error) {
-      console.error('Failed to fetch passkeys:', error);
+      const response = await apiClient.get(`${ENV.BASE_API_URL}/sso/passkeys/`);
+      const data = response.data;
+      // Ensure we always set an array even if response is malformed
+      setPasskeys(Array.isArray(data) ? data : []);
+    } catch (error: unknown) {
+      // Silently handle errors - passkeys feature may not be available
+      // This prevents console noise when the backend SSO app is not configured
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Passkeys fetch failed (this is expected if SSO is not configured):', error);
+      }
+      setPasskeys([]);
     } finally {
       setLoading(false);
     }
@@ -109,7 +121,7 @@ export const PasskeysForm = () => {
     setDeleting(passkeyId);
 
     try {
-      await apiClient.delete(`/api/sso/passkeys/${passkeyId}`);
+      await apiClient.delete(`${ENV.BASE_API_URL}/sso/passkeys/${passkeyId}`);
       setPasskeys((prev) => prev.filter((p) => p.id !== passkeyId));
       toast({
         description: intl.formatMessage({
@@ -167,7 +179,7 @@ export const PasskeysForm = () => {
 
     try {
       // Step 1: Get registration options from the server
-      const optionsResponse = await fetch('/api/sso/passkeys/register/options', {
+      const optionsResponse = await fetch(`${ENV.BASE_API_URL}/sso/passkeys/register/options`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -221,7 +233,7 @@ export const PasskeysForm = () => {
       const response = credential.response as AuthenticatorAttestationResponse;
 
       // Step 4: Send the credential to the server for verification
-      const verifyResponse = await fetch('/api/sso/passkeys/register/verify', {
+      const verifyResponse = await fetch(`${ENV.BASE_API_URL}/sso/passkeys/register/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -420,7 +432,17 @@ export const PasskeysForm = () => {
 
       {/* Add Passkey Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[450px]">
+        <DialogContent className="sm:max-w-[450px]" aria-describedby="passkey-dialog-description">
+          {/* Visually hidden but accessible title and description for screen readers */}
+          <DialogTitle className="sr-only">
+            <FormattedMessage defaultMessage="Register a Passkey" id="Add Passkey Modal / Title" />
+          </DialogTitle>
+          <DialogDescription id="passkey-dialog-description" className="sr-only">
+            <FormattedMessage
+              defaultMessage="Secure, passwordless sign-in"
+              id="Add Passkey Modal / Subtitle"
+            />
+          </DialogDescription>
           <div className="-m-6 flex h-[85vh] max-h-[500px] flex-col overflow-hidden sm:rounded-lg">
             {/* Fixed Header */}
             <div className="flex shrink-0 items-center gap-3 border-b bg-background px-6 py-4">
@@ -428,10 +450,10 @@ export const PasskeysForm = () => {
                 <Fingerprint className="h-5 w-5 text-primary" />
               </div>
               <div className="mr-8">
-                <h2 className="text-lg font-semibold">
+                <h2 className="text-lg font-semibold" aria-hidden="true">
                   <FormattedMessage defaultMessage="Register a Passkey" id="Add Passkey Modal / Title" />
                 </h2>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground" aria-hidden="true">
                   <FormattedMessage
                     defaultMessage="Secure, passwordless sign-in"
                     id="Add Passkey Modal / Subtitle"

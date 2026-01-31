@@ -129,7 +129,31 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
             return None
         from django.conf import settings
 
-        api_url = getattr(settings, 'API_URL', 'http://localhost:5001')
+        api_url = getattr(settings, 'API_URL', 'http://localhost:3000')
+        return f"{api_url}/api/sso/saml/{self.id}/metadata"
+
+    @property
+    def sp_acs_url(self):
+        """Get the Assertion Consumer Service (ACS) URL for SAML connections."""
+        if not self.is_saml:
+            return None
+        from django.conf import settings
+
+        api_url = getattr(settings, 'API_URL', 'http://localhost:3000')
+        return f"{api_url}/api/sso/saml/{self.id}/acs"
+
+    @property
+    def sp_entity_id(self):
+        """Get the Service Provider Entity ID for SAML connections.
+
+        The Entity ID should match the metadata URL for consistency.
+        This is a common SAML convention and ensures the IdP can validate the SP.
+        """
+        if not self.is_saml:
+            return None
+        from django.conf import settings
+
+        api_url = getattr(settings, 'API_URL', 'http://localhost:3000')
         return f"{api_url}/api/sso/saml/{self.id}/metadata"
 
     @property
@@ -139,7 +163,7 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
             return None
         from django.conf import settings
 
-        api_url = getattr(settings, 'API_URL', 'http://localhost:5001')
+        api_url = getattr(settings, 'API_URL', 'http://localhost:3000')
         return f"{api_url}/api/sso/oidc/{self.id}/callback"
 
     @property
@@ -147,7 +171,7 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
         """Get the login URL for this connection."""
         from django.conf import settings
 
-        api_url = getattr(settings, 'API_URL', 'http://localhost:5001')
+        api_url = getattr(settings, 'API_URL', 'http://localhost:3000')
         if self.is_saml:
             return f"{api_url}/api/sso/saml/{self.id}/login"
         elif self.is_oidc:
@@ -155,7 +179,34 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
         return None
 
     def activate(self):
-        """Activate this SSO connection."""
+        """
+        Activate this SSO connection.
+
+        Security validations:
+        - SAML connections MUST have an IdP certificate configured for signature verification
+        - OIDC connections MUST have issuer and client_id configured
+
+        Raises:
+            ValueError: If the connection is not properly configured for secure operation
+        """
+        if self.is_saml:
+            # SECURITY: Require IdP certificate for SAML signature verification
+            if not self.saml_certificate and not self.saml_certificate_arn:
+                raise ValueError(
+                    "IdP certificate must be configured before activating a SAML connection. "
+                    "This is required for secure signature verification."
+                )
+            # Ensure SSO URL is configured
+            if not self.saml_sso_url:
+                raise ValueError("SAML SSO URL must be configured before activation.")
+
+        elif self.is_oidc:
+            # Require issuer and client_id for OIDC
+            if not self.oidc_issuer:
+                raise ValueError("OIDC issuer must be configured before activation.")
+            if not self.oidc_client_id:
+                raise ValueError("OIDC client ID must be configured before activation.")
+
         self.status = constants.SSOConnectionStatus.ACTIVE
         self.save(update_fields=['status', 'updated_at'])
 

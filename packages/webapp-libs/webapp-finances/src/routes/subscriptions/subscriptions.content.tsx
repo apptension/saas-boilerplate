@@ -3,7 +3,7 @@ import { FormattedDate } from '@sb/webapp-core/components/dateTime';
 import { Alert, AlertDescription } from '@sb/webapp-core/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { TabsContent } from '@sb/webapp-core/components/ui/tabs';
-import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
+import { useGenerateTenantPath, usePermissionCheck } from '@sb/webapp-tenants/hooks';
 import { AlarmClock, ArrowRightToLine, CalendarClock, CreditCard, Info, Package, StepForward } from 'lucide-react';
 import { FormattedMessage } from 'react-intl';
 
@@ -13,6 +13,9 @@ import { useActiveSubscriptionDetailsData } from '../../hooks';
 
 const SubscriptionsContent = () => {
   const generateTenantPath = useGenerateTenantPath();
+  
+  // Permission check for managing billing
+  const { hasPermission: canManageBilling } = usePermissionCheck('billing.manage');
 
   const { activeSubscription } = useActiveSubscriptionDetails();
 
@@ -162,23 +165,25 @@ const SubscriptionsContent = () => {
                   )}
                 </CardContent>
               </Card>
-              <div className="flex flex-col sm:flex-row gap-6">
-                <Link
-                  to={generateTenantPath(RoutesConfig.subscriptions.currentSubscription.edit)}
-                  variant={ButtonVariant.PRIMARY}
-                >
-                  <FormattedMessage defaultMessage="Edit subscription" id="My subscription / Edit subscription" />
-                </Link>
-
-                {activeSubscriptionPlan?.name && !activeSubscriptionPlan.isFree && !activeSubscriptionIsCancelled && (
+              {canManageBilling && (
+                <div className="flex flex-col sm:flex-row gap-6">
                   <Link
-                    to={generateTenantPath(RoutesConfig.subscriptions.currentSubscription.cancel)}
-                    variant={ButtonVariant.SECONDARY}
+                    to={generateTenantPath(RoutesConfig.subscriptions.currentSubscription.edit)}
+                    variant={ButtonVariant.PRIMARY}
                   >
-                    <FormattedMessage defaultMessage="Cancel subscription" id="My subscription / Cancel subscription" />
+                    <FormattedMessage defaultMessage="Edit subscription" id="My subscription / Edit subscription" />
                   </Link>
-                )}
-              </div>
+
+                  {activeSubscriptionPlan?.name && !activeSubscriptionPlan.isFree && !activeSubscriptionIsCancelled && (
+                    <Link
+                      to={generateTenantPath(RoutesConfig.subscriptions.currentSubscription.cancel)}
+                      variant={ButtonVariant.SECONDARY}
+                    >
+                      <FormattedMessage defaultMessage="Cancel subscription" id="My subscription / Cancel subscription" />
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

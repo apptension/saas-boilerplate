@@ -1,0 +1,470 @@
+# SaaS Boilerplate — Docs & README Reconciliation Prompt
+
+> **Usage:** Invoke this prompt when you need to audit and update the documentation to match recent codebase changes.
+
+## Role
+
+You are a **staff-level engineer + senior technical writer** acting as a **top-tier reviewer** of SaaS Boilerplate changes. Your mission is to:
+1. Identify when Docusaurus documentation was last meaningfully updated.
+2. Verify the documentation system still runs and builds successfully.
+3. Review repository changes **commit-by-commit since that docs update**, and update the docs in the **same chronological order** so the documentation reflects the current product state.
+4. Review and improve the root **README.md** so it is accurate, user-centric, and "best-in-class" for Developer Experience.
+5. Cross-check everything by actually running the relevant commands so we do not introduce incorrect docs.
+
+You must be precise, test-driven, and evidence-based. Do **not** invent behaviors, commands, flags, outputs, or screenshots. If uncertain, inspect the repo, run commands, and cite what you observed.
+
+---
+
+## Operating Principles (Non-Negotiable)
+
+- **Truth > polish.** If docs say something, it must be verifiably true in this repo today.
+- **No guesswork.** If you didn't confirm it by code inspection or execution, say so and confirm it.
+- **Minimize scope creep.** Only change product code if required to make docs run/build, and keep it minimal and well-justified.
+- **Write for scanning.** Users skim: use headings, bullets, short paragraphs, clear callouts.
+- **Prefer stable interfaces.** Document public APIs, CLI commands, environment variables, and workflows users actually touch.
+- **Diátaxis discipline.** Keep content correctly categorized:
+  - Tutorials: learning-oriented, end-to-end
+  - How-to guides: task-oriented, practical
+  - Reference: exhaustive, precise
+  - Explanations: conceptual background
+
+---
+
+## Project-Specific Context
+
+### Codebase Structure
+
+This is a **pnpm monorepo** managed by **NX**:
+
+```
+saas-boilerplate/
+├── packages/
+│   ├── backend/           # Django + GraphQL API (Python 3.11)
+│   ├── webapp/            # Main React app (Vite, React 19, TypeScript)
+│   ├── webapp-libs/       # Shared frontend libraries
+│   │   ├── webapp-core/
+│   │   ├── webapp-api-client/
+│   │   ├── webapp-tenants/
+│   │   └── ...
+│   ├── workers/           # Celery workers
+│   └── internal/
+│       ├── cli/           # @sb/cli - the `pnpm saas` commands
+│       ├── docs/          # Docusaurus documentation ← DOCS LIVE HERE
+│       ├── core/
+│       └── tools/
+├── .cursor/rules/         # AI assistant rules
+├── package.json           # Root package.json (pnpm workspaces)
+├── pnpm-workspace.yaml
+├── nx.json
+└── README.md
+```
+
+### Documentation System
+
+- **Location:** `packages/internal/docs/`
+- **Framework:** Docusaurus 3.2.x
+- **Config file:** `packages/internal/docs/docusaurus.config.js`
+- **Sidebars:** `packages/internal/docs/sidebars.js`
+- **Content:** `packages/internal/docs/docs/` (85+ MDX files)
+- **Static assets:** `packages/internal/docs/static/img/`
+
+### Package Manager & Commands
+
+- **Package manager:** pnpm 9+
+- **Node version:** 20+ (no .nvmrc, specified in README)
+- **Python version:** 3.11
+
+### Key CLI Commands (via @sb/cli)
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start all services (backend + webapp + docker)
+pnpm saas up
+
+# Start documentation dev server
+pnpm saas docs up
+
+# Build documentation
+pnpm saas docs build
+
+# Or using NX directly:
+pnpm nx run docs:start           # Dev server on port 3006
+pnpm nx run docs:build           # Production build
+pnpm nx run docs:start:no-typedoc  # Dev server without TypeDoc generation
+pnpm nx run docs:lint            # Lint docs
+```
+
+### Documentation Structure (Sidebars)
+
+The docs use multiple sidebars:
+- **mainSidebar** - Landing page links
+- **gettingStartedSidebar** - Quick Start guides
+- **introductionSidebar** - Overview, features, coding standards
+- **workingWithSidebar** - How-To Guides (largest section)
+- **deploymentSidebar** - Render, VPS, environment variables
+- **awsSidebar** - AWS CDK deployment
+- **apiReferenceSidebar** - Backend, webapp, and library APIs
+
+### Auto-Generated Content
+
+TypeDoc generates API docs for these libraries:
+- `webapp-api-client` → `api-reference/webapp-api-client/generated/`
+- `webapp-core` → `api-reference/webapp-core/generated/`
+- `webapp-tenants` → `api-reference/webapp-tenants/generated/`
+- `webapp` → `api-reference/webapp/generated/`
+
+Backend docs are generated via `pnpm nx run @sb/backend:build-docs`.
+
+---
+
+## Definition of Done
+
+You are done only when all are true:
+- Docusaurus **build succeeds** locally (`pnpm nx run docs:build`).
+- Docusaurus **dev server starts** (`pnpm saas docs up`) without runtime errors.
+- Docs reflect **all relevant repo changes** since the last docs update (commit-by-commit audit performed).
+- Root README is accurate, modern, and supports onboarding with minimal friction.
+- All updated commands and steps were **actually executed** or validated against scripts.
+- Links, code blocks, and prerequisites are consistent and correct.
+- A concise **audit report** exists describing:
+  - baseline docs commit hash/date,
+  - all reviewed commits range,
+  - doc changes made + rationale,
+  - verification commands run + outcomes,
+  - any known follow-ups.
+
+---
+
+## Execution Plan
+
+### 0) Create a Working Branch
+
+1. Confirm current branch and clean state:
+   ```bash
+   git status
+   git rev-parse --abbrev-ref HEAD
+   ```
+
+2. Identify the default branch:
+   ```bash
+   git remote show origin | sed -n '/HEAD branch/s/.*: //p'
+   ```
+
+3. Create a branch:
+   ```bash
+   git checkout -b chore/docs-sync-YYYY-MM-DD
+   ```
+
+---
+
+### 1) Locate Docs & Determine Last Meaningful Docs Update
+
+**Goal:** Find the last meaningful docs update commit.
+
+The documentation is at: `packages/internal/docs/`
+
+1. Get recent docs commits:
+   ```bash
+   git log -n 30 --date=iso --pretty=format:"%h %ad %s" -- \
+     packages/internal/docs/docs/ \
+     packages/internal/docs/docusaurus.config.js \
+     packages/internal/docs/sidebars.js \
+     packages/internal/docs/static/
+   ```
+
+2. Pick the most recent commit that changes actual docs content/structure (not trivial formatting). Record:
+   - commit hash
+   - date
+   - subject
+   - which files changed
+
+---
+
+### 2) Install Dependencies and Validate Docs Run/Build
+
+**Goal:** Confirm docs are not broken before editing.
+
+1. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+
+2. Check Node version:
+   ```bash
+   node -v  # Should be 20+
+   ```
+
+3. Build docs (this also builds backend docs):
+   ```bash
+   pnpm nx run docs:build
+   ```
+   - Note: This runs `nx run @sb/backend:build-docs` first, then Docusaurus build.
+   - Capture results (success/failure + any warnings).
+
+4. Start dev server:
+   ```bash
+   pnpm saas docs up
+   # OR
+   pnpm nx run docs:start:no-typedoc  # Faster, no TypeDoc watch
+   ```
+   - Confirm it starts and loads at http://localhost:3006
+   - Note any runtime errors.
+
+5. If build/start fails, triage and fix with minimal changes.
+
+---
+
+### 3) Compute Commit Range and Review Commit-by-Commit
+
+**Goal:** Create a structured mapping from code changes to required documentation changes.
+
+1. Define range:
+   ```bash
+   # Let BASE_DOCS_COMMIT=<hash-from-step-1>
+   git log --reverse --date=iso --pretty=format:"%h %ad %s" BASE_DOCS_COMMIT..HEAD
+   ```
+
+2. For each commit, inspect:
+   ```bash
+   git show --name-status --date=iso <hash>
+   git show <hash> --stat
+   ```
+
+3. Identify user-facing impact:
+   - New feature / capability
+   - Breaking change / migration needed
+   - Renamed env vars / scripts
+   - Changed setup or onboarding
+   - Changed API routes, auth, billing, CLI, config, etc.
+
+4. Record in a "Docs Impact Ledger":
+   - What changed (1–3 bullets)
+   - Which docs sections/pages must change
+   - Whether README must change
+   - Whether a migration note is required
+
+5. Produce a "Docs Update Plan" derived from the ledger.
+
+---
+
+### 4) Implement Documentation Updates
+
+**Goal:** Update docs so that a reader can follow the current state accurately.
+
+Rules:
+- Keep documentation consistent with the repo's terminology and architecture.
+- Avoid duplicating content between README and docs; link where appropriate.
+- Use "happy path" first, then troubleshooting.
+- Any command you include must match scripts in `package.json` or CLI commands.
+
+Implementation:
+
+1. Update/extend Docusaurus content in `packages/internal/docs/docs/`:
+   - Add/update pages reflecting each commit's user-facing changes.
+   - Update navigation/sidebars in `sidebars.js`.
+
+2. Include migration notes when needed:
+   - Provide "Before / After" snippets.
+   - Explicitly state who is affected and how to verify.
+
+3. Validate every doc change:
+   ```bash
+   pnpm nx run docs:build
+   ```
+   - Fix broken links, missing assets, or invalid MDX.
+
+### Key Docs Locations to Check
+
+| Topic | File Path |
+|-------|-----------|
+| Getting Started | `docs/getting-started/` |
+| Features | `docs/introduction/features/` |
+| How-To Guides | `docs/working-with-sb/` |
+| Deployment | `docs/deployment/` |
+| AWS | `docs/aws/` |
+| API Reference | `docs/api-reference/` |
+| Environment Variables | `docs/api-reference/env.mdx`, `docs/deployment/environment-variables.mdx` |
+| Shared Partials | `docs/shared/partials/` (reusable MDX snippets) |
+
+---
+
+### 5) README.md Review and Modernization
+
+**Goal:** README becomes the fastest path from "clone" to "working app".
+
+Location: `/README.md` (root)
+
+Checklist:
+- [ ] Clear one-paragraph value proposition
+- [ ] Prerequisites match reality (Node 20+, pnpm 9+, Docker)
+- [ ] Quickstart with minimal steps (copy/paste friendly)
+- [ ] Environment variables section references `.env.shared` files
+- [ ] Scripts section matches actual CLI commands
+- [ ] Architecture overview links to docs for details
+- [ ] "What's Running Locally?" table is accurate
+- [ ] Troubleshooting for top recurring issues
+- [ ] License and contribution info
+
+Hard rule: do not claim support for providers/services unless it exists in code.
+
+---
+
+### 6) Verification (Cross-Check Everything)
+
+Run the following:
+
+```bash
+# Lint docs
+pnpm nx run docs:lint
+
+# Build docs
+pnpm nx run docs:build
+
+# Start docs dev server
+pnpm saas docs up
+
+# Optional: Full build
+pnpm nx run-many --target=build --projects=docs
+
+# Optional: Type-check webapp (if you touched webapp code)
+pnpm tsc --noEmit -p packages/webapp/tsconfig.app.json
+```
+
+If anything fails, fix the smallest root cause and re-run.
+
+---
+
+### 7) Deliverables
+
+1. **Docs updated** to reflect current state.
+2. **README updated** for best-in-class onboarding.
+3. **Audit report** created (suggested location: `docs-audit-report.md` at root), including:
+   - Baseline docs commit hash/date/message
+   - Commit range reviewed
+   - Summary of major changes
+   - List of docs pages changed/added
+   - Commands executed + results
+   - Known limitations/follow-ups
+
+4. Git commits:
+   - Use small, descriptive commits:
+     - `docs: update auth setup`
+     - `docs: add migration guide for X`
+     - `readme: refresh quickstart`
+   - Each commit should correspond to a coherent chunk of docs work.
+
+5. Final summary in the PR description format:
+   - What changed
+   - Why
+   - How verified
+   - Any risks / follow-ups
+
+---
+
+## Output Format Requirements
+
+When you finish, produce:
+- A short executive summary (5–10 bullets)
+- A "Commands Executed" section (copy/paste)
+- A "Docs Pages Changed" section (with paths)
+- A "README Changes" section (high-level)
+- A "Verification Results" section (pass/fail + notes)
+- Any follow-ups or risks
+
+---
+
+## Guardrails Against Bad Docs
+
+Before finalizing, explicitly check:
+- [ ] No stale commands (old package manager, wrong script names)
+- [ ] No missing steps for required services (DB, migrations, seeds) if applicable
+- [ ] No contradictory instructions between README and docs
+- [ ] No broken internal links in docs
+- [ ] Code snippets are directly copied from source (where feasible)
+- [ ] Env var names exactly match `.env.shared` and code usage
+- [ ] CLI commands match what's in `packages/internal/cli/src/commands/`
+
+---
+
+## Quick Reference: Environment Files
+
+| Location | Purpose |
+|----------|---------|
+| `.env.shared` | Root env template |
+| `packages/backend/.env.shared` | Backend env template |
+| `packages/workers/.env.shared` | Workers env template |
+| `packages/webapp/.env.shared` | Webapp env template (if exists) |
+
+---
+
+## Quick Reference: Services URLs (Local)
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| Web App | http://localhost:3000 | React frontend |
+| Backend API | http://localhost:5001 | Django + GraphQL API |
+| Admin Panel | http://admin.localhost:5001 | Django admin |
+| Mailcatcher | http://localhost:1080 | Email preview |
+| Docs | http://localhost:3006 | Documentation |
+| Workers | http://localhost:3005 | Workers trigger server |
+
+---
+
+## Lessons Learned (From Previous Runs)
+
+### MDX Compilation Issues
+
+**Problem:** Auto-generated backend docs from `pydoc-markdown` contain curly braces `{}` in docstrings that MDX interprets as JSX expressions.
+
+**Solution:** These files are in `packages/internal/docs/docs/api-reference/backend/generated/` and are gitignored. Temporary fixes during build are lost on regeneration. The proper fix is to update Python docstrings to use backticks around dict/object syntax: `` `{key: value}` ``.
+
+**Config change:** Set `onBrokenLinks: 'warn'` in `docusaurus.config.js` for auto-generated TypeDoc docs that may have internal broken links.
+
+### Icon Component Updates
+
+When adding new feature cards to `introduction/features/index.mdx`, ensure the icons are:
+1. Imported in `shared/components/Icon.component.tsx` from `lucide-react`
+2. Added to both the import statement AND the export statement
+
+Available icons are defined in `/docs/shared/components/Icon.component.tsx`.
+
+### Documentation Structure for New Features
+
+When adding a new feature:
+
+1. **Create feature page:** `docs/introduction/features/{feature-name}.mdx`
+2. **Update sidebars:** Add to appropriate category in `sidebars.js`
+3. **Update feature index:** Add card to `docs/introduction/features/index.mdx`
+4. **Update README:** Add to features section in root `README.md`
+
+### Key Documentation Locations
+
+| Feature Type | Location |
+|--------------|----------|
+| Feature overview | `docs/introduction/features/` |
+| How-to guides | `docs/working-with-sb/` |
+| Deployment guides | `docs/deployment/` |
+| API reference | `docs/api-reference/` |
+| Enterprise features | `docs/features/` |
+
+### Major Features to Document (Checklist)
+
+When doing a docs sync, ensure these are documented if changed:
+
+- [ ] Management Dashboard (`webapp-management-dashboard`)
+- [ ] AI Agent / MCP integration (`ai_assistant`)
+- [ ] RBAC / Permissions system
+- [ ] Activity Logs / Audit trail
+- [ ] SSO / Enterprise features
+- [ ] Render.com deployment
+- [ ] Translation system
+- [ ] Storage backends (S3, R2, etc.)
+- [ ] Environment variables
+
+---
+
+## Start Now
+
+Begin at Step 0. Do not skip verification steps. If you encounter ambiguity, resolve it by inspecting the repo and running commands—do not ask the user unless access is blocked.

@@ -1,0 +1,414 @@
+# Render.com Blueprint Specification
+# https://render.com/docs/blueprint-spec
+#
+# This file defines the infrastructure for deploying the SaaS Boilerplate to Render.com
+#
+# Usage:
+# 1. Push this file to your repository
+# 2. Go to Render Dashboard > Blueprints > New Blueprint Instance
+# 3. Connect your repository
+# 4. Configure environment variables in Render Dashboard
+#
+# Required Environment Variables (set in Render Dashboard):
+# - DJANGO_SECRET_KEY: Generate with `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`
+# - HASHID_FIELD_SALT: Random salt for hashid fields
+# - STRIPE_LIVE_SECRET_KEY / STRIPE_TEST_SECRET_KEY: Stripe API keys (if using payments)
+# - SENDGRID_API_KEY: SendGrid API key (for emails)
+# - R2_* or AWS_*: Storage configuration (if using cloud storage)
+#
+# =============================================================================
+# GitHub Actions Integration (Recommended for Build Minutes Optimization)
+# =============================================================================
+#
+# To save Render build minutes, use GitHub Actions for smart deployments:
+#
+# 1. Disable auto-deploy for each service in Render Dashboard:
+#    - Go to Service > Settings > Build & Deploy
+#    - Set "Auto-Deploy" to "No"
+#
+# 2. Get Deploy Hooks for each service:
+#    - Go to Service > Settings > Deploy Hook
+#    - Copy the URL
+#
+# 3. Add Deploy Hooks as GitHub Secrets:
+#    - RENDER_DEPLOY_HOOK_BACKEND_API
+#    - RENDER_DEPLOY_HOOK_WEBAPP
+#    - RENDER_DEPLOY_HOOK_CELERY_WORKER
+#    - RENDER_DEPLOY_HOOK_CELERY_BEAT
+#    - RENDER_DEPLOY_HOOK_MCP_SERVER
+#
+# 4. The GitHub Actions workflow (.github/workflows/deploy-render.yml) will:
+#    - Detect which packages changed
+#    - Run CI checks for affected packages
+#    - Only trigger deployments for services with changes
+#
+# This can reduce build minutes by 60-80% for typical commits that only
+# touch frontend or backend code, not both.
+#
+
+version: "1"
+
+services:
+  # =============================================================================
+  # Django Backend API
+  # =============================================================================
+  - type: web
+    name: backend-api
+    runtime: docker
+    dockerfilePath: ./packages/backend/Dockerfile.render
+    dockerContext: .
+    plan: standard  # Options: free, starter, standard, pro
+    region: oregon  # Change to your preferred region
+    # Health check uses liveness mode to avoid database connection pressure
+    # The full migration check is cached internally (30s TTL) to prevent connection exhaustion
+    healthCheckPath: /lbcheck
+    numInstances: 1  # Increase for high availability
+    envVars:
+      # Platform configuration
+      - key: STORAGE_BACKEND
+        value: r2  # Change to 's3', 'local', etc. as needed
+      - key: EMAIL_BACKEND
+        value: sendgrid_backend.SendgridBackend
+      - key: TASK_BACKEND
+        value: celery
+      - key: TRACING_BACKEND
+        value: none
+      
+      # Cookie settings for cross-origin (CRITICAL for Render.com!)
+      # Since frontend and backend are on different domains, cookies need SameSite=None
+      - key: COOKIE_SAMESITE
+        value: "None"  # Required for cross-origin cookie access (must be quoted string!)
+      - key: COOKIE_SECURE
+        value: "True"  # Required when SameSite=None
+      
+      # Django settings
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: ENVIRONMENT_NAME
+        value: production
+      - key: WEB_CONCURRENCY
+        value: "2"  # Number of gunicorn workers (2-4 for starter plan)
+      # Database connection settings
+      # Close connections after each request to prevent connection exhaustion
+      # on memory-constrained databases (basic-1gb has ~22-25 max connections)
+      - key: DB_CONN_MAX_AGE
+        value: "0"  # Close connections after each request (prevents pool exhaustion)
+      - key: DJANGO_ALLOWED_HOSTS
+        sync: false  # Set in Render Dashboard
+      - key: DJANGO_SECRET_KEY
+        sync: false  # Set in Render Dashboard (required)
+      - key: HASHID_FIELD_SALT
+        sync: false  # Set in Render Dashboard (required)
+      
+      # Database (auto-configured from Render PostgreSQL)
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postgres
+          property: connectionString
+      
+      # Redis (auto-configured from Render Redis)
+      - key: REDIS_CONNECTION
+        fromService:
+          name: redis
+          type: redis
+          property: connectionString
+      
+      # Cloudflare R2 Storage (set in Render Dashboard if using R2)
+      - key: R2_ENDPOINT_URL
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET_NAME
+        sync: false
+      
+      # SendGrid Email (set in Render Dashboard)
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: EMAIL_FROM_ADDRESS
+        sync: false
+      
+      # Stripe (set in Render Dashboard if using payments)
+      - key: STRIPE_LIVE_SECRET_KEY
+        sync: false
+      - key: STRIPE_TEST_SECRET_KEY
+        sync: false
+      - key: STRIPE_LIVE_MODE
+        value: "False"
+      - key: DJSTRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_CHECKS_ENABLED
+        value: "False"
+      
+      # URLs
+      - key: WEB_APP_URL
+        sync: false  # Set to your frontend URL
+      - key: VITE_WEB_APP_URL
+        sync: false  # Set to your frontend URL (same as WEB_APP_URL, used for email rendering)
+      - key: VITE_EMAIL_ASSETS_URL
+        sync: false  # Set to your frontend URL + /email-assets (e.g., https://webapp-xxxx.onrender.com/email-assets)
+      - key: API_URL
+        sync: false  # Set to your API URL
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false  # Comma-separated list of trusted origins (with https://)
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false  # Comma-separated list of allowed origins for CORS (e.g., https://webapp-xxxx.onrender.com)
+      
+      # OAuth (set in Render Dashboard if using social auth)
+      - key: SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+        sync: false
+      - key: SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+        sync: false
+      - key: SOCIAL_AUTH_FACEBOOK_KEY
+        sync: false
+      - key: SOCIAL_AUTH_FACEBOOK_SECRET
+        sync: false
+      - key: SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS
+        sync: false
+      
+      # AI Features (optional)
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-5.1
+      - key: MCP_SERVER_URL
+        sync: false  # Set to MCP server URL if using AI Assistant (e.g., https://mcp-server-xxxx.onrender.com)
+      
+      # 2FA Configuration (optional)
+      - key: OTP_AUTH_ISSUER_NAME
+        sync: false  # Set to your app name (shown in authenticator apps)
+      
+      # Parent host for django-hosts subdomain routing (optional)
+      - key: PARENT_HOST
+        sync: false
+      
+      # Sentry (optional)
+      - key: SENTRY_DSN
+        sync: false
+
+  # =============================================================================
+  # Frontend Web Application (Static Site)
+  # =============================================================================
+  - type: web
+    name: webapp
+    runtime: static
+    buildCommand: |
+      npm install -g pnpm@10 &&
+      pnpm install --frozen-lockfile &&
+      pnpm nx build webapp
+    staticPublishPath: packages/webapp/build
+    pullRequestPreviewsEnabled: true
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      # Skip Render's automatic pnpm install (we handle it in buildCommand)
+      - key: SKIP_INSTALL_DEPS
+        value: "true"
+      
+      # API URL (Required - set after backend deployment)
+      - key: VITE_BASE_API_URL
+        sync: false  # Set to your API URL with /api suffix (e.g., https://backend-api-xxxx.onrender.com/api)
+      
+      # Environment name
+      - key: VITE_ENVIRONMENT_NAME
+        value: production
+      
+      # Stripe publishable key (for payment UI - optional)
+      - key: VITE_STRIPE_PUBLISHABLE_KEY
+        sync: false  # Set to pk_test_xxx or pk_live_xxx
+      
+      # Contentful CMS (optional)
+      - key: VITE_CONTENTFUL_SPACE
+        sync: false
+      - key: VITE_CONTENTFUL_TOKEN
+        sync: false
+      - key: VITE_CONTENTFUL_ENV
+        value: master
+      
+      # Monitoring (optional)
+      - key: VITE_SENTRY_DSN
+        sync: false
+      
+      # Authentication feature flags (optional, all true by default)
+      # Set to "false" to disable specific login methods
+      # - key: VITE_ENABLE_SSO
+      #   value: "true"
+      # - key: VITE_ENABLE_PASSKEYS
+      #   value: "true"
+      # - key: VITE_ENABLE_SOCIAL_LOGIN
+      #   value: "true"
+      # - key: VITE_ENABLE_PASSWORD_LOGIN
+      #   value: "true"
+
+  # =============================================================================
+  # Celery Worker (Background Tasks)
+  # =============================================================================
+  - type: worker
+    name: celery-worker
+    runtime: docker
+    dockerfilePath: ./packages/backend/Dockerfile.render
+    dockerContext: .
+    dockerCommand: ./scripts/runtime/run_celery_worker_default.sh
+    plan: starter  # Options: free, starter, standard, pro
+    region: oregon
+    numInstances: 1
+    envVars:
+      # Celery worker settings (important for memory management)
+      - key: CELERY_WORKER_CONCURRENCY
+        value: "2"  # Number of worker processes (2 for starter, 4 for standard)
+      - key: CELERY_WORKER_MAX_TASKS_PER_CHILD
+        value: "50"  # Restart worker after N tasks to prevent memory leaks (lower = safer)
+      # Database connection settings for workers (close connections faster)
+      - key: DB_CONN_MAX_AGE
+        value: "0"  # Close connections after each task (prevents connection leaks)
+      # Inherit all backend env vars
+      - key: STORAGE_BACKEND
+        value: r2
+      - key: EMAIL_BACKEND
+        value: sendgrid_backend.SendgridBackend
+      - key: TASK_BACKEND
+        value: celery
+      - key: TRACING_BACKEND
+        value: none
+      - key: COOKIE_SAMESITE
+        value: "None"  # Must be quoted string for cross-origin cookies
+      - key: COOKIE_SECURE
+        value: "True"
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: ENVIRONMENT_NAME
+        value: production
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: HASHID_FIELD_SALT
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postgres
+          property: connectionString
+      - key: REDIS_CONNECTION
+        fromService:
+          name: redis
+          type: redis
+          property: connectionString
+      - key: R2_ENDPOINT_URL
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET_NAME
+        sync: false
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: EMAIL_FROM_ADDRESS
+        sync: false
+      - key: STRIPE_LIVE_SECRET_KEY
+        sync: false
+      - key: STRIPE_TEST_SECRET_KEY
+        sync: false
+      - key: STRIPE_CHECKS_ENABLED
+        value: "False"
+      # Email rendering requires these VITE_ prefixed vars for the Node.js email renderer
+      - key: VITE_WEB_APP_URL
+        sync: false  # Set to your frontend URL (e.g., https://webapp-xxxx.onrender.com)
+      - key: VITE_EMAIL_ASSETS_URL
+        sync: false  # Set to your frontend URL + /email-assets (e.g., https://webapp-xxxx.onrender.com/email-assets)
+
+  # =============================================================================
+  # Celery Beat (Scheduled Tasks)
+  # =============================================================================
+  - type: worker
+    name: celery-beat
+    runtime: docker
+    dockerfilePath: ./packages/backend/Dockerfile.render
+    dockerContext: .
+    dockerCommand: ./scripts/runtime/run_celery_beat.sh
+    plan: starter  # Options: free, starter, standard, pro
+    region: oregon
+    numInstances: 1  # Always 1 for beat scheduler
+    envVars:
+      # Database connection settings for beat scheduler
+      - key: DB_CONN_MAX_AGE
+        value: "60"  # Keep connections open for 1 minute (beat needs persistent access)
+      # Minimal env vars needed for beat scheduler
+      - key: TASK_BACKEND
+        value: celery
+      - key: TRACING_BACKEND
+        value: none
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: ENVIRONMENT_NAME
+        value: production
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: HASHID_FIELD_SALT
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postgres
+          property: connectionString
+      - key: REDIS_CONNECTION
+        fromService:
+          name: redis
+          type: redis
+          property: connectionString
+      - key: STRIPE_CHECKS_ENABLED
+        value: "False"
+
+  # =============================================================================
+  # Apollo MCP Server (AI Assistant) - OPTIONAL
+  # Comment out this section if not using AI features
+  # =============================================================================
+  - type: web
+    name: mcp-server
+    runtime: docker
+    dockerfilePath: ./packages/infra/mcp-server/Dockerfile
+    dockerContext: .
+    plan: starter  # Options: free, starter, standard, pro
+    region: oregon
+    # No health check - Apollo MCP Server uses SSE/WebSocket, not HTTP health endpoints
+    numInstances: 1
+    envVars:
+      - key: GRAPHQL_ENDPOINT
+        sync: false  # Set to backend URL (e.g., https://backend-api-xxxx.onrender.com/api/graphql/)
+      - key: MCP_LOG_LEVEL
+        value: info
+      # Enable mutations for AI-assisted create/update/delete operations
+      # Options: none, explicit (recommended - pre-defined mutations only), all
+      - key: MUTATION_MODE
+        value: explicit
+
+# =============================================================================
+# Redis
+# =============================================================================
+  - type: redis
+    name: redis
+    plan: starter  # Options: free, starter, standard, pro
+    region: oregon
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []  # Empty = allow all Render services
+
+# =============================================================================
+# Databases
+# =============================================================================
+databases:
+  - name: postgres
+    plan: basic-1gb  # Options: free, basic-256mb, basic-1gb, basic-4gb, pro-4gb, etc.
+    databaseName: app
+    user: app
+    postgresMajorVersion: "16"
+    ipAllowList: []  # Empty = allow all Render services

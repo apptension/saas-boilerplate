@@ -19,6 +19,7 @@ jest.mock('@sb/webapp-api-client/api', () => ({
 }));
 
 // Import after mock
+ 
 import { apiClient } from '@sb/webapp-api-client/api';
 
 const mockedApiClient = apiClient as jest.Mocked<typeof apiClient>;

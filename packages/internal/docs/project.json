@@ -18,7 +18,7 @@
         "cwd": "packages/internal/docs",
         "color": true,
         "commands": [
-          "nx run @sb/backend:build-docs",
+          "nx run backend:build-docs",
           "NODE_OPTIONS=\"--max-old-space-size=2048\" TYPEDOC_WATCH=false docusaurus build"
         ],
         "parallel": false
@@ -49,7 +49,7 @@
       "options": {
         "cwd": "packages/internal/docs",
         "color": true,
-        "commands": ["nx run @sb/backend:build-docs", "pnpm start"],
+        "commands": ["nx run backend:build-docs", "pnpm start"],
         "parallel": false
       },
       "dependsOn": ["core:docker-create-volumes"]

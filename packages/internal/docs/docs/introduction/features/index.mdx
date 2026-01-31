@@ -20,7 +20,13 @@ import {
   Settings,
   FolderOpen,
   Layers,
-  Languages
+  Languages,
+  KeyRound,
+  Activity,
+  BarChart3,
+  MessageSquareMore,
+  HardDrive,
+  Fingerprint
 } from '../../shared/components/Icon.component';
 
 # Features Overview
@@ -86,6 +92,60 @@ import {
       </p>
     </div>
   </a>
+  <a href="/introduction/features/rbac" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><KeyRound size={18} /></div>
+      <h3 className="feature-card__title">RBAC Permissions</h3>
+      <p className="feature-card__description">
+        Fine-grained role-based access control with custom roles and permissions.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/activity-logs" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Activity size={18} /></div>
+      <h3 className="feature-card__title">Activity Logs</h3>
+      <p className="feature-card__description">
+        Comprehensive audit trail for all user and system actions with export.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/management-dashboard" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><BarChart3 size={18} /></div>
+      <h3 className="feature-card__title">Management Dashboard</h3>
+      <p className="feature-card__description">
+        Complete financial management module with forecasting and multi-currency support.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/ai-agent" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><MessageSquareMore size={18} /></div>
+      <h3 className="feature-card__title">AI Agent (MCP)</h3>
+      <p className="feature-card__description">
+        Intelligent assistant with Model Context Protocol for natural language data access.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/session-management" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Fingerprint size={18} /></div>
+      <h3 className="feature-card__title">Session Management</h3>
+      <p className="feature-card__description">
+        Cross-origin auth, Safari/iOS fallback, and multi-device session tracking.
+      </p>
+    </div>
+  </a>
+  <a href="/introduction/features/storage-backends" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><HardDrive size={18} /></div>
+      <h3 className="feature-card__title">Storage Backends</h3>
+      <p className="feature-card__description">
+        Flexible file storage with AWS S3, Cloudflare R2, and more.
+      </p>
+    </div>
+  </a>
 </div>
 
 ---
@@ -139,9 +199,9 @@ import {
   <a href="/introduction/features/translations" className="feature-card__link">
     <div className="feature-card">
       <div className="feature-card__icon"><Languages size={18} /></div>
-      <h3 className="feature-card__title">Dynamic Translations</h3>
+      <h3 className="feature-card__title">Translations & i18n</h3>
       <p className="feature-card__description">
-        Admin-managed i18n with version history, CDN delivery, and no-redeploy updates.
+        Dynamic i18n with cloud publishing, AI-powered translation, and build-time sync.
       </p>
     </div>
   </a>

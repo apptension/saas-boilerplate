@@ -10,7 +10,10 @@ from django.shortcuts import get_object_or_404
 
 from common.acl import policies
 from common.graphql import mutations
-from common.graphql.acl.decorators import permission_classes
+from common.graphql.acl.decorators import permission_classes, requires
+from common.action_logging.decorators import action_logged
+from common.action_logging.service import log_action, log_delete
+from apps.multitenancy.constants import ActionType
 from apps.users.services.users import get_user_from_resolver
 from . import models
 from . import serializers
@@ -121,11 +124,13 @@ class SSOSessionType(DjangoObjectType):
     id = graphene.ID(required=True)
     is_valid = graphene.Boolean()
     is_expired = graphene.Boolean()
+    is_current = graphene.Boolean()
 
     class Meta:
         model = models.SSOSession
         fields = [
             'id',
+            'session_id',  # Raw session ID for revoke mutations
             'device_name',
             'device_type',
             'browser',
@@ -133,7 +138,6 @@ class SSOSessionType(DjangoObjectType):
             'ip_address',
             'location',
             'is_active',
-            'is_current',
             'last_activity_at',
             'expires_at',
             'created_at',
@@ -142,6 +146,15 @@ class SSOSessionType(DjangoObjectType):
 
     def resolve_id(self, info):
         return to_global_id('SSOSessionType', self.id)
+
+    def resolve_is_current(self, info):
+        """Dynamically determine if this is the current session based on request cookie."""
+        from django.conf import settings
+
+        request = info.context._request if hasattr(info.context, '_request') else info.context
+        current_session_id = request.COOKIES.get(settings.SESSION_ID_COOKIE)
+
+        return bool(current_session_id and self.session_id == current_session_id)
 
 
 class SSOSessionConnection(graphene.Connection):
@@ -251,6 +264,7 @@ class SSOAuditLogConnection(graphene.Connection):
 # ==================
 
 
+@action_logged(entity_type='sso_connection', action_type=ActionType.CREATE)
 class CreateSSOConnectionMutation(mutations.SerializerMutation):
     """Create a new SSO connection."""
 
@@ -265,6 +279,7 @@ class CreateSSOConnectionMutation(mutations.SerializerMutation):
         return super().mutate_and_get_payload(root, info, **input)
 
 
+@action_logged(entity_type='sso_connection', action_type=ActionType.UPDATE)
 class UpdateSSOConnectionMutation(mutations.SerializerMutation):
     """Update an existing SSO connection."""
 
@@ -288,6 +303,15 @@ class DeleteSSOConnectionMutation(mutations.DeleteModelMutation):
             pk=pk,
             tenant=info.context.tenant,
         )
+
+        # Log the deletion
+        log_delete(
+            tenant_id=info.context.tenant.pk,
+            entity_type='sso_connection',
+            instance=obj,
+            actor_user=info.context.user,
+        )
+
         obj.delete()
         return cls(deleted_ids=[id])
 
@@ -310,6 +334,17 @@ class ActivateSSOConnectionMutation(mutations.SerializerMutation):
         serializer.is_valid(raise_exception=True)
         connection = serializer.save()
 
+        # Log the activation
+        log_action(
+            tenant_id=info.context.tenant.pk,
+            action_type=ActionType.ACTIVATE,
+            entity_type='sso_connection',
+            entity_id=str(connection.pk),
+            entity_name=connection.name,
+            actor_user=info.context.user,
+            changes={'status': {'old': 'inactive', 'new': 'active'}},
+        )
+
         return cls(sso_connection=connection)
 
 
@@ -329,8 +364,20 @@ class DeactivateSSOConnectionMutation(graphene.Mutation):
             pk=pk,
             tenant=info.context.tenant,
         )
+        old_status = connection.status
         connection.status = constants.SSOConnectionStatus.INACTIVE
         connection.save(update_fields=['status', 'updated_at'])
+
+        # Log the deactivation
+        log_action(
+            tenant_id=info.context.tenant.pk,
+            action_type=ActionType.DEACTIVATE,
+            entity_type='sso_connection',
+            entity_id=str(connection.pk),
+            entity_name=connection.name,
+            actor_user=info.context.user,
+            changes={'status': {'old': old_status, 'new': 'inactive'}},
+        )
 
         return cls(sso_connection=connection)
 
@@ -356,6 +403,16 @@ class CreateSCIMTokenMutation(mutations.SerializerMutation):
         serializer.is_valid(raise_exception=True)
         token_instance, raw_token = serializer.save()
 
+        # Log the token creation
+        log_action(
+            tenant_id=info.context.tenant.pk,
+            action_type=ActionType.CREATE,
+            entity_type='scim_token',
+            entity_id=str(token_instance.pk),
+            entity_name=token_instance.name,
+            actor_user=info.context.user,
+        )
+
         return cls(scim_token=token_instance, raw_token=raw_token)
 
 
@@ -377,6 +434,17 @@ class RevokeSCIMTokenMutation(graphene.Mutation):
         )
         token.is_active = False
         token.save(update_fields=['is_active', 'updated_at'])
+
+        # Log the token revocation
+        log_action(
+            tenant_id=info.context.tenant.pk,
+            action_type=ActionType.REVOKE,
+            entity_type='scim_token',
+            entity_id=str(token.pk),
+            entity_name=token.name,
+            actor_user=info.context.user,
+            changes={'is_active': {'old': True, 'new': False}},
+        )
 
         return cls(ok=True)
 
@@ -404,7 +472,7 @@ class RevokeSessionMutation(graphene.Mutation):
 
 
 class RevokeAllSessionsMutation(graphene.Mutation):
-    """Revoke all SSO sessions for the current user."""
+    """Revoke all SSO sessions for the current user except the current session."""
 
     class Arguments:
         pass
@@ -414,11 +482,24 @@ class RevokeAllSessionsMutation(graphene.Mutation):
 
     @classmethod
     def mutate(cls, root, info):
+        from django.conf import settings
+
         user = get_user_from_resolver(info)
-        count = models.SSOSession.objects.filter(
+
+        # Get current session ID from cookie to exclude it
+        request = info.context._request if hasattr(info.context, '_request') else info.context
+        current_session_id = request.COOKIES.get(settings.SESSION_ID_COOKIE)
+
+        sessions = models.SSOSession.objects.filter(
             user=user,
             is_active=True,
-        ).update(
+        )
+
+        # Exclude current session if we have one
+        if current_session_id:
+            sessions = sessions.exclude(session_id=current_session_id)
+
+        count = sessions.update(
             is_active=False,
             revoked_reason='User revoked all sessions',
         )
@@ -574,9 +655,15 @@ class Query(graphene.ObjectType):
         return models.UserDevice.objects.filter(user=user)
 
 
-@permission_classes(policies.IsTenantOwnerAccess)
+@permission_classes(policies.IsTenantMemberAccess)
 class TenantSSOQuery(graphene.ObjectType):
-    """SSO queries for tenant owners."""
+    """
+    SSO queries for tenant members with appropriate security permissions.
+
+    Uses RBAC permissions:
+    - security.view: View SSO connections and settings
+    - security.sso.manage: Full access to SSO management
+    """
 
     sso_connections = graphene.relay.ConnectionField(SSOConnectionConnection)
     sso_connection = graphene.Field(SSOConnectionType, id=graphene.ID())
@@ -584,10 +671,12 @@ class TenantSSOQuery(graphene.ObjectType):
     sso_audit_logs = graphene.relay.ConnectionField(SSOAuditLogConnection)
 
     @staticmethod
+    @permission_classes(requires('security.view'))
     def resolve_sso_connections(root, info, **kwargs):
         return models.TenantSSOConnection.objects.filter(tenant=info.context.tenant)
 
     @staticmethod
+    @permission_classes(requires('security.view'))
     def resolve_sso_connection(root, info, id):
         _, pk = from_global_id(id)
         return models.TenantSSOConnection.objects.filter(
@@ -596,10 +685,12 @@ class TenantSSOQuery(graphene.ObjectType):
         ).first()
 
     @staticmethod
+    @permission_classes(requires('security.sso.manage'))
     def resolve_scim_tokens(root, info, **kwargs):
         return models.SCIMToken.objects.filter(tenant=info.context.tenant)
 
     @staticmethod
+    @permission_classes(requires('security.view'))
     def resolve_sso_audit_logs(root, info, **kwargs):
         return models.SSOAuditLog.objects.filter(tenant=info.context.tenant)[:100]
 
@@ -622,14 +713,27 @@ class Mutation(graphene.ObjectType):
     delete_passkey = DeletePasskeyMutation.Field()
 
 
-@permission_classes(policies.IsTenantOwnerAccess)
+@permission_classes(policies.IsTenantAdminAccess)
 class TenantOwnerMutation(graphene.ObjectType):
-    """SSO mutations for tenant owners."""
+    """
+    SSO mutations with RBAC permission checks.
 
-    create_sso_connection = CreateSSOConnectionMutation.Field()
-    update_sso_connection = UpdateSSOConnectionMutation.Field()
-    delete_sso_connection = DeleteSSOConnectionMutation.Field()
-    activate_sso_connection = ActivateSSOConnectionMutation.Field()
-    deactivate_sso_connection = DeactivateSSOConnectionMutation.Field()
-    create_scim_token = CreateSCIMTokenMutation.Field()
-    revoke_scim_token = RevokeSCIMTokenMutation.Field()
+    Uses IsTenantAdminAccess at class level,
+    with specific RBAC permissions for each mutation.
+
+    Permissions:
+    - security.sso.manage: Manage SSO connections and SCIM tokens
+    """
+
+    # SSO Connection management - requires security.sso.manage
+    create_sso_connection = permission_classes(requires('security.sso.manage'))(CreateSSOConnectionMutation.Field())
+    update_sso_connection = permission_classes(requires('security.sso.manage'))(UpdateSSOConnectionMutation.Field())
+    delete_sso_connection = permission_classes(requires('security.sso.manage'))(DeleteSSOConnectionMutation.Field())
+    activate_sso_connection = permission_classes(requires('security.sso.manage'))(ActivateSSOConnectionMutation.Field())
+    deactivate_sso_connection = permission_classes(requires('security.sso.manage'))(
+        DeactivateSSOConnectionMutation.Field()
+    )
+
+    # SCIM Token management - requires security.sso.manage
+    create_scim_token = permission_classes(requires('security.sso.manage'))(CreateSCIMTokenMutation.Field())
+    revoke_scim_token = permission_classes(requires('security.sso.manage'))(RevokeSCIMTokenMutation.Field())

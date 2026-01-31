@@ -9,6 +9,7 @@ from common.graphql.acl import permission_classes
 from graphene import relay
 from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
+from graphql import GraphQLError
 from . import models
 from . import serializers
 from . import services
@@ -110,7 +111,13 @@ class Mutation(graphene.ObjectType):
 
 
 class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
-    """Simple GraphQL subscription."""
+    """
+    GraphQL subscription for real-time notification updates.
+
+    SECURITY: Ensures only authenticated users can subscribe to their own
+    notifications. The subscribe method verifies authentication and prevents
+    users from subscribing to other users' notification streams.
+    """
 
     # Leave only latest 64 messages in the server queue.
     notification_queue_limit = 64
@@ -119,19 +126,56 @@ class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
 
     @staticmethod
     def subscribe(root, info):
-        return [str(info.context.channels_scope['user'].id)]
+        """
+        Subscribe to notifications for the authenticated user.
+
+        SECURITY:
+        - Verifies the user is authenticated before allowing subscription
+        - Uses the authenticated user's ID from the channel scope
+        - Cannot be manipulated to subscribe to other users' notifications
+        """
+        # Get user from channels scope (WebSocket authentication)
+        user = info.context.channels_scope.get('user')
+
+        # SECURITY: Verify user is authenticated
+        if not user or not user.is_authenticated:
+            raise GraphQLError("Authentication required for notifications subscription")
+
+        # SECURITY: Return only the authenticated user's channel
+        # This ensures users can only receive their own notifications
+        return [str(user.id)]
 
     @staticmethod
     @database_sync_to_async
-    def get_response(id: str):
-        notification = models.Notification.objects.prefetch_related(
-            'issuer', 'issuer__profile', 'issuer__profile__avatar'
-        ).get(id=id)
+    def get_response(id: str, user_id: int):
+        """
+        Get notification response with ownership verification.
+
+        SECURITY: Verifies the notification belongs to the requesting user.
+        """
+        notification = (
+            models.Notification.objects.prefetch_related('issuer', 'issuer__profile', 'issuer__profile__avatar')
+            .filter(id=id, user_id=user_id)
+            .first()
+        )
+
+        if not notification:
+            return None
         return NotificationCreatedSubscription(notification)
 
     @staticmethod
     async def publish(payload, info):
-        return await NotificationCreatedSubscription.get_response(id=payload['id'])
+        """
+        Publish notification to the subscribed user.
+
+        SECURITY: Verifies the notification belongs to the receiving user
+        before publishing to prevent cross-user notification leaks.
+        """
+        user = info.context.channels_scope.get('user')
+        if not user or not user.is_authenticated:
+            return None
+
+        return await NotificationCreatedSubscription.get_response(id=payload['id'], user_id=user.id)
 
 
 @permission_classes(IsAuthenticatedFullAccess)

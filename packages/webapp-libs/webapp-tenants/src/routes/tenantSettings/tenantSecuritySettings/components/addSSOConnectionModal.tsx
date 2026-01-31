@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { apiClient } from '@sb/webapp-api-client/api';
+import { apiClient, apiURL } from '@sb/webapp-api-client/api';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { Label } from '@sb/webapp-core/components/ui/label';
 import { useToast } from '@sb/webapp-core/toast/useToast';
-import { Shield, Key, Building2, ArrowLeft, Link2, CheckCircle2, Loader2 } from 'lucide-react';
+import { Shield, Key, Building2, ArrowLeft, Link2, CheckCircle2, Loader2, Copy, Check, Globe, X } from 'lucide-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 type SSOType = 'saml' | 'oidc' | null;
@@ -24,10 +24,14 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
   const [ssoType, setSsoType] = useState<SSOType>(null);
   const [loading, setLoading] = useState(false);
   const [spMetadataUrl, setSpMetadataUrl] = useState<string | null>(null);
+  const [spAcsUrl, setSpAcsUrl] = useState<string | null>(null);
+  const [spEntityId, setSpEntityId] = useState<string | null>(null);
   const [connectionId, setConnectionId] = useState<string | null>(null);
   const [oidcCallbackUrl, setOidcCallbackUrl] = useState<string | null>(null);
+  const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
+    allowedDomains: [] as string[],
     // SAML fields
     entityId: '',
     ssoUrl: '',
@@ -37,6 +41,7 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
     clientId: '',
     clientSecret: '',
   });
+  const [domainInput, setDomainInput] = useState('');
 
   const handleSSOTypeSelect = (type: SSOType) => {
     setSsoType(type);
@@ -50,6 +55,29 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
     }
   };
 
+  const handleCopyUrl = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedUrl(url);
+      toast({
+        description: intl.formatMessage({
+          defaultMessage: 'URL copied to clipboard',
+          id: 'Add SSO Modal / URL Copied',
+        }),
+        variant: 'success',
+      });
+      setTimeout(() => setCopiedUrl(null), 2000);
+    } catch {
+      toast({
+        description: intl.formatMessage({
+          defaultMessage: 'Failed to copy URL',
+          id: 'Add SSO Modal / Copy Failed',
+        }),
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleSubmit = async () => {
     if (!ssoType) return;
 
@@ -59,6 +87,7 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
       ? {
           name: formData.name,
           connectionType: 'saml',
+          allowedDomains: formData.allowedDomains,
           samlEntityId: formData.entityId,
           samlSsoUrl: formData.ssoUrl,
           samlCertificate: formData.certificate,
@@ -66,13 +95,14 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
       : {
           name: formData.name,
           connectionType: 'oidc',
+          allowedDomains: formData.allowedDomains,
           oidcIssuer: formData.issuer,
           oidcClientId: formData.clientId,
           oidcClientSecret: formData.clientSecret,
         };
 
     try {
-      const response = await apiClient.post(`/api/sso/tenant/${tenantId}/connections/`, body);
+      const response = await apiClient.post(apiURL(`/sso/tenant/${tenantId}/connections/`), body);
 
       const data = response.data;
       
@@ -81,6 +111,12 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
       }
       if (data.spMetadataUrl) {
         setSpMetadataUrl(data.spMetadataUrl);
+      }
+      if (data.spAcsUrl) {
+        setSpAcsUrl(data.spAcsUrl);
+      }
+      if (data.spEntityId) {
+        setSpEntityId(data.spEntityId);
       }
       if (data.oidcCallbackUrl) {
         setOidcCallbackUrl(data.oidcCallbackUrl);
@@ -113,8 +149,45 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const addDomain = () => {
+    const domain = domainInput.trim().toLowerCase();
+    if (domain && !formData.allowedDomains.includes(domain)) {
+      // Basic domain validation
+      if (domain.includes('.') && !domain.includes(' ')) {
+        setFormData((prev) => ({
+          ...prev,
+          allowedDomains: [...prev.allowedDomains, domain],
+        }));
+        setDomainInput('');
+      } else {
+        toast({
+          description: intl.formatMessage({
+            defaultMessage: 'Please enter a valid domain (e.g., example.com)',
+            id: 'SSO Form / Invalid Domain',
+          }),
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
+  const removeDomain = (domain: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      allowedDomains: prev.allowedDomains.filter((d) => d !== domain),
+    }));
+  };
+
+  const handleDomainKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addDomain();
+    }
+  };
+
   const isFormValid = () => {
     if (!formData.name.trim()) return false;
+    if (formData.allowedDomains.length === 0) return false;
     if (ssoType === 'saml') {
       return formData.entityId.trim() && formData.ssoUrl.trim() && formData.certificate.trim();
     }
@@ -276,6 +349,55 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
                     onChange={(e) => updateFormData('name', e.target.value)}
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="allowed-domains">
+                    <FormattedMessage defaultMessage="Allowed Email Domains" id="SSO Form / Allowed Domains Label" />
+                  </Label>
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        id="allowed-domains"
+                        className="pl-9"
+                        placeholder={intl.formatMessage({
+                          defaultMessage: 'e.g., company.com',
+                          id: 'SSO Form / Domain Placeholder',
+                        })}
+                        value={domainInput}
+                        onChange={(e) => setDomainInput(e.target.value)}
+                        onKeyDown={handleDomainKeyDown}
+                      />
+                    </div>
+                    <Button type="button" variant="outline" onClick={addDomain} disabled={!domainInput.trim()}>
+                      <FormattedMessage defaultMessage="Add" id="SSO Form / Add Domain Button" />
+                    </Button>
+                  </div>
+                  {formData.allowedDomains.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {formData.allowedDomains.map((domain) => (
+                        <span
+                          key={domain}
+                          className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary"
+                        >
+                          {domain}
+                          <button
+                            type="button"
+                            onClick={() => removeDomain(domain)}
+                            className="ml-1 rounded-full p-0.5 hover:bg-primary/20 transition-colors"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-xs text-muted-foreground">
+                    <FormattedMessage
+                      defaultMessage="Users with email addresses from these domains can use this SSO connection to sign in."
+                      id="SSO Form / Allowed Domains Help"
+                    />
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -374,6 +496,55 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
                     value={formData.name}
                     onChange={(e) => updateFormData('name', e.target.value)}
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="oidc-allowed-domains">
+                    <FormattedMessage defaultMessage="Allowed Email Domains" id="OIDC Form / Allowed Domains Label" />
+                  </Label>
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        id="oidc-allowed-domains"
+                        className="pl-9"
+                        placeholder={intl.formatMessage({
+                          defaultMessage: 'e.g., company.com',
+                          id: 'OIDC Form / Domain Placeholder',
+                        })}
+                        value={domainInput}
+                        onChange={(e) => setDomainInput(e.target.value)}
+                        onKeyDown={handleDomainKeyDown}
+                      />
+                    </div>
+                    <Button type="button" variant="outline" onClick={addDomain} disabled={!domainInput.trim()}>
+                      <FormattedMessage defaultMessage="Add" id="OIDC Form / Add Domain Button" />
+                    </Button>
+                  </div>
+                  {formData.allowedDomains.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {formData.allowedDomains.map((domain) => (
+                        <span
+                          key={domain}
+                          className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary"
+                        >
+                          {domain}
+                          <button
+                            type="button"
+                            onClick={() => removeDomain(domain)}
+                            className="ml-1 rounded-full p-0.5 hover:bg-primary/20 transition-colors"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-xs text-muted-foreground">
+                    <FormattedMessage
+                      defaultMessage="Users with email addresses from these domains can use this SSO connection to sign in."
+                      id="OIDC Form / Allowed Domains Help"
+                    />
+                  </p>
                 </div>
               </div>
             </div>
@@ -475,14 +646,104 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
               </p>
             </div>
 
-            {spMetadataUrl && ssoType === 'saml' && (
-              <div className="w-full rounded-lg border bg-muted/30 p-4">
-                <p className="text-sm font-medium mb-2">
-                  <FormattedMessage defaultMessage="SP Metadata URL:" id="Add SSO Modal / SP URL Label" />
-                </p>
-                <code className="block bg-background px-3 py-2 rounded text-xs break-all border">
-                  {spMetadataUrl}
-                </code>
+            {ssoType === 'saml' && (
+              <div className="w-full space-y-4">
+                {/* ACS URL */}
+                {spAcsUrl && (
+                  <div className="rounded-lg border bg-muted/30 p-4">
+                    <p className="text-sm font-medium mb-2">
+                      <FormattedMessage defaultMessage="ACS URL (Assertion Consumer Service):" id="Add SSO Modal / ACS URL Label" />
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <code className="flex-1 bg-background px-3 py-2 rounded text-xs break-all border">
+                        {spAcsUrl}
+                      </code>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9 shrink-0"
+                        onClick={() => handleCopyUrl(spAcsUrl)}
+                      >
+                        {copiedUrl === spAcsUrl ? (
+                          <Check className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Entity ID */}
+                {spEntityId && (
+                  <div className="rounded-lg border bg-muted/30 p-4">
+                    <p className="text-sm font-medium mb-2">
+                      <FormattedMessage defaultMessage="Entity ID (SP Identifier):" id="Add SSO Modal / Entity ID Label" />
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <code className="flex-1 bg-background px-3 py-2 rounded text-xs break-all border">
+                        {spEntityId}
+                      </code>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9 shrink-0"
+                        onClick={() => handleCopyUrl(spEntityId)}
+                      >
+                        {copiedUrl === spEntityId ? (
+                          <Check className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* SP Metadata URL */}
+                {spMetadataUrl && (
+                  <div className="rounded-lg border bg-muted/30 p-4">
+                    <p className="text-sm font-medium mb-2">
+                      <FormattedMessage defaultMessage="SP Metadata URL (optional):" id="Add SSO Modal / SP URL Label" />
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <code className="flex-1 bg-background px-3 py-2 rounded text-xs break-all border">
+                        {spMetadataUrl}
+                      </code>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9 shrink-0"
+                        onClick={() => handleCopyUrl(spMetadataUrl)}
+                      >
+                        {copiedUrl === spMetadataUrl ? (
+                          <Check className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      <FormattedMessage 
+                        defaultMessage="Some IdPs can auto-import configuration from this URL."
+                        id="Add SSO Modal / SP Metadata Hint"
+                      />
+                    </p>
+                  </div>
+                )}
+
+                {/* Instructions */}
+                <div className="rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30 p-4">
+                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                    <FormattedMessage 
+                      defaultMessage="Copy these values to your identity provider (Google Workspace, Okta, Azure AD, etc.). Enable 'Signed response' if your IdP supports it."
+                      id="Add SSO Modal / SAML Instructions"
+                    />
+                  </p>
+                </div>
               </div>
             )}
 
@@ -491,9 +752,24 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
                 <p className="text-sm font-medium mb-2">
                   <FormattedMessage defaultMessage="Redirect URI (update in your IdP):" id="Add SSO Modal / Redirect Label" />
                 </p>
-                <code className="block bg-background px-3 py-2 rounded text-xs break-all border">
-                  {oidcCallbackUrl || `${window.location.origin}/api/sso/oidc/${connectionId}/callback`}
-                </code>
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 bg-background px-3 py-2 rounded text-xs break-all border">
+                    {oidcCallbackUrl || apiURL(`/sso/oidc/${connectionId}/callback`)}
+                  </code>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9 shrink-0"
+                    onClick={() => handleCopyUrl(oidcCallbackUrl || apiURL(`/sso/oidc/${connectionId}/callback`))}
+                  >
+                    {copiedUrl === (oidcCallbackUrl || apiURL(`/sso/oidc/${connectionId}/callback`)) ? (
+                      <Check className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
                 <p className="text-xs text-muted-foreground mt-2">
                   <FormattedMessage 
                     defaultMessage="Important: Update the callback URL in your identity provider settings with this exact URL, then activate the connection."

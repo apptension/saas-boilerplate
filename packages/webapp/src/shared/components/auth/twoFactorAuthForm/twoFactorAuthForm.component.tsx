@@ -3,7 +3,7 @@ import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
-import { Dialog, DialogContent } from '@sb/webapp-core/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@sb/webapp-core/components/ui/dialog';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
@@ -133,7 +133,19 @@ export const TwoFactorAuthForm = ({ isEnabled }: TwoFactorAuthFormProps) => {
           setIsModalOpen(e);
         }}
       >
-        <DialogContent>
+        <DialogContent aria-describedby="two-factor-dialog-description">
+          <DialogTitle className="sr-only">
+            <FormattedMessage
+              defaultMessage="Set Up Two-Factor Authentication"
+              id="Auth / Two-factor / Dialog Title"
+            />
+          </DialogTitle>
+          <DialogDescription id="two-factor-dialog-description" className="sr-only">
+            <FormattedMessage
+              defaultMessage="Secure your account with an authenticator app"
+              id="Auth / Two-factor / Dialog Description"
+            />
+          </DialogDescription>
           <AddTwoFactorAuth closeModal={() => setIsModalOpen(false)} />
         </DialogContent>
       </Dialog>

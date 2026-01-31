@@ -287,27 +287,34 @@ class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField(required=False)
     ok = serializers.BooleanField(read_only=True)
 
-    default_error_messages = {
-        'invalid_token': _('No valid token found in cookie \'refresh_token\' or field \'refresh\''),
-    }
-
     def validate(self, attrs):
         request = self.context['request']
-        raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_LOGOUT_COOKIE) or attrs.get('refresh')
+        # Try multiple sources for the refresh token (bulletproof for different proxy configs)
+        raw_token = (
+            request.COOKIES.get(settings.REFRESH_TOKEN_LOGOUT_COOKIE)
+            or request.COOKIES.get(settings.REFRESH_TOKEN_COOKIE)
+            or attrs.get('refresh')
+        )
 
         if not raw_token:
-            self.fail('invalid_token')
+            # No token found - still allow logout (just won't blacklist)
+            return {'refresh': None}
 
         try:
             refresh = jwt_tokens.RefreshToken(raw_token)
+            return {'refresh': refresh}
         except (jwt_exceptions.InvalidToken, jwt_exceptions.TokenError):
-            self.fail('invalid_token')
-
-        return {'refresh': refresh}
+            # Token is invalid/expired - still allow logout
+            return {'refresh': None}
 
     def create(self, validated_data):
-        refresh = validated_data.pop('refresh')
-        refresh.blacklist()
+        refresh = validated_data.get('refresh')
+        if refresh:
+            try:
+                refresh.blacklist()
+            except Exception:
+                # Blacklisting failed - token might already be blacklisted
+                pass
         return {'ok': True}
 
 

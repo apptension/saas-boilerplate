@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import subprocess
 
@@ -6,6 +7,8 @@ from celery import shared_task, states
 from celery.exceptions import Ignore
 from django.conf import settings
 from django.core.mail import EmailMessage
+
+logger = logging.getLogger(__name__)
 
 # Default language for emails
 DEFAULT_EMAIL_LANGUAGE = 'en'
@@ -71,6 +74,8 @@ def get_email_translations(lang: str) -> dict:
 
 @shared_task(bind=True)
 def send_email(self, to: str | list[str], email_type: str, email_data: dict, lang: str = DEFAULT_EMAIL_LANGUAGE):
+    logger.info(f"Starting send_email task: type={email_type}, to={to}, lang={lang}")
+
     # Fetch translations from database
     translations = get_email_translations(lang)
 
@@ -86,6 +91,7 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict, lan
     )
 
     try:
+        logger.debug(f"Running Node.js email renderer for {email_type}")
         node_process = subprocess.run(
             ["node"],
             shell=True,
@@ -101,7 +107,14 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict, lan
                 'VITE_WEB_APP_URL': os.environ.get('VITE_WEB_APP_URL', ''),
             },
         )
+        logger.debug("Node.js renderer completed successfully")
     except subprocess.CalledProcessError as e:
+        logger.error(
+            f"Email rendering failed for {email_type}: "
+            f"return_code={e.returncode}, "
+            f"stdout={e.output.decode('utf-8', errors='replace') if e.output else 'None'}, "
+            f"stderr={e.stderr.decode('utf-8', errors='replace') if e.stderr else 'None'}"
+        )
         self.update_state(
             state=states.FAILURE,
             meta={
@@ -116,7 +129,16 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict, lan
     if isinstance(to, str):
         to = (to,)
 
-    rendered_email = json.loads(node_process.stdout)
+    try:
+        rendered_email = json.loads(node_process.stdout)
+        logger.debug(f"Email rendered: subject='{rendered_email.get('subject', 'N/A')}'")
+    except json.JSONDecodeError as e:
+        logger.error(
+            f"Failed to parse rendered email JSON for {email_type}: {e}. "
+            f"stdout={node_process.stdout.decode('utf-8', errors='replace') if node_process.stdout else 'None'}"
+        )
+        raise
+
     email = EmailMessage(
         rendered_email['subject'],
         rendered_email['html'],
@@ -125,4 +147,11 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict, lan
         reply_to=settings.EMAIL_REPLY_ADDRESS,
     )
     email.content_subtype = 'html'
-    return {'sent_emails_count': email.send()}
+
+    try:
+        sent_count = email.send()
+        logger.info(f"Email sent successfully: type={email_type}, to={to}, sent_count={sent_count}")
+        return {'sent_emails_count': sent_count}
+    except Exception as e:
+        logger.error(f"Failed to send email via {settings.EMAIL_BACKEND}: {e}")
+        raise

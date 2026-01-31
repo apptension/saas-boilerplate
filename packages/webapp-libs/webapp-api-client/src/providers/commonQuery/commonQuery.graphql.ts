@@ -25,6 +25,7 @@ export const commonQueryTenantItemFragment = gql(/* GraphQL */ `
     id
     name
     type
+    actionLoggingEnabled
     membership {
       ...commonQueryMembershipFragment
     }

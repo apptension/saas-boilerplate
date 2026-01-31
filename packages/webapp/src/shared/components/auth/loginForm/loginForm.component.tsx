@@ -14,7 +14,7 @@ export const LoginForm = () => {
   const intl = useIntl();
   const [ssoRequired, setSSORequired] = useState(false);
 
-  const { form, hasGenericErrorOnly, genericError, loading, handleLogin } = useLoginForm();
+  const { form, genericError, loading, handleLogin } = useLoginForm();
 
   // Watch email field for SSO discovery
   const email = form.watch('email');
@@ -113,7 +113,7 @@ export const LoginForm = () => {
           />
         )}
 
-        {hasGenericErrorOnly && (
+        {genericError && (
           <Alert variant="destructive">
             <AlertDescription>{genericError}</AlertDescription>
           </Alert>

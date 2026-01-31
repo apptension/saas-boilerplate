@@ -51,6 +51,17 @@ expect(toast).toHaveTextContent('Expected message');
 
 ## 3. GraphQL Patterns
 
+**CRITICAL: Apollo Client imports must use `/react` subpath:**
+
+```tsx
+// ✅ CORRECT - Always use /react subpath
+import { useMutation, useQuery } from '@apollo/client/react';
+import { gql } from '@sb/webapp-api-client/graphql';
+
+// ❌ WRONG - Will cause runtime errors
+import { useMutation, useQuery } from '@apollo/client';
+```
+
 Use the established patterns for mutations and queries:
 
 ```tsx
@@ -75,6 +86,18 @@ commitMutation({
     },
   },
 });
+```
+
+**CRITICAL for tests: Mock response key MUST match mutation name:**
+
+```tsx
+// ❌ WRONG - key doesn't match mutation name
+const mockData = { createTenant: { tenant: {...} } };
+const mock = composeMockedQueryResult(updateTenantMutation, { data: mockData });
+
+// ✅ CORRECT - key matches mutation name exactly
+const mockData = { updateTenant: { tenant: {...} } };
+const mock = composeMockedQueryResult(updateTenantMutation, { data: mockData });
 ```
 
 ## 4. Multi-Tenancy Awareness
@@ -253,7 +276,45 @@ When adding a new mutation, update all three layers:
 2. Run codegen: `pnpm nx run webapp-api-client:graphql:generate-types`
 3. Use mutation in component with `useMutation` hook
 
-## 12. Before Committing Changes
+## 12. Permission-Protected Components (CRITICAL)
+
+**Components using `PermissionGate` or `usePermissionCheck` will NOT render protected UI in tests without mocking!**
+
+```tsx
+// ✅ Add this mock at the TOP of test files (before other imports)
+jest.mock('@sb/webapp-tenants/hooks', () => ({
+  ...jest.requireActual('@sb/webapp-tenants/hooks'),
+  PermissionGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  usePermissionCheck: () => ({ hasPermission: true, loading: false }),
+}));
+
+// Common permissions to be aware of:
+// - org.settings.edit, org.settings.view
+// - members.invite, members.remove, members.roles.edit
+// - billing.manage, billing.view
+// - security.sso.manage, security.passkeys.manage
+// - features.crud.manage, features.documents.manage
+```
+
+## 13. Table Row Components in Tests
+
+**Components rendering `<tr>` need proper table wrapper:**
+
+```tsx
+// ❌ WRONG - will fail with DOM validation errors
+render(<MyTableRowComponent item={item} />);
+
+// ✅ CORRECT - wrap in Table structure
+render(
+  <Table>
+    <TableBody>
+      <MyTableRowComponent item={item} />
+    </TableBody>
+  </Table>
+);
+```
+
+## 14. Before Committing Changes
 
 1. **Run type-check**: `pnpm tsc --noEmit -p packages/webapp/tsconfig.app.json`
 2. **Run affected tests**: `pnpm nx run-many --target=test --projects=<affected-lib>`
@@ -280,8 +341,8 @@ import { cn } from '@sb/webapp-core/lib/utils';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { useGenerateTenantPath, useTenantRoles } from '@sb/webapp-tenants/hooks';
 
-// API
-import { useMutation, useQuery } from '@apollo/client';
+// API - CRITICAL: Always use /react subpath!
+import { useMutation, useQuery } from '@apollo/client/react';
 import { gql } from '@sb/webapp-api-client/graphql';
 
 // Icons
@@ -290,3 +351,31 @@ import { Settings, User, ChevronRight } from 'lucide-react';
 // i18n
 import { FormattedMessage, useIntl } from 'react-intl';
 ```
+
+## 15. CI Preflight Checks (Token-Optimized)
+
+**Run targeted checks to minimize CI loops. Use summary output for quick verification:**
+
+```bash
+# Quick single-package check (most efficient)
+pnpm nx run webapp-tenants:lint && pnpm nx run webapp-tenants:type-check && pnpm nx run webapp-tenants:test --watchAll=false
+
+# Backend check with summary output
+pnpm nx run backend:test 2>&1 | tail -15
+
+# Full frontend check (use Nx cache)
+pnpm nx run webapp:lint && pnpm nx run webapp:type-check && pnpm nx run webapp:test --watchAll=false
+
+# Build verification (summary)
+pnpm nx run webapp:build 2>&1 | tail -10
+```
+
+### Decision Tree for Efficient Checks
+
+1. **Changed Python?** → `pnpm nx run backend:test`
+2. **Changed single webapp-lib?** → Run lint/type-check/test on that package only
+3. **Changed webapp?** → Run webapp checks
+4. **Changed GraphQL?** → Regenerate types + type-check
+5. **Not sure?** → Full preflight
+
+See `.cursor/rules/ci-preflight.mdc` for the full preflight contract.

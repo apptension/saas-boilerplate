@@ -10,6 +10,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { TenantDangerZone } from '../../../components/tenantDangerZone';
 import { TenantForm } from '../../../components/tenantForm';
 import { TenantFormFields } from '../../../components/tenantForm/tenantForm.component';
+import { usePermissionCheck } from '../../../hooks';
 import { useCurrentTenant } from '../../../providers';
 import { updateTenantMutation } from './tenantGeneralSettings.graphql';
 
@@ -18,6 +19,10 @@ export const TenantGeneralSettings = () => {
   const { reload: reloadCommonQuery } = useCommonQuery();
   const { toast } = useToast();
   const intl = useIntl();
+
+  // Permission checks
+  const { hasPermission: canEditSettings } = usePermissionCheck('org.settings.edit');
+  const { hasPermission: canDeleteOrg } = usePermissionCheck('org.delete');
 
   const successMessage = intl.formatMessage({
     id: 'Tenant form / UpdateTenant / Success message',
@@ -60,17 +65,25 @@ export const TenantGeneralSettings = () => {
     <div className="space-y-6">
       {/* General Settings Card */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            <FormattedMessage defaultMessage="General" id="Tenant General Settings / Header" />
-          </CardTitle>
-          <CardDescription>
-            <FormattedMessage
-              defaultMessage="View and manage organization general settings"
-              id="Tenant General Settings / General subheader"
-            />
-          </CardDescription>
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                <Settings className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">
+                  <FormattedMessage defaultMessage="General" id="Tenant General Settings / Header" />
+                </CardTitle>
+                <CardDescription className="mt-0.5">
+                  <FormattedMessage
+                    defaultMessage="View and manage organization general settings"
+                    id="Tenant General Settings / General subheader"
+                  />
+                </CardDescription>
+              </div>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <TenantForm
@@ -78,12 +91,13 @@ export const TenantGeneralSettings = () => {
             error={error}
             onSubmit={onFormSubmit}
             initialData={currentTenant?.name ? { name: currentTenant.name } : undefined}
+            disabled={!canEditSettings}
           />
         </CardContent>
       </Card>
 
-      {/* Danger Zone Card */}
-      {isOrganizationType && (
+      {/* Danger Zone Card - only show if user can delete organization */}
+      {isOrganizationType && canDeleteOrg && (
         <Card>
           <CardContent className="pt-6">
             <TenantDangerZone />

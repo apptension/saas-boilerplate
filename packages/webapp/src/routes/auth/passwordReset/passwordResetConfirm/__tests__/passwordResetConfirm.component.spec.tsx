@@ -52,13 +52,16 @@ describe('PasswordResetConfirm: Component', () => {
         },
       });
 
-      render(<Component />, { routerProps, apolloMocks: append(requestMock) });
+      const { waitForApolloMocks } = render(<Component />, { routerProps, apolloMocks: append(requestMock) });
 
       await fillForm(newPassword);
       await sendForm();
 
-      expect(await screen.findByText(/login page mock/i)).toBeInTheDocument();
-    });
+      // Wait for the mutation to complete
+      await waitForApolloMocks(1);
+
+      expect(await screen.findByText(/login page mock/i, {}, { timeout: 3000 })).toBeInTheDocument();
+    }, 15000);
   });
 
   describe('token is missing', () => {

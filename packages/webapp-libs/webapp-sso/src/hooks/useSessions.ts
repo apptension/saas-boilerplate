@@ -7,6 +7,7 @@ export const SESSIONS_QUERY = gql(`
       edges {
         node {
           id
+          sessionId
           deviceName
           deviceType
           browser
@@ -25,7 +26,7 @@ export const SESSIONS_QUERY = gql(`
 `);
 
 export const REVOKE_SESSION = gql(`
-  mutation RevokeSession($sessionId: String!, $reason: String) {
+  mutation RevokeSessionOp($sessionId: String!, $reason: String) {
     revokeSession(sessionId: $sessionId, reason: $reason) {
       ok
     }
@@ -33,7 +34,7 @@ export const REVOKE_SESSION = gql(`
 `);
 
 export const REVOKE_ALL_SESSIONS = gql(`
-  mutation RevokeAllSessions {
+  mutation RevokeAllSessionsOp {
     revokeAllSessions {
       ok
       revokedCount

@@ -13,6 +13,8 @@ export type NotificationProps = Omit<NotificationType, 'data'> & {
   content: ReactNode;
   children?: ReactNode;
   avatar?: string | null;
+  icon?: ReactNode;
+  iconClassName?: string;
   onClick?: () => void;
   className?: string;
 };
@@ -22,6 +24,8 @@ export const Notification = ({
   title,
   children,
   avatar,
+  icon,
+  iconClassName,
   className,
   content,
   onClick,
@@ -29,6 +33,7 @@ export const Notification = ({
   createdAt,
 }: NotificationProps) => {
   const hasAvatar = typeof avatar === 'string';
+  const hasIcon = !!icon;
   const isRead = typeof readAt === 'string';
   const onToggleIsRead = useToggleIsRead({
     id,
@@ -63,8 +68,8 @@ export const Notification = ({
         {hasAvatar ? (
           <img src={avatar} alt="" className="h-10 w-10 rounded-full object-cover ring-2 ring-background" />
         ) : (
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-            <Bell className="h-4 w-4 text-muted-foreground" />
+          <div className={cn('flex h-10 w-10 items-center justify-center rounded-full bg-muted', iconClassName)}>
+            {hasIcon ? icon : <Bell className="h-4 w-4 text-muted-foreground" />}
           </div>
         )}
       </div>

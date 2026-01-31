@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client/react';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
@@ -47,6 +48,20 @@ export const useLoginForm = () => {
         });
       }
 
+      // Store tokens in localStorage for Safari/mobile fallback
+      // Safari and iOS block third-party cookies, so we need to use
+      // Authorization header as backup (tokens sent via Apollo authLink)
+      if (tokenAuth?.access) {
+        try {
+          localStorage.setItem('token', tokenAuth.access);
+          if (tokenAuth.refresh) {
+            localStorage.setItem('refresh_token', tokenAuth.refresh);
+          }
+        } catch {
+          // Ignore storage errors (e.g., private browsing mode)
+        }
+      }
+
       trackEvent('auth', 'log-in');
 
       // Reload the common query to get fresh user data
@@ -59,9 +74,10 @@ export const useLoginForm = () => {
       // Navigate to the redirect URL or home page
       navigate(redirect ?? generateLocalePath(RoutesConfig.home));
     },
-    onError: (error: any) => {
-      if (error?.graphQLErrors) {
-        setApolloGraphQLResponseErrors(error.graphQLErrors);
+    onError: (error) => {
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        setApolloGraphQLResponseErrors(graphQLErrors);
       }
     },
   });

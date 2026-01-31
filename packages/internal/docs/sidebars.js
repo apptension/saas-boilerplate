@@ -28,6 +28,12 @@ module.exports = {
         },
         {
           type: 'link',
+          label: 'Deployment Options',
+          href: '/deployment',
+          description: 'Deploy to AWS, Render, VPS, or other platforms',
+        },
+        {
+          type: 'link',
           label: 'AWS Deployment',
           href: '/aws',
           description: 'Deploy to production on AWS',
@@ -169,6 +175,40 @@ module.exports = {
           type: 'doc',
           id: 'getting-started/run-project/run-existing-project',
           label: 'Join an Existing Project',
+        },
+      ],
+    },
+  ],
+  deploymentSidebar: [
+    {
+      type: 'category',
+      label: 'Deployment Options',
+      link: {
+        type: 'doc',
+        id: 'deployment/index',
+      },
+      collapsed: false,
+      items: [
+        {
+          type: 'doc',
+          id: 'deployment/render',
+          label: 'Render.com',
+        },
+        {
+          type: 'doc',
+          id: 'deployment/vps',
+          label: 'VPS / Docker Compose',
+        },
+        {
+          type: 'doc',
+          id: 'deployment/environment-variables',
+          label: 'Environment Variables',
+        },
+        {
+          type: 'link',
+          label: 'AWS Deployment',
+          href: '/aws',
+          description: 'Original AWS CDK deployment',
         },
       ],
     },
@@ -349,9 +389,13 @@ module.exports = {
           collapsed: false,
           items: [
             'introduction/features/auth',
+            'introduction/features/session-management',
             'introduction/features/multi-tenancy',
+            'introduction/features/rbac',
             'introduction/features/payments',
             'introduction/features/notifications',
+            'introduction/features/activity-logs',
+            'introduction/features/management-dashboard',
           ],
         },
         {
@@ -404,6 +448,7 @@ module.exports = {
           collapsed: true,
           items: [
             'introduction/features/openai',
+            'introduction/features/ai-agent',
             'introduction/features/cms',
             'introduction/features/graphql',
           ],
@@ -416,6 +461,7 @@ module.exports = {
             'introduction/features/iac',
             'introduction/features/cicd',
             'introduction/features/workers',
+            'introduction/features/storage-backends',
           ],
         },
         {

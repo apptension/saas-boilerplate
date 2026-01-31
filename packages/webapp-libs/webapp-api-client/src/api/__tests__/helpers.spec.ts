@@ -65,7 +65,7 @@ describe('api', () => {
           const error = { foo: 'bar', response: { status: StatusCodes.UNAUTHORIZED }, config: { url: AUTH_URL.ME } };
           axiosRequestSpy.mockResolvedValue({ status: StatusCodes.OK, data: { foo: 'result' } } as AxiosResponse);
           await interceptor.onRejected(error as any);
-          expect(apiPostSpy).toHaveBeenCalledWith(AUTH_URL.REFRESH_TOKEN);
+          expect(apiPostSpy).toHaveBeenCalledWith(AUTH_URL.REFRESH_TOKEN, undefined);
         });
 
         describe('token refresh is successful', () => {

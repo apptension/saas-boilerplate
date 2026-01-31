@@ -159,6 +159,21 @@ pnpm saas webapp deploy
 pnpm saas backend deploy migrations
 ```
 
+### MCP Server Only (AI Assistant)
+
+If you have AI features enabled (`SB_AI_ENABLED=true`):
+
+```bash
+pnpm saas mcp-server build
+pnpm saas mcp-server deploy
+```
+
+Or using the backend commands:
+
+```bash
+pnpm saas backend deploy mcp-server
+```
+
 ---
 
 ## What Gets Deployed Where
@@ -171,6 +186,7 @@ pnpm saas backend deploy migrations
 | **Celery Workers** | ECS Fargate | (no public URL) |
 | **Async Workers** | AWS Lambda | (triggered internally) |
 | **Celery Flower** | ECS Fargate | `https://flower.qa.example.com` |
+| **MCP Server** (optional) | ECS Fargate + ALB | `https://mcp.qa.example.com` |
 
 ---
 

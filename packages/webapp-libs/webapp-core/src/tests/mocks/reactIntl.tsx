@@ -1,25 +1,15 @@
-import * as React from 'react';
-import { MessageDescriptor, PrimitiveType } from 'react-intl';
+/**
+ * React-intl mock for tests.
+ * 
+ * This mock preserves the original behavior of react-intl so that
+ * tests can verify actual translated messages. The previous implementation
+ * replaced all message IDs with 'mock-message-id' which prevented testing
+ * of actual message content.
+ */
 
-import { UnknownObject } from '../../utils/types';
-
+// Re-export the actual react-intl module without modifications
+// This allows tests to use real translations from the IntlProvider
 const mockReactIntl = jest.requireActual('react-intl');
-const { FormattedMessage, useIntl } = mockReactIntl;
 
-const mockFormattedMessage = (props: UnknownObject) => <FormattedMessage id="mock-message-id" {...props} />;
-const useMockedIntl = () => {
-  const { formatMessage, ...other } = useIntl();
-
-  return {
-    ...other,
-    formatMessage: (params: MessageDescriptor, values: Record<string, React.ReactNode | PrimitiveType>) => {
-      return formatMessage({ ...params, id: 'mock-message-id' }, values);
-    },
-  };
-};
-
-jest.mock('react-intl', () => ({
-  ...mockReactIntl,
-  useIntl: useMockedIntl,
-  FormattedMessage: mockFormattedMessage,
-}));
+// No mocking needed - just ensure react-intl is properly initialized
+// The CoreTestProviders wrapper provides IntlProvider with real translations

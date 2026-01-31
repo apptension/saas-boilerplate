@@ -13,6 +13,7 @@ type GetBackendEnvironmentOptions = {
   envSettings: EnvironmentSettings;
   allowedHosts?: string;
   csrfTrustedOrigins?: string;
+  mcpServerUrl?: string;
 };
 
 export function getBackendEnvironment(
@@ -21,6 +22,7 @@ export function getBackendEnvironment(
     envSettings,
     allowedHosts,
     csrfTrustedOrigins,
+    mcpServerUrl,
   }: GetBackendEnvironmentOptions,
 ) {
   return {
@@ -53,5 +55,7 @@ export function getBackendEnvironment(
     ]),
     VITE_WEB_APP_URL: `https://${envSettings.domains.webApp}`,
     VITE_EMAIL_ASSETS_URL: `https://${envSettings.domains.webApp}/email-assets`,
+    // AI Assistant - MCP Server URL (can be internal or external)
+    ...(mcpServerUrl ? { MCP_SERVER_URL: mcpServerUrl } : {}),
   };
 }

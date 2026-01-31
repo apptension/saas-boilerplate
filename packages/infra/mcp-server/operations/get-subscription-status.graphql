@@ -1,0 +1,50 @@
+# @tool(name: "get_subscription_status", description: "Get active subscription details including plan, status, and payment method. Use this to understand the organization's billing status. Requires billing.view permission.")
+query GetSubscriptionStatus($tenantId: ID!) {
+  activeSubscription(tenantId: $tenantId) {
+    id
+    status
+    created
+    completedAt
+    endBehavior
+    releasedAt
+    currentPhase
+    canActivateTrial
+    subscription {
+      id
+      status
+      currentPeriodStart
+      currentPeriodEnd
+      trialStart
+      trialEnd
+      plan {
+        id
+        pk
+        amount
+        product {
+          id
+          name
+        }
+      }
+    }
+    defaultPaymentMethod {
+      id
+      type
+      card
+    }
+    phases {
+      startDate
+      endDate
+      trialEnd
+      item {
+        price {
+          id
+          unitAmount
+          product {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}

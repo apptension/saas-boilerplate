@@ -1,0 +1,12 @@
+{
+  "name": "@sb/mcp-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Apollo MCP Server configuration for AI Assistant",
+  "scripts": {
+    "build": "node scripts/build.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sts": "^3.500.0"
+  }
+}

@@ -3,6 +3,7 @@ import { ReactNode, useMemo, useState } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
 
 import { NO_NAVIGATION_ROUTES } from '../../../app/config/routes';
+import { WelcomeModal } from '../welcomeModal';
 import { Header } from './header';
 import { LayoutContext } from './layout.context';
 import { Sidebar } from './sidebar';
@@ -40,7 +41,7 @@ export const Layout = ({ children }: LayoutProps) => {
     [shouldDisplaySidebar, isSideMenuOpen, isSidebarCollapsed, toggleSidebar]
   );
 
-  const sidebarWidth = isSidebarCollapsed ? 'lg:pl-16' : 'lg:pl-72';
+  const sidebarWidth = isSidebarCollapsed ? 'xl:pl-16' : 'xl:pl-72';
 
   return (
     <LayoutContext.Provider value={value}>
@@ -49,6 +50,7 @@ export const Layout = ({ children }: LayoutProps) => {
         <main className={isAuthRoute ? undefined : 'py-10'}>{children}</main>
       </div>
       {shouldDisplaySidebar && <Sidebar />}
+      {shouldDisplaySidebar && <WelcomeModal />}
     </LayoutContext.Provider>
   );
 };

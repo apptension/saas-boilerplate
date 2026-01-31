@@ -137,11 +137,8 @@ class TestTranslationPublisher:
 
     @pytest.mark.django_db
     @patch.object(TranslationPublisher, '_upload_json')
-    @patch.object(TranslationPublisher, '_invalidate_cache')
     @patch.object(TranslationPublisher, '_clear_cache')
-    def test_publish(
-        self, mock_clear, mock_invalidate, mock_upload, db, english_locale, translation_keys, user_factory
-    ):
+    def test_publish(self, mock_clear, mock_upload, db, english_locale, translation_keys, user_factory):
         publisher = TranslationPublisher()
         publisher.bucket_name = 'test-bucket'
 
@@ -152,7 +149,7 @@ class TestTranslationPublisher:
         assert version.is_active is True
         assert version.translation_count == 3
         assert mock_upload.called
-        assert mock_invalidate.called
+        assert mock_clear.called
 
 
 @pytest.mark.django_db
@@ -160,6 +157,11 @@ class TestGetTranslationsForLocale:
     """Tests for get_translations_for_locale function."""
 
     def test_returns_translations_for_valid_locale(self, db, english_locale, translation_keys):
+        # Clear cache to ensure fresh data from fixtures
+        from django.core.cache import cache
+
+        cache.delete('translations_en')
+
         TranslationFactory(
             key=translation_keys[0],
             locale=english_locale,
