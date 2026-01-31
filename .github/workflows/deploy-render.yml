@@ -34,10 +34,10 @@ name: "Deploy to Render"
 
 on:
   # Automatic deployment on merge to main branch
-  push:
-    branches:
-      - main
-      - master
+#  push:
+#    branches:
+#      - main
+#      - master
 
   # Manual deployment with service selection
   workflow_dispatch:
