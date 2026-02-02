@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [ 18, 20 ]
+        node-version: [ 22, 24 ]
         infra-lib-name:
           - infra-core
           - infra-shared
