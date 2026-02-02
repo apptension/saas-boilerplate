@@ -20,7 +20,6 @@ class Migration(migrations.Migration):
                     ('billing', 'Billing'),
                     ('features', 'Features'),
                     ('dashboard', 'Dashboard'),
-                    ('management', 'Management Dashboard'),
                 ],
                 help_text='Category for grouping in UI',
                 max_length=50,

@@ -26,7 +26,6 @@ application = ProtocolTypeRouter(
         "websocket": JSONWebTokenCookieMiddleware(
             URLRouter(
                 [
-                    # AI Assistant uses GraphQL subscriptions via this same endpoint
                     path("api/graphql/", DefaultGraphqlWsConsumer.as_asgi()),
                 ]
             )

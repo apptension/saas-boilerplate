@@ -7,34 +7,7 @@ and add proper dashboard.view permission for main app Dashboard.
 from django.db import migrations
 
 
-PERMISSION_RENAMES = [
-    # Old code -> New code
-    ('dashboard.analytics.view', 'management.analytics.view'),
-    ('dashboard.clients.view', 'management.clients.view'),
-    ('dashboard.clients.edit', 'management.clients.edit'),
-    ('dashboard.projects.view', 'management.projects.view'),
-    ('dashboard.projects.edit', 'management.projects.edit'),
-    ('dashboard.people.view', 'management.people.view'),
-    ('dashboard.people.edit', 'management.people.edit'),
-    ('dashboard.people.rates.view', 'management.people.rates.view'),
-    ('dashboard.people.rates.edit', 'management.people.rates.edit'),
-    ('dashboard.financial.view', 'management.financial.view'),
-    ('dashboard.financial.edit', 'management.financial.edit'),
-    ('dashboard.timesheets.view', 'management.timesheets.view'),
-    ('dashboard.timesheets.edit', 'management.timesheets.edit'),
-    ('dashboard.invoices.view', 'management.invoices.view'),
-    ('dashboard.invoices.edit', 'management.invoices.edit'),
-    ('dashboard.pipeline.view', 'management.pipeline.view'),
-    ('dashboard.pipeline.edit', 'management.pipeline.edit'),
-    ('dashboard.imports.view', 'management.imports.view'),
-    ('dashboard.imports.execute', 'management.imports.execute'),
-    ('dashboard.settings.view', 'management.settings.view'),
-    ('dashboard.settings.edit', 'management.settings.edit'),
-    ('dashboard.fxrates.view', 'management.fxrates.view'),
-    ('dashboard.fxrates.edit', 'management.fxrates.edit'),
-    ('dashboard.roles.view', 'management.roles.view'),
-    ('dashboard.roles.edit', 'management.roles.edit'),
-]
+PERMISSION_RENAMES = []
 
 
 def rename_permissions(apps, schema_editor):
