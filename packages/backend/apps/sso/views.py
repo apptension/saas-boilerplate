@@ -869,8 +869,10 @@ class TenantPasskeyListView(APIView):
                     'lastUsedAt': p.last_used_at.isoformat() if p.last_used_at else None,
                     'useCount': p.use_count,
                     'userEmail': p.user.email,
-                    'userName': f"{getattr(p.user.profile, 'first_name', '')} {getattr(p.user.profile, 'last_name', '')}".strip()
-                    or p.user.email,
+                    'userName': (
+                        f"{getattr(p.user.profile, 'first_name', '')} "
+                        f"{getattr(p.user.profile, 'last_name', '')}"
+                    ).strip() or p.user.email,
                 }
                 for p in passkeys
             ]

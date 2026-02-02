@@ -301,11 +301,9 @@ def sanitize_scim_filter(filter_expr: str, max_length: int = 500) -> Optional[Di
         value = match.group(2)
 
         # Additional validation for email-like values
-        if attribute in ('username', 'email'):
-            # Basic email format validation
-            if '@' in value and not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', value):
-                logger.warning(f"SCIM filter rejected (invalid email format): {value[:50]}")
-                return None
+        if attribute in ('username', 'email') and '@' in value and not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', value):
+            logger.warning(f"SCIM filter rejected (invalid email format): {value[:50]}")
+            return None
 
         return {'attribute': attribute, 'value': value}
 
@@ -358,11 +356,7 @@ def safe_log_user_identifier(email: str) -> str:
 
     local, domain = email.rsplit('@', 1)
     # Show first 2 chars of local part + domain (only if local part is long enough)
-    if len(local) > 3:
-        masked_local = local[:2] + '***'
-    else:
-        # Short local parts are fully masked for privacy
-        masked_local = '***'
+    masked_local = local[:2] + '***' if len(local) > 3 else '***'
 
     return f"{masked_local}@{domain}"
 

@@ -999,8 +999,9 @@ class AssignRolesToMemberMutation(graphene.Mutation):
                 role_permissions = set(role.permissions.values_list('code', flat=True))
                 missing_permissions = role_permissions - user_permissions
                 if missing_permissions:
+                    permissions_list = ', '.join(list(missing_permissions)[:3])
                     raise PermissionDenied(
-                        f"You cannot assign roles with permissions you don't have: {', '.join(list(missing_permissions)[:3])}"
+                        f"You cannot assign roles with permissions you don't have: {permissions_list}"
                     )
 
             roles_to_assign.append(role)

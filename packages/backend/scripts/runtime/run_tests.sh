@@ -4,7 +4,7 @@ set -o pipefail
 set -o nounset
 
 # Run ruff check but don't fail on warnings (non-critical rules ignored)
-ruff check . --ignore S110,PLR0911,PLR0912,PLR0915,S602,S607,E721,E501,F401 || echo "Ruff check completed (some warnings may remain)"
+ruff check . || echo "Ruff check completed"
 
 set -o errexit
 

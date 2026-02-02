@@ -510,11 +510,9 @@ class SAMLService:
 
         # If no email was found in attributes, try using NameID
         # Google Workspace often sends email as the NameID
-        if not mapped.get('email') and name_id_value:
-            # Check if NameID looks like an email
-            if '@' in name_id_value:
-                mapped['email'] = name_id_value
-                logger.debug(f"Using NameID as email: {name_id_value}")
+        if not mapped.get('email') and name_id_value and '@' in name_id_value:
+            mapped['email'] = name_id_value
+            logger.debug(f"Using NameID as email: {name_id_value}")
 
         # Log safely without exposing PII
         logger.info(

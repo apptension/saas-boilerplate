@@ -31,7 +31,10 @@ class Command(BaseCommand):
             type=str,
             choices=['full', 'simple', 'json-dump'],
             default='full',
-            help='Output format: full (with defaultMessage wrapper), simple (key-value), json-dump (all data as JSON to stdout)',
+            help=(
+                'Output format: full (with defaultMessage wrapper), '
+                'simple (key-value), json-dump (all data as JSON to stdout)'
+            ),
         )
 
     def handle(self, *args, **options):

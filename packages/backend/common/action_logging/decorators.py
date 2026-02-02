@@ -204,7 +204,8 @@ def _get_old_instance(cls, info, input_data):
                 try:
                     value = getattr(instance, field.name, None)
                     setattr(old_instance, field.name, value)
-                except Exception:
+                except Exception as e:
+                    logger.debug(f"Failed to copy field {field.name} to old_instance: {e}")
                     continue
             old_instance.pk = instance.pk
             return old_instance

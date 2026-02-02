@@ -271,7 +271,8 @@ class SendAiMessageMutation(graphene.Mutation):
                     # For mutations: tenantId is inside the "input" object
                     is_mutation = tool_name.startswith(("create_", "update_", "delete_"))
                     logger.info(
-                        f"[AI DEBUG] Is mutation: {is_mutation}, has 'input' key: {'input' in arguments if isinstance(arguments, dict) else 'N/A'}"
+                        f"[AI DEBUG] Is mutation: {is_mutation}, has 'input' key: "
+                        f"{'input' in arguments if isinstance(arguments, dict) else 'N/A'}"
                     )
 
                     if isinstance(arguments, dict):

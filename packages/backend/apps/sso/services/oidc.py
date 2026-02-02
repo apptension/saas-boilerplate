@@ -236,9 +236,12 @@ class OIDCService:
         except requests.RequestException as e:
             # SECURITY: Log error without exposing sensitive details like client_secret
             # The exception message may contain request payload data
+            status_code = (
+                getattr(e.response, 'status_code', 'N/A') if hasattr(e, 'response') else 'N/A'
+            )
             logger.error(
                 f"Token exchange failed for connection {self.connection.id}: "
-                f"{type(e).__name__} - status: {getattr(e.response, 'status_code', 'N/A') if hasattr(e, 'response') else 'N/A'}"
+                f"{type(e).__name__} - status: {status_code}"
             )
             # Return generic error message to prevent information disclosure
             raise ValueError("Failed to exchange authorization code for tokens")

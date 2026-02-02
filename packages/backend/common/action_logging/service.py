@@ -357,7 +357,8 @@ def log_delete(
                     'old': serialized,
                     'new': None,
                 }
-        except Exception:
+        except Exception as e:
+            logger.debug(f"Failed to serialize field {field.name} for delete action: {e}")
             continue
 
     return log_action(

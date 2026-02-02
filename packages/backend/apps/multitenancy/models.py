@@ -425,7 +425,7 @@ class OrganizationRole(TimestampedMixin, models.Model):
     system_role_type = models.CharField(
         max_length=20,
         choices=constants.SystemRoleType.choices,
-        null=True,
+        default='',
         blank=True,
         help_text="If set, this is a system template role",
     )
@@ -454,7 +454,7 @@ class OrganizationRole(TimestampedMixin, models.Model):
             UniqueConstraint(
                 fields=['tenant', 'system_role_type'],
                 name='unique_system_role_per_tenant',
-                condition=Q(system_role_type__isnull=False),
+                condition=Q(system_role_type__gt=''),
             ),
         ]
 
@@ -464,7 +464,7 @@ class OrganizationRole(TimestampedMixin, models.Model):
     @property
     def is_system_role(self):
         """Check if this is a system template role."""
-        return self.system_role_type is not None
+        return bool(self.system_role_type)
 
     @property
     def is_owner_role(self):

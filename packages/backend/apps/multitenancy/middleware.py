@@ -43,9 +43,12 @@ def get_current_tenant_with_membership_check(tenant_id, user):
         return None
 
     # SECURITY: Verify user has accepted membership in this tenant
-    if user and user.is_authenticated:
-        if TenantMembership.objects.filter(user=user, tenant=tenant, is_accepted=True).exists():
-            return tenant
+    if (
+        user
+        and user.is_authenticated
+        and TenantMembership.objects.filter(user=user, tenant=tenant, is_accepted=True).exists()
+    ):
+        return tenant
 
     # User is not authenticated or not a member - don't set tenant
     return None

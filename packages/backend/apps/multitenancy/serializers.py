@@ -381,11 +381,7 @@ class UpdateTenantMembershipSerializer(serializers.ModelSerializer):
             will_remain_rbac_owner = is_currently_rbac_owner
 
             # Calculate remaining owners after this change
-            remaining_owners = 0
-            if is_currently_legacy_owner:
-                remaining_owners = legacy_owner_count - 1  # We're removing this legacy owner
-            else:
-                remaining_owners = legacy_owner_count
+            remaining_owners = legacy_owner_count - 1 if is_currently_legacy_owner else legacy_owner_count
 
             # Add RBAC owners (minus this one if applicable)
             if will_remain_rbac_owner:
