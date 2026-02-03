@@ -1,10 +1,10 @@
-import { TenantUserRole } from '@sb/webapp-api-client';
+import { TenantUserRole, apiClient } from '@sb/webapp-api-client';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
 import { RoutesConfig } from '../../../../../config/routes';
-import { tenantFactory, membershipFactory } from '../../../../../tests/factories/tenant';
+import { membershipFactory, tenantFactory } from '../../../../../tests/factories/tenant';
 import { createMockRouterProps, render } from '../../../../../tests/utils/rendering';
 import { SSOConnectionCard } from '../ssoConnectionCard';
 
@@ -17,10 +17,6 @@ jest.mock('@sb/webapp-api-client/api', () => ({
   },
   apiURL: jest.fn((path: string) => path),
 }));
-
-// Import after mock
- 
-import { apiClient } from '@sb/webapp-api-client/api';
 
 const mockedApiClient = apiClient as jest.Mocked<typeof apiClient>;
 
@@ -225,9 +221,7 @@ describe('SSOConnectionCard: Component', () => {
     it('should show permission message', async () => {
       renderComponent(false);
 
-      expect(
-        await screen.findByText(/Only organization owners and admins can configure SSO/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/Only organization owners and admins can configure SSO/i)).toBeInTheDocument();
     });
 
     it('should not show any action buttons', async () => {

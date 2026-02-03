@@ -1,12 +1,12 @@
-import { TenantUserRole } from '@sb/webapp-api-client';
+import { TenantUserRole, apiClient } from '@sb/webapp-api-client';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen, waitFor } from '@testing-library/react';
 
 import { RoutesConfig } from '../../../../config/routes';
-import { currentUserPermissionsQuery } from '../../tenantRoles/tenantRoles.graphql';
-import { tenantFactory, membershipFactory } from '../../../../tests/factories/tenant';
+import { membershipFactory, tenantFactory } from '../../../../tests/factories/tenant';
 import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
+import { currentUserPermissionsQuery } from '../../tenantRoles/tenantRoles.graphql';
 import { TenantSecuritySettings } from '../tenantSecuritySettings.component';
 
 // Mock the apiClient module before any imports use it
@@ -18,10 +18,6 @@ jest.mock('@sb/webapp-api-client/api', () => ({
   },
   apiURL: jest.fn((path: string) => path),
 }));
-
-// Import after mock
- 
-import { apiClient } from '@sb/webapp-api-client/api';
 
 const mockedApiClient = apiClient as jest.Mocked<typeof apiClient>;
 
@@ -170,9 +166,7 @@ describe('TenantSecuritySettings: Component', () => {
       render(<Component />, { apolloMocks: [commonQueryMock, permissionsMock], routerProps });
 
       // SSO card should show permission message
-      expect(
-        await screen.findByText(/Only organization owners and admins can configure SSO/i)
-      ).toBeInTheDocument();
+      expect(await screen.findByText(/Only organization owners and admins can configure SSO/i)).toBeInTheDocument();
     });
 
     it('should not show Audit Log card when user lacks logs permission', async () => {
