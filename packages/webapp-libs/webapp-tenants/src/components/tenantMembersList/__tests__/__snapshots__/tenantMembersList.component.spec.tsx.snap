@@ -51,10 +51,11 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
               <span
                 class="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8"
               >
-                <img
-                  alt="testFirstName testLastName"
-                  class="aspect-square h-full w-full object-cover"
-                />
+                <span
+                  class="bg-muted flex h-full w-full items-center justify-center rounded-full text-xs"
+                >
+                  T
+                </span>
               </span>
               <div
                 class="flex flex-col"
@@ -130,10 +131,11 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
               <span
                 class="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8"
               >
-                <img
-                  alt="Firstname 1 Firstname 1"
-                  class="aspect-square h-full w-full object-cover"
-                />
+                <span
+                  class="bg-muted flex h-full w-full items-center justify-center rounded-full text-xs"
+                >
+                  F
+                </span>
               </span>
               <div
                 class="flex flex-col"
@@ -204,10 +206,11 @@ exports[`TenantMembersList: Component should render list of memberships 1`] = `
               <span
                 class="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8"
               >
-                <img
-                  alt="example@example.com"
-                  class="aspect-square h-full w-full object-cover"
-                />
+                <span
+                  class="bg-muted flex h-full w-full items-center justify-center rounded-full text-xs"
+                >
+                  U
+                </span>
               </span>
               <div
                 class="flex flex-col"
