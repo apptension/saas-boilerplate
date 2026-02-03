@@ -22,16 +22,16 @@ def ratelimit(group=None, key=None, rate=None, method=ALL, block=True):
                 _, info = args
                 # Access the actual Django request object
                 # info.context may be a wrapper with _request attribute
-                request = getattr(info.context, '_request', info.context)
+                request = getattr(info.context, "_request", info.context)
 
-                old_limited = getattr(request, 'limited', False)
+                old_limited = getattr(request, "limited", False)
                 ratelimited = is_ratelimited(
                     request=request, group=group, fn=fn, key=key, rate=rate, method=method, increment=True
                 )
                 request.limited = ratelimited or old_limited
 
                 if ratelimited and block:
-                    cls = getattr(settings, 'RATELIMIT_EXCEPTION_CLASS', Ratelimited)
+                    cls = getattr(settings, "RATELIMIT_EXCEPTION_CLASS", Ratelimited)
                     raise (import_string(cls) if isinstance(cls, str) else cls)(RATE_LIMIT_EXCEEDED_ERROR_MSG)
 
             except Ratelimited:

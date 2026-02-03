@@ -2,6 +2,7 @@
 GraphQL Subscription for AI CFO Assistant.
 Uses the same WebSocket infrastructure as notifications.
 """
+
 import json
 import logging
 import asyncio
@@ -52,7 +53,7 @@ class AiChatSubscription(channels_graphql_ws.Subscription):
     @staticmethod
     def subscribe(root, info, conversation_id):
         """Subscribe to a specific conversation."""
-        user = info.context.channels_scope.get('user')
+        user = info.context.channels_scope.get("user")
         if not user or not user.is_authenticated:
             return []
         # Subscribe to user-specific conversation channel
@@ -89,13 +90,13 @@ class SendAiMessageMutation(graphene.Mutation):
         jwt_token = None
 
         # Check if this is an HTTP request (mutations often come via HTTP)
-        if hasattr(info.context, 'COOKIES'):
+        if hasattr(info.context, "COOKIES"):
             # HTTP request - get token from cookies
             jwt_token = info.context.COOKIES.get(settings.ACCESS_TOKEN_COOKIE)
             logger.info(f"[AI] Got JWT token from HTTP cookies: {'present' if jwt_token else 'missing'}")
-        elif hasattr(info.context, 'channels_scope'):
+        elif hasattr(info.context, "channels_scope"):
             # WebSocket context - get token from scope
-            jwt_token = info.context.channels_scope.get('jwt_token')
+            jwt_token = info.context.channels_scope.get("jwt_token")
             logger.info(f"[AI] Got JWT token from WebSocket scope: {'present' if jwt_token else 'missing'}")
         else:
             logger.warning("[AI] Unable to extract JWT token from context")
@@ -151,7 +152,7 @@ class SendAiMessageMutation(graphene.Mutation):
             )
 
             # Get OpenAI client
-            openai_api_key = getattr(settings, 'OPENAI_API_KEY', None)
+            openai_api_key = getattr(settings, "OPENAI_API_KEY", None)
             if not openai_api_key:
                 await broadcast(
                     {
@@ -169,7 +170,7 @@ class SendAiMessageMutation(graphene.Mutation):
             logger.info(f"[AI] Auth header for MCP: {'present' if auth_header else 'MISSING'}")
 
             # Initialize MCP client
-            mcp_server_url = getattr(settings, 'MCP_SERVER_URL', 'http://mcp-server:4000')
+            mcp_server_url = getattr(settings, "MCP_SERVER_URL", "http://mcp-server:4000")
             mcp_client = MCPClient(
                 mcp_server_url=mcp_server_url,
                 auth_header=auth_header,
@@ -378,7 +379,7 @@ class SendAiMessageMutation(graphene.Mutation):
                 # Stream word by word
                 import re
 
-                tokens = re.findall(r'\S+|\s+', final_response)
+                tokens = re.findall(r"\S+|\s+", final_response)
 
                 for token in tokens:
                     await broadcast(
@@ -389,9 +390,9 @@ class SendAiMessageMutation(graphene.Mutation):
                         }
                     )
                     # Small delay for natural feel
-                    if token.strip() in '.!?':
+                    if token.strip() in ".!?":
                         await asyncio.sleep(0.05)
-                    elif token.strip() in ',;:':
+                    elif token.strip() in ",;:":
                         await asyncio.sleep(0.025)
                     elif token.strip():
                         await asyncio.sleep(0.01)

@@ -34,14 +34,13 @@ class SecretsService:
         """Initialize the boto3 client, handling missing AWS configuration gracefully."""
         try:
             self.client = boto3.client(
-                'secretsmanager',
-                region_name=getattr(settings, 'AWS_REGION', 'us-east-1'),
-                endpoint_url=getattr(settings, 'AWS_ENDPOINT_URL', None),
+                "secretsmanager",
+                region_name=getattr(settings, "AWS_REGION", "us-east-1"),
+                endpoint_url=getattr(settings, "AWS_ENDPOINT_URL", None),
             )
         except Exception as e:
             logger.warning(
-                f"Failed to initialize AWS Secrets Manager client: {e}. "
-                "Secrets Manager features will be unavailable."
+                f"Failed to initialize AWS Secrets Manager client: {e}. Secrets Manager features will be unavailable."
             )
             self.client = None
 
@@ -54,7 +53,7 @@ class SecretsService:
         tenant_id: str,
         secret_type: str,
         secret_value: str,
-        description: str = '',
+        description: str = "",
     ) -> Optional[str]:
         """
         Store a secret in AWS Secrets Manager.
@@ -81,15 +80,15 @@ class SecretsService:
                 Description=description or f"SSO {secret_type} for tenant {tenant_id}",
                 SecretString=secret_value,
                 Tags=[
-                    {'Key': 'tenant_id', 'Value': str(tenant_id)},
-                    {'Key': 'type', 'Value': 'sso'},
-                    {'Key': 'secret_type', 'Value': secret_type},
+                    {"Key": "tenant_id", "Value": str(tenant_id)},
+                    {"Key": "type", "Value": "sso"},
+                    {"Key": "secret_type", "Value": secret_type},
                 ],
             )
-            return response['ARN']
+            return response["ARN"]
 
         except ClientError as e:
-            if e.response['Error']['Code'] == 'ResourceExistsException':
+            if e.response["Error"]["Code"] == "ResourceExistsException":
                 # Secret already exists, update it
                 response = self.client.put_secret_value(
                     SecretId=secret_name,
@@ -97,7 +96,7 @@ class SecretsService:
                 )
                 # Get the ARN from describe
                 describe_response = self.client.describe_secret(SecretId=secret_name)
-                return describe_response['ARN']
+                return describe_response["ARN"]
             else:
                 logger.error(f"Error storing secret: {e}")
                 return None
@@ -118,9 +117,9 @@ class SecretsService:
 
         try:
             response = self.client.get_secret_value(SecretId=secret_arn)
-            return response.get('SecretString')
+            return response.get("SecretString")
         except ClientError as e:
-            if e.response['Error']['Code'] == 'ResourceNotFoundException':
+            if e.response["Error"]["Code"] == "ResourceNotFoundException":
                 logger.warning(f"Secret not found: {secret_arn}")
                 return None
             else:
@@ -176,8 +175,8 @@ class SecretsService:
         """Store SP signing key pair (private key + certificate)."""
         key_pair = json.dumps(
             {
-                'private_key': private_key,
-                'certificate': certificate,
+                "private_key": private_key,
+                "certificate": certificate,
             }
         )
         return self.store_secret(

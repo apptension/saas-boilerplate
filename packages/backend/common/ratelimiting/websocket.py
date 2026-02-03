@@ -6,7 +6,7 @@ the AI Assistant chat functionality.
 
 Usage:
     from common.ratelimiting import WebSocketRateLimiter
-    
+
     class AiAssistantConsumer(AsyncJsonWebsocketConsumer):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
@@ -14,7 +14,7 @@ Usage:
                 RateLimitCategory.AI_CHAT_MESSAGE,
                 hourly_category=RateLimitCategory.AI_CHAT_HOURLY,
             )
-        
+
         async def handle_chat_message(self, message: str):
             # Check rate limits
             is_allowed, error_msg = await self.rate_limiter.check_async(
@@ -27,7 +27,7 @@ Usage:
                     'message': error_msg,
                 })
                 return
-            
+
             # Process message...
 """
 
@@ -66,7 +66,7 @@ class RateLimitResult:
     retry_after: Optional[int] = None
     """Seconds until rate limit resets (if blocked)."""
 
-    message: str = ''
+    message: str = ""
     """Human-readable message."""
 
 
@@ -113,7 +113,7 @@ class WebSocketRateLimiter:
         user_id: Optional[str],
         tenant_id: Optional[str],
         client_ip: str,
-        suffix: str = '',
+        suffix: str = "",
     ) -> str:
         """Generate cache key for rate limiting."""
         category_str = self.category.value if isinstance(self.category, RateLimitCategory) else self.category
@@ -133,7 +133,7 @@ class WebSocketRateLimiter:
         self,
         user_id: Optional[str] = None,
         tenant_id: Optional[str] = None,
-        client_ip: str = '127.0.0.1',
+        client_ip: str = "127.0.0.1",
         tier: Optional[UserTier] = None,
     ) -> RateLimitResult:
         """
@@ -177,7 +177,7 @@ class WebSocketRateLimiter:
         # Check hourly limit if configured
         if self._hourly_rate:
             hourly_limit, hourly_window = parse_rate_string(self._hourly_rate)
-            hourly_key = self._get_cache_key(user_id, tenant_id, client_ip, 'hourly')
+            hourly_key = self._get_cache_key(user_id, tenant_id, client_ip, "hourly")
 
             try:
                 hourly_current = cache.incr(hourly_key)
@@ -200,14 +200,14 @@ class WebSocketRateLimiter:
             current_count=current,
             limit=limit,
             remaining=max(0, limit - current),
-            message='OK',
+            message="OK",
         )
 
     async def check_async(
         self,
         user_id: Optional[str] = None,
         tenant_id: Optional[str] = None,
-        client_ip: str = '127.0.0.1',
+        client_ip: str = "127.0.0.1",
         tier: Optional[UserTier] = None,
     ) -> RateLimitResult:
         """
@@ -233,7 +233,7 @@ class WebSocketRateLimiter:
         self,
         user_id: Optional[str] = None,
         tenant_id: Optional[str] = None,
-        client_ip: str = '127.0.0.1',
+        client_ip: str = "127.0.0.1",
     ) -> int:
         """Get remaining requests in current window without incrementing."""
         limit, _ = parse_rate_string(self._rate)
@@ -245,7 +245,7 @@ class WebSocketRateLimiter:
         self,
         user_id: Optional[str] = None,
         tenant_id: Optional[str] = None,
-        client_ip: str = '127.0.0.1',
+        client_ip: str = "127.0.0.1",
     ) -> int:
         """Async version of get_remaining()."""
         return await sync_to_async(self.get_remaining)(
@@ -258,14 +258,14 @@ class WebSocketRateLimiter:
         self,
         user_id: Optional[str] = None,
         tenant_id: Optional[str] = None,
-        client_ip: str = '127.0.0.1',
+        client_ip: str = "127.0.0.1",
     ):
         """Reset rate limit counters for an entity."""
         key = self._get_cache_key(user_id, tenant_id, client_ip)
         cache.delete(key)
 
         if self._hourly_rate:
-            hourly_key = self._get_cache_key(user_id, tenant_id, client_ip, 'hourly')
+            hourly_key = self._get_cache_key(user_id, tenant_id, client_ip, "hourly")
             cache.delete(hourly_key)
 
 

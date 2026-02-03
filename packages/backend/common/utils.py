@@ -14,14 +14,14 @@ def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
     if response is not None:
-        response.data['is_error'] = True
+        response.data["is_error"] = True
 
     return response
 
 
 def get_client_ip(request):
     """Retrieve client ip from x-forwarded-for header in case of load balancer usage"""
-    if x_forwarded_for := request.META.get('x-forwarded-for'):
-        return x_forwarded_for.split(',')[0]
+    if x_forwarded_for := request.META.get("x-forwarded-for"):
+        return x_forwarded_for.split(",")[0]
 
-    return request.META['REMOTE_ADDR']
+    return request.META["REMOTE_ADDR"]

@@ -61,8 +61,8 @@ TRACING_BACKEND = env("TRACING_BACKEND", default="xray")
 THIRD_PARTY_APPS = [
     "corsheaders",
     "django_extensions",
-    'django_celery_results',
-    'django_celery_beat',
+    "django_celery_results",
+    "django_celery_beat",
     "djstripe",
     "django_hosts",
     "drf_yasg",
@@ -71,11 +71,11 @@ THIRD_PARTY_APPS = [
     "social_django",
     "whitenoise",
     "graphene_django",
-    'channels',
+    "channels",
 ]
 
 # Conditionally add X-Ray app (only for AWS deployments)
-if TRACING_BACKEND == 'xray':
+if TRACING_BACKEND == "xray":
     THIRD_PARTY_APPS.append("aws_xray_sdk.ext.django")
 
 LOCAL_APPS = [
@@ -109,7 +109,7 @@ MIDDLEWARE = [
     "common.middleware.SetAuthTokenCookieMiddleware",
     "django_hosts.middleware.HostsRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",  # Must be before CommonMiddleware
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -122,13 +122,13 @@ MIDDLEWARE = [
 ]
 
 # Conditionally add X-Ray middleware (only for AWS deployments)
-if TRACING_BACKEND == 'xray':
+if TRACING_BACKEND == "xray":
     # Insert after HealthCheckMiddleware
     MIDDLEWARE.insert(1, "aws_xray_sdk.ext.django.middleware.XRayMiddleware")
 ROOT_URLCONF = "config.urls_api"
 ROOT_HOSTCONF = "config.hosts"
 DEFAULT_HOST = "api"
-PARENT_HOST = env('PARENT_HOST', default="")
+PARENT_HOST = env("PARENT_HOST", default="")
 
 TEMPLATES = [
     {
@@ -149,32 +149,32 @@ TEMPLATES = [
 PASSWORD_HASHERS = env.list(
     "DJANGO_PASSWORD_HASHERS",
     default=[
-        'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-        'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-        'django.contrib.auth.hashers.Argon2PasswordHasher',
-        'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+        "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+        "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+        "django.contrib.auth.hashers.Argon2PasswordHasher",
+        "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
     ],
 )
 
 WSGI_APPLICATION = "config.wsgi.application"
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': env('DJANGO_LOG_LEVEL', default='INFO'),
+    "root": {
+        "handlers": ["console"],
+        "level": env("DJANGO_LOG_LEVEL", default="INFO"),
     },
-    'loggers': {
-        '*': {
-            'handlers': ['console'],
-            'level': env('DJANGO_LOG_LEVEL', default='INFO'),
-            'propagate': False,
+    "loggers": {
+        "*": {
+            "handlers": ["console"],
+            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
+            "propagate": False,
         },
     },
 }
@@ -227,8 +227,8 @@ if DATABASE_URL:
     # Add connection timeout for Celery workers (prevents hanging on DB issues)
     # connect_timeout: Time in seconds to wait for connection (default: no limit)
     # statement_timeout: Time in ms to wait for query (0 = no limit)
-    DATABASES['default'].setdefault('OPTIONS', {})
-    DATABASES['default']['OPTIONS']['connect_timeout'] = 30  # 30 second connection timeout
+    DATABASES["default"].setdefault("OPTIONS", {})
+    DATABASES["default"]["OPTIONS"]["connect_timeout"] = 30  # 30 second connection timeout
 
     DB_PROXY_ENDPOINT = None  # Not used with DATABASE_URL
 else:
@@ -327,21 +327,21 @@ MINIO_SECRET_ACCESS_KEY = env("MINIO_SECRET_ACCESS_KEY", default=None)
 MINIO_BUCKET_NAME = env("MINIO_BUCKET_NAME", default=None)
 
 # Local/Media storage settings (used when STORAGE_BACKEND=local)
-MEDIA_ROOT = env("MEDIA_ROOT", default=os.path.join(BASE_DIR, 'media'))
-MEDIA_URL = env("MEDIA_URL", default='/media/')
+MEDIA_ROOT = env("MEDIA_ROOT", default=os.path.join(BASE_DIR, "media"))
+MEDIA_URL = env("MEDIA_URL", default="/media/")
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = "/static/"
 
 AUTH_USER_MODEL = "users.User"
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.facebook.FacebookOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
+    "social_core.backends.google.GoogleOAuth2",
+    "social_core.backends.facebook.FacebookOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
 )
 
 LOCALE_PATHS = []
@@ -352,7 +352,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "apps.users.authentication.JSONWebTokenCookieAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-        'rest_framework.authentication.SessionAuthentication',
+        "rest_framework.authentication.SessionAuthentication",
     ),
     # Global throttle classes - applied to all DRF views unless overridden
     # See common/ratelimiting/ for detailed configuration
@@ -390,69 +390,69 @@ REST_FRAMEWORK = {
 
 RATE_LIMITS = {
     # Authentication - protect against credential stuffing and abuse
-    'auth.login': {'rate': env('RATE_LIMIT_AUTH_LOGIN', default='30/min')},
-    'auth.signup': {'rate': env('RATE_LIMIT_AUTH_SIGNUP', default='10/min')},
-    'auth.password_reset': {'rate': env('RATE_LIMIT_AUTH_PASSWORD_RESET', default='5/hour')},
-    'auth.otp': {'rate': env('RATE_LIMIT_AUTH_OTP', default='10/min')},
-    'auth.passkey': {'rate': env('RATE_LIMIT_AUTH_PASSKEY', default='10/min')},
+    "auth.login": {"rate": env("RATE_LIMIT_AUTH_LOGIN", default="30/min")},
+    "auth.signup": {"rate": env("RATE_LIMIT_AUTH_SIGNUP", default="10/min")},
+    "auth.password_reset": {"rate": env("RATE_LIMIT_AUTH_PASSWORD_RESET", default="5/hour")},
+    "auth.otp": {"rate": env("RATE_LIMIT_AUTH_OTP", default="10/min")},
+    "auth.passkey": {"rate": env("RATE_LIMIT_AUTH_PASSKEY", default="10/min")},
     # GraphQL - global limits
-    'graphql.global.anon': {'rate': env('RATE_LIMIT_GQL_ANON', default='60/min')},
-    'graphql.global.user': {
-        'rate': env('RATE_LIMIT_GQL_USER', default='300/min'),
-        'tier_rates': {
-            'free': env('RATE_LIMIT_GQL_USER_FREE', default='150/min'),
-            'standard': env('RATE_LIMIT_GQL_USER', default='300/min'),
-            'power': env('RATE_LIMIT_GQL_USER_POWER', default='1000/min'),
+    "graphql.global.anon": {"rate": env("RATE_LIMIT_GQL_ANON", default="60/min")},
+    "graphql.global.user": {
+        "rate": env("RATE_LIMIT_GQL_USER", default="300/min"),
+        "tier_rates": {
+            "free": env("RATE_LIMIT_GQL_USER_FREE", default="150/min"),
+            "standard": env("RATE_LIMIT_GQL_USER", default="300/min"),
+            "power": env("RATE_LIMIT_GQL_USER_POWER", default="1000/min"),
         },
     },
     # AI/MCP - expensive OpenAI API calls
-    'ai.chat.message': {
-        'rate': env('RATE_LIMIT_AI_CHAT', default='10/min'),
-        'tier_rates': {
-            'free': env('RATE_LIMIT_AI_CHAT_FREE', default='5/min'),
-            'standard': env('RATE_LIMIT_AI_CHAT', default='10/min'),
-            'power': env('RATE_LIMIT_AI_CHAT_POWER', default='20/min'),
+    "ai.chat.message": {
+        "rate": env("RATE_LIMIT_AI_CHAT", default="10/min"),
+        "tier_rates": {
+            "free": env("RATE_LIMIT_AI_CHAT_FREE", default="5/min"),
+            "standard": env("RATE_LIMIT_AI_CHAT", default="10/min"),
+            "power": env("RATE_LIMIT_AI_CHAT_POWER", default="20/min"),
         },
     },
-    'ai.chat.hourly': {
-        'rate': env('RATE_LIMIT_AI_CHAT_HOURLY', default='60/hour'),
-        'tier_rates': {
-            'free': env('RATE_LIMIT_AI_CHAT_HOURLY_FREE', default='30/hour'),
-            'standard': env('RATE_LIMIT_AI_CHAT_HOURLY', default='60/hour'),
-            'power': env('RATE_LIMIT_AI_CHAT_HOURLY_POWER', default='150/hour'),
+    "ai.chat.hourly": {
+        "rate": env("RATE_LIMIT_AI_CHAT_HOURLY", default="60/hour"),
+        "tier_rates": {
+            "free": env("RATE_LIMIT_AI_CHAT_HOURLY_FREE", default="30/hour"),
+            "standard": env("RATE_LIMIT_AI_CHAT_HOURLY", default="60/hour"),
+            "power": env("RATE_LIMIT_AI_CHAT_HOURLY_POWER", default="150/hour"),
         },
     },
-    'ai.mcp.proxy': {'rate': env('RATE_LIMIT_AI_MCP', default='30/min')},
-    'ai.parse': {'rate': env('RATE_LIMIT_AI_PARSE', default='5/min')},
-    'ai.detect': {'rate': env('RATE_LIMIT_AI_DETECT', default='10/min')},
+    "ai.mcp.proxy": {"rate": env("RATE_LIMIT_AI_MCP", default="30/min")},
+    "ai.parse": {"rate": env("RATE_LIMIT_AI_PARSE", default="5/min")},
+    "ai.detect": {"rate": env("RATE_LIMIT_AI_DETECT", default="10/min")},
     # Import operations - heavy DB operations
-    'import.csv': {'rate': env('RATE_LIMIT_IMPORT_CSV', default='3/min')},
-    'import.excel': {'rate': env('RATE_LIMIT_IMPORT_EXCEL', default='3/min')},
-    'import.daily': {'rate': env('RATE_LIMIT_IMPORT_DAILY', default='50/day')},
+    "import.csv": {"rate": env("RATE_LIMIT_IMPORT_CSV", default="3/min")},
+    "import.excel": {"rate": env("RATE_LIMIT_IMPORT_EXCEL", default="3/min")},
+    "import.daily": {"rate": env("RATE_LIMIT_IMPORT_DAILY", default="50/day")},
     # File uploads
-    'file.upload': {'rate': env('RATE_LIMIT_FILE_UPLOAD', default='20/min')},
-    'file.upload.large': {'rate': env('RATE_LIMIT_FILE_UPLOAD_LARGE', default='5/min')},
+    "file.upload": {"rate": env("RATE_LIMIT_FILE_UPLOAD", default="20/min")},
+    "file.upload.large": {"rate": env("RATE_LIMIT_FILE_UPLOAD_LARGE", default="5/min")},
     # SSO
-    'sso.login': {'rate': env('RATE_LIMIT_SSO_LOGIN', default='20/min')},
-    'sso.discovery': {'rate': env('RATE_LIMIT_SSO_DISCOVERY', default='60/min')},
-    'sso.scim': {'rate': env('RATE_LIMIT_SSO_SCIM', default='100/min')},
+    "sso.login": {"rate": env("RATE_LIMIT_SSO_LOGIN", default="20/min")},
+    "sso.discovery": {"rate": env("RATE_LIMIT_SSO_DISCOVERY", default="60/min")},
+    "sso.scim": {"rate": env("RATE_LIMIT_SSO_SCIM", default="100/min")},
 }
 
 # Cache backend for rate limiting (uses default cache, typically Redis)
 # For distributed rate limiting across multiple instances, ensure Redis is configured
-RATELIMIT_USE_CACHE = env('RATELIMIT_USE_CACHE', default='default')
+RATELIMIT_USE_CACHE = env("RATELIMIT_USE_CACHE", default="default")
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=env.int('ACCESS_TOKEN_LIFETIME_MINUTES', default=5)),
-    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=env.int('REFRESH_TOKEN_LIFETIME_DAYS', default=7)),
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=env.int("ACCESS_TOKEN_LIFETIME_MINUTES", default=5)),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=env.int("REFRESH_TOKEN_LIFETIME_DAYS", default=7)),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
 }
-ACCESS_TOKEN_COOKIE = 'token'
-REFRESH_TOKEN_COOKIE = 'refresh_token'
-REFRESH_TOKEN_LOGOUT_COOKIE = 'refresh_token_logout'
-SESSION_ID_COOKIE = 'session_id'  # For tracking active sessions
+ACCESS_TOKEN_COOKIE = "token"
+REFRESH_TOKEN_COOKIE = "refresh_token"
+REFRESH_TOKEN_LOGOUT_COOKIE = "refresh_token_logout"
+SESSION_ID_COOKIE = "session_id"  # For tracking active sessions
 COOKIE_MAX_AGE = 3600 * 24 * 14  # 14 days
 
 # Cookie security settings for cross-origin deployments (Render.com, etc.)
@@ -460,15 +460,15 @@ COOKIE_MAX_AGE = 3600 * 24 * 14  # 14 days
 #   COOKIE_SAMESITE=None and COOKIE_SECURE=True are REQUIRED
 # For same-origin (subdomains like app.example.com and api.example.com):
 #   COOKIE_SAMESITE=Lax (default) and COOKIE_SECURE=True are recommended
-COOKIE_SECURE = env.bool('COOKIE_SECURE', default=not DEBUG)  # True in production
-_cookie_samesite_raw = env('COOKIE_SAMESITE', default='Lax')
+COOKIE_SECURE = env.bool("COOKIE_SECURE", default=not DEBUG)  # True in production
+_cookie_samesite_raw = env("COOKIE_SAMESITE", default="Lax")
 # Handle edge cases: empty string, 'none' lowercase, or falsy values
-if not _cookie_samesite_raw or _cookie_samesite_raw.lower() == 'none':
-    COOKIE_SAMESITE = 'None'  # Proper capitalization required by Django
-elif _cookie_samesite_raw.lower() in ('lax', 'strict'):
+if not _cookie_samesite_raw or _cookie_samesite_raw.lower() == "none":
+    COOKIE_SAMESITE = "None"  # Proper capitalization required by Django
+elif _cookie_samesite_raw.lower() in ("lax", "strict"):
     COOKIE_SAMESITE = _cookie_samesite_raw.capitalize()
 else:
-    COOKIE_SAMESITE = 'Lax'  # Fallback to safe default
+    COOKIE_SAMESITE = "Lax"  # Fallback to safe default
 
 # Django's built-in CSRF cookie settings (must match our custom cookie settings for cross-origin)
 CSRF_COOKIE_SECURE = COOKIE_SECURE  # Required for SameSite=None
@@ -480,36 +480,36 @@ SESSION_COOKIE_SECURE = COOKIE_SECURE  # Required for SameSite=None
 SESSION_COOKIE_SAMESITE = COOKIE_SAMESITE  # Must be 'None' for cross-origin
 
 SOCIAL_AUTH_USER_MODEL = "users.User"
-SOCIAL_AUTH_USER_FIELDS = ['email', 'username']
+SOCIAL_AUTH_USER_FIELDS = ["email", "username"]
 SOCIAL_AUTH_STRATEGY = "apps.users.strategy.DjangoJWTStrategy"
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = env.bool('SOCIAL_AUTH_REDIRECT_IS_HTTPS', default=True)
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = env.bool("SOCIAL_AUTH_REDIRECT_IS_HTTPS", default=True)
 SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-    'social_core.pipeline.social_auth.associate_by_email',
-    'social_core.pipeline.user.create_user',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
-    'apps.multitenancy.pipeline.create_default_tenant',
-    'social_core.pipeline.user.user_details',
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.social_auth.social_user",
+    "social_core.pipeline.user.get_username",
+    "social_core.pipeline.social_auth.associate_by_email",
+    "social_core.pipeline.user.create_user",
+    "social_core.pipeline.social_auth.associate_user",
+    "social_core.pipeline.social_auth.load_extra_data",
+    "apps.multitenancy.pipeline.create_default_tenant",
+    "social_core.pipeline.user.user_details",
 )
-SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS = env.list('SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS', default=[])
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', default='')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', default='')
-SOCIAL_AUTH_FACEBOOK_KEY = env('SOCIAL_AUTH_FACEBOOK_KEY', default='')
-SOCIAL_AUTH_FACEBOOK_SECRET = env('SOCIAL_AUTH_FACEBOOK_SECRET', default='')
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'public_profile']
+SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS = env.list("SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS", default=[])
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", default="")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", default="")
+SOCIAL_AUTH_FACEBOOK_KEY = env("SOCIAL_AUTH_FACEBOOK_KEY", default="")
+SOCIAL_AUTH_FACEBOOK_SECRET = env("SOCIAL_AUTH_FACEBOOK_SECRET", default="")
+SOCIAL_AUTH_FACEBOOK_SCOPE = ["email", "public_profile"]
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-    'fields': 'id, name, email',
+    "fields": "id, name, email",
 }
 SOCIAL_AUTH_LOGIN_ERROR_URL = "/"
 SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ["locale"]
 
 SWAGGER_SETTINGS = {
-    'DEFAULT_INFO': 'config.urls_api.api_info',
+    "DEFAULT_INFO": "config.urls_api.api_info",
     "SECURITY_DEFINITIONS": {"api_key": {"type": "apiKey", "in": "header", "name": "Authorization"}},
 }
 
@@ -549,7 +549,7 @@ if not STRIPE_CHECKS_ENABLED:
         ]
     )
 
-STRIPE_ENABLED = '<CHANGE_ME>' not in STRIPE_LIVE_SECRET_KEY or '<CHANGE_ME>' not in STRIPE_TEST_SECRET_KEY
+STRIPE_ENABLED = "<CHANGE_ME>" not in STRIPE_LIVE_SECRET_KEY or "<CHANGE_ME>" not in STRIPE_TEST_SECRET_KEY
 
 SUBSCRIPTION_TRIAL_PERIOD_DAYS = env("SUBSCRIPTION_TRIAL_PERIOD_DAYS", default=7)
 
@@ -578,19 +578,19 @@ AWS_S3_ENDPOINT_URL = AWS_ENDPOINT_URL
 AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", default=None)
 AWS_S3_URL_PROTOCOL = env("AWS_S3_URL_PROTOCOL", default="https:")
 AWS_QUERYSTRING_EXPIRE = env("AWS_QUERYSTRING_EXPIRE", default=60 * 60 * 24)
-AWS_CLOUDFRONT_KEY = os.environ.get('AWS_CLOUDFRONT_KEY', '').encode('ascii')
-AWS_CLOUDFRONT_KEY_ID = os.environ.get('AWS_CLOUDFRONT_KEY_ID', None)
+AWS_CLOUDFRONT_KEY = os.environ.get("AWS_CLOUDFRONT_KEY", "").encode("ascii")
+AWS_CLOUDFRONT_KEY_ID = os.environ.get("AWS_CLOUDFRONT_KEY_ID", None)
 USER_DATA_EXPORT_EXPIRY_SECONDS = env.int("USER_DATA_EXPORT_EXPIRY_SECONDS", 172800)  # 2 days default
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # X-Ray Recorder configuration (only used when TRACING_BACKEND=xray)
-if TRACING_BACKEND == 'xray':
+if TRACING_BACKEND == "xray":
     XRAY_RECORDER = {
-        'AWS_XRAY_TRACING_NAME': f'{env("PROJECT_NAME", default="")}-{ENVIRONMENT_NAME}-backend',
-        'AUTO_INSTRUMENT': not DEBUG,
-        'AWS_XRAY_CONTEXT_MISSING': 'IGNORE_ERROR',
-        'PLUGINS': ('ECSPlugin',),
+        "AWS_XRAY_TRACING_NAME": f"{env('PROJECT_NAME', default='')}-{ENVIRONMENT_NAME}-backend",
+        "AUTO_INSTRUMENT": not DEBUG,
+        "AWS_XRAY_CONTEXT_MISSING": "IGNORE_ERROR",
+        "PLUGINS": ("ECSPlugin",),
     }
 
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
@@ -614,8 +614,8 @@ CORS_ALLOW_HEADERS = [
 RATELIMIT_IP_META_KEY = "common.utils.get_client_ip"
 
 OTP_AUTH_ISSUER_NAME = env("OTP_AUTH_ISSUER_NAME", default="")
-OTP_AUTH_TOKEN_COOKIE = 'otp_auth_token'
-OTP_AUTH_TOKEN_LIFETIME_MINUTES = datetime.timedelta(minutes=env.int('OTP_AUTH_TOKEN_LIFETIME_MINUTES', default=5))
+OTP_AUTH_TOKEN_COOKIE = "otp_auth_token"
+OTP_AUTH_TOKEN_LIFETIME_MINUTES = datetime.timedelta(minutes=env.int("OTP_AUTH_TOKEN_LIFETIME_MINUTES", default=5))
 OTP_VALIDATE_PATH = "/auth/validate-otp"
 
 OPENAI_API_KEY = env("OPENAI_API_KEY", default="")
@@ -654,10 +654,10 @@ TENANT_INVITATION_TIMEOUT = env("TENANT_INVITATION_TIMEOUT", default=60 * 60 * 2
 TASK_BACKEND = env("TASK_BACKEND", default="lambda")
 
 # Celery Configuration
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_BROKER_URL = f'{env("REDIS_CONNECTION")}/0'
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_BROKER_URL = f"{env('REDIS_CONNECTION')}/0"
 CELERY_BROKER_TRANSPORT_OPTIONS = {
-    'visibility_timeout': 3600,
+    "visibility_timeout": 3600,
 }
 
 # Celery worker settings for memory-constrained environments
@@ -681,10 +681,10 @@ CONTENTFUL_SPACE_ID = env("VITE_CONTENTFUL_SPACE", default=None)
 # 1. Using Celery backend
 # 2. Contentful is actually configured
 # This prevents running a task every 5 minutes that does nothing
-if TASK_BACKEND == 'celery' and CONTENTFUL_SPACE_ID:
-    CELERY_BEAT_SCHEDULE['sync-contentful-every-5-minutes'] = {
-        'task': 'common.task_backends.celery_tasks.synchronize_contentful_content',
-        'schedule': 60 * 5,  # Every 5 minutes
+if TASK_BACKEND == "celery" and CONTENTFUL_SPACE_ID:
+    CELERY_BEAT_SCHEDULE["sync-contentful-every-5-minutes"] = {
+        "task": "common.task_backends.celery_tasks.synchronize_contentful_content",
+        "schedule": 60 * 5,  # Every 5 minutes
     }
 
 # Email configuration - supports multiple providers

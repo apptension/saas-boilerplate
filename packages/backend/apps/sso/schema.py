@@ -37,46 +37,46 @@ class SSOConnectionType(DjangoObjectType):
     class Meta:
         model = models.TenantSSOConnection
         fields = [
-            'id',
-            'name',
-            'connection_type',
-            'status',
-            'allowed_domains',
-            'jit_provisioning_enabled',
-            'group_role_mapping',
+            "id",
+            "name",
+            "connection_type",
+            "status",
+            "allowed_domains",
+            "jit_provisioning_enabled",
+            "group_role_mapping",
             # SAML
-            'saml_entity_id',
-            'saml_sso_url',
-            'saml_slo_url',
-            'saml_name_id_format',
-            'saml_want_assertions_signed',
-            'saml_want_response_signed',
-            'saml_attribute_mapping',
+            "saml_entity_id",
+            "saml_sso_url",
+            "saml_slo_url",
+            "saml_name_id_format",
+            "saml_want_assertions_signed",
+            "saml_want_response_signed",
+            "saml_attribute_mapping",
             # OIDC
-            'oidc_issuer',
-            'oidc_client_id',
-            'oidc_authorization_endpoint',
-            'oidc_token_endpoint',
-            'oidc_userinfo_endpoint',
-            'oidc_jwks_uri',
-            'oidc_scopes',
-            'oidc_claim_mapping',
+            "oidc_issuer",
+            "oidc_client_id",
+            "oidc_authorization_endpoint",
+            "oidc_token_endpoint",
+            "oidc_userinfo_endpoint",
+            "oidc_jwks_uri",
+            "oidc_scopes",
+            "oidc_claim_mapping",
             # Stats
-            'last_login_at',
-            'login_count',
-            'created_at',
-            'updated_at',
+            "last_login_at",
+            "login_count",
+            "created_at",
+            "updated_at",
         ]
         interfaces = (relay.Node,)
 
     def resolve_id(self, info):
-        return to_global_id('SSOConnectionType', self.id)
+        return to_global_id("SSOConnectionType", self.id)
 
     def resolve_sp_metadata_url(self, info):
         from django.conf import settings
 
         if self.is_saml:
-            api_url = getattr(settings, 'API_URL', 'http://localhost:5001')
+            api_url = getattr(settings, "API_URL", "http://localhost:5001")
             return f"{api_url}/api/sso/saml/{self.id}/metadata"
         return None
 
@@ -96,21 +96,21 @@ class SCIMTokenType(DjangoObjectType):
     class Meta:
         model = models.SCIMToken
         fields = [
-            'id',
-            'name',
-            'token_prefix',
-            'is_active',
-            'expires_at',
-            'last_used_at',
-            'last_used_ip',
-            'request_count',
-            'created_at',
-            'updated_at',
+            "id",
+            "name",
+            "token_prefix",
+            "is_active",
+            "expires_at",
+            "last_used_at",
+            "last_used_ip",
+            "request_count",
+            "created_at",
+            "updated_at",
         ]
         interfaces = (relay.Node,)
 
     def resolve_id(self, info):
-        return to_global_id('SCIMTokenType', self.id)
+        return to_global_id("SCIMTokenType", self.id)
 
 
 class SCIMTokenConnection(graphene.Connection):
@@ -129,29 +129,29 @@ class SSOSessionType(DjangoObjectType):
     class Meta:
         model = models.SSOSession
         fields = [
-            'id',
-            'session_id',  # Raw session ID for revoke mutations
-            'device_name',
-            'device_type',
-            'browser',
-            'operating_system',
-            'ip_address',
-            'location',
-            'is_active',
-            'last_activity_at',
-            'expires_at',
-            'created_at',
+            "id",
+            "session_id",  # Raw session ID for revoke mutations
+            "device_name",
+            "device_type",
+            "browser",
+            "operating_system",
+            "ip_address",
+            "location",
+            "is_active",
+            "last_activity_at",
+            "expires_at",
+            "created_at",
         ]
         interfaces = (relay.Node,)
 
     def resolve_id(self, info):
-        return to_global_id('SSOSessionType', self.id)
+        return to_global_id("SSOSessionType", self.id)
 
     def resolve_is_current(self, info):
         """Dynamically determine if this is the current session based on request cookie."""
         from django.conf import settings
 
-        request = info.context._request if hasattr(info.context, '_request') else info.context
+        request = info.context._request if hasattr(info.context, "_request") else info.context
         current_session_id = request.COOKIES.get(settings.SESSION_ID_COOKIE)
 
         return bool(current_session_id and self.session_id == current_session_id)
@@ -170,23 +170,23 @@ class UserDeviceType(DjangoObjectType):
     class Meta:
         model = models.UserDevice
         fields = [
-            'id',
-            'device_name',
-            'device_type',
-            'browser',
-            'operating_system',
-            'is_trusted',
-            'trusted_at',
-            'last_seen_at',
-            'last_ip_address',
-            'last_location',
-            'is_blocked',
-            'created_at',
+            "id",
+            "device_name",
+            "device_type",
+            "browser",
+            "operating_system",
+            "is_trusted",
+            "trusted_at",
+            "last_seen_at",
+            "last_ip_address",
+            "last_location",
+            "is_blocked",
+            "created_at",
         ]
         interfaces = (relay.Node,)
 
     def resolve_id(self, info):
-        return to_global_id('UserDeviceType', self.id)
+        return to_global_id("UserDeviceType", self.id)
 
 
 class UserDeviceConnection(graphene.Connection):
@@ -202,20 +202,20 @@ class PasskeyType(DjangoObjectType):
     class Meta:
         model = models.UserPasskey
         fields = [
-            'id',
-            'name',
-            'authenticator_type',
-            'transports',
-            'is_active',
-            'last_used_at',
-            'use_count',
-            'device_type',
-            'created_at',
+            "id",
+            "name",
+            "authenticator_type",
+            "transports",
+            "is_active",
+            "last_used_at",
+            "use_count",
+            "device_type",
+            "created_at",
         ]
         interfaces = (relay.Node,)
 
     def resolve_id(self, info):
-        return to_global_id('PasskeyType', self.id)
+        return to_global_id("PasskeyType", self.id)
 
 
 class PasskeyConnection(graphene.Connection):
@@ -233,19 +233,19 @@ class SSOAuditLogType(DjangoObjectType):
     class Meta:
         model = models.SSOAuditLog
         fields = [
-            'id',
-            'event_type',
-            'event_description',
-            'ip_address',
-            'success',
-            'error_message',
-            'metadata',
-            'created_at',
+            "id",
+            "event_type",
+            "event_description",
+            "ip_address",
+            "success",
+            "error_message",
+            "metadata",
+            "created_at",
         ]
         interfaces = (relay.Node,)
 
     def resolve_id(self, info):
-        return to_global_id('SSOAuditLogType', self.id)
+        return to_global_id("SSOAuditLogType", self.id)
 
     def resolve_user_email(self, info):
         return self.user.email if self.user else None
@@ -264,7 +264,7 @@ class SSOAuditLogConnection(graphene.Connection):
 # ==================
 
 
-@action_logged(entity_type='sso_connection', action_type=ActionType.CREATE)
+@action_logged(entity_type="sso_connection", action_type=ActionType.CREATE)
 class CreateSSOConnectionMutation(mutations.SerializerMutation):
     """Create a new SSO connection."""
 
@@ -275,11 +275,11 @@ class CreateSSOConnectionMutation(mutations.SerializerMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        input['tenant_id'] = str(info.context.tenant.id)
+        input["tenant_id"] = str(info.context.tenant.id)
         return super().mutate_and_get_payload(root, info, **input)
 
 
-@action_logged(entity_type='sso_connection', action_type=ActionType.UPDATE)
+@action_logged(entity_type="sso_connection", action_type=ActionType.UPDATE)
 class UpdateSSOConnectionMutation(mutations.SerializerMutation):
     """Update an existing SSO connection."""
 
@@ -307,7 +307,7 @@ class DeleteSSOConnectionMutation(mutations.DeleteModelMutation):
         # Log the deletion
         log_delete(
             tenant_id=info.context.tenant.pk,
-            entity_type='sso_connection',
+            entity_type="sso_connection",
             instance=obj,
             actor_user=info.context.user,
         )
@@ -326,9 +326,9 @@ class ActivateSSOConnectionMutation(mutations.SerializerMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        _, pk = from_global_id(input['id'])
-        input['id'] = pk
-        input['tenant_id'] = str(info.context.tenant.id)
+        _, pk = from_global_id(input["id"])
+        input["id"] = pk
+        input["tenant_id"] = str(info.context.tenant.id)
 
         serializer = cls._meta.serializer_class(data=input)
         serializer.is_valid(raise_exception=True)
@@ -338,11 +338,11 @@ class ActivateSSOConnectionMutation(mutations.SerializerMutation):
         log_action(
             tenant_id=info.context.tenant.pk,
             action_type=ActionType.ACTIVATE,
-            entity_type='sso_connection',
+            entity_type="sso_connection",
             entity_id=str(connection.pk),
             entity_name=connection.name,
             actor_user=info.context.user,
-            changes={'status': {'old': 'inactive', 'new': 'active'}},
+            changes={"status": {"old": "inactive", "new": "active"}},
         )
 
         return cls(sso_connection=connection)
@@ -366,17 +366,17 @@ class DeactivateSSOConnectionMutation(graphene.Mutation):
         )
         old_status = connection.status
         connection.status = constants.SSOConnectionStatus.INACTIVE
-        connection.save(update_fields=['status', 'updated_at'])
+        connection.save(update_fields=["status", "updated_at"])
 
         # Log the deactivation
         log_action(
             tenant_id=info.context.tenant.pk,
             action_type=ActionType.DEACTIVATE,
-            entity_type='sso_connection',
+            entity_type="sso_connection",
             entity_id=str(connection.pk),
             entity_name=connection.name,
             actor_user=info.context.user,
-            changes={'status': {'old': old_status, 'new': 'inactive'}},
+            changes={"status": {"old": old_status, "new": "inactive"}},
         )
 
         return cls(sso_connection=connection)
@@ -393,11 +393,11 @@ class CreateSCIMTokenMutation(mutations.SerializerMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        input['tenant_id'] = str(info.context.tenant.id)
+        input["tenant_id"] = str(info.context.tenant.id)
 
-        if 'sso_connection_id' in input and input['sso_connection_id']:
-            _, pk = from_global_id(input['sso_connection_id'])
-            input['sso_connection_id'] = pk
+        if "sso_connection_id" in input and input["sso_connection_id"]:
+            _, pk = from_global_id(input["sso_connection_id"])
+            input["sso_connection_id"] = pk
 
         serializer = cls._meta.serializer_class(data=input)
         serializer.is_valid(raise_exception=True)
@@ -407,7 +407,7 @@ class CreateSCIMTokenMutation(mutations.SerializerMutation):
         log_action(
             tenant_id=info.context.tenant.pk,
             action_type=ActionType.CREATE,
-            entity_type='scim_token',
+            entity_type="scim_token",
             entity_id=str(token_instance.pk),
             entity_name=token_instance.name,
             actor_user=info.context.user,
@@ -433,17 +433,17 @@ class RevokeSCIMTokenMutation(graphene.Mutation):
             tenant=info.context.tenant,
         )
         token.is_active = False
-        token.save(update_fields=['is_active', 'updated_at'])
+        token.save(update_fields=["is_active", "updated_at"])
 
         # Log the token revocation
         log_action(
             tenant_id=info.context.tenant.pk,
             action_type=ActionType.REVOKE,
-            entity_type='scim_token',
+            entity_type="scim_token",
             entity_id=str(token.pk),
             entity_name=token.name,
             actor_user=info.context.user,
-            changes={'is_active': {'old': True, 'new': False}},
+            changes={"is_active": {"old": True, "new": False}},
         )
 
         return cls(ok=True)
@@ -466,7 +466,7 @@ class RevokeSessionMutation(graphene.Mutation):
             session_id=session_id,
             user=user,
         )
-        session.revoke(reason=reason or 'User requested')
+        session.revoke(reason=reason or "User requested")
 
         return cls(ok=True)
 
@@ -487,7 +487,7 @@ class RevokeAllSessionsMutation(graphene.Mutation):
         user = get_user_from_resolver(info)
 
         # Get current session ID from cookie to exclude it
-        request = info.context._request if hasattr(info.context, '_request') else info.context
+        request = info.context._request if hasattr(info.context, "_request") else info.context
         current_session_id = request.COOKIES.get(settings.SESSION_ID_COOKIE)
 
         sessions = models.SSOSession.objects.filter(
@@ -501,7 +501,7 @@ class RevokeAllSessionsMutation(graphene.Mutation):
 
         count = sessions.update(
             is_active=False,
-            revoked_reason='User revoked all sessions',
+            revoked_reason="User revoked all sessions",
         )
 
         return cls(ok=True, revoked_count=count)
@@ -569,7 +569,7 @@ class BlockDeviceMutation(graphene.Mutation):
             pk=pk,
             user=user,
         )
-        device.block(reason=reason or '')
+        device.block(reason=reason or "")
 
         return cls(device=device)
 
@@ -594,7 +594,7 @@ class RenamePasskeyMutation(graphene.Mutation):
             is_active=True,
         )
         passkey.name = name
-        passkey.save(update_fields=['name', 'updated_at'])
+        passkey.save(update_fields=["name", "updated_at"])
 
         return cls(passkey=passkey)
 
@@ -671,12 +671,12 @@ class TenantSSOQuery(graphene.ObjectType):
     sso_audit_logs = graphene.relay.ConnectionField(SSOAuditLogConnection)
 
     @staticmethod
-    @permission_classes(requires('security.view'))
+    @permission_classes(requires("security.view"))
     def resolve_sso_connections(root, info, **kwargs):
         return models.TenantSSOConnection.objects.filter(tenant=info.context.tenant)
 
     @staticmethod
-    @permission_classes(requires('security.view'))
+    @permission_classes(requires("security.view"))
     def resolve_sso_connection(root, info, id):
         _, pk = from_global_id(id)
         return models.TenantSSOConnection.objects.filter(
@@ -685,12 +685,12 @@ class TenantSSOQuery(graphene.ObjectType):
         ).first()
 
     @staticmethod
-    @permission_classes(requires('security.sso.manage'))
+    @permission_classes(requires("security.sso.manage"))
     def resolve_scim_tokens(root, info, **kwargs):
         return models.SCIMToken.objects.filter(tenant=info.context.tenant)
 
     @staticmethod
-    @permission_classes(requires('security.view'))
+    @permission_classes(requires("security.view"))
     def resolve_sso_audit_logs(root, info, **kwargs):
         return models.SSOAuditLog.objects.filter(tenant=info.context.tenant)[:100]
 
@@ -726,14 +726,14 @@ class TenantOwnerMutation(graphene.ObjectType):
     """
 
     # SSO Connection management - requires security.sso.manage
-    create_sso_connection = permission_classes(requires('security.sso.manage'))(CreateSSOConnectionMutation.Field())
-    update_sso_connection = permission_classes(requires('security.sso.manage'))(UpdateSSOConnectionMutation.Field())
-    delete_sso_connection = permission_classes(requires('security.sso.manage'))(DeleteSSOConnectionMutation.Field())
-    activate_sso_connection = permission_classes(requires('security.sso.manage'))(ActivateSSOConnectionMutation.Field())
-    deactivate_sso_connection = permission_classes(requires('security.sso.manage'))(
+    create_sso_connection = permission_classes(requires("security.sso.manage"))(CreateSSOConnectionMutation.Field())
+    update_sso_connection = permission_classes(requires("security.sso.manage"))(UpdateSSOConnectionMutation.Field())
+    delete_sso_connection = permission_classes(requires("security.sso.manage"))(DeleteSSOConnectionMutation.Field())
+    activate_sso_connection = permission_classes(requires("security.sso.manage"))(ActivateSSOConnectionMutation.Field())
+    deactivate_sso_connection = permission_classes(requires("security.sso.manage"))(
         DeactivateSSOConnectionMutation.Field()
     )
 
     # SCIM Token management - requires security.sso.manage
-    create_scim_token = permission_classes(requires('security.sso.manage'))(CreateSCIMTokenMutation.Field())
-    revoke_scim_token = permission_classes(requires('security.sso.manage'))(RevokeSCIMTokenMutation.Field())
+    create_scim_token = permission_classes(requires("security.sso.manage"))(CreateSCIMTokenMutation.Field())
+    revoke_scim_token = permission_classes(requires("security.sso.manage"))(RevokeSCIMTokenMutation.Field())

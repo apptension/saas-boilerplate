@@ -12,11 +12,11 @@ from .. import models, constants
 class CustomerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Customer
-        django_get_or_create = ('id', 'subscriber')
+        django_get_or_create = ("id", "subscriber")
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     livemode = False
-    currency = 'usd'
+    currency = "usd"
     tax_exempt = enums.CustomerTaxExempt.none
     subscriber = factory.SubFactory(multitenancy_factories.TenantFactory)
     email = factory.LazyAttribute(lambda obj: obj.subscriber.email)
@@ -25,36 +25,36 @@ class CustomerFactory(factory.django.DjangoModelFactory):
 class PaymentIntentFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.PaymentIntent
-        django_get_or_create = ('id',)
+        django_get_or_create = ("id",)
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     livemode = False
-    amount = factory.Faker('pyint', min_value=1000, max_value=9999)
+    amount = factory.Faker("pyint", min_value=1000, max_value=9999)
     amount_capturable = 0
     amount_received = factory.LazyAttribute(lambda obj: obj.amount)
     capture_method = enums.CaptureMethod.automatic
-    client_secret = factory.Faker('pystr')
+    client_secret = factory.Faker("pystr")
     confirmation_method = enums.ConfirmationMethod.automatic
-    currency = 'usd'
+    currency = "usd"
     customer = factory.SubFactory(CustomerFactory)
-    payment_method_types = ['card']
+    payment_method_types = ["card"]
     status = enums.PaymentIntentStatus.succeeded
 
 
 class BalanceTransactionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.BalanceTransaction
-        django_get_or_create = ('id',)
+        django_get_or_create = ("id",)
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     livemode = False
-    amount = factory.Faker('pyint', min_value=1000, max_value=9999)
-    available_on = factory.Faker('future_datetime', tzinfo=timezone.get_current_timezone())
-    currency = 'usd'
+    amount = factory.Faker("pyint", min_value=1000, max_value=9999)
+    available_on = factory.Faker("future_datetime", tzinfo=timezone.get_current_timezone())
+    currency = "usd"
     fee = 0
     fee_details = {}
     net = factory.LazyAttribute(lambda obj: obj.amount)
-    source = factory.Faker('pystr')
+    source = factory.Faker("pystr")
     reporting_category = enums.BalanceTransactionReportingCategory.charge
     status = enums.BalanceTransactionStatus.available
     type = enums.BalanceTransactionType.charge
@@ -63,9 +63,9 @@ class BalanceTransactionFactory(factory.django.DjangoModelFactory):
 class PaymentMethodFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.PaymentMethod
-        django_get_or_create = ('id',)
+        django_get_or_create = ("id",)
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     livemode = False
     billing_details = {
         "address": {"city": None, "country": None, "line1": None, "line2": None, "postal_code": "61675", "state": None},
@@ -94,11 +94,11 @@ class PaymentMethodFactory(factory.django.DjangoModelFactory):
 class ChargeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Charge
-        django_get_or_create = ('id',)
+        django_get_or_create = ("id",)
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     livemode = False
-    amount = factory.Faker('pyint', min_value=1000, max_value=9999)
+    amount = factory.Faker("pyint", min_value=1000, max_value=9999)
     amount_captured = factory.LazyAttribute(lambda obj: obj.amount)
     amount_refunded = 0
 
@@ -114,9 +114,9 @@ class ChargeFactory(factory.django.DjangoModelFactory):
         "name": "Jenny Rosen",
         "phone": None,
     }
-    calculated_statement_descriptor = factory.Faker('text', max_nb_chars=22)
+    calculated_statement_descriptor = factory.Faker("text", max_nb_chars=22)
     captured = True
-    currency = 'usd'
+    currency = "usd"
     customer = factory.SubFactory(CustomerFactory)
     payment_intent = factory.SubFactory(
         PaymentIntentFactory, customer=factory.LazyAttribute(lambda obj: obj.factory_parent.customer)
@@ -132,7 +132,7 @@ class ChargeFactory(factory.django.DjangoModelFactory):
             balance_transaction=None,
             captured=False,
             status=enums.ChargeStatus.failed,
-            failure_message='Your card has expired.',
+            failure_message="Your card has expired.",
             failure_code=enums.ApiErrorCode.expired_card,
             outcome={
                 "network_status": "declined_by_network",
@@ -151,23 +151,23 @@ class ChargeFactory(factory.django.DjangoModelFactory):
 class ProductFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Product
-        django_get_or_create = ('id',)
+        django_get_or_create = ("id",)
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     livemode = False
-    name = factory.Faker('pystr')
+    name = factory.Faker("pystr")
     type = enums.ProductType.service
 
 
 class PriceFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Price
-        django_get_or_create = ('id',)
+        django_get_or_create = ("id",)
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     livemode = False
     active = True
-    currency = 'usd'
+    currency = "usd"
     product = factory.SubFactory(ProductFactory)
     type = enums.PriceType.one_time
 
@@ -175,12 +175,12 @@ class PriceFactory(factory.django.DjangoModelFactory):
 class PlanFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Plan
-        django_get_or_create = ('id',)
+        django_get_or_create = ("id",)
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     livemode = False
     active = True
-    currency = 'usd'
+    currency = "usd"
     product = factory.SubFactory(ProductFactory)
 
 
@@ -188,7 +188,7 @@ class SubscriptionItemFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.SubscriptionItem
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     livemode = False
     price = factory.SubFactory(PriceFactory)
     quantity = 1
@@ -197,9 +197,9 @@ class SubscriptionItemFactory(factory.django.DjangoModelFactory):
 class SubscriptionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Subscription
-        django_get_or_create = ('id',)
+        django_get_or_create = ("id",)
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     livemode = False
     collection_method = enums.InvoiceCollectionMethod.charge_automatically
     start_date = datetime.datetime.now(tz=datetime.timezone.utc)
@@ -219,11 +219,11 @@ class SubscriptionFactory(factory.django.DjangoModelFactory):
         if extracted:
             for item in extracted:
                 djstripe_models.SubscriptionItem.objects.create(
-                    id=item.get('id', uuid.uuid4()),
-                    price=djstripe_models.Price.objects.get(id=item['price']),
-                    plan=djstripe_models.Plan.objects.get(id=item['price']),
+                    id=item.get("id", uuid.uuid4()),
+                    price=djstripe_models.Price.objects.get(id=item["price"]),
+                    plan=djstripe_models.Plan.objects.get(id=item["price"]),
                     subscription=self,
-                    quantity=item.get('quantity', 1),
+                    quantity=item.get("quantity", 1),
                 )
 
     class Params:
@@ -244,9 +244,9 @@ class SubscriptionFactory(factory.django.DjangoModelFactory):
 class SubscriptionScheduleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.SubscriptionSchedule
-        django_get_or_create = ('id',)
+        django_get_or_create = ("id",)
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     livemode = False
     customer = factory.SubFactory(CustomerFactory)
     end_behavior = enums.SubscriptionScheduleEndBehavior.release
@@ -264,19 +264,19 @@ class SubscriptionScheduleFactory(factory.django.DjangoModelFactory):
         phases = extracted
         if phases is None:
             free_plan_price = models.Price.objects.get_by_plan(constants.FREE_PLAN)
-            phases = [{'items': [{'price': free_plan_price.id}]}]
+            phases = [{"items": [{"price": free_plan_price.id}]}]
 
         phase, *rest_phases = phases
-        for item in phase['items']:
-            item['quantity'] = item.get('quantity', 1)
+        for item in phase["items"]:
+            item["quantity"] = item.get("quantity", 1)
 
         subscription = SubscriptionFactory(customer=self.customer, **phase)
-        phase['start_date'] = unix_time(subscription.start_date)
-        phase['end_date'] = unix_time(subscription.current_period_end)
+        phase["start_date"] = unix_time(subscription.start_date)
+        phase["end_date"] = unix_time(subscription.current_period_end)
 
-        phase['trial_end'] = None
+        phase["trial_end"] = None
         if subscription.trial_end:
-            phase['trial_end'] = unix_time(subscription.trial_end)
+            phase["trial_end"] = unix_time(subscription.trial_end)
 
         self.phases = [phase, *rest_phases]
 
@@ -285,17 +285,17 @@ class WebhookEventFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Event
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
 
 
 class RefundFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = djstripe_models.Refund
-        django_get_or_create = ('id',)
+        django_get_or_create = ("id",)
 
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     livemode = False
-    amount = factory.Faker('pyint', min_value=1000, max_value=9999)
+    amount = factory.Faker("pyint", min_value=1000, max_value=9999)
     balance_transaction = factory.SubFactory(
         BalanceTransactionFactory,
         source=factory.LazyAttribute(lambda obj: obj.id),
@@ -303,6 +303,6 @@ class RefundFactory(factory.django.DjangoModelFactory):
         type=enums.BalanceTransactionType.charge,
     )
     charge = factory.SubFactory(ChargeFactory, amount_refunded=factory.LazyAttribute(lambda obj: obj.amount))
-    currency = 'usd'
+    currency = "usd"
     reason = enums.RefundReason.duplicate
     status = enums.RefundStatus.succeeded

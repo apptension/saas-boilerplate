@@ -31,20 +31,20 @@ logger = logging.getLogger(__name__)
 
 # SAML namespaces
 SAML_NS = {
-    'md': 'urn:oasis:names:tc:SAML:2.0:metadata',
-    'saml': 'urn:oasis:names:tc:SAML:2.0:assertion',
-    'samlp': 'urn:oasis:names:tc:SAML:2.0:protocol',
-    'ds': 'http://www.w3.org/2000/09/xmldsig#',
+    "md": "urn:oasis:names:tc:SAML:2.0:metadata",
+    "saml": "urn:oasis:names:tc:SAML:2.0:assertion",
+    "samlp": "urn:oasis:names:tc:SAML:2.0:protocol",
+    "ds": "http://www.w3.org/2000/09/xmldsig#",
 }
 
 # Signature algorithm mappings
 SIGNATURE_ALGORITHMS = {
-    'http://www.w3.org/2000/09/xmldsig#rsa-sha1': (hashes.SHA1, 'rsa'),
-    'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256': (hashes.SHA256, 'rsa'),
-    'http://www.w3.org/2001/04/xmldsig-more#rsa-sha384': (hashes.SHA384, 'rsa'),
-    'http://www.w3.org/2001/04/xmldsig-more#rsa-sha512': (hashes.SHA512, 'rsa'),
-    'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256': (hashes.SHA256, 'ecdsa'),
-    'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384': (hashes.SHA384, 'ecdsa'),
+    "http://www.w3.org/2000/09/xmldsig#rsa-sha1": (hashes.SHA1, "rsa"),
+    "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256": (hashes.SHA256, "rsa"),
+    "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384": (hashes.SHA384, "rsa"),
+    "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512": (hashes.SHA512, "rsa"),
+    "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256": (hashes.SHA256, "ecdsa"),
+    "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384": (hashes.SHA384, "ecdsa"),
 }
 
 
@@ -71,17 +71,17 @@ class SAMLService:
         The Entity ID should match the metadata URL for consistency.
         This is a common SAML convention and ensures the IdP can validate the SP.
         """
-        base_url = getattr(settings, 'API_URL', 'http://localhost:3000')
+        base_url = getattr(settings, "API_URL", "http://localhost:3000")
         return f"{base_url}/api/sso/saml/{self.connection.id}/metadata"
 
     def get_acs_url(self) -> str:
         """Get the Assertion Consumer Service URL."""
-        base_url = getattr(settings, 'API_URL', 'http://localhost:3000')
+        base_url = getattr(settings, "API_URL", "http://localhost:3000")
         return f"{base_url}/api/sso/saml/{self.connection.id}/acs"
 
     def get_slo_url(self) -> str:
         """Get the Single Logout URL."""
-        base_url = getattr(settings, 'API_URL', 'http://localhost:3000')
+        base_url = getattr(settings, "API_URL", "http://localhost:3000")
         return f"{base_url}/api/sso/saml/{self.connection.id}/slo"
 
     def get_idp_certificate(self) -> Optional[str]:
@@ -113,7 +113,7 @@ class SAMLService:
 
         try:
             # Ensure PEM format
-            if '-----BEGIN CERTIFICATE-----' not in cert_pem:
+            if "-----BEGIN CERTIFICATE-----" not in cert_pem:
                 cert_pem = f"-----BEGIN CERTIFICATE-----\n{cert_pem}\n-----END CERTIFICATE-----"
 
             return x509.load_pem_x509_certificate(cert_pem.encode(), default_backend())
@@ -138,7 +138,7 @@ class SAMLService:
             ValueError: If signature verification fails
         """
         # Find Signature element
-        signature = root.find('.//ds:Signature', SAML_NS)
+        signature = root.find(".//ds:Signature", SAML_NS)
         if signature is None:
             # Check if signature is required
             if self.connection.saml_want_response_signed or self.connection.saml_want_assertions_signed:
@@ -147,23 +147,23 @@ class SAMLService:
             return True
 
         # Get SignedInfo
-        signed_info = signature.find('ds:SignedInfo', SAML_NS)
+        signed_info = signature.find("ds:SignedInfo", SAML_NS)
         if signed_info is None:
             raise ValueError("SignedInfo not found in signature")
 
         # Get SignatureValue
-        signature_value_elem = signature.find('ds:SignatureValue', SAML_NS)
+        signature_value_elem = signature.find("ds:SignatureValue", SAML_NS)
         if signature_value_elem is None or not signature_value_elem.text:
             raise ValueError("SignatureValue not found in signature")
 
-        signature_value = base64.b64decode(signature_value_elem.text.replace('\n', '').replace(' ', ''))
+        signature_value = base64.b64decode(signature_value_elem.text.replace("\n", "").replace(" ", ""))
 
         # Get signature algorithm
-        sig_method = signed_info.find('ds:SignatureMethod', SAML_NS)
+        sig_method = signed_info.find("ds:SignatureMethod", SAML_NS)
         if sig_method is None:
             raise ValueError("SignatureMethod not found")
 
-        algorithm_uri = sig_method.get('Algorithm', '')
+        algorithm_uri = sig_method.get("Algorithm", "")
         if algorithm_uri not in SIGNATURE_ALGORITHMS:
             raise ValueError(f"Unsupported signature algorithm: {algorithm_uri}")
 
@@ -173,16 +173,16 @@ class SAMLService:
         # Canonicalize SignedInfo for verification
         # Note: This is a simplified canonicalization. Production should use
         # proper C14N canonicalization.
-        signed_info_bytes = ET.tostring(signed_info, encoding='unicode').encode('utf-8')
+        signed_info_bytes = ET.tostring(signed_info, encoding="unicode").encode("utf-8")
 
         # Get public key from certificate
         public_key = idp_cert.public_key()
 
         # Verify signature based on key type
         try:
-            if key_type == 'rsa' and isinstance(public_key, rsa.RSAPublicKey):
+            if key_type == "rsa" and isinstance(public_key, rsa.RSAPublicKey):
                 public_key.verify(signature_value, signed_info_bytes, padding.PKCS1v15(), hash_algo)
-            elif key_type == 'ecdsa' and isinstance(public_key, ec.EllipticCurvePublicKey):
+            elif key_type == "ecdsa" and isinstance(public_key, ec.EllipticCurvePublicKey):
                 public_key.verify(signature_value, signed_info_bytes, ec.ECDSA(hash_algo))
             else:
                 raise ValueError(f"Key type mismatch: expected {key_type}")
@@ -205,19 +205,19 @@ class SAMLService:
         Raises:
             ValueError: If conditions are not met
         """
-        conditions = assertion.find('.//saml:Conditions', SAML_NS)
+        conditions = assertion.find(".//saml:Conditions", SAML_NS)
         if conditions is None:
             return  # No conditions to validate
 
         now = datetime.now(dt_timezone.utc)
 
         # Check NotBefore
-        not_before = conditions.get('NotBefore')
+        not_before = conditions.get("NotBefore")
         if not_before:
             try:
-                not_before_dt = datetime.fromisoformat(not_before.replace('Z', '+00:00'))
+                not_before_dt = datetime.fromisoformat(not_before.replace("Z", "+00:00"))
                 # Allow 5 minute clock skew
-                if now < not_before_dt.replace(tzinfo=dt_timezone.utc) - __import__('datetime').timedelta(minutes=5):
+                if now < not_before_dt.replace(tzinfo=dt_timezone.utc) - __import__("datetime").timedelta(minutes=5):
                     raise ValueError("SAML assertion is not yet valid (NotBefore)")
             except ValueError as e:
                 if "not yet valid" in str(e):
@@ -225,12 +225,12 @@ class SAMLService:
                 logger.warning(f"Could not parse NotBefore: {not_before}")
 
         # Check NotOnOrAfter
-        not_on_or_after = conditions.get('NotOnOrAfter')
+        not_on_or_after = conditions.get("NotOnOrAfter")
         if not_on_or_after:
             try:
-                not_on_or_after_dt = datetime.fromisoformat(not_on_or_after.replace('Z', '+00:00'))
+                not_on_or_after_dt = datetime.fromisoformat(not_on_or_after.replace("Z", "+00:00"))
                 # Allow 5 minute clock skew
-                if now > not_on_or_after_dt.replace(tzinfo=dt_timezone.utc) + __import__('datetime').timedelta(
+                if now > not_on_or_after_dt.replace(tzinfo=dt_timezone.utc) + __import__("datetime").timedelta(
                     minutes=5
                 ):
                     raise ValueError("SAML assertion has expired (NotOnOrAfter)")
@@ -240,7 +240,7 @@ class SAMLService:
                 logger.warning(f"Could not parse NotOnOrAfter: {not_on_or_after}")
 
         # Check Audience
-        audience_restriction = conditions.find('.//saml:AudienceRestriction/saml:Audience', SAML_NS)
+        audience_restriction = conditions.find(".//saml:AudienceRestriction/saml:Audience", SAML_NS)
         if audience_restriction is not None and audience_restriction.text:
             expected_audience = self.get_sp_entity_id()
             if audience_restriction.text != expected_audience:
@@ -265,22 +265,22 @@ class SAMLService:
 
         # Get signing certificate if available
         signing_keys = self.get_sp_signing_keys()
-        certificate_xml = ''
-        if signing_keys and signing_keys.get('certificate'):
-            cert = signing_keys['certificate']
+        certificate_xml = ""
+        if signing_keys and signing_keys.get("certificate"):
+            cert = signing_keys["certificate"]
             # Remove PEM headers/footers and whitespace
-            cert_clean = cert.replace('-----BEGIN CERTIFICATE-----', '')
-            cert_clean = cert_clean.replace('-----END CERTIFICATE-----', '')
-            cert_clean = cert_clean.replace('\n', '').strip()
+            cert_clean = cert.replace("-----BEGIN CERTIFICATE-----", "")
+            cert_clean = cert_clean.replace("-----END CERTIFICATE-----", "")
+            cert_clean = cert_clean.replace("\n", "").strip()
 
-            certificate_xml = f'''
+            certificate_xml = f"""
     <md:KeyDescriptor use="signing">
       <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
         <ds:X509Data>
           <ds:X509Certificate>{cert_clean}</ds:X509Certificate>
         </ds:X509Data>
       </ds:KeyInfo>
-    </md:KeyDescriptor>'''
+    </md:KeyDescriptor>"""
 
         metadata = f'''<?xml version="1.0" encoding="UTF-8"?>
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
@@ -303,7 +303,7 @@ class SAMLService:
 
     def create_authn_request(
         self,
-        relay_state: str = '',
+        relay_state: str = "",
         force_authn: bool = False,
     ) -> Tuple[str, str]:
         """
@@ -320,17 +320,17 @@ class SAMLService:
         import zlib
 
         request_id = f"_{uuid.uuid4().hex}"
-        issue_instant = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+        issue_instant = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
         sp_entity_id = self.get_sp_entity_id()
         acs_url = self.get_acs_url()
 
         # Build AuthnRequest with minimal whitespace (Google is strict about XML formatting)
-        force_authn_attr = ' ForceAuthn="true"' if force_authn else ''
+        force_authn_attr = ' ForceAuthn="true"' if force_authn else ""
 
         # Compact XML format - Google's SAML parser is strict about whitespace
         authn_request = (
-            f'<samlp:AuthnRequest'
+            f"<samlp:AuthnRequest"
             f' xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"'
             f' xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"'
             f' ID="{request_id}"'
@@ -339,27 +339,27 @@ class SAMLService:
             f' Destination="{self.connection.saml_sso_url}"'
             f' AssertionConsumerServiceURL="{acs_url}"'
             f' ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"'
-            f'{force_authn_attr}>'
-            f'<saml:Issuer>{sp_entity_id}</saml:Issuer>'
+            f"{force_authn_attr}>"
+            f"<saml:Issuer>{sp_entity_id}</saml:Issuer>"
             f'<samlp:NameIDPolicy Format="{self.connection.saml_name_id_format}" AllowCreate="true"/>'
-            f'</samlp:AuthnRequest>'
+            f"</samlp:AuthnRequest>"
         )
 
         logger.debug(f"Generated SAML AuthnRequest for connection {self.connection.id}: {authn_request[:200]}...")
 
         # Deflate and base64 encode for HTTP-Redirect binding
         # Use raw deflate (no zlib header/trailer) as per SAML spec
-        compressed = zlib.compress(authn_request.encode('utf-8'), 9)[2:-4]
-        encoded = base64.b64encode(compressed).decode('utf-8')
+        compressed = zlib.compress(authn_request.encode("utf-8"), 9)[2:-4]
+        encoded = base64.b64encode(compressed).decode("utf-8")
 
         # Build redirect URL
-        params = {'SAMLRequest': encoded}
+        params = {"SAMLRequest": encoded}
         if relay_state:
-            params['RelayState'] = relay_state
+            params["RelayState"] = relay_state
 
         # Check if SSO URL already has query parameters
         # If so, use & instead of ? to append our parameters
-        separator = '&' if '?' in self.connection.saml_sso_url else '?'
+        separator = "&" if "?" in self.connection.saml_sso_url else "?"
         redirect_url = f"{self.connection.saml_sso_url}{separator}{urlencode(params)}"
 
         return redirect_url, request_id
@@ -404,18 +404,18 @@ class SAMLService:
             raise ValueError("Invalid SAML Response format: failed to decode/parse")
 
         # Check status FIRST (before signature validation)
-        status = root.find('.//samlp:StatusCode', SAML_NS)
+        status = root.find(".//samlp:StatusCode", SAML_NS)
         if status is None:
             raise ValueError("Missing StatusCode in SAML Response")
 
-        status_value = status.get('Value', '')
-        if not status_value.endswith('Success'):
+        status_value = status.get("Value", "")
+        if not status_value.endswith("Success"):
             # Don't include detailed status in error (could leak info)
             logger.warning(f"SAML authentication failed with status: {status_value}")
             raise ValueError("SAML authentication failed")
 
         # Get assertion
-        assertion = root.find('.//saml:Assertion', SAML_NS)
+        assertion = root.find(".//saml:Assertion", SAML_NS)
         if assertion is None:
             raise ValueError("No Assertion found in SAML Response")
 
@@ -431,7 +431,7 @@ class SAMLService:
                 raise ValueError("SAML signature verification failed")
 
             # Also validate assertion-level signature if present
-            assertion_signature = assertion.find('.//ds:Signature', SAML_NS)
+            assertion_signature = assertion.find(".//ds:Signature", SAML_NS)
             if assertion_signature is not None:
                 self._verify_signature(assertion, idp_cert)
         else:
@@ -450,7 +450,7 @@ class SAMLService:
         self._validate_assertion_conditions(assertion)
 
         # SECURITY: Validate InResponseTo for replay protection
-        in_response_to = root.get('InResponseTo')
+        in_response_to = root.get("InResponseTo")
         if request_id:
             # Strict validation when request_id is provided
             if not in_response_to:
@@ -470,7 +470,7 @@ class SAMLService:
             # SECURITY: Mark request_id as consumed to prevent replay
             from django.core.cache import cache
 
-            consumed_key = f'saml_request_consumed_{request_id}'
+            consumed_key = f"saml_request_consumed_{request_id}"
             if cache.get(consumed_key):
                 logger.error(f"SAML request ID {request_id} has already been used - replay attack detected")
                 raise ValueError("SAML response already processed - replay attack detected")
@@ -484,17 +484,17 @@ class SAMLService:
             )
 
         # Extract NameID
-        name_id = assertion.find('.//saml:NameID', SAML_NS)
+        name_id = assertion.find(".//saml:NameID", SAML_NS)
         name_id_value = name_id.text if name_id is not None else None
 
         # Extract attributes
         attributes = {}
-        attr_statement = assertion.find('.//saml:AttributeStatement', SAML_NS)
+        attr_statement = assertion.find(".//saml:AttributeStatement", SAML_NS)
         if attr_statement is not None:
-            for attr in attr_statement.findall('.//saml:Attribute', SAML_NS):
-                attr_name = attr.get('Name', '')
+            for attr in attr_statement.findall(".//saml:Attribute", SAML_NS):
+                attr_name = attr.get("Name", "")
                 values = []
-                for value in attr.findall('.//saml:AttributeValue', SAML_NS):
+                for value in attr.findall(".//saml:AttributeValue", SAML_NS):
                     if value.text:
                         values.append(value.text)
 
@@ -505,13 +505,13 @@ class SAMLService:
 
         # Map attributes using configuration
         mapped = self._map_attributes(attributes)
-        mapped['name_id'] = name_id_value
-        mapped['raw_attributes'] = attributes
+        mapped["name_id"] = name_id_value
+        mapped["raw_attributes"] = attributes
 
         # If no email was found in attributes, try using NameID
         # Google Workspace often sends email as the NameID
-        if not mapped.get('email') and name_id_value and '@' in name_id_value:
-            mapped['email'] = name_id_value
+        if not mapped.get("email") and name_id_value and "@" in name_id_value:
+            mapped["email"] = name_id_value
             logger.debug(f"Using NameID as email: {name_id_value}")
 
         # Log safely without exposing PII
@@ -527,36 +527,36 @@ class SAMLService:
         """Map SAML attributes to user fields using connection configuration."""
         mapping = self.connection.saml_attribute_mapping or {
             # Default mappings for common attribute names across providers
-            'email': [
-                'email',
-                'Email',
-                'User.Email',  # Google Workspace
-                'user.email',
-                'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
-                'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+            "email": [
+                "email",
+                "Email",
+                "User.Email",  # Google Workspace
+                "user.email",
+                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
             ],
-            'first_name': [
-                'firstName',
-                'FirstName',
-                'User.FirstName',  # Google Workspace
-                'givenName',
-                'GivenName',
-                'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
+            "first_name": [
+                "firstName",
+                "FirstName",
+                "User.FirstName",  # Google Workspace
+                "givenName",
+                "GivenName",
+                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname",
             ],
-            'last_name': [
-                'lastName',
-                'LastName',
-                'User.LastName',  # Google Workspace
-                'surname',
-                'Surname',
-                'sn',
-                'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
+            "last_name": [
+                "lastName",
+                "LastName",
+                "User.LastName",  # Google Workspace
+                "surname",
+                "Surname",
+                "sn",
+                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname",
             ],
-            'groups': [
-                'groups',
-                'Groups',
-                'memberOf',
-                'http://schemas.microsoft.com/ws/2008/06/identity/claims/groups',
+            "groups": [
+                "groups",
+                "Groups",
+                "memberOf",
+                "http://schemas.microsoft.com/ws/2008/06/identity/claims/groups",
             ],
         }
 
@@ -574,8 +574,8 @@ class SAMLService:
                     break
 
         # Ensure groups is always a list
-        if 'groups' in result and not isinstance(result['groups'], list):
-            result['groups'] = [result['groups']]
+        if "groups" in result and not isinstance(result["groups"], list):
+            result["groups"] = [result["groups"]]
 
         logger.debug(f"Mapped attributes result: {result}")
         return result
@@ -598,10 +598,10 @@ class SAMLService:
         config = {}
 
         # Get EntityID
-        config['entity_id'] = root.get('entityID')
+        config["entity_id"] = root.get("entityID")
 
         # Find IDPSSODescriptor
-        idp_desc = root.find('.//md:IDPSSODescriptor', SAML_NS)
+        idp_desc = root.find(".//md:IDPSSODescriptor", SAML_NS)
         if idp_desc is None:
             raise ValueError("No IDPSSODescriptor found in metadata")
 
@@ -610,14 +610,14 @@ class SAMLService:
             ".//md:SingleSignOnService[@Binding='urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect']", SAML_NS
         )
         if sso_service is not None:
-            config['sso_url'] = sso_service.get('Location')
+            config["sso_url"] = sso_service.get("Location")
 
         # Get SLO endpoint
         slo_service = idp_desc.find(
             ".//md:SingleLogoutService[@Binding='urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect']", SAML_NS
         )
         if slo_service is not None:
-            config['slo_url'] = slo_service.get('Location')
+            config["slo_url"] = slo_service.get("Location")
 
         # Get signing certificate
         key_desc = idp_desc.find(".//md:KeyDescriptor[@use='signing']", SAML_NS)
@@ -626,8 +626,8 @@ class SAMLService:
             key_desc = idp_desc.find(".//md:KeyDescriptor", SAML_NS)
 
         if key_desc is not None:
-            cert = key_desc.find('.//ds:X509Certificate', SAML_NS)
+            cert = key_desc.find(".//ds:X509Certificate", SAML_NS)
             if cert is not None and cert.text:
-                config['certificate'] = f"-----BEGIN CERTIFICATE-----\n{cert.text.strip()}\n-----END CERTIFICATE-----"
+                config["certificate"] = f"-----BEGIN CERTIFICATE-----\n{cert.text.strip()}\n-----END CERTIFICATE-----"
 
         return config

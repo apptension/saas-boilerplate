@@ -1,4 +1,5 @@
 """gunicorn WSGI server configuration."""
+
 import logging
 import os
 from multiprocessing import cpu_count
@@ -49,7 +50,7 @@ timeout = 120  # Increase timeout for slow requests
 
 class HealthCheckFilter(logging.Filter):
     def filter(self, record):
-        return not record.args['a'].startswith("ELB-HealthChecker")
+        return not record.args["a"].startswith("ELB-HealthChecker")
 
 
 def on_starting(server):

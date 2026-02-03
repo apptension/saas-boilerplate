@@ -42,11 +42,11 @@ class TranslationKey(models.Model):
     last_seen_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['key']
-        verbose_name = 'Translation Key'
-        verbose_name_plural = 'Translation Keys'
+        ordering = ["key"]
+        verbose_name = "Translation Key"
+        verbose_name_plural = "Translation Keys"
         indexes = [
-            models.Index(fields=['is_deprecated', 'key']),
+            models.Index(fields=["is_deprecated", "key"]),
         ]
 
     def __str__(self):
@@ -64,7 +64,7 @@ class Locale(models.Model):
     """
 
     code_validator = RegexValidator(
-        regex=r'^[a-z]{2}(-[A-Z]{2})?$',
+        regex=r"^[a-z]{2}(-[A-Z]{2})?$",
         message="Locale code must be in format 'xx' or 'xx-XX' (e.g., 'en', 'en-US', 'pl')",
     )
 
@@ -86,9 +86,9 @@ class Locale(models.Model):
     sort_order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ['-is_default', 'sort_order', 'name']
-        verbose_name = 'Locale'
-        verbose_name_plural = 'Locales'
+        ordering = ["-is_default", "sort_order", "name"]
+        verbose_name = "Locale"
+        verbose_name_plural = "Locales"
 
     def __str__(self):
         return f"{self.name} ({self.code})"
@@ -117,22 +117,22 @@ class Translation(models.Model):
     """
 
     class Status(models.TextChoices):
-        DRAFT = 'draft', 'Draft'
-        REVIEW = 'review', 'Needs Review'
-        APPROVED = 'approved', 'Approved'
-        PUBLISHED = 'published', 'Published'
+        DRAFT = "draft", "Draft"
+        REVIEW = "review", "Needs Review"
+        APPROVED = "approved", "Approved"
+        PUBLISHED = "published", "Published"
 
-    key = models.ForeignKey(TranslationKey, on_delete=models.CASCADE, related_name='translations')
-    locale = models.ForeignKey(Locale, on_delete=models.CASCADE, related_name='translations')
+    key = models.ForeignKey(TranslationKey, on_delete=models.CASCADE, related_name="translations")
+    locale = models.ForeignKey(Locale, on_delete=models.CASCADE, related_name="translations")
     value = models.TextField(help_text="The translated text")
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT, db_index=True)
 
     # Audit fields
     translated_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name='translations_created'
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="translations_created"
     )
     reviewed_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name='translations_reviewed'
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="translations_reviewed"
     )
 
     # Timestamps
@@ -140,12 +140,12 @@ class Translation(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ['key', 'locale']
-        ordering = ['key__key', 'locale__code']
-        verbose_name = 'Translation'
-        verbose_name_plural = 'Translations'
+        unique_together = ["key", "locale"]
+        ordering = ["key__key", "locale__code"]
+        verbose_name = "Translation"
+        verbose_name_plural = "Translations"
         indexes = [
-            models.Index(fields=['locale', 'status']),
+            models.Index(fields=["locale", "status"]),
         ]
 
     def __str__(self):
@@ -158,7 +158,7 @@ class TranslationVersion(models.Model):
     Enables version history and rollback functionality.
     """
 
-    locale = models.ForeignKey(Locale, on_delete=models.CASCADE, related_name='versions')
+    locale = models.ForeignKey(Locale, on_delete=models.CASCADE, related_name="versions")
     version = models.CharField(max_length=50, help_text="Version identifier (e.g., 'v20231215120000-abc123')")
     s3_key = models.CharField(max_length=512, help_text="S3 object key for the versioned JSON file")
 
@@ -176,10 +176,10 @@ class TranslationVersion(models.Model):
     content_hash = models.CharField(max_length=64, blank=True)
 
     class Meta:
-        ordering = ['-published_at']
-        unique_together = ['locale', 'version']
-        verbose_name = 'Translation Version'
-        verbose_name_plural = 'Translation Versions'
+        ordering = ["-published_at"]
+        unique_together = ["locale", "version"]
+        verbose_name = "Translation Version"
+        verbose_name_plural = "Translation Versions"
 
     def __str__(self):
         status = "(active)" if self.is_active else ""
@@ -192,18 +192,18 @@ class AITranslationJob(models.Model):
     """
 
     class Status(models.TextChoices):
-        PENDING = 'pending', 'Pending'
-        IN_PROGRESS = 'in_progress', 'In Progress'
-        COMPLETED = 'completed', 'Completed'
-        FAILED = 'failed', 'Failed'
-        CANCELLED = 'cancelled', 'Cancelled'
+        PENDING = "pending", "Pending"
+        IN_PROGRESS = "in_progress", "In Progress"
+        COMPLETED = "completed", "Completed"
+        FAILED = "failed", "Failed"
+        CANCELLED = "cancelled", "Cancelled"
 
     # Source and target
     source_locale = models.ForeignKey(
-        Locale, on_delete=models.CASCADE, related_name='ai_jobs_as_source', help_text="Source locale to translate from"
+        Locale, on_delete=models.CASCADE, related_name="ai_jobs_as_source", help_text="Source locale to translate from"
     )
     target_locale = models.ForeignKey(
-        Locale, on_delete=models.CASCADE, related_name='ai_jobs_as_target', help_text="Target locale to translate to"
+        Locale, on_delete=models.CASCADE, related_name="ai_jobs_as_target", help_text="Target locale to translate to"
     )
 
     # Job status
@@ -231,16 +231,16 @@ class AITranslationJob(models.Model):
 
     # Audit
     created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name='ai_translation_jobs'
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name="ai_translation_jobs"
     )
     created_at = models.DateTimeField(auto_now_add=True)
     started_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        ordering = ['-created_at']
-        verbose_name = 'AI Translation Job'
-        verbose_name_plural = 'AI Translation Jobs'
+        ordering = ["-created_at"]
+        verbose_name = "AI Translation Job"
+        verbose_name_plural = "AI Translation Jobs"
 
     def __str__(self):
         return f"AI Job: {self.source_locale.code} → {self.target_locale.code} ({self.status})"

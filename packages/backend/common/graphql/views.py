@@ -34,15 +34,15 @@ class DRFAuthenticatedGraphQLView(FileUploadGraphQLView):
 
     def parse_body(self, request):
         content_type = self.get_content_type(request)
-        if content_type == 'multipart/form-data' and 'operations' in request.POST:
-            operations = json.loads(request.POST.get('operations', '{}'))
-            files_map = json.loads(request.POST.get('map', '{}'))
+        if content_type == "multipart/form-data" and "operations" in request.POST:
+            operations = json.loads(request.POST.get("operations", "{}"))
+            files_map = json.loads(request.POST.get("map", "{}"))
             return place_files_in_operations(operations, files_map, request.FILES)
         return request.data
 
     @staticmethod
     def format_error(error):
-        if hasattr(error, 'original_error'):
+        if hasattr(error, "original_error"):
             if isinstance(error.original_error, APIException):
                 error.extensions = error.original_error.get_full_details()
             else:
@@ -68,7 +68,7 @@ class DRFAuthenticatedGraphQLView(FileUploadGraphQLView):
             logger.warning("Rate limiting module not available, GraphQL endpoint is unthrottled")
             throttle_cls = []
 
-        @api_view(['GET', 'POST'])
+        @api_view(["GET", "POST"])
         @authentication_classes(api_settings.DEFAULT_AUTHENTICATION_CLASSES)
         @permission_classes((policies.AnyoneFullAccess,))
         @throttle_classes(throttle_cls)

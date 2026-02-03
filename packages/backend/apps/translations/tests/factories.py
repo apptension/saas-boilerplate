@@ -13,9 +13,9 @@ class LocaleFactory(DjangoModelFactory):
 
     class Meta:
         model = Locale
-        django_get_or_create = ('code',)
+        django_get_or_create = ("code",)
 
-    code = factory.Sequence(lambda n: f'l{n}')
+    code = factory.Sequence(lambda n: f"l{n}")
     name = factory.LazyAttribute(lambda o: f"Language {o.code}")
     native_name = factory.LazyAttribute(lambda o: f"Native {o.code}")
     is_default = False
@@ -27,18 +27,18 @@ class LocaleFactory(DjangoModelFactory):
 class EnglishLocaleFactory(LocaleFactory):
     """Factory for English locale."""
 
-    code = 'en'
-    name = 'English'
-    native_name = 'English'
+    code = "en"
+    name = "English"
+    native_name = "English"
     is_default = True
 
 
 class PolishLocaleFactory(LocaleFactory):
     """Factory for Polish locale."""
 
-    code = 'pl'
-    name = 'Polish'
-    native_name = 'Polski'
+    code = "pl"
+    name = "Polish"
+    native_name = "Polski"
     is_default = False
 
 
@@ -47,7 +47,7 @@ class TranslationKeyFactory(DjangoModelFactory):
 
     class Meta:
         model = TranslationKey
-        django_get_or_create = ('key',)
+        django_get_or_create = ("key",)
 
     key = factory.Sequence(lambda n: f"Test / Key {n}")
     default_message = factory.LazyAttribute(lambda o: f"Default message for {o.key}")
@@ -60,7 +60,7 @@ class TranslationFactory(DjangoModelFactory):
 
     class Meta:
         model = Translation
-        django_get_or_create = ('key', 'locale')
+        django_get_or_create = ("key", "locale")
 
     key = factory.SubFactory(TranslationKeyFactory)
     locale = factory.SubFactory(LocaleFactory)

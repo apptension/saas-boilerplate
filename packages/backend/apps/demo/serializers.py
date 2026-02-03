@@ -13,12 +13,12 @@ class CrudDemoItemSerializer(serializers.ModelSerializer):
     created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     def update(self, instance, validated_data):
-        instance.edited_by = self.context['request'].user
+        instance.edited_by = self.context["request"].user
         return super().update(instance, validated_data)
 
     class Meta:
         model = models.CrudDemoItem
-        fields = ('id', 'tenant_id', 'name', 'created_by')
+        fields = ("id", "tenant_id", "name", "created_by")
 
 
 class DocumentDemoItemSerializer(serializers.ModelSerializer):
@@ -28,17 +28,17 @@ class DocumentDemoItemSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if not self.instance and attrs["created_by"].documents.count() >= settings.USER_DOCUMENTS_NUMBER_LIMIT:
-            raise serializers.ValidationError(_('User has reached documents number limit.'))
+            raise serializers.ValidationError(_("User has reached documents number limit."))
         return attrs
 
     def validate_file(self, file):
         if file.size > settings.UPLOADED_DOCUMENT_SIZE_LIMIT:
-            raise serializers.ValidationError(_('File is too large.'))
+            raise serializers.ValidationError(_("File is too large."))
         return file
 
     class Meta:
         model = models.DocumentDemoItem
-        fields = ('id', 'file', 'created_by')
+        fields = ("id", "file", "created_by")
 
 
 class ContentfulDemoItemFavoriteSerializer(serializers.ModelSerializer):
@@ -47,4 +47,4 @@ class ContentfulDemoItemFavoriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.ContentfulDemoItemFavorite
-        fields = ('item', 'user')
+        fields = ("item", "user")

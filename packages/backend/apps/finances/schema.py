@@ -209,11 +209,11 @@ class ChangeActiveSubscriptionMutation(mutations.UpdateTenantDependentModelMutat
         log_action(
             tenant_id=info.context.tenant.pk,
             action_type=ActionType.UPDATE,
-            entity_type='subscription',
+            entity_type="subscription",
             entity_id=str(info.context.tenant.pk),
-            entity_name='Subscription Plan',
+            entity_name="Subscription Plan",
             actor_user=info.context.user,
-            changes={'plan': {'old': None, 'new': input.get('price', 'updated')}},
+            changes={"plan": {"old": None, "new": input.get("price", "updated")}},
         )
 
         return result
@@ -237,11 +237,11 @@ class CancelActiveSubscriptionMutation(mutations.UpdateTenantDependentModelMutat
         log_action(
             tenant_id=info.context.tenant.pk,
             action_type=ActionType.DELETE,
-            entity_type='subscription',
+            entity_type="subscription",
             entity_id=str(info.context.tenant.pk),
-            entity_name='Subscription',
+            entity_name="Subscription",
             actor_user=info.context.user,
-            changes={'status': {'old': 'active', 'new': 'cancelled'}},
+            changes={"status": {"old": "active", "new": "cancelled"}},
         )
 
         return result
@@ -277,7 +277,7 @@ class StripeSetupIntentType(StripeDjangoObjectType):
     class Meta:
         model = djstripe_models.SetupIntent
         interfaces = (relay.Node,)
-        exclude = ('setup_intents',)
+        exclude = ("setup_intents",)
 
 
 class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.SerializerMutation):
@@ -330,11 +330,11 @@ class DeletePaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.DeleteT
 
         # Log the payment method deletion
         # card is stored as a dict (JSONField), so access last4 via dict syntax
-        card_last4 = obj.card.get('last4') if isinstance(obj.card, dict) else getattr(obj.card, 'last4', None)
+        card_last4 = obj.card.get("last4") if isinstance(obj.card, dict) else getattr(obj.card, "last4", None)
         log_action(
             tenant_id=info.context.tenant.pk,
             action_type=ActionType.DELETE,
-            entity_type='payment_method',
+            entity_type="payment_method",
             entity_id=str(pk),
             entity_name=f"Payment Method (*{card_last4 if card_last4 else 'N/A'})",
             actor_user=info.context.user,
@@ -391,30 +391,30 @@ class Query(graphene.ObjectType):
         )
 
     @staticmethod
-    @permission_classes(IsTenantMemberAccess, requires('billing.view'))
+    @permission_classes(IsTenantMemberAccess, requires("billing.view"))
     def resolve_active_subscription(root, info, **kwargs):
         return subscriptions.get_schedule(tenant=info.context.tenant)
 
     @staticmethod
-    @permission_classes(IsTenantMemberAccess, requires('billing.view'))
+    @permission_classes(IsTenantMemberAccess, requires("billing.view"))
     def resolve_all_payment_methods(root, info, **kwargs):
         return djstripe_models.PaymentMethod.objects.filter(customer__subscriber=info.context.tenant)
 
     @staticmethod
-    @permission_classes(IsTenantMemberAccess, requires('billing.view'))
+    @permission_classes(IsTenantMemberAccess, requires("billing.view"))
     def resolve_all_charges(root, info, **kwargs):
         customer, _ = djstripe_models.Customer.get_or_create(info.context.tenant)
         return customer.charges.filter(status=djstripe_enums.ChargeStatus.succeeded).order_by("-created")
 
     @staticmethod
-    @permission_classes(IsTenantMemberAccess, requires('billing.view'))
+    @permission_classes(IsTenantMemberAccess, requires("billing.view"))
     def resolve_charge(root, info, id, **kwargs):
         _, pk = from_global_id(id)
         customer, _ = djstripe_models.Customer.get_or_create(info.context.tenant)
         return customer.charges.get(status=djstripe_enums.ChargeStatus.succeeded, pk=pk)
 
     @staticmethod
-    @permission_classes(IsTenantMemberAccess, requires('billing.view'))
+    @permission_classes(IsTenantMemberAccess, requires("billing.view"))
     def resolve_payment_intent(root, info, id, **kwargs):
         _, pk = from_global_id(id)
         return djstripe_models.PaymentIntent.objects.get(customer__subscriber=info.context.tenant, pk=pk)
@@ -430,20 +430,20 @@ class Mutation(graphene.ObjectType):
     """
 
     # Subscription management - requires billing.manage
-    change_active_subscription = permission_classes(requires('billing.manage'))(
+    change_active_subscription = permission_classes(requires("billing.manage"))(
         ChangeActiveSubscriptionMutation.Field()
     )
-    cancel_active_subscription = permission_classes(requires('billing.manage'))(
+    cancel_active_subscription = permission_classes(requires("billing.manage"))(
         CancelActiveSubscriptionMutation.Field()
     )
 
     # Payment method management - requires billing.manage
-    update_default_payment_method = permission_classes(requires('billing.manage'))(
+    update_default_payment_method = permission_classes(requires("billing.manage"))(
         UpdateDefaultPaymentMethodMutation.Field()
     )
-    delete_payment_method = permission_classes(requires('billing.manage'))(DeletePaymentMethodMutation.Field())
+    delete_payment_method = permission_classes(requires("billing.manage"))(DeletePaymentMethodMutation.Field())
 
     # Payment intents - requires billing.manage
-    create_payment_intent = permission_classes(requires('billing.manage'))(CreatePaymentIntentMutation.Field())
-    update_payment_intent = permission_classes(requires('billing.manage'))(UpdatePaymentIntentMutation.Field())
-    create_setup_intent = permission_classes(requires('billing.manage'))(CreateSetupIntentMutation.Field())
+    create_payment_intent = permission_classes(requires("billing.manage"))(CreatePaymentIntentMutation.Field())
+    update_payment_intent = permission_classes(requires("billing.manage"))(UpdatePaymentIntentMutation.Field())
+    create_setup_intent = permission_classes(requires("billing.manage"))(CreateSetupIntentMutation.Field())

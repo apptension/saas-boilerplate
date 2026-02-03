@@ -13,7 +13,7 @@ class GraphQLTestCase(TestCase):
     Provides helper methods for executing GraphQL queries and mutations.
     """
 
-    GRAPHQL_URL = '/api/graphql/'
+    GRAPHQL_URL = "/api/graphql/"
 
     def setUp(self):
         super().setUp()
@@ -31,18 +31,18 @@ class GraphQLTestCase(TestCase):
         Returns:
             The parsed JSON response
         """
-        body = {'query': query}
+        body = {"query": query}
 
         if variables:
-            body['variables'] = variables
+            body["variables"] = variables
 
         if operation_name:
-            body['operationName'] = operation_name
+            body["operationName"] = operation_name
 
         response = self.client.post(
             self.GRAPHQL_URL,
             data=json.dumps(body),
-            content_type='application/json',
+            content_type="application/json",
         )
 
         return json.loads(response.content)
@@ -59,8 +59,8 @@ class GraphQLTestCase(TestCase):
             The errors from the response
         """
         response = self.execute(query, variables)
-        self.assertIn('errors', response)
-        return response['errors']
+        self.assertIn("errors", response)
+        return response["errors"]
 
     def execute_without_errors(self, query, variables=None):
         """
@@ -74,8 +74,8 @@ class GraphQLTestCase(TestCase):
             The data from the response
         """
         response = self.execute(query, variables)
-        self.assertNotIn('errors', response, f"Expected no errors but got: {response.get('errors')}")
-        return response['data']
+        self.assertNotIn("errors", response, f"Expected no errors but got: {response.get('errors')}")
+        return response["data"]
 
     def login_user(self, user):
         """

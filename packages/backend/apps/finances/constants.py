@@ -15,16 +15,16 @@ class SubscriptionPlanConfig:
 
 
 FREE_PLAN = SubscriptionPlanConfig(
-    name='free_plan',
-    initial_price=SubscriptionPlanPriceConfig(unit_amount=0, currency='usd', recurring={'interval': 'month'}),
+    name="free_plan",
+    initial_price=SubscriptionPlanPriceConfig(unit_amount=0, currency="usd", recurring={"interval": "month"}),
 )
 MONTHLY_PLAN = SubscriptionPlanConfig(
-    name='monthly_plan',
-    initial_price=SubscriptionPlanPriceConfig(unit_amount=10, currency='usd', recurring={'interval': 'month'}),
+    name="monthly_plan",
+    initial_price=SubscriptionPlanPriceConfig(unit_amount=10, currency="usd", recurring={"interval": "month"}),
 )
 YEARLY_PLAN = SubscriptionPlanConfig(
-    name='yearly_plan',
-    initial_price=SubscriptionPlanPriceConfig(unit_amount=15, currency='usd', recurring={'interval': 'year'}),
+    name="yearly_plan",
+    initial_price=SubscriptionPlanPriceConfig(unit_amount=15, currency="usd", recurring={"interval": "year"}),
 )
 
 ALL_PLANS = [FREE_PLAN, MONTHLY_PLAN, YEARLY_PLAN]

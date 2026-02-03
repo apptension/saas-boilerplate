@@ -47,15 +47,15 @@ class ObtainTokenMutation(mutations.SerializerMutation):
             }
         else:
             # Create session for tracking
-            user = getattr(mutation, '_user', None)
+            user = getattr(mutation, "_user", None)
             if not user:
                 # Try to get user from serializer
                 serializer = cls._meta.serializer_class
-                if hasattr(serializer, 'user'):
+                if hasattr(serializer, "user"):
                     user = serializer.user
 
             # Get user from validated data - need to look it up by email
-            email = input.get('email')
+            email = input.get("email")
             if email and not user:
                 try:
                     user = models.User.objects.get(email__iexact=email)
@@ -90,7 +90,7 @@ class SingUpMutation(mutations.SerializerMutation):
         mutation = super().mutate_and_get_payload(root, info, **input)
 
         # Create session for the new user
-        email = input.get('email')
+        email = input.get("email")
         user = None
         if email:
             try:
@@ -189,7 +189,7 @@ class ValidateOTPMutation(mutations.SerializerMutation):
         from rest_framework_simplejwt import tokens as jwt_tokens, exceptions as jwt_exceptions
 
         request = info.context._request
-        raw_otp_auth_token = request.COOKIES.get(settings.OTP_AUTH_TOKEN_COOKIE) or input.get('otp_auth_token')
+        raw_otp_auth_token = request.COOKIES.get(settings.OTP_AUTH_TOKEN_COOKIE) or input.get("otp_auth_token")
 
         if not raw_otp_auth_token:
             return None
@@ -296,7 +296,7 @@ class UserProfileType(DjangoObjectType):
 
     def resolve_avatar(self, info):
         """Return the user's avatar URL."""
-        if self.avatar and hasattr(self.avatar, 'thumbnail'):
+        if self.avatar and hasattr(self.avatar, "thumbnail"):
             try:
                 return self.avatar.thumbnail.url
             except ValueError:

@@ -15,7 +15,7 @@ from apps.multitenancy.tests.factories import TenantFactory
 class GroupFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Group
-        django_get_or_create = ('name',)
+        django_get_or_create = ("name",)
 
     name = factory.Sequence(lambda n: "Group #%s" % n)
 
@@ -35,7 +35,7 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     @classmethod
     def _create(cls, *args, **kwargs):
-        plain_password = kwargs.pop('password', 'secret')
+        plain_password = kwargs.pop("password", "secret")
         password = hashers.make_password(plain_password)
         user = super()._create(*args, **kwargs, password=password)
         user._faker_password = plain_password

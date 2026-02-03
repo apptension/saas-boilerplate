@@ -47,8 +47,8 @@ def serialize_value(value: Any) -> Any:
     if isinstance(value, models.Model):
         # For ForeignKey relations, store the ID and string representation
         return {
-            'id': str(value.pk),
-            'display': str(value),
+            "id": str(value.pk),
+            "display": str(value),
         }
 
     if isinstance(value, (list, tuple)):
@@ -58,7 +58,7 @@ def serialize_value(value: Any) -> Any:
         return {k: serialize_value(v) for k, v in value.items()}
 
     # For enum/choice fields, try to get the display value
-    if hasattr(value, 'label'):
+    if hasattr(value, "label"):
         return str(value.label)
 
     return value
@@ -85,7 +85,7 @@ def compute_changes(
     changes = {}
 
     # Default fields to exclude (timestamps, internal fields)
-    default_exclude = {'created_at', 'updated_at', 'id', 'pk', 'tenant', 'tenant_id'}
+    default_exclude = {"created_at", "updated_at", "id", "pk", "tenant", "tenant_id"}
     exclude_set = default_exclude.union(set(exclude_fields or []))
 
     # Get model fields
@@ -117,8 +117,8 @@ def compute_changes(
             # Only record if values differ
             if old_serialized != new_serialized:
                 changes[field_name] = {
-                    'old': old_serialized,
-                    'new': new_serialized,
+                    "old": old_serialized,
+                    "new": new_serialized,
                 }
         except Exception as e:
             logger.warning(f"Error computing change for field {field_name}: {e}")
@@ -153,9 +153,9 @@ def log_action(
     action_type: str,
     entity_type: str,
     entity_id: str,
-    entity_name: str = '',
+    entity_name: str = "",
     actor_user: Optional[settings.AUTH_USER_MODEL] = None,
-    actor_type: str = 'USER',
+    actor_type: str = "USER",
     changes: Optional[Dict[str, Dict[str, Any]]] = None,
     metadata: Optional[Dict[str, Any]] = None,
     force_log: bool = False,
@@ -187,20 +187,20 @@ def log_action(
     try:
         from apps.multitenancy.constants import ActionActorType
 
-        actor_email = ''
-        if actor_user and hasattr(actor_user, 'email'):
+        actor_email = ""
+        if actor_user and hasattr(actor_user, "email"):
             actor_email = actor_user.email
 
         # Store actor_user for USER and AI_AGENT actions (the user who triggered the action)
         # For SYSTEM actions (sync, import, scheduled, migration), actor_user is typically None
-        should_store_user = actor_type in (ActionActorType.USER, ActionActorType.AI_AGENT, 'USER', 'AI_AGENT')
+        should_store_user = actor_type in (ActionActorType.USER, ActionActorType.AI_AGENT, "USER", "AI_AGENT")
 
         action_log = ActionLog.objects.create(
             tenant_id=tenant_id,
             action_type=action_type,
             entity_type=entity_type,
             entity_id=str(entity_id),
-            entity_name=entity_name or '',
+            entity_name=entity_name or "",
             actor_type=actor_type,
             actor_user=actor_user if should_store_user else None,
             actor_email=actor_email,
@@ -208,7 +208,7 @@ def log_action(
             metadata=metadata or {},
         )
 
-        logger.debug(f"Action logged: {action_type} {entity_type} '{entity_name}' " f"by {actor_email or actor_type}")
+        logger.debug(f"Action logged: {action_type} {entity_type} '{entity_name}' by {actor_email or actor_type}")
 
         return action_log
 
@@ -223,9 +223,9 @@ def log_create(
     entity_type: str,
     instance: models.Model,
     actor_user: Optional[settings.AUTH_USER_MODEL] = None,
-    actor_type: str = 'USER',
+    actor_type: str = "USER",
     metadata: Optional[Dict[str, Any]] = None,
-    name_field: Optional[str] = 'name',
+    name_field: Optional[str] = "name",
 ) -> Optional[models.Model]:
     """
     Convenience function to log a CREATE action.
@@ -244,7 +244,7 @@ def log_create(
     """
     from apps.multitenancy.constants import ActionType
 
-    entity_name = (getattr(instance, name_field, '') if name_field else '') or str(instance)
+    entity_name = (getattr(instance, name_field, "") if name_field else "") or str(instance)
 
     # For CREATE, all fields are "new" values
     changes = compute_changes(None, instance)
@@ -269,9 +269,9 @@ def log_update(
     old_instance: models.Model,
     new_instance: models.Model,
     actor_user: Optional[settings.AUTH_USER_MODEL] = None,
-    actor_type: str = 'USER',
+    actor_type: str = "USER",
     metadata: Optional[Dict[str, Any]] = None,
-    name_field: str = 'name',
+    name_field: str = "name",
     fields_to_track: Optional[List[str]] = None,
 ) -> Optional[models.Model]:
     """
@@ -293,7 +293,7 @@ def log_update(
     """
     from apps.multitenancy.constants import ActionType
 
-    entity_name = getattr(new_instance, name_field, '') or str(new_instance)
+    entity_name = getattr(new_instance, name_field, "") or str(new_instance)
     changes = compute_changes(old_instance, new_instance, fields_to_track=fields_to_track)
 
     # Don't log if there are no actual changes
@@ -319,9 +319,9 @@ def log_delete(
     entity_type: str,
     instance: models.Model,
     actor_user: Optional[settings.AUTH_USER_MODEL] = None,
-    actor_type: str = 'USER',
+    actor_type: str = "USER",
     metadata: Optional[Dict[str, Any]] = None,
-    name_field: Optional[str] = 'name',
+    name_field: Optional[str] = "name",
 ) -> Optional[models.Model]:
     """
     Convenience function to log a DELETE action.
@@ -340,22 +340,22 @@ def log_delete(
     """
     from apps.multitenancy.constants import ActionType
 
-    entity_name = (getattr(instance, name_field, '') if name_field else '') or str(instance)
+    entity_name = (getattr(instance, name_field, "") if name_field else "") or str(instance)
 
     # For DELETE, capture all current values as "old" values
     changes = {}
     for field in instance._meta.get_fields():
         if field.is_relation and (field.one_to_many or field.many_to_many):
             continue
-        if field.name in {'created_at', 'updated_at', 'id', 'pk', 'tenant', 'tenant_id'}:
+        if field.name in {"created_at", "updated_at", "id", "pk", "tenant", "tenant_id"}:
             continue
         try:
             value = getattr(instance, field.name, None)
             serialized = serialize_value(value)
             if serialized is not None:
                 changes[field.name] = {
-                    'old': serialized,
-                    'new': None,
+                    "old": serialized,
+                    "new": None,
                 }
         except Exception as e:
             logger.debug(f"Failed to serialize field {field.name} for delete action: {e}")
@@ -380,8 +380,8 @@ def log_settings_change(
     old_settings: models.Model,
     new_settings: models.Model,
     actor_user: Optional[settings.AUTH_USER_MODEL] = None,
-    actor_type: str = 'USER',
-    settings_name: str = 'Organization Settings',
+    actor_type: str = "USER",
+    settings_name: str = "Organization Settings",
     metadata: Optional[Dict[str, Any]] = None,
 ) -> Optional[models.Model]:
     """
@@ -409,7 +409,7 @@ def log_settings_change(
     return log_action(
         tenant_id=tenant_id,
         action_type=ActionType.SETTINGS_CHANGE,
-        entity_type='settings',
+        entity_type="settings",
         entity_id=str(new_settings.pk),
         entity_name=settings_name,
         actor_user=actor_user,
@@ -453,34 +453,34 @@ def log_import(
     from apps.multitenancy.constants import ActionType, ActionActorType
 
     import_metadata = {
-        'imported_count': imported_count,
-        'updated_count': updated_count,
-        'skipped_count': skipped_count,
-        'error_count': error_count,
+        "imported_count": imported_count,
+        "updated_count": updated_count,
+        "skipped_count": skipped_count,
+        "error_count": error_count,
         **(metadata or {}),
     }
 
     if import_session_id:
-        import_metadata['session_id'] = import_session_id
+        import_metadata["session_id"] = import_session_id
     if file_name:
-        import_metadata['file_name'] = file_name
+        import_metadata["file_name"] = file_name
 
     return log_action(
         tenant_id=tenant_id,
         action_type=ActionType.IMPORT,
         entity_type=entity_type,
-        entity_id=import_session_id or 'bulk',
+        entity_id=import_session_id or "bulk",
         entity_name=f"Import: {file_name or entity_type}",
         actor_user=actor_user,
-        actor_type=ActionActorType.SYSTEM_IMPORT if not actor_user else 'USER',
+        actor_type=ActionActorType.SYSTEM_IMPORT if not actor_user else "USER",
         changes={
-            'summary': {
-                'old': None,
-                'new': {
-                    'imported': imported_count,
-                    'updated': updated_count,
-                    'skipped': skipped_count,
-                    'errors': error_count,
+            "summary": {
+                "old": None,
+                "new": {
+                    "imported": imported_count,
+                    "updated": updated_count,
+                    "skipped": skipped_count,
+                    "errors": error_count,
                 },
             },
         },
@@ -515,14 +515,14 @@ def log_bulk_delete(
         tenant_id=tenant_id,
         action_type=ActionType.BULK_DELETE,
         entity_type=entity_type,
-        entity_id='bulk',
+        entity_id="bulk",
         entity_name=f"Bulk Delete: {deleted_count} {entity_type}(s)",
         actor_user=actor_user,
-        actor_type='USER',
+        actor_type="USER",
         changes={
-            'deleted_count': {
-                'old': None,
-                'new': deleted_count,
+            "deleted_count": {
+                "old": None,
+                "new": deleted_count,
             },
         },
         metadata=metadata or {},

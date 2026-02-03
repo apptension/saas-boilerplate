@@ -32,7 +32,7 @@ def create_tenant_membership(
         global_tenant_membership_id = to_global_id("TenantMembershipType", membership.id)
         TenantInvitationEmail(
             to=user.email if user else invitee_email_address,
-            data={'tenant_membership_id': global_tenant_membership_id, 'token': token},
+            data={"tenant_membership_id": global_tenant_membership_id, "token": token},
             user=user,
         ).send()
 

@@ -48,12 +48,12 @@ class JITProvisioningService:
         self,
         idp_user_id: str,
         email: str,
-        first_name: str = '',
-        last_name: str = '',
+        first_name: str = "",
+        last_name: str = "",
         groups: list = None,
         raw_attributes: dict = None,
         ip_address: str = None,
-        user_agent: str = '',
+        user_agent: str = "",
     ) -> Tuple[User, SSOUserLink, bool]:
         """
         Provision a new user or update an existing one.
@@ -80,7 +80,7 @@ class JITProvisioningService:
                 sso_connection=self.connection,
                 idp_user_id=idp_user_id,
             )
-            .select_related('user')
+            .select_related("user")
             .first()
         )
 
@@ -106,7 +106,7 @@ class JITProvisioningService:
             self._log_event(
                 event_type=SSOAuditEventType.USER_UPDATED,
                 user=user,
-                description=f'User {email} updated via SSO',
+                description=f"User {email} updated via SSO",
                 ip_address=ip_address,
                 user_agent=user_agent,
             )
@@ -116,11 +116,11 @@ class JITProvisioningService:
         else:
             # Check if JIT provisioning is enabled
             if not self.connection.jit_provisioning_enabled:
-                raise ValueError('JIT provisioning is disabled. User must be pre-provisioned via SCIM.')
+                raise ValueError("JIT provisioning is disabled. User must be pre-provisioned via SCIM.")
 
             # Check domain restrictions
             if not self._is_domain_allowed(email):
-                raise ValueError('Email domain is not allowed for this SSO connection.')
+                raise ValueError("Email domain is not allowed for this SSO connection.")
 
             # Look for existing user by email
             user = User.objects.filter(email__iexact=email).first()
@@ -154,8 +154,8 @@ class JITProvisioningService:
             self._log_event(
                 event_type=event_type,
                 user=user,
-                description=f'User {email} {"provisioned" if is_new else "linked"} via JIT',
-                metadata={'groups': groups, 'role': role},
+                description=f"User {email} {'provisioned' if is_new else 'linked'} via JIT",
+                metadata={"groups": groups, "role": role},
                 ip_address=ip_address,
                 user_agent=user_agent,
             )
@@ -166,7 +166,7 @@ class JITProvisioningService:
         # Update connection stats
         self.connection.last_login_at = timezone.now()
         self.connection.login_count += 1
-        self.connection.save(update_fields=['last_login_at', 'login_count'])
+        self.connection.save(update_fields=["last_login_at", "login_count"])
 
         return user, link, is_new if not existing_link else False
 
@@ -179,7 +179,7 @@ class JITProvisioningService:
         user.save()
 
         # Update profile
-        if hasattr(user, 'profile'):
+        if hasattr(user, "profile"):
             user.profile.first_name = first_name
             user.profile.last_name = last_name
             user.profile.save()
@@ -188,7 +188,7 @@ class JITProvisioningService:
 
     def _update_user_profile(self, user: User, first_name: str, last_name: str):
         """Update user profile with IdP attributes."""
-        if hasattr(user, 'profile'):
+        if hasattr(user, "profile"):
             profile = user.profile
             changed = False
 
@@ -227,13 +227,13 @@ class JITProvisioningService:
             # Only update if new role is higher priority or if configured to allow downgrades
             if new_priority >= current_priority:
                 membership.role = role
-                membership.save(update_fields=['role', 'updated_at'])
+                membership.save(update_fields=["role", "updated_at"])
 
                 self._log_event(
                     event_type=SSOAuditEventType.GROUP_MAPPING_APPLIED,
                     user=user,
-                    description=f'Role updated to {role} based on group mapping',
-                    metadata={'groups': groups, 'old_role': membership.role, 'new_role': role},
+                    description=f"Role updated to {role} based on group mapping",
+                    metadata={"groups": groups, "old_role": membership.role, "new_role": role},
                 )
 
     def _ensure_tenant_membership(self, user: User, role: str):
@@ -242,16 +242,16 @@ class JITProvisioningService:
             user=user,
             tenant=self.tenant,
             defaults={
-                'role': role,
-                'is_accepted': True,
-                'invitation_accepted_at': timezone.now(),
+                "role": role,
+                "is_accepted": True,
+                "invitation_accepted_at": timezone.now(),
             },
         )
 
         if not created and not membership.is_accepted:
             membership.is_accepted = True
             membership.invitation_accepted_at = timezone.now()
-            membership.save(update_fields=['is_accepted', 'invitation_accepted_at'])
+            membership.save(update_fields=["is_accepted", "invitation_accepted_at"])
 
         return membership
 
@@ -261,17 +261,17 @@ class JITProvisioningService:
             # No restrictions
             return True
 
-        domain = email.split('@')[-1].lower()
+        domain = email.split("@")[-1].lower()
         return domain in [d.lower() for d in self.connection.allowed_domains]
 
     def _log_event(
         self,
         event_type: str,
         user: User = None,
-        description: str = '',
+        description: str = "",
         metadata: dict = None,
         ip_address: str = None,
-        user_agent: str = '',
+        user_agent: str = "",
     ):
         """Log an audit event."""
         SSOAuditLog.log_event(

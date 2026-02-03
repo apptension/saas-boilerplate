@@ -16,7 +16,7 @@ class TenantManager(models.Manager):
         Returns:
         Tenant: The associated or newly created tenant instance of SIGN_UP type.
         """
-        default_tenant = self.filter(creator=user, type=TenantType.DEFAULT).order_by('created_at').first()
+        default_tenant = self.filter(creator=user, type=TenantType.DEFAULT).order_by("created_at").first()
         if default_tenant:
             return default_tenant, False
 

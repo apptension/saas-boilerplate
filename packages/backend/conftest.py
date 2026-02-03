@@ -19,17 +19,17 @@ from config.schema import schema
 from storages.backends.s3boto3 import S3Boto3Storage
 
 pytest_plugins = [
-    'celery.contrib.pytest',
-    'tests.aws_fixtures',
-    'common.tests.fixtures',
-    'apps.users.tests.fixtures',
-    'apps.finances.tests.fixtures',
-    'apps.demo.tests.fixtures',
-    'apps.content.tests.fixtures',
-    'apps.notifications.tests.fixtures',
-    'apps.integrations.tests.fixtures',
-    'apps.multitenancy.tests.fixtures',
-    'apps.sso.tests.fixtures',
+    "celery.contrib.pytest",
+    "tests.aws_fixtures",
+    "common.tests.fixtures",
+    "apps.users.tests.fixtures",
+    "apps.finances.tests.fixtures",
+    "apps.demo.tests.fixtures",
+    "apps.content.tests.fixtures",
+    "apps.notifications.tests.fixtures",
+    "apps.integrations.tests.fixtures",
+    "apps.multitenancy.tests.fixtures",
+    "apps.sso.tests.fixtures",
 ]
 
 
@@ -60,7 +60,7 @@ class CustomGrapheneClient(GrapheneClient):
     def create_context():
         request = APIRequestFactory()
         request.user = AnonymousUser()
-        request.META = {"REMOTE_ADDR": '0.0.0.0'}  # noqa: S104
+        request.META = {"REMOTE_ADDR": "0.0.0.0"}  # noqa: S104
         request._request = request
 
         return request
@@ -74,7 +74,7 @@ def api_client():
 @pytest.fixture
 def api_client_admin():
     client = APIClient()
-    client.defaults.setdefault('SERVER_NAME', 'admin.example.org')
+    client.defaults.setdefault("SERVER_NAME", "admin.example.org")
     return client
 
 
@@ -89,13 +89,16 @@ def storage(mocker):
     with mock_s3():
         storage = S3Boto3Storage()
         session = boto3.session.Session()
-        with patch(
-            "storages.backends.s3boto3.S3Boto3Storage.connection",
-            new_callable=PropertyMock,
-        ) as mock_connection_property, patch(
-            "storages.backends.s3boto3.S3Boto3Storage.bucket",
-            new_callable=PropertyMock,
-        ) as mock_bucket_property:
+        with (
+            patch(
+                "storages.backends.s3boto3.S3Boto3Storage.connection",
+                new_callable=PropertyMock,
+            ) as mock_connection_property,
+            patch(
+                "storages.backends.s3boto3.S3Boto3Storage.bucket",
+                new_callable=PropertyMock,
+            ) as mock_bucket_property,
+        ):
 
             @lru_cache(None)
             def get_connection():
@@ -119,7 +122,7 @@ def storage(mocker):
 @pytest.fixture
 def s3_exports_bucket():
     with mock_s3():
-        s3 = boto3.client("s3", region_name='us-east-1', endpoint_url=settings.AWS_S3_ENDPOINT_URL)
+        s3 = boto3.client("s3", region_name="us-east-1", endpoint_url=settings.AWS_S3_ENDPOINT_URL)
         s3.create_bucket(Bucket=settings.AWS_EXPORTS_STORAGE_BUCKET_NAME)
         yield
 
@@ -142,11 +145,11 @@ def _terminate_other_connections(db_name, db_config, max_wait_seconds=5):
     try:
         # Connect to postgres database (not the test database) to terminate connections
         admin_conn = psycopg2.connect(
-            host=db_config['HOST'],
-            port=db_config['PORT'],
-            user=db_config['USER'],
-            password=db_config['PASSWORD'],
-            database='postgres',  # Connect to postgres database
+            host=db_config["HOST"],
+            port=db_config["PORT"],
+            user=db_config["USER"],
+            password=db_config["PASSWORD"],
+            database="postgres",  # Connect to postgres database
             connect_timeout=2,
         )
         admin_conn.autocommit = True
@@ -209,7 +212,7 @@ def django_db_setup_cleanup(django_db_setup, django_db_blocker):
 
     # Final cleanup - only terminate idle connections
     try:
-        db_config = settings.DATABASES['default']
+        db_config = settings.DATABASES["default"]
         test_db_name = f"test_{db_config['NAME']}"
 
         # Wait a bit for any lingering connections to close naturally
@@ -232,7 +235,7 @@ def pytest_configure(config):
     Only runs cleanup, doesn't terminate active connections.
     """
     # Only run if we're actually using django_db
-    if config.pluginmanager.hasplugin('django'):
+    if config.pluginmanager.hasplugin("django"):
         try:
             # Just close our own connections, don't terminate others
             _force_close_all_connections()

@@ -59,8 +59,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     otp_enabled = models.BooleanField(default=False)
     otp_verified = models.BooleanField(default=False)
-    otp_base32 = models.CharField(max_length=255, blank=True, default='')
-    otp_auth_url = models.CharField(max_length=255, blank=True, default='')
+    otp_base32 = models.CharField(max_length=255, blank=True, default="")
+    otp_auth_url = models.CharField(max_length=255, blank=True, default="")
 
     objects = UserManager()
 
@@ -91,17 +91,17 @@ class UserAvatar(ImageWithThumbnailMixin, models.Model):
 
 
 class LanguageChoices(models.TextChoices):
-    ENGLISH = 'en', 'English'
-    POLISH = 'pl', 'Polish'
-    GERMAN = 'de', 'German'
-    FRENCH = 'fr', 'French'
-    SPANISH = 'es', 'Spanish'
+    ENGLISH = "en", "English"
+    POLISH = "pl", "Polish"
+    GERMAN = "de", "German"
+    FRENCH = "fr", "French"
+    SPANISH = "es", "Spanish"
 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    first_name = models.CharField(max_length=40, blank=True, default='')
-    last_name = models.CharField(max_length=40, blank=True, default='')
+    first_name = models.CharField(max_length=40, blank=True, default="")
+    last_name = models.CharField(max_length=40, blank=True, default="")
     language = models.CharField(
         max_length=5,
         choices=LanguageChoices.choices,

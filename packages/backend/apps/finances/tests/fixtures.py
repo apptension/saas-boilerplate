@@ -26,10 +26,10 @@ pytest_factoryboy.register(factories.RefundFactory)
 
 @pytest.fixture(autouse=True)
 def mock_init_user(mocker):
-    mocker.patch('apps.finances.services.subscriptions.initialize_tenant')
+    mocker.patch("apps.finances.services.subscriptions.initialize_tenant")
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def free_plan_price(price_factory, plan_factory):
     price = price_factory(
         product__name=constants.FREE_PLAN.name,
@@ -49,7 +49,7 @@ def free_plan_price(price_factory, plan_factory):
     return price
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def monthly_plan_price(price_factory, plan_factory):
     price = price_factory(
         product__name=constants.MONTHLY_PLAN.name,
@@ -69,7 +69,7 @@ def monthly_plan_price(price_factory, plan_factory):
     return price
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def yearly_plan_price(price_factory, plan_factory):
     price = price_factory(
         product__name=constants.YEARLY_PLAN.name,
@@ -89,7 +89,7 @@ def yearly_plan_price(price_factory, plan_factory):
     return price
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def stripe_mock_fixture_product_default_price(price_factory):
     """
     stripe-mock v0.128.0 introduces "default_price" field in returned product fixture. In some cases the tests may fail,
@@ -99,7 +99,7 @@ def stripe_mock_fixture_product_default_price(price_factory):
     return price_factory(id="price_1NapVeJr3d0nrouD2gX5mHOY")
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def stripe_find_owner_account_monkey_patch():
     """
     dj-stripe v2.7.0 restored checking for owner of an Account object. Stripe-mock returns different account ID on
@@ -113,12 +113,12 @@ def stripe_find_owner_account_monkey_patch():
     Account._find_owner_account = classmethod(_find_owner_account)
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def stripe_proxy():
     stripe.api_base = "http://stripemock:12111"
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def stripe_request_client():
     from stripe.http_client import RequestsClient
 
@@ -127,6 +127,6 @@ def stripe_request_client():
     return client
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def stripe_request(mocker, stripe_request_client):
-    return mocker.spy(stripe_request_client, 'request')
+    return mocker.spy(stripe_request_client, "request")

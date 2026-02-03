@@ -30,8 +30,8 @@ if TRACING_ENABLED:
 # This is safe because migrations only change during deployments.
 # Cache TTL is configurable via HEALTH_CHECK_CACHE_TTL env var (default 30s).
 _health_check_cache = {
-    'migrations_ok': None,  # True/False/None
-    'last_check': 0,  # timestamp
+    "migrations_ok": None,  # True/False/None
+    "last_check": 0,  # timestamp
 }
 
 
@@ -48,13 +48,13 @@ def _check_migrations_with_cache():
     """
     global _health_check_cache
 
-    cache_ttl = getattr(settings, 'HEALTH_CHECK_CACHE_TTL', 30)
+    cache_ttl = getattr(settings, "HEALTH_CHECK_CACHE_TTL", 30)
     now = time.time()
-    cache_age = now - _health_check_cache['last_check']
+    cache_age = now - _health_check_cache["last_check"]
 
     # Return cached result if still valid
-    if _health_check_cache['migrations_ok'] is not None and cache_age < cache_ttl:
-        return _health_check_cache['migrations_ok']
+    if _health_check_cache["migrations_ok"] is not None and cache_age < cache_ttl:
+        return _health_check_cache["migrations_ok"]
 
     # Need to check migrations - this opens a DB connection
     try:
@@ -63,8 +63,8 @@ def _check_migrations_with_cache():
         migrations_ok = len(plan) == 0
 
         # Update cache
-        _health_check_cache['migrations_ok'] = migrations_ok
-        _health_check_cache['last_check'] = now
+        _health_check_cache["migrations_ok"] = migrations_ok
+        _health_check_cache["last_check"] = now
 
         return migrations_ok
     finally:
@@ -102,7 +102,7 @@ class HealthCheckMiddleware(MiddlewareMixin):
 
             # Liveness check mode - just check if the app is running, no DB check
             # Useful for Kubernetes/container orchestration liveness probes
-            if request.GET.get('liveness') == '1':
+            if request.GET.get("liveness") == "1":
                 response.status_code = status.HTTP_200_OK
                 if TRACING_ENABLED:
                     xray_recorder.end_segment()
@@ -125,8 +125,8 @@ class HealthCheckMiddleware(MiddlewareMixin):
                 response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
 
                 # Invalidate cache on error so we retry on next check
-                _health_check_cache['migrations_ok'] = None
-                _health_check_cache['last_check'] = 0
+                _health_check_cache["migrations_ok"] = None
+                _health_check_cache["last_check"] = 0
 
             if TRACING_ENABLED:
                 xray_recorder.end_segment()
@@ -159,11 +159,11 @@ class SentryMiddleware(object):
 
     def on_error(self, error):
         with push_scope() as scope:
-            if hasattr(error, 'original_error') and isinstance(error.original_error, APIException):
+            if hasattr(error, "original_error") and isinstance(error.original_error, APIException):
                 capture_exception(error.original_error)
             elif isinstance(error, GraphQlValidationError):
                 full_details = error.get_full_details()
-                scope.set_extra('Validation errors', full_details)
+                scope.set_extra("Validation errors", full_details)
                 capture_message(self._get_validation_error_first_detail(error))
             else:
                 capture_exception(error)
@@ -184,8 +184,8 @@ class ManageCookiesMiddleware:
         response = self.get_response(request)
 
         # Get cookie settings once, used for both set and delete operations
-        cookie_secure = getattr(settings, 'COOKIE_SECURE', True)
-        cookie_samesite = getattr(settings, 'COOKIE_SAMESITE', 'Lax')
+        cookie_secure = getattr(settings, "COOKIE_SECURE", True)
+        cookie_samesite = getattr(settings, "COOKIE_SAMESITE", "Lax")
 
         if (cookies := getattr(request, "set_cookies", None)) and response.status_code == 200:  # noqa: PLR2004
             for key, value in cookies.items():

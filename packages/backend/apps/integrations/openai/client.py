@@ -29,7 +29,7 @@ class OpenAIClient:
     @staticmethod
     def get_saas_ideas(keywords: list[str]) -> str:
         """Get SaaS ideas from OpenAI as raw text."""
-        keywords_str = ', '.join(keywords)
+        keywords_str = ", ".join(keywords)
 
         # Log the keywords being sent
         logger.info(f"Generating SaaS ideas for keywords: {keywords}")
@@ -40,7 +40,7 @@ class OpenAIClient:
 
         try:
             # If using a completion model, use completions API
-            instruct_models = ['instruct', 'davinci', 'curie', 'babbage', 'ada']
+            instruct_models = ["instruct", "davinci", "curie", "babbage", "ada"]
             if any(m in model for m in instruct_models):
                 # Use completions API for instruct models
                 prompt = f"""You are a SaaS product strategist. \
@@ -77,12 +77,12 @@ Separate ideas with ---"""
                 client = OpenAIClient._get_client()
                 # Ensure model name is valid
                 # Note: gpt-4 may require specific access or different model name
-                model_name = model if model.startswith('gpt') else 'gpt-3.5-turbo'
+                model_name = model if model.startswith("gpt") else "gpt-3.5-turbo"
 
                 # If gpt-4 is requested but might not be available, try alternatives
-                if model_name == 'gpt-4':
+                if model_name == "gpt-4":
                     # Try common GPT-4 variants if base gpt-4 fails
-                    gpt4_variants = ['gpt-4', 'gpt-4-turbo-preview', 'gpt-4-0613', 'gpt-3.5-turbo']
+                    gpt4_variants = ["gpt-4", "gpt-4-turbo-preview", "gpt-4-0613", "gpt-3.5-turbo"]
                 else:
                     gpt4_variants = [model_name]
 
@@ -152,7 +152,7 @@ Separate ideas with ---"""
                         last_error = api_error
                         logger.warning(f"Failed to use model {attempt_model}: {api_error}")
                         # If it's not a 400 error (model not found), don't try other models
-                        if hasattr(api_error, 'status_code') and api_error.status_code != HTTP_BAD_REQUEST:
+                        if hasattr(api_error, "status_code") and api_error.status_code != HTTP_BAD_REQUEST:
                             raise
                         # Continue to next model variant
                         continue
@@ -187,17 +187,17 @@ Separate ideas with ---"""
             logger.error(f"Error message: {error_message}")
 
             # Try to extract more details from the error
-            if hasattr(error, 'response'):
+            if hasattr(error, "response"):
                 logger.error(f"Error response: {error.response}")
-            if hasattr(error, 'body'):
+            if hasattr(error, "body"):
                 logger.error(f"Error body: {error.body}")
-            if hasattr(error, 'status_code'):
+            if hasattr(error, "status_code"):
                 logger.error(f"Error status code: {error.status_code}")
 
             # Check if it's an OpenAI API error
-            if 'APIError' in error_type or 'openai' in error_type.lower() or 'rate limit' in error_message.lower():
+            if "APIError" in error_type or "openai" in error_type.lower() or "rate limit" in error_message.lower():
                 # For 400 errors, provide more specific message
-                if '400' in error_message or (hasattr(error, 'status_code') and error.status_code == HTTP_BAD_REQUEST):
+                if "400" in error_message or (hasattr(error, "status_code") and error.status_code == HTTP_BAD_REQUEST):
                     detailed_error = (
                         f"Invalid request to OpenAI API. Check model name and parameters. Error: {error_message}"
                     )

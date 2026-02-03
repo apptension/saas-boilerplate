@@ -23,16 +23,16 @@ def create_jwt_tokens(user, session_id: Optional[str] = None) -> dict:
 
     # Add session_id to token claims if provided
     if session_id:
-        refresh['session_id'] = session_id
-        refresh.access_token['session_id'] = session_id
+        refresh["session_id"] = session_id
+        refresh.access_token["session_id"] = session_id
 
     result = {
-        'access': str(refresh.access_token),
-        'refresh': str(refresh),
+        "access": str(refresh.access_token),
+        "refresh": str(refresh),
     }
 
     if session_id:
-        result['session_id'] = session_id
+        result["session_id"] = session_id
 
     return result
 
@@ -49,8 +49,8 @@ def get_session_id_from_token(request) -> Optional[str]:
     """
     try:
         # The token payload is available on the auth object after authentication
-        if hasattr(request, 'auth') and request.auth:
-            return request.auth.get('session_id')
+        if hasattr(request, "auth") and request.auth:
+            return request.auth.get("session_id")
     except (AttributeError, TypeError):
         pass
     return None

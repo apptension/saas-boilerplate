@@ -5,7 +5,7 @@ from ... import models, constants
 
 
 class Command(BaseCommand):
-    help = 'Create stripe products and prices required for subscriptions'
+    help = "Create stripe products and prices required for subscriptions"
 
     def create_or_update_plan(self, plan_config: constants.SubscriptionPlanConfig):
         product, _ = models.Product.objects.get_or_create_subscription_plan(plan_config=plan_config)
@@ -13,12 +13,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if not settings.STRIPE_CHECKS_ENABLED:
-            self.stdout.write(self.style.WARNING('Stripe checks are disabled. Skipping subscription initialization.'))
+            self.stdout.write(self.style.WARNING("Stripe checks are disabled. Skipping subscription initialization."))
             return
 
         if not settings.STRIPE_ENABLED:
             self.stdout.write(
-                self.style.WARNING('Stripe is not properly configured. Skipping subscription initialization.')
+                self.style.WARNING("Stripe is not properly configured. Skipping subscription initialization.")
             )
             return
 

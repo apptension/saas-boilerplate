@@ -50,7 +50,7 @@ def synchronize_contentful_content(self, **kwargs):
     from django.conf import settings
 
     # Skip if Contentful is not configured
-    contentful_space = getattr(settings, 'CONTENTFUL_SPACE_ID', None)
+    contentful_space = getattr(settings, "CONTENTFUL_SPACE_ID", None)
     if not contentful_space:
         # Don't log anything - this task shouldn't be scheduled if Contentful isn't configured
         return
@@ -85,7 +85,7 @@ def execute_scheduled_task(self, entry: dict = None, due_date: str = None, **kwa
         logger.warning("execute_scheduled_task called without entry")
         return
 
-    task_name = entry.get('DetailType')
+    task_name = entry.get("DetailType")
     logger.info(f"Executing scheduled task: {task_name} (scheduled for {due_date})")
 
     # Re-dispatch to the appropriate task
@@ -94,5 +94,5 @@ def execute_scheduled_task(self, entry: dict = None, due_date: str = None, **kwa
     backend = get_task_backend()
     import json
 
-    data = json.loads(entry.get('Detail', '{}'))
+    data = json.loads(entry.get("Detail", "{}"))
     backend.send_task(task_name, data)

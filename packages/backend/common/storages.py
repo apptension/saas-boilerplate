@@ -31,7 +31,7 @@ class CustomS3Boto3Storage(S3Boto3Storage):
 
 class PublicS3Boto3StorageWithCDN(CustomS3Boto3Storage):
     querystring_auth = False
-    location = 'public'
+    location = "public"
 
 
 @deconstructible
@@ -43,19 +43,19 @@ class PublicCloudflareR2Storage(S3Boto3Storage):
     """
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('endpoint_url', getattr(settings, 'R2_ENDPOINT_URL', None))
-        kwargs.setdefault('access_key', getattr(settings, 'R2_ACCESS_KEY_ID', None))
-        kwargs.setdefault('secret_key', getattr(settings, 'R2_SECRET_ACCESS_KEY', None))
-        kwargs.setdefault('bucket_name', getattr(settings, 'R2_BUCKET_NAME', None))
-        kwargs.setdefault('default_acl', None)
-        kwargs.setdefault('querystring_auth', False)  # Public access
-        kwargs.setdefault('location', 'public')
+        kwargs.setdefault("endpoint_url", getattr(settings, "R2_ENDPOINT_URL", None))
+        kwargs.setdefault("access_key", getattr(settings, "R2_ACCESS_KEY_ID", None))
+        kwargs.setdefault("secret_key", getattr(settings, "R2_SECRET_ACCESS_KEY", None))
+        kwargs.setdefault("bucket_name", getattr(settings, "R2_BUCKET_NAME", None))
+        kwargs.setdefault("default_acl", None)
+        kwargs.setdefault("querystring_auth", False)  # Public access
+        kwargs.setdefault("location", "public")
         # R2 requires SigV4 - SigV2 is not supported
-        kwargs.setdefault('signature_version', 's3v4')
+        kwargs.setdefault("signature_version", "s3v4")
 
-        custom_domain = getattr(settings, 'R2_CUSTOM_DOMAIN', None)
+        custom_domain = getattr(settings, "R2_CUSTOM_DOMAIN", None)
         if custom_domain:
-            kwargs.setdefault('custom_domain', custom_domain)
+            kwargs.setdefault("custom_domain", custom_domain)
 
         super().__init__(**kwargs)
 
@@ -83,21 +83,21 @@ class CloudflareR2Storage(S3Boto3Storage):
 
     def __init__(self, **kwargs):
         # R2 uses S3-compatible API but needs explicit endpoint
-        kwargs.setdefault('endpoint_url', getattr(settings, 'R2_ENDPOINT_URL', None))
-        kwargs.setdefault('access_key', getattr(settings, 'R2_ACCESS_KEY_ID', None))
-        kwargs.setdefault('secret_key', getattr(settings, 'R2_SECRET_ACCESS_KEY', None))
-        kwargs.setdefault('bucket_name', getattr(settings, 'R2_BUCKET_NAME', None))
+        kwargs.setdefault("endpoint_url", getattr(settings, "R2_ENDPOINT_URL", None))
+        kwargs.setdefault("access_key", getattr(settings, "R2_ACCESS_KEY_ID", None))
+        kwargs.setdefault("secret_key", getattr(settings, "R2_SECRET_ACCESS_KEY", None))
+        kwargs.setdefault("bucket_name", getattr(settings, "R2_BUCKET_NAME", None))
 
         # R2 doesn't support some S3 features
-        kwargs.setdefault('default_acl', None)
-        kwargs.setdefault('querystring_auth', True)
+        kwargs.setdefault("default_acl", None)
+        kwargs.setdefault("querystring_auth", True)
         # R2 requires SigV4 - SigV2 is not supported
-        kwargs.setdefault('signature_version', 's3v4')
+        kwargs.setdefault("signature_version", "s3v4")
 
         # Use custom domain if provided (for public bucket access)
-        custom_domain = getattr(settings, 'R2_CUSTOM_DOMAIN', None)
+        custom_domain = getattr(settings, "R2_CUSTOM_DOMAIN", None)
         if custom_domain:
-            kwargs.setdefault('custom_domain', custom_domain)
+            kwargs.setdefault("custom_domain", custom_domain)
 
         super().__init__(**kwargs)
 
@@ -122,11 +122,11 @@ class BackblazeB2Storage(S3Boto3Storage):
     """
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('endpoint_url', getattr(settings, 'B2_ENDPOINT_URL', None))
-        kwargs.setdefault('access_key', getattr(settings, 'B2_ACCESS_KEY_ID', None))
-        kwargs.setdefault('secret_key', getattr(settings, 'B2_SECRET_ACCESS_KEY', None))
-        kwargs.setdefault('bucket_name', getattr(settings, 'B2_BUCKET_NAME', None))
-        kwargs.setdefault('default_acl', None)
+        kwargs.setdefault("endpoint_url", getattr(settings, "B2_ENDPOINT_URL", None))
+        kwargs.setdefault("access_key", getattr(settings, "B2_ACCESS_KEY_ID", None))
+        kwargs.setdefault("secret_key", getattr(settings, "B2_SECRET_ACCESS_KEY", None))
+        kwargs.setdefault("bucket_name", getattr(settings, "B2_BUCKET_NAME", None))
+        kwargs.setdefault("default_acl", None)
 
         super().__init__(**kwargs)
 
@@ -150,11 +150,11 @@ class MinIOStorage(S3Boto3Storage):
     """
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('endpoint_url', getattr(settings, 'MINIO_ENDPOINT_URL', None))
-        kwargs.setdefault('access_key', getattr(settings, 'MINIO_ACCESS_KEY_ID', None))
-        kwargs.setdefault('secret_key', getattr(settings, 'MINIO_SECRET_ACCESS_KEY', None))
-        kwargs.setdefault('bucket_name', getattr(settings, 'MINIO_BUCKET_NAME', None))
-        kwargs.setdefault('default_acl', None)
+        kwargs.setdefault("endpoint_url", getattr(settings, "MINIO_ENDPOINT_URL", None))
+        kwargs.setdefault("access_key", getattr(settings, "MINIO_ACCESS_KEY_ID", None))
+        kwargs.setdefault("secret_key", getattr(settings, "MINIO_SECRET_ACCESS_KEY", None))
+        kwargs.setdefault("bucket_name", getattr(settings, "MINIO_BUCKET_NAME", None))
+        kwargs.setdefault("default_acl", None)
 
         super().__init__(**kwargs)
 
@@ -176,8 +176,8 @@ class LocalMediaStorage(FileSystemStorage):
     """
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('location', getattr(settings, 'MEDIA_ROOT', None))
-        kwargs.setdefault('base_url', getattr(settings, 'MEDIA_URL', '/media/'))
+        kwargs.setdefault("location", getattr(settings, "MEDIA_ROOT", None))
+        kwargs.setdefault("base_url", getattr(settings, "MEDIA_URL", "/media/"))
         super().__init__(**kwargs)
 
 
@@ -186,13 +186,13 @@ class PublicBackblazeB2Storage(S3Boto3Storage):
     """Public Backblaze B2 storage for user-facing assets."""
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('endpoint_url', getattr(settings, 'B2_ENDPOINT_URL', None))
-        kwargs.setdefault('access_key', getattr(settings, 'B2_ACCESS_KEY_ID', None))
-        kwargs.setdefault('secret_key', getattr(settings, 'B2_SECRET_ACCESS_KEY', None))
-        kwargs.setdefault('bucket_name', getattr(settings, 'B2_BUCKET_NAME', None))
-        kwargs.setdefault('default_acl', None)
-        kwargs.setdefault('querystring_auth', False)
-        kwargs.setdefault('location', 'public')
+        kwargs.setdefault("endpoint_url", getattr(settings, "B2_ENDPOINT_URL", None))
+        kwargs.setdefault("access_key", getattr(settings, "B2_ACCESS_KEY_ID", None))
+        kwargs.setdefault("secret_key", getattr(settings, "B2_SECRET_ACCESS_KEY", None))
+        kwargs.setdefault("bucket_name", getattr(settings, "B2_BUCKET_NAME", None))
+        kwargs.setdefault("default_acl", None)
+        kwargs.setdefault("querystring_auth", False)
+        kwargs.setdefault("location", "public")
         super().__init__(**kwargs)
 
     def _save(self, name, content):
@@ -207,13 +207,13 @@ class PublicMinIOStorage(S3Boto3Storage):
     """Public MinIO storage for user-facing assets."""
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('endpoint_url', getattr(settings, 'MINIO_ENDPOINT_URL', None))
-        kwargs.setdefault('access_key', getattr(settings, 'MINIO_ACCESS_KEY_ID', None))
-        kwargs.setdefault('secret_key', getattr(settings, 'MINIO_SECRET_ACCESS_KEY', None))
-        kwargs.setdefault('bucket_name', getattr(settings, 'MINIO_BUCKET_NAME', None))
-        kwargs.setdefault('default_acl', None)
-        kwargs.setdefault('querystring_auth', False)
-        kwargs.setdefault('location', 'public')
+        kwargs.setdefault("endpoint_url", getattr(settings, "MINIO_ENDPOINT_URL", None))
+        kwargs.setdefault("access_key", getattr(settings, "MINIO_ACCESS_KEY_ID", None))
+        kwargs.setdefault("secret_key", getattr(settings, "MINIO_SECRET_ACCESS_KEY", None))
+        kwargs.setdefault("bucket_name", getattr(settings, "MINIO_BUCKET_NAME", None))
+        kwargs.setdefault("default_acl", None)
+        kwargs.setdefault("querystring_auth", False)
+        kwargs.setdefault("location", "public")
         super().__init__(**kwargs)
 
     def _save(self, name, content):
@@ -225,11 +225,11 @@ class PublicMinIOStorage(S3Boto3Storage):
 
 # Storage backend registry
 STORAGE_BACKENDS = {
-    's3': 'common.storages.CustomS3Boto3Storage',
-    'r2': 'common.storages.CloudflareR2Storage',
-    'b2': 'common.storages.BackblazeB2Storage',
-    'minio': 'common.storages.MinIOStorage',
-    'local': 'common.storages.LocalMediaStorage',
+    "s3": "common.storages.CustomS3Boto3Storage",
+    "r2": "common.storages.CloudflareR2Storage",
+    "b2": "common.storages.BackblazeB2Storage",
+    "minio": "common.storages.MinIOStorage",
+    "local": "common.storages.LocalMediaStorage",
 }
 
 
@@ -250,17 +250,17 @@ def get_default_storage_backend():
             ...
         }
     """
-    backend = os.environ.get('STORAGE_BACKEND', 's3')
-    return STORAGE_BACKENDS.get(backend, STORAGE_BACKENDS['s3'])
+    backend = os.environ.get("STORAGE_BACKEND", "s3")
+    return STORAGE_BACKENDS.get(backend, STORAGE_BACKENDS["s3"])
 
 
 # Public storage backend registry (for user-facing assets like avatars)
 PUBLIC_STORAGE_BACKENDS = {
-    's3': PublicS3Boto3StorageWithCDN,
-    'r2': PublicCloudflareR2Storage,
-    'b2': PublicBackblazeB2Storage,
-    'minio': PublicMinIOStorage,
-    'local': LocalMediaStorage,
+    "s3": PublicS3Boto3StorageWithCDN,
+    "r2": PublicCloudflareR2Storage,
+    "b2": PublicBackblazeB2Storage,
+    "minio": PublicMinIOStorage,
+    "local": LocalMediaStorage,
 }
 
 
@@ -275,8 +275,8 @@ def get_public_storage():
 
     Note: Pass the function itself (not called) to ImageField for lazy evaluation.
     """
-    backend = os.environ.get('STORAGE_BACKEND', 's3')
-    storage_class = PUBLIC_STORAGE_BACKENDS.get(backend, PUBLIC_STORAGE_BACKENDS['s3'])
+    backend = os.environ.get("STORAGE_BACKEND", "s3")
+    storage_class = PUBLIC_STORAGE_BACKENDS.get(backend, PUBLIC_STORAGE_BACKENDS["s3"])
     return storage_class()
 
 
@@ -297,30 +297,30 @@ def get_translations_storage():
     Returns:
         Storage instance configured for translations
     """
-    backend = os.environ.get('STORAGE_BACKEND', 's3')
+    backend = os.environ.get("STORAGE_BACKEND", "s3")
 
-    if backend == 'local':
-        return LocalMediaStorage(location=os.path.join(getattr(settings, 'MEDIA_ROOT', ''), 'translations'))
+    if backend == "local":
+        return LocalMediaStorage(location=os.path.join(getattr(settings, "MEDIA_ROOT", ""), "translations"))
 
     # For cloud backends, use the public storage class with translations location
     storage_classes = {
-        's3': PublicS3Boto3StorageWithCDN,
-        'r2': PublicCloudflareR2Storage,
-        'b2': PublicBackblazeB2Storage,
-        'minio': PublicMinIOStorage,
+        "s3": PublicS3Boto3StorageWithCDN,
+        "r2": PublicCloudflareR2Storage,
+        "b2": PublicBackblazeB2Storage,
+        "minio": PublicMinIOStorage,
     }
 
     storage_class = storage_classes.get(backend, PublicS3Boto3StorageWithCDN)
-    return storage_class(location='translations')
+    return storage_class(location="translations")
 
 
 # Private storage backend registry (for files requiring signed URLs like exports)
 PRIVATE_STORAGE_BACKENDS = {
-    's3': CustomS3Boto3Storage,
-    'r2': CloudflareR2Storage,
-    'b2': BackblazeB2Storage,
-    'minio': MinIOStorage,
-    'local': LocalMediaStorage,
+    "s3": CustomS3Boto3Storage,
+    "r2": CloudflareR2Storage,
+    "b2": BackblazeB2Storage,
+    "minio": MinIOStorage,
+    "local": LocalMediaStorage,
 }
 
 
@@ -340,11 +340,11 @@ def get_exports_storage():
     Returns:
         Storage instance configured for exports with 'exports' location prefix
     """
-    backend = os.environ.get('STORAGE_BACKEND', 's3')
+    backend = os.environ.get("STORAGE_BACKEND", "s3")
 
-    if backend == 'local':
-        return LocalMediaStorage(location=os.path.join(getattr(settings, 'MEDIA_ROOT', ''), 'exports'))
+    if backend == "local":
+        return LocalMediaStorage(location=os.path.join(getattr(settings, "MEDIA_ROOT", ""), "exports"))
 
     # For cloud backends, use the private storage class with exports location
     storage_class = PRIVATE_STORAGE_BACKENDS.get(backend, CustomS3Boto3Storage)
-    return storage_class(location='exports')
+    return storage_class(location="exports")

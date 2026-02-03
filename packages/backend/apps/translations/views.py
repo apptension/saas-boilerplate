@@ -62,10 +62,10 @@ class TranslationsJsonView(APIView):
         translations = get_translations_for_locale(locale_code)
 
         if translations is None:
-            return JsonResponse({'error': f"Locale '{locale_code}' not found"}, status=404)
+            return JsonResponse({"error": f"Locale '{locale_code}' not found"}, status=404)
 
         response = JsonResponse(translations)
-        response['Cache-Control'] = 'public, max-age=300'
+        response["Cache-Control"] = "public, max-age=300"
         return response
 
 
@@ -84,13 +84,13 @@ class SyncTranslationsView(APIView):
         serializer.is_valid(raise_exception=True)
 
         syncer = TranslationSyncer()
-        stats = syncer.sync_from_json(serializer.validated_data['translations'])
+        stats = syncer.sync_from_json(serializer.validated_data["translations"])
 
         return Response(
             {
-                'success': True,
-                'stats': stats,
-                'message': (
+                "success": True,
+                "stats": stats,
+                "message": (
                     f"Sync complete: {stats['created']} created, "
                     f"{stats['updated']} updated, {stats['deprecated']} deprecated"
                 ),
@@ -112,7 +112,7 @@ class PublishTranslationsView(APIView):
         serializer = PublishTranslationsSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        locale_code = serializer.validated_data['locale_code']
+        locale_code = serializer.validated_data["locale_code"]
         locale = Locale.objects.get(code=locale_code)
 
         publisher = TranslationPublisher()
@@ -120,10 +120,10 @@ class PublishTranslationsView(APIView):
 
         return Response(
             {
-                'success': True,
-                'version': version.version,
-                'translation_count': version.translation_count,
-                'message': f"Published {version.translation_count} translations for {locale.name}",
+                "success": True,
+                "version": version.version,
+                "translation_count": version.translation_count,
+                "message": f"Published {version.translation_count} translations for {locale.name}",
             }
         )
 
@@ -157,32 +157,32 @@ class AITranslationJobListView(APIView):
     permission_classes = (policies.IsAdminUser,)
 
     def get(self, request):
-        jobs = AITranslationJob.objects.all().order_by('-created_at')[:20]
+        jobs = AITranslationJob.objects.all().order_by("-created_at")[:20]
         serializer = AITranslationJobSerializer(jobs, many=True)
-        return Response({'jobs': serializer.data, 'openai_configured': is_openai_configured()})
+        return Response({"jobs": serializer.data, "openai_configured": is_openai_configured()})
 
     def post(self, request):
         if not is_openai_configured():
-            return Response({'error': 'OpenAI API key is not configured'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "OpenAI API key is not configured"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = CreateAITranslationJobSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        source_locale = Locale.objects.get(pk=serializer.validated_data['source_locale_id'])
-        target_locale = Locale.objects.get(pk=serializer.validated_data['target_locale_id'])
+        source_locale = Locale.objects.get(pk=serializer.validated_data["source_locale_id"])
+        target_locale = Locale.objects.get(pk=serializer.validated_data["target_locale_id"])
 
         if source_locale == target_locale:
             return Response(
-                {'error': 'Source and target locales must be different'}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "Source and target locales must be different"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         # Create the job
         job = AITranslationJob.objects.create(
             source_locale=source_locale,
             target_locale=target_locale,
-            overwrite_existing=serializer.validated_data.get('overwrite_existing', False),
-            auto_publish=serializer.validated_data.get('auto_publish', False),
-            batch_size=serializer.validated_data.get('batch_size', 20),
+            overwrite_existing=serializer.validated_data.get("overwrite_existing", False),
+            auto_publish=serializer.validated_data.get("auto_publish", False),
+            batch_size=serializer.validated_data.get("batch_size", 20),
             created_by=request.user,
         )
 
@@ -205,7 +205,7 @@ class AITranslationJobDetailView(APIView):
             job = AITranslationJob.objects.get(pk=job_id)
             return Response(AITranslationJobSerializer(job).data)
         except AITranslationJob.DoesNotExist:
-            return Response({'error': 'Job not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Job not found"}, status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, job_id):
         """Cancel a job."""
@@ -214,13 +214,13 @@ class AITranslationJobDetailView(APIView):
             if job.status in [AITranslationJob.Status.PENDING, AITranslationJob.Status.IN_PROGRESS]:
                 job.status = AITranslationJob.Status.CANCELLED
                 job.save()
-                return Response({'status': 'cancelled'})
+                return Response({"status": "cancelled"})
             else:
                 return Response(
-                    {'error': f'Cannot cancel job in {job.status} status'}, status=status.HTTP_400_BAD_REQUEST
+                    {"error": f"Cannot cancel job in {job.status} status"}, status=status.HTTP_400_BAD_REQUEST
                 )
         except AITranslationJob.DoesNotExist:
-            return Response({'error': 'Job not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Job not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class AITranslationProcessBatchView(APIView):
@@ -239,22 +239,22 @@ class AITranslationProcessBatchView(APIView):
         try:
             job = AITranslationJob.objects.get(pk=job_id)
         except AITranslationJob.DoesNotExist:
-            return Response({'error': 'Job not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Job not found"}, status=status.HTTP_404_NOT_FOUND)
 
         # Check job status - only block if cancelled or completed
         if job.status == AITranslationJob.Status.CANCELLED:
-            return Response({'job': AITranslationJobSerializer(job).data, 'done': True, 'message': 'Job was cancelled'})
+            return Response({"job": AITranslationJobSerializer(job).data, "done": True, "message": "Job was cancelled"})
 
         if job.status == AITranslationJob.Status.COMPLETED:
             return Response(
-                {'job': AITranslationJobSerializer(job).data, 'done': True, 'message': 'Job already completed'}
+                {"job": AITranslationJobSerializer(job).data, "done": True, "message": "Job already completed"}
             )
 
         # For failed jobs, allow resume by resetting status
         if job.status == AITranslationJob.Status.FAILED:
             job.status = AITranslationJob.Status.IN_PROGRESS
-            job.error_message = ''
-            job.save(update_fields=['status', 'error_message'])
+            job.error_message = ""
+            job.save(update_fields=["status", "error_message"])
 
         # Initialize job if pending
         if job.status == AITranslationJob.Status.PENDING:
@@ -264,7 +264,7 @@ class AITranslationProcessBatchView(APIView):
             # Count keys to translate
             keys_query = TranslationKey.objects.filter(is_deprecated=False)
             if not job.overwrite_existing:
-                existing = Translation.objects.filter(locale=job.target_locale).values_list('key_id', flat=True)
+                existing = Translation.objects.filter(locale=job.target_locale).values_list("key_id", flat=True)
                 keys_query = keys_query.exclude(pk__in=existing)
 
             job.total_keys = keys_query.count()
@@ -275,17 +275,17 @@ class AITranslationProcessBatchView(APIView):
                 job.completed_at = timezone.now()
                 job.save()
                 return Response(
-                    {'job': AITranslationJobSerializer(job).data, 'done': True, 'message': 'No keys to translate'}
+                    {"job": AITranslationJobSerializer(job).data, "done": True, "message": "No keys to translate"}
                 )
 
         # Get keys that haven't been processed yet
         keys_query = TranslationKey.objects.filter(is_deprecated=False)
         if not job.overwrite_existing:
-            existing = Translation.objects.filter(locale=job.target_locale).values_list('key_id', flat=True)
+            existing = Translation.objects.filter(locale=job.target_locale).values_list("key_id", flat=True)
             keys_query = keys_query.exclude(pk__in=existing)
 
         # Skip already processed keys for this job (tracked by job.processed_keys)
-        keys_list = list(keys_query.values('id', 'key', 'default_message', 'description')[: job.batch_size])
+        keys_list = list(keys_query.values("id", "key", "default_message", "description")[: job.batch_size])
 
         if not keys_list:
             # No more keys to process
@@ -293,27 +293,27 @@ class AITranslationProcessBatchView(APIView):
             job.completed_at = timezone.now()
             job.save()
             return Response(
-                {'job': AITranslationJobSerializer(job).data, 'done': True, 'message': 'Translation completed'}
+                {"job": AITranslationJobSerializer(job).data, "done": True, "message": "Translation completed"}
             )
 
         # Get source translations if needed
         source_translations = {}
-        if job.source_locale.code != 'en':
+        if job.source_locale.code != "en":
             source_trans = Translation.objects.filter(
-                locale=job.source_locale, key_id__in=[k['id'] for k in keys_list], status=Translation.Status.PUBLISHED
-            ).select_related('key')
+                locale=job.source_locale, key_id__in=[k["id"] for k in keys_list], status=Translation.Status.PUBLISHED
+            ).select_related("key")
             source_translations = {t.key_id: t.value for t in source_trans}
 
         # Prepare batch for translation
         keys_with_text = []
         for key_data in keys_list:
-            source_text = source_translations.get(key_data['id'], key_data['default_message'])
+            source_text = source_translations.get(key_data["id"], key_data["default_message"])
             keys_with_text.append(
                 {
-                    'key': key_data['key'],
-                    'text': source_text,
-                    'description': key_data.get('description', ''),
-                    '_id': key_data['id'],
+                    "key": key_data["key"],
+                    "text": source_text,
+                    "description": key_data.get("description", ""),
+                    "_id": key_data["id"],
                 }
             )
 
@@ -331,18 +331,18 @@ class AITranslationProcessBatchView(APIView):
 
             with transaction.atomic():
                 for idx, result in enumerate(results):
-                    key_id = keys_with_text[idx]['_id']
+                    key_id = keys_with_text[idx]["_id"]
 
                     if result.success and result.translated_text:
                         Translation.objects.update_or_create(
                             key_id=key_id,
                             locale=job.target_locale,
                             defaults={
-                                'value': result.translated_text,
-                                'status': (
+                                "value": result.translated_text,
+                                "status": (
                                     Translation.Status.PUBLISHED if job.auto_publish else Translation.Status.DRAFT
                                 ),
-                                'translated_by': job.created_by,
+                                "translated_by": job.created_by,
                             },
                         )
                         batch_success += 1
@@ -360,7 +360,7 @@ class AITranslationProcessBatchView(APIView):
             # Check if more keys remain
             remaining = TranslationKey.objects.filter(is_deprecated=False)
             if not job.overwrite_existing:
-                existing = Translation.objects.filter(locale=job.target_locale).values_list('key_id', flat=True)
+                existing = Translation.objects.filter(locale=job.target_locale).values_list("key_id", flat=True)
                 remaining = remaining.exclude(pk__in=existing)
 
             has_more = remaining.exists()
@@ -372,12 +372,12 @@ class AITranslationProcessBatchView(APIView):
 
             return Response(
                 {
-                    'job': AITranslationJobSerializer(job).data,
-                    'done': not has_more,
-                    'batch_processed': len(results),
-                    'batch_success': batch_success,
-                    'batch_failed': batch_failed,
-                    'message': f'Processed {len(results)} translations',
+                    "job": AITranslationJobSerializer(job).data,
+                    "done": not has_more,
+                    "batch_processed": len(results),
+                    "batch_success": batch_success,
+                    "batch_failed": batch_failed,
+                    "message": f"Processed {len(results)} translations",
                 }
             )
 
@@ -387,6 +387,6 @@ class AITranslationProcessBatchView(APIView):
             job.error_message = str(e)
             job.save()
             return Response(
-                {'job': AITranslationJobSerializer(job).data, 'done': True, 'error': str(e)},
+                {"job": AITranslationJobSerializer(job).data, "done": True, "error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

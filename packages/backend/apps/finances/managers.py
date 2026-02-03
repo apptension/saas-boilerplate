@@ -9,7 +9,7 @@ class ProductManager(models.Manager):
     def get_or_create_subscription_plan(
         self, plan_config: SubscriptionPlanConfig, livemode=djstripe_settings.STRIPE_LIVE_MODE, stripe_account=None
     ):
-        product = self.filter(name=plan_config.name).order_by('created').first()
+        product = self.filter(name=plan_config.name).order_by("created").first()
         if product:
             return product, False
 
@@ -40,7 +40,7 @@ class ProductManager(models.Manager):
 
 class PriceManager(models.Manager):
     def get_by_plan(self, plan: SubscriptionPlanConfig):
-        return self.filter(product__name=plan.name).order_by('created').first()
+        return self.filter(product__name=plan.name).order_by("created").first()
 
     def get_or_create_subscription_price(
         self,

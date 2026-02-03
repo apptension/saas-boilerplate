@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def action_logged(
     entity_type: str,
     action_type: str,
-    name_field: str = 'name',
+    name_field: str = "name",
     get_tenant_id: Optional[Callable] = None,
     get_entity_name: Optional[Callable] = None,
 ):
@@ -41,17 +41,17 @@ def action_logged(
     """
 
     def decorator(cls: Type):
-        original_mutate = getattr(cls, 'mutate_and_get_payload', None) or getattr(cls, 'mutate', None)
+        original_mutate = getattr(cls, "mutate_and_get_payload", None) or getattr(cls, "mutate", None)
 
         if original_mutate is None:
             logger.warning(f"No mutate method found on {cls.__name__}, skipping action logging")
             return cls
 
         # Determine which method to wrap
-        method_name = 'mutate_and_get_payload' if hasattr(cls, 'mutate_and_get_payload') else 'mutate'
+        method_name = "mutate_and_get_payload" if hasattr(cls, "mutate_and_get_payload") else "mutate"
 
         @classmethod
-        @functools.wraps(original_mutate.__func__ if hasattr(original_mutate, '__func__') else original_mutate)
+        @functools.wraps(original_mutate.__func__ if hasattr(original_mutate, "__func__") else original_mutate)
         def wrapped_mutate(cls_inner, root, info, **input_data):
             from .service import (
                 log_create,
@@ -65,8 +65,8 @@ def action_logged(
             tenant_id = None
             if get_tenant_id:
                 tenant_id = get_tenant_id(input_data)
-            elif 'tenant_id' in input_data:
-                raw_tenant_id = input_data.get('tenant_id')
+            elif "tenant_id" in input_data:
+                raw_tenant_id = input_data.get("tenant_id")
                 if raw_tenant_id:
                     try:
                         _, tenant_id = from_global_id(raw_tenant_id)
@@ -78,12 +78,12 @@ def action_logged(
                 return original_mutate.__func__(cls_inner, root, info, **input_data)
 
             # Get user from context
-            user = getattr(info.context, 'user', None)
+            user = getattr(info.context, "user", None)
             if user and not user.is_authenticated:
                 user = None
 
             # Determine actor type - check if this is an AI Agent request
-            is_ai_agent = getattr(info.context, 'is_ai_agent_request', False)
+            is_ai_agent = getattr(info.context, "is_ai_agent_request", False)
             actor_type = ActionActorType.AI_AGENT if is_ai_agent else ActionActorType.USER
 
             # For UPDATE and DELETE, capture old state
@@ -166,22 +166,22 @@ def _get_old_instance(cls, info, input_data):
     try:
         # Try to get the model class from the mutation's Meta
         model_class = None
-        if hasattr(cls, '_meta'):
-            model_class = getattr(cls._meta, 'model_class', None) or getattr(cls._meta, 'model', None)
+        if hasattr(cls, "_meta"):
+            model_class = getattr(cls._meta, "model_class", None) or getattr(cls._meta, "model", None)
 
-        if not model_class and hasattr(cls, 'Meta'):
+        if not model_class and hasattr(cls, "Meta"):
             meta = cls.Meta
-            serializer_class = getattr(meta, 'serializer_class', None)
-            if serializer_class and hasattr(serializer_class, 'Meta'):
-                model_class = getattr(serializer_class.Meta, 'model', None)
+            serializer_class = getattr(meta, "serializer_class", None)
+            if serializer_class and hasattr(serializer_class, "Meta"):
+                model_class = getattr(serializer_class.Meta, "model", None)
             if not model_class:
-                model_class = getattr(meta, 'model', None)
+                model_class = getattr(meta, "model", None)
 
         if not model_class:
             return None
 
         # Get the instance ID
-        instance_id = input_data.get('id')
+        instance_id = input_data.get("id")
         if not instance_id:
             return None
 
@@ -226,16 +226,16 @@ def _extract_instance_from_result(result, cls):
 
     # Try common attribute names for the returned instance
     model_class = None
-    if hasattr(cls, '_meta'):
-        model_class = getattr(cls._meta, 'model_class', None) or getattr(cls._meta, 'model', None)
+    if hasattr(cls, "_meta"):
+        model_class = getattr(cls._meta, "model_class", None) or getattr(cls._meta, "model", None)
 
-    if not model_class and hasattr(cls, 'Meta'):
+    if not model_class and hasattr(cls, "Meta"):
         meta = cls.Meta
-        serializer_class = getattr(meta, 'serializer_class', None)
-        if serializer_class and hasattr(serializer_class, 'Meta'):
-            model_class = getattr(serializer_class.Meta, 'model', None)
+        serializer_class = getattr(meta, "serializer_class", None)
+        if serializer_class and hasattr(serializer_class, "Meta"):
+            model_class = getattr(serializer_class.Meta, "model", None)
         if not model_class:
-            model_class = getattr(meta, 'model', None)
+            model_class = getattr(meta, "model", None)
 
     if model_class:
         model_name = model_class.__name__
@@ -247,17 +247,17 @@ def _extract_instance_from_result(result, cls):
         # Try snake_case
         import re
 
-        snake_name = re.sub(r'(?<!^)(?=[A-Z])', '_', model_name).lower()
+        snake_name = re.sub(r"(?<!^)(?=[A-Z])", "_", model_name).lower()
         if hasattr(result, snake_name):
             return getattr(result, snake_name)
 
     # Try common attribute names
-    for attr in ['instance', 'object', 'obj', 'item', 'node']:
+    for attr in ["instance", "object", "obj", "item", "node"]:
         if hasattr(result, attr):
             return getattr(result, attr)
 
     # Check for edge attribute (for mutations returning edges)
-    if hasattr(result, '_meta') and hasattr(result._meta, 'return_field_name'):
+    if hasattr(result, "_meta") and hasattr(result._meta, "return_field_name"):
         return_field = result._meta.return_field_name
         if hasattr(result, return_field):
             return getattr(result, return_field)
@@ -281,7 +281,7 @@ def _get_entity_name(instance, name_field: str, get_entity_name: Optional[Callab
             return str(name)
 
     # Try common name fields
-    for field in ['name', 'full_name', 'title', 'label', 'code']:
+    for field in ["name", "full_name", "title", "label", "code"]:
         if hasattr(instance, field):
             value = getattr(instance, field, None)
             if value:
@@ -296,7 +296,7 @@ def log_mutation_action(
     action_type: str,
     entity_type: str,
     entity_id: str,
-    entity_name: str = '',
+    entity_name: str = "",
     changes: dict = None,
     metadata: dict = None,
 ):
@@ -332,12 +332,12 @@ def log_mutation_action(
         return None
 
     # Get user from context
-    user = getattr(info.context, 'user', None)
+    user = getattr(info.context, "user", None)
     if user and not user.is_authenticated:
         user = None
 
     # Determine actor type - check if this is an AI Agent request
-    is_ai_agent = getattr(info.context, 'is_ai_agent_request', False)
+    is_ai_agent = getattr(info.context, "is_ai_agent_request", False)
     actor_type = ActionActorType.AI_AGENT if is_ai_agent else ActionActorType.USER
 
     return log_action(

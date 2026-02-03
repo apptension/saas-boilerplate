@@ -7,13 +7,13 @@ from .secrets import SecretsService
 from .sessions import SessionService, parse_user_agent, get_client_ip
 
 __all__ = [
-    'SAMLService',
-    'OIDCService',
-    'SCIMService',
-    'WebAuthnService',
-    'JITProvisioningService',
-    'SecretsService',
-    'SessionService',
-    'parse_user_agent',
-    'get_client_ip',
+    "SAMLService",
+    "OIDCService",
+    "SCIMService",
+    "WebAuthnService",
+    "JITProvisioningService",
+    "SecretsService",
+    "SessionService",
+    "parse_user_agent",
+    "get_client_ip",
 ]

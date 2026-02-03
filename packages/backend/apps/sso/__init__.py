@@ -1,1 +1,1 @@
-default_app_config = 'apps.sso.apps.SsoConfig'
+default_app_config = "apps.sso.apps.SsoConfig"

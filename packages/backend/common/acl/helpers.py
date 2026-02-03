@@ -3,53 +3,53 @@ from apps.multitenancy.constants import TenantUserRole
 
 def make_statement(action, effect, principal, condition=None):
     statement = {
-        'action': action,
-        'effect': effect,
-        'principal': principal,
+        "action": action,
+        "effect": effect,
+        "principal": principal,
     }
 
     if condition:
-        statement['condition'] = condition
+        statement["condition"] = condition
 
     return statement
 
 
 class CommonGroups:
-    Admin = 'admin'
-    User = 'user'
+    Admin = "admin"
+    User = "user"
 
 
 class Effect:
-    Allow = 'allow'
-    Deny = 'deny'
+    Allow = "allow"
+    Deny = "deny"
 
 
 class Action:
-    Any = '*'
+    Any = "*"
     SafeMethods = "<safe_methods>"
-    List = 'list'
-    Destroy = 'destroy'
-    Create = 'create'
-    Retrieve = 'retrieve'
-    Update = 'update'
+    List = "list"
+    Destroy = "destroy"
+    Create = "create"
+    Retrieve = "retrieve"
+    Update = "update"
 
     @staticmethod
     def method(*names):
-        return '|'.join(names)
+        return "|".join(names)
 
 
 class Principal:
-    Any = '*'
-    Authenticated = 'authenticated'
-    Anonymous = 'anonymous'
+    Any = "*"
+    Authenticated = "authenticated"
+    Anonymous = "anonymous"
 
     @staticmethod
     def id(name):
-        return f'id:{name}'
+        return f"id:{name}"
 
     @staticmethod
     def group(name):
-        return f'group:{name}'
+        return f"group:{name}"
 
 
 class TenantRoles:

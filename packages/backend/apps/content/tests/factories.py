@@ -4,7 +4,7 @@ from .. import models
 
 
 class ContentfulDemoItemFactory(factory.django.DjangoModelFactory):
-    id = factory.Faker('uuid4')
+    id = factory.Faker("uuid4")
     fields = {}
     is_published = True
 

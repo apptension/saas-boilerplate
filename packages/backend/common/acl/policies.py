@@ -52,16 +52,16 @@ class TenantDependentAccess(AccessPolicy):
 
     # Permissions that grant owner-level access
     OWNER_EQUIVALENT_PERMISSIONS = [
-        'org.roles.manage',  # Can manage roles = owner-level
-        'org.delete',  # Can delete org = owner-level
+        "org.roles.manage",  # Can manage roles = owner-level
+        "org.delete",  # Can delete org = owner-level
     ]
 
     # Permissions that grant admin-level access (in addition to owner permissions)
     ADMIN_EQUIVALENT_PERMISSIONS = [
-        'org.settings.edit',  # Can edit org settings
-        'members.roles.edit',  # Can edit member roles
-        'members.remove',  # Can remove members
-        'security.sso.manage',  # Can manage SSO
+        "org.settings.edit",  # Can edit org settings
+        "members.roles.edit",  # Can edit member roles
+        "members.remove",  # Can remove members
+        "security.sso.manage",  # Can manage SSO
     ]
 
     def _get_user_rbac_info(self, request) -> dict:
@@ -75,14 +75,14 @@ class TenantDependentAccess(AccessPolicy):
         - permissions: Set of all permission codes the user has
         """
         result = {
-            'system_role_type': None,
-            'is_owner_role': False,
-            'has_roles': False,
-            'permissions': set(),
+            "system_role_type": None,
+            "is_owner_role": False,
+            "has_roles": False,
+            "permissions": set(),
         }
 
-        user = getattr(request, 'user', None)
-        tenant = getattr(request, 'tenant', None)
+        user = getattr(request, "user", None)
+        tenant = getattr(request, "tenant", None)
 
         if not user or not user.is_authenticated or not tenant:
             return result
@@ -99,10 +99,10 @@ class TenantDependentAccess(AccessPolicy):
                 return result
 
             # Get all RBAC roles assigned to this membership
-            role_assignments = TenantMembershipRole.objects.filter(membership=membership).select_related('role')
+            role_assignments = TenantMembershipRole.objects.filter(membership=membership).select_related("role")
 
             if role_assignments.exists():
-                result['has_roles'] = True
+                result["has_roles"] = True
 
             # Analyze roles
             role_types = []
@@ -111,18 +111,18 @@ class TenantDependentAccess(AccessPolicy):
                 if role.system_role_type:
                     role_types.append(role.system_role_type)
                 if role.is_owner_role:
-                    result['is_owner_role'] = True
+                    result["is_owner_role"] = True
 
             # Determine highest role type
             if SystemRoleType.OWNER in role_types:
-                result['system_role_type'] = SystemRoleType.OWNER
+                result["system_role_type"] = SystemRoleType.OWNER
             elif SystemRoleType.ADMIN in role_types:
-                result['system_role_type'] = SystemRoleType.ADMIN
+                result["system_role_type"] = SystemRoleType.ADMIN
             elif SystemRoleType.MEMBER in role_types:
-                result['system_role_type'] = SystemRoleType.MEMBER
+                result["system_role_type"] = SystemRoleType.MEMBER
 
             # Get all permissions
-            result['permissions'] = get_user_permissions_for_tenant(user, tenant)
+            result["permissions"] = get_user_permissions_for_tenant(user, tenant)
 
             return result
         except Exception:
@@ -130,8 +130,8 @@ class TenantDependentAccess(AccessPolicy):
 
     def _has_any_permission(self, request, permission_codes: list) -> bool:
         """Check if user has any of the specified permissions."""
-        user = getattr(request, 'user', None)
-        tenant = getattr(request, 'tenant', None)
+        user = getattr(request, "user", None)
+        tenant = getattr(request, "tenant", None)
 
         if not user or not user.is_authenticated or not tenant:
             return False
@@ -161,17 +161,17 @@ class TenantDependentAccess(AccessPolicy):
         rbac_info = self._get_user_rbac_info(request)
 
         # SystemRoleType.OWNER
-        if rbac_info['system_role_type'] == 'OWNER':
+        if rbac_info["system_role_type"] == "OWNER":
             return True
 
         # is_owner_role flag
-        if rbac_info['is_owner_role']:
+        if rbac_info["is_owner_role"]:
             return True
 
         # Owner-equivalent permissions
         return bool(
-            rbac_info['permissions']
-            and any(perm in rbac_info['permissions'] for perm in self.OWNER_EQUIVALENT_PERMISSIONS)
+            rbac_info["permissions"]
+            and any(perm in rbac_info["permissions"] for perm in self.OWNER_EQUIVALENT_PERMISSIONS)
         )
 
     def is_request_from_tenant_admin(self, request, view, action) -> bool:
@@ -192,16 +192,16 @@ class TenantDependentAccess(AccessPolicy):
         rbac_info = self._get_user_rbac_info(request)
 
         # SystemRoleType.OWNER or ADMIN
-        if rbac_info['system_role_type'] in ('OWNER', 'ADMIN'):
+        if rbac_info["system_role_type"] in ("OWNER", "ADMIN"):
             return True
 
         # is_owner_role flag
-        if rbac_info['is_owner_role']:
+        if rbac_info["is_owner_role"]:
             return True
 
         # Admin-equivalent permissions (includes owner permissions)
         admin_permissions = self.OWNER_EQUIVALENT_PERMISSIONS + self.ADMIN_EQUIVALENT_PERMISSIONS
-        return bool(rbac_info['permissions'] and any(perm in rbac_info['permissions'] for perm in admin_permissions))
+        return bool(rbac_info["permissions"] and any(perm in rbac_info["permissions"] for perm in admin_permissions))
 
     def is_request_from_tenant_member(self, request, view, action) -> bool:
         """
@@ -217,7 +217,7 @@ class TenantDependentAccess(AccessPolicy):
 
         # 2. Check RBAC - any role means they're a member
         rbac_info = self._get_user_rbac_info(request)
-        return bool(rbac_info['has_roles'])
+        return bool(rbac_info["has_roles"])
 
 
 class IsTenantOwnerAccess(TenantDependentAccess):
@@ -318,7 +318,7 @@ class HasPermissionAccess(TenantDependentAccess):
         if not request.user or not request.user.is_authenticated:
             return False
 
-        tenant = getattr(request, 'tenant', None)
+        tenant = getattr(request, "tenant", None)
         if not tenant:
             return False
 

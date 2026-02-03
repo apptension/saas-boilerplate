@@ -36,24 +36,24 @@ def process_ai_translation_job(self, job_id: int):
         job = AITranslationJob.objects.get(pk=job_id)
     except AITranslationJob.DoesNotExist:
         logger.error(f"AI Translation job {job_id} not found")
-        return {'error': 'Job not found'}
+        return {"error": "Job not found"}
 
     # Check if already processed
     if job.status in [AITranslationJob.Status.COMPLETED, AITranslationJob.Status.CANCELLED]:
         logger.info(f"Job {job_id} already {job.status}, skipping")
-        return {'status': job.status}
+        return {"status": job.status}
 
     # Check OpenAI configuration
     if not is_openai_configured():
         job.status = AITranslationJob.Status.FAILED
         job.error_message = "OpenAI API key is not configured"
         job.save()
-        return {'error': job.error_message}
+        return {"error": job.error_message}
 
     # Mark as in progress
     job.status = AITranslationJob.Status.IN_PROGRESS
     job.started_at = timezone.now()
-    job.celery_task_id = self.request.id or ''
+    job.celery_task_id = self.request.id or ""
     job.save()
 
     try:
@@ -63,28 +63,28 @@ def process_ai_translation_job(self, job_id: int):
         # If not overwriting, exclude keys that already have translations
         if not job.overwrite_existing:
             existing_translation_keys = Translation.objects.filter(locale=job.target_locale).values_list(
-                'key_id', flat=True
+                "key_id", flat=True
             )
             keys_query = keys_query.exclude(pk__in=existing_translation_keys)
 
-        all_keys = list(keys_query.values('id', 'key', 'default_message', 'description'))
+        all_keys = list(keys_query.values("id", "key", "default_message", "description"))
         job.total_keys = len(all_keys)
-        job.save(update_fields=['total_keys'])
+        job.save(update_fields=["total_keys"])
 
         if not all_keys:
             job.status = AITranslationJob.Status.COMPLETED
             job.completed_at = timezone.now()
             job.save()
             logger.info(f"Job {job_id}: No keys to translate")
-            return {'status': 'completed', 'message': 'No keys to translate'}
+            return {"status": "completed", "message": "No keys to translate"}
 
         # Get source translations
         source_translations = {}
-        if job.source_locale.code != 'en':
+        if job.source_locale.code != "en":
             # Get existing translations from source locale
             source_trans = Translation.objects.filter(
                 locale=job.source_locale, status=Translation.Status.PUBLISHED
-            ).select_related('key')
+            ).select_related("key")
             source_translations = {t.key_id: t.value for t in source_trans}
 
         # Initialize service
@@ -101,23 +101,23 @@ def process_ai_translation_job(self, job_id: int):
             job.refresh_from_db()
             if job.status == AITranslationJob.Status.CANCELLED:
                 logger.info(f"Job {job_id} was cancelled, stopping")
-                return {'status': 'cancelled'}
+                return {"status": "cancelled"}
 
             # Prepare batch for translation
             keys_with_text = []
             for key_data in batch:
                 # Get source text: from source translations or default message
-                if key_data['id'] in source_translations:
-                    source_text = source_translations[key_data['id']]
+                if key_data["id"] in source_translations:
+                    source_text = source_translations[key_data["id"]]
                 else:
-                    source_text = key_data['default_message']
+                    source_text = key_data["default_message"]
 
                 keys_with_text.append(
                     {
-                        'key': key_data['key'],
-                        'text': source_text,
-                        'description': key_data.get('description', ''),
-                        '_id': key_data['id'],  # For internal tracking
+                        "key": key_data["key"],
+                        "text": source_text,
+                        "description": key_data.get("description", ""),
+                        "_id": key_data["id"],  # For internal tracking
                     }
                 )
 
@@ -132,18 +132,18 @@ def process_ai_translation_job(self, job_id: int):
                 # Save translations
                 with transaction.atomic():
                     for idx, result in enumerate(results):
-                        key_id = keys_with_text[idx]['_id']
+                        key_id = keys_with_text[idx]["_id"]
 
                         if result.success and result.translated_text:
                             Translation.objects.update_or_create(
                                 key_id=key_id,
                                 locale=job.target_locale,
                                 defaults={
-                                    'value': result.translated_text,
-                                    'status': (
+                                    "value": result.translated_text,
+                                    "status": (
                                         Translation.Status.PUBLISHED if job.auto_publish else Translation.Status.DRAFT
                                     ),
-                                    'translated_by': job.created_by,
+                                    "translated_by": job.created_by,
                                 },
                             )
                         else:
@@ -159,14 +159,14 @@ def process_ai_translation_job(self, job_id: int):
                 for key_data in batch:
                     job.failed_keys += 1
                     job.processed_keys += 1
-                    failed_key_ids.append(key_data['id'])
+                    failed_key_ids.append(key_data["id"])
 
             # Update progress
             job.failed_key_ids = failed_key_ids
-            job.save(update_fields=['processed_keys', 'failed_keys', 'failed_key_ids'])
+            job.save(update_fields=["processed_keys", "failed_keys", "failed_key_ids"])
 
             logger.info(
-                f"Job {job_id}: Processed {job.processed_keys}/{job.total_keys} keys " f"({job.failed_keys} failed)"
+                f"Job {job_id}: Processed {job.processed_keys}/{job.total_keys} keys ({job.failed_keys} failed)"
             )
 
         # Mark as completed
@@ -174,15 +174,13 @@ def process_ai_translation_job(self, job_id: int):
         job.completed_at = timezone.now()
         job.save()
 
-        logger.info(
-            f"Job {job_id} completed: {job.successful_translations} translations, " f"{job.failed_keys} failures"
-        )
+        logger.info(f"Job {job_id} completed: {job.successful_translations} translations, {job.failed_keys} failures")
 
         return {
-            'status': 'completed',
-            'total': job.total_keys,
-            'successful': job.successful_translations,
-            'failed': job.failed_keys,
+            "status": "completed",
+            "total": job.total_keys,
+            "successful": job.successful_translations,
+            "failed": job.failed_keys,
         }
 
     except Exception as e:
@@ -196,7 +194,7 @@ def process_ai_translation_job(self, job_id: int):
         if self.request.retries < self.max_retries:
             raise self.retry(exc=e)
 
-        return {'error': str(e)}
+        return {"error": str(e)}
 
 
 @shared_task
@@ -213,7 +211,7 @@ def translate_single_key_async(key_id: int, source_locale_code: str, target_loca
     User = get_user_model()
 
     if not is_openai_configured():
-        return {'error': 'OpenAI not configured'}
+        return {"error": "OpenAI not configured"}
 
     try:
         key = TranslationKey.objects.get(pk=key_id)
@@ -221,11 +219,11 @@ def translate_single_key_async(key_id: int, source_locale_code: str, target_loca
         target_locale = Locale.objects.get(code=target_locale_code)
         user = User.objects.get(pk=user_id) if user_id else None
     except (TranslationKey.DoesNotExist, Locale.DoesNotExist, User.DoesNotExist) as e:
-        return {'error': str(e)}
+        return {"error": str(e)}
 
     # Get source text
     source_text = key.default_message
-    if source_locale.code != 'en':
+    if source_locale.code != "en":
         try:
             source_trans = Translation.objects.get(key=key, locale=source_locale, status=Translation.Status.PUBLISHED)
             source_text = source_trans.value
@@ -246,8 +244,8 @@ def translate_single_key_async(key_id: int, source_locale_code: str, target_loca
         Translation.objects.update_or_create(
             key=key,
             locale=target_locale,
-            defaults={'value': result.translated_text, 'status': Translation.Status.DRAFT, 'translated_by': user},
+            defaults={"value": result.translated_text, "status": Translation.Status.DRAFT, "translated_by": user},
         )
-        return {'success': True, 'key': key.key, 'translation': result.translated_text}
+        return {"success": True, "key": key.key, "translation": result.translated_text}
     else:
-        return {'success': False, 'key': key.key, 'error': result.error}
+        return {"success": False, "key": key.key, "error": result.error}

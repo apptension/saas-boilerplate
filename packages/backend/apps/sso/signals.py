@@ -83,9 +83,9 @@ def _notify_sso_status_change(connection, activated: bool):
                 user=owner,
                 type=notification_type,
                 data={
-                    'connection_name': connection.name,
-                    'connection_type': connection.get_connection_type_display(),
-                    'tenant_name': connection.tenant.name,
+                    "connection_name": connection.name,
+                    "connection_type": connection.get_connection_type_display(),
+                    "tenant_name": connection.tenant.name,
                 },
                 issuer=None,
             )
@@ -102,8 +102,8 @@ def _notify_passkey_registered(passkey):
             user=passkey.user,
             type=Notification.PASSKEY_REGISTERED.value,
             data={
-                'passkey_name': passkey.name,
-                'authenticator_type': passkey.authenticator_type,
+                "passkey_name": passkey.name,
+                "authenticator_type": passkey.authenticator_type,
             },
             issuer=None,
         )

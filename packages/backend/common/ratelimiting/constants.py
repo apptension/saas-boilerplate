@@ -14,19 +14,19 @@ class RateLimitKey(str, Enum):
     These determine HOW rate limits are tracked (by IP, user, tenant, etc.)
     """
 
-    IP = 'ip'
+    IP = "ip"
     """Rate limit by client IP address. Best for anonymous/unauthenticated requests."""
 
-    USER = 'user'
+    USER = "user"
     """Rate limit by authenticated user ID. Requires authentication."""
 
-    USER_OR_IP = 'user_or_ip'
+    USER_OR_IP = "user_or_ip"
     """Rate limit by user if authenticated, otherwise by IP. Good for mixed endpoints."""
 
-    TENANT = 'tenant'
+    TENANT = "tenant"
     """Rate limit by tenant ID. Applies limits per organization."""
 
-    USER_TENANT = 'user_tenant'
+    USER_TENANT = "user_tenant"
     """Rate limit by user+tenant combination. Per-user limits within each tenant."""
 
 
@@ -38,41 +38,41 @@ class RateLimitCategory(str, Enum):
     """
 
     # Authentication operations
-    AUTH_LOGIN = 'auth.login'
-    AUTH_SIGNUP = 'auth.signup'
-    AUTH_PASSWORD_RESET = 'auth.password_reset'
-    AUTH_OTP = 'auth.otp'
-    AUTH_PASSKEY = 'auth.passkey'
+    AUTH_LOGIN = "auth.login"
+    AUTH_SIGNUP = "auth.signup"
+    AUTH_PASSWORD_RESET = "auth.password_reset"
+    AUTH_OTP = "auth.otp"
+    AUTH_PASSKEY = "auth.passkey"
 
     # GraphQL operations
-    GRAPHQL_GLOBAL_ANON = 'graphql.global.anon'
-    GRAPHQL_GLOBAL_USER = 'graphql.global.user'
-    GRAPHQL_QUERY = 'graphql.query'
-    GRAPHQL_MUTATION = 'graphql.mutation'
+    GRAPHQL_GLOBAL_ANON = "graphql.global.anon"
+    GRAPHQL_GLOBAL_USER = "graphql.global.user"
+    GRAPHQL_QUERY = "graphql.query"
+    GRAPHQL_MUTATION = "graphql.mutation"
 
     # AI/MCP operations (expensive - external API calls)
-    AI_CHAT_MESSAGE = 'ai.chat.message'
-    AI_CHAT_HOURLY = 'ai.chat.hourly'
-    AI_MCP_PROXY = 'ai.mcp.proxy'
-    AI_PARSE = 'ai.parse'
-    AI_DETECT = 'ai.detect'
+    AI_CHAT_MESSAGE = "ai.chat.message"
+    AI_CHAT_HOURLY = "ai.chat.hourly"
+    AI_MCP_PROXY = "ai.mcp.proxy"
+    AI_PARSE = "ai.parse"
+    AI_DETECT = "ai.detect"
 
     # Import operations (heavy DB operations)
-    IMPORT_CSV = 'import.csv'
-    IMPORT_EXCEL = 'import.excel'
-    IMPORT_DAILY = 'import.daily'
+    IMPORT_CSV = "import.csv"
+    IMPORT_EXCEL = "import.excel"
+    IMPORT_DAILY = "import.daily"
 
     # File operations
-    FILE_UPLOAD = 'file.upload'
-    FILE_UPLOAD_LARGE = 'file.upload.large'
+    FILE_UPLOAD = "file.upload"
+    FILE_UPLOAD_LARGE = "file.upload.large"
 
     # SSO operations
-    SSO_LOGIN = 'sso.login'
-    SSO_DISCOVERY = 'sso.discovery'
-    SSO_SCIM = 'sso.scim'
+    SSO_LOGIN = "sso.login"
+    SSO_DISCOVERY = "sso.discovery"
+    SSO_SCIM = "sso.scim"
 
     # General API
-    API_GENERAL = 'api.general'
+    API_GENERAL = "api.general"
 
 
 class UserTier(str, Enum):
@@ -82,19 +82,19 @@ class UserTier(str, Enum):
     Different user tiers can have different rate limits.
     """
 
-    ANONYMOUS = 'anonymous'
+    ANONYMOUS = "anonymous"
     """Unauthenticated users - strictest limits."""
 
-    FREE = 'free'
+    FREE = "free"
     """Free tier users - moderate limits."""
 
-    STANDARD = 'standard'
+    STANDARD = "standard"
     """Standard paid users - generous limits."""
 
-    POWER = 'power'
+    POWER = "power"
     """Power users or API access - highest limits."""
 
-    ADMIN = 'admin'
+    ADMIN = "admin"
     """Platform admins - unlimited or very high limits."""
 
 

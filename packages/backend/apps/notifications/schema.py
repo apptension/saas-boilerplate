@@ -98,7 +98,7 @@ class Query(HasUnreadNotificationsMixin, graphene.ObjectType):
 
     @staticmethod
     def resolve_all_notifications(root, info, **kwargs):
-        return models.Notification.objects.filter_by_user(info.context.user).order_by('-created_at')
+        return models.Notification.objects.filter_by_user(info.context.user).order_by("-created_at")
 
 
 class Mutation(graphene.ObjectType):
@@ -135,7 +135,7 @@ class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
         - Cannot be manipulated to subscribe to other users' notifications
         """
         # Get user from channels scope (WebSocket authentication)
-        user = info.context.channels_scope.get('user')
+        user = info.context.channels_scope.get("user")
 
         # SECURITY: Verify user is authenticated
         if not user or not user.is_authenticated:
@@ -154,7 +154,7 @@ class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
         SECURITY: Verifies the notification belongs to the requesting user.
         """
         notification = (
-            models.Notification.objects.prefetch_related('issuer', 'issuer__profile', 'issuer__profile__avatar')
+            models.Notification.objects.prefetch_related("issuer", "issuer__profile", "issuer__profile__avatar")
             .filter(id=id, user_id=user_id)
             .first()
         )
@@ -171,11 +171,11 @@ class NotificationCreatedSubscription(channels_graphql_ws.Subscription):
         SECURITY: Verifies the notification belongs to the receiving user
         before publishing to prevent cross-user notification leaks.
         """
-        user = info.context.channels_scope.get('user')
+        user = info.context.channels_scope.get("user")
         if not user or not user.is_authenticated:
             return None
 
-        return await NotificationCreatedSubscription.get_response(id=payload['id'], user_id=user.id)
+        return await NotificationCreatedSubscription.get_response(id=payload["id"], user_id=user.id)
 
 
 @permission_classes(IsAuthenticatedFullAccess)

@@ -11,7 +11,7 @@ from django.core.mail import EmailMessage
 logger = logging.getLogger(__name__)
 
 # Default language for emails
-DEFAULT_EMAIL_LANGUAGE = 'en'
+DEFAULT_EMAIL_LANGUAGE = "en"
 
 
 class BaseEmail:
@@ -21,7 +21,7 @@ class BaseEmail:
         serializer_class = self.get_serializer_class()
         if serializer_class is None:
             return None
-        kwargs.setdefault('context', self.get_serializer_context())
+        kwargs.setdefault("context", self.get_serializer_context())
         return serializer_class(*args, **kwargs)
 
     def get_serializer_class(self):
@@ -79,11 +79,11 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict, lan
     # Fetch translations from database
     translations = get_email_translations(lang)
 
-    render_script = '''
+    render_script = """
     const { renderEmail } = require('./email');
     console.log(JSON.stringify(renderEmail('%s', %s, '%s', %s)));
     process.exit(0);
-    ''' % (
+    """ % (
         email_type,
         json.dumps(email_data),
         lang,
@@ -95,16 +95,16 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict, lan
         node_process = subprocess.run(
             ["node"],
             shell=True,
-            input=bytes(render_script, 'utf-8'),
+            input=bytes(render_script, "utf-8"),
             capture_output=True,
             check=True,
-            cwd='/app/scripts/runtime',
+            cwd="/app/scripts/runtime",
             # Environmental variables are mapped manually to avoid secret values from being exposed to email renderer
             # script that is usually maintained by non-backend developers
             env={
-                'DEBUG': str(settings.DEBUG),
-                'VITE_EMAIL_ASSETS_URL': os.environ.get('VITE_EMAIL_ASSETS_URL', ''),
-                'VITE_WEB_APP_URL': os.environ.get('VITE_WEB_APP_URL', ''),
+                "DEBUG": str(settings.DEBUG),
+                "VITE_EMAIL_ASSETS_URL": os.environ.get("VITE_EMAIL_ASSETS_URL", ""),
+                "VITE_WEB_APP_URL": os.environ.get("VITE_WEB_APP_URL", ""),
             },
         )
         logger.debug("Node.js renderer completed successfully")
@@ -118,10 +118,10 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict, lan
         self.update_state(
             state=states.FAILURE,
             meta={
-                'return_code': e.returncode,
-                'cmd': e.cmd,
-                'output': e.output,
-                'stderr': e.stderr,
+                "return_code": e.returncode,
+                "cmd": e.cmd,
+                "output": e.output,
+                "stderr": e.stderr,
             },
         )
         raise Ignore()
@@ -140,18 +140,18 @@ def send_email(self, to: str | list[str], email_type: str, email_data: dict, lan
         raise
 
     email = EmailMessage(
-        rendered_email['subject'],
-        rendered_email['html'],
+        rendered_email["subject"],
+        rendered_email["html"],
         settings.EMAIL_FROM_ADDRESS,
         to,
         reply_to=settings.EMAIL_REPLY_ADDRESS,
     )
-    email.content_subtype = 'html'
+    email.content_subtype = "html"
 
     try:
         sent_count = email.send()
         logger.info(f"Email sent successfully: type={email_type}, to={to}, sent_count={sent_count}")
-        return {'sent_emails_count': sent_count}
+        return {"sent_emails_count": sent_count}
     except Exception as e:
         logger.error(f"Failed to send email via {settings.EMAIL_BACKEND}: {e}")
         raise

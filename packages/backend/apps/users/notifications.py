@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 def get_user_language(user):
     """Get user's preferred language, with fallback to default."""
     try:
-        if hasattr(user, 'profile') and user.profile and user.profile.language:
+        if hasattr(user, "profile") and user.profile and user.profile.language:
             return user.profile.language
     except Exception:
         pass
@@ -23,10 +23,10 @@ class UserEmail(emails.Email):
 
 
 class AccountActivationEmail(UserEmail):
-    name = 'ACCOUNT_ACTIVATION'
+    name = "ACCOUNT_ACTIVATION"
     serializer_class = email_serializers.AccountActivationEmailSerializer
 
 
 class PasswordResetEmail(UserEmail):
-    name = 'PASSWORD_RESET'
+    name = "PASSWORD_RESET"
     serializer_class = email_serializers.PasswordResetEmailSerializer

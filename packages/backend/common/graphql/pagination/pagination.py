@@ -5,6 +5,7 @@ via
 https://www.saltycrane.com/blog/2021/01/graphene-and-relay-example-graphql-pagination-api-and-ui/
 
 """
+
 import math
 
 from graphql_relay import to_global_id

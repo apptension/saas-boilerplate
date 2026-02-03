@@ -36,7 +36,7 @@ def remove_payment_method(payment_method: djstripe_models.PaymentMethod):
     :return:
     """
     customer = payment_method.customer
-    customer_payment_methods = list(customer.payment_methods.select_for_update().order_by('-created').all())
+    customer_payment_methods = list(customer.payment_methods.select_for_update().order_by("-created").all())
 
     if customer.default_payment_method == payment_method:
         customer.default_payment_method = None

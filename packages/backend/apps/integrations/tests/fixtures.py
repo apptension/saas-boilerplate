@@ -18,7 +18,7 @@ def openai_completion_mock(mocker):
     mock_chat.completions = mock_completions
     mock_client.chat = mock_chat
     mock_client.completions = mocker.Mock()  # Also mock completions for instruct models
-    mocker.patch.object(OpenAI, '__new__', return_value=mock_client)
+    mocker.patch.object(OpenAI, "__new__", return_value=mock_client)
     return mock_completions.create
 
 

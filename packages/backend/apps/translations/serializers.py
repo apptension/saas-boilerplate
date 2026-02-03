@@ -14,7 +14,7 @@ class LocaleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Locale
-        fields = ['id', 'code', 'name', 'native_name', 'is_default', 'is_active', 'rtl', 'translation_progress']
+        fields = ["id", "code", "name", "native_name", "is_default", "is_active", "rtl", "translation_progress"]
 
 
 class TranslationKeySerializer(serializers.ModelSerializer):
@@ -22,18 +22,18 @@ class TranslationKeySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TranslationKey
-        fields = ['id', 'key', 'default_message', 'description', 'is_deprecated']
+        fields = ["id", "key", "default_message", "description", "is_deprecated"]
 
 
 class TranslationSerializer(serializers.ModelSerializer):
     """Serializer for Translation model."""
 
-    key_id = serializers.CharField(source='key.key', read_only=True)
-    locale_code = serializers.CharField(source='locale.code', read_only=True)
+    key_id = serializers.CharField(source="key.key", read_only=True)
+    locale_code = serializers.CharField(source="locale.code", read_only=True)
 
     class Meta:
         model = Translation
-        fields = ['id', 'key_id', 'locale_code', 'value', 'status', 'updated_at']
+        fields = ["id", "key_id", "locale_code", "value", "status", "updated_at"]
 
 
 class SyncTranslationsSerializer(serializers.Serializer):
@@ -63,39 +63,39 @@ class PublishTranslationsSerializer(serializers.Serializer):
 class AITranslationJobSerializer(serializers.ModelSerializer):
     """Serializer for AI translation jobs."""
 
-    source_locale_code = serializers.CharField(source='source_locale.code', read_only=True)
-    target_locale_code = serializers.CharField(source='target_locale.code', read_only=True)
-    source_locale_name = serializers.CharField(source='source_locale.name', read_only=True)
-    target_locale_name = serializers.CharField(source='target_locale.name', read_only=True)
-    created_by_email = serializers.CharField(source='created_by.email', read_only=True, default=None)
+    source_locale_code = serializers.CharField(source="source_locale.code", read_only=True)
+    target_locale_code = serializers.CharField(source="target_locale.code", read_only=True)
+    source_locale_name = serializers.CharField(source="source_locale.name", read_only=True)
+    target_locale_name = serializers.CharField(source="target_locale.name", read_only=True)
+    created_by_email = serializers.CharField(source="created_by.email", read_only=True, default=None)
     progress_percent = serializers.IntegerField(read_only=True)
     successful_translations = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = AITranslationJob
         fields = [
-            'id',
-            'status',
-            'source_locale',
-            'target_locale',
-            'source_locale_code',
-            'target_locale_code',
-            'source_locale_name',
-            'target_locale_name',
-            'overwrite_existing',
-            'auto_publish',
-            'batch_size',
-            'total_keys',
-            'processed_keys',
-            'failed_keys',
-            'skipped_keys',
-            'successful_translations',
-            'progress_percent',
-            'error_message',
-            'created_by_email',
-            'created_at',
-            'started_at',
-            'completed_at',
+            "id",
+            "status",
+            "source_locale",
+            "target_locale",
+            "source_locale_code",
+            "target_locale_code",
+            "source_locale_name",
+            "target_locale_name",
+            "overwrite_existing",
+            "auto_publish",
+            "batch_size",
+            "total_keys",
+            "processed_keys",
+            "failed_keys",
+            "skipped_keys",
+            "successful_translations",
+            "progress_percent",
+            "error_message",
+            "created_by_email",
+            "created_at",
+            "started_at",
+            "completed_at",
         ]
 
 

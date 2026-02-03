@@ -28,14 +28,14 @@ schema_view = get_schema_view(
 urlpatterns = [
     # Django Admin - accessible via path for deployments without subdomain support
     path("admin/", admin.site.urls),
-    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    re_path(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json"),
     re_path(r"^doc/", schema_view.with_ui("swagger")),
     re_path(r"^redoc/", schema_view.with_ui("redoc")),
     path(
         "api/",
         include(
             [
-                path('graphql/', DRFAuthenticatedGraphQLView.as_view(graphiql=settings.DEBUG)),
+                path("graphql/", DRFAuthenticatedGraphQLView.as_view(graphiql=settings.DEBUG)),
                 path("content/", include("apps.content.urls")),
                 path("demo/", include("apps.demo.urls")),
                 path("finances/", include("apps.finances.urls")),

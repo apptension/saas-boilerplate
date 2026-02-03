@@ -12,7 +12,7 @@ def send_new_entry_created_notification(entry: models.CrudDemoItem):
             user=owner,
             type=constants.Notification.CRUD_ITEM_CREATED.value,
             data={
-                "id": to_global_id('CrudDemoItemType', str(entry.id)),
+                "id": to_global_id("CrudDemoItemType", str(entry.id)),
                 "name": entry.name,
             },
             issuer=entry.created_by,
@@ -30,7 +30,7 @@ def send_entry_updated_notification(entry: models.CrudDemoItem):
                 user=user,
                 type=constants.Notification.CRUD_ITEM_UPDATED.value,
                 data={
-                    "id": to_global_id('CrudDemoItemType', str(entry.id)),
+                    "id": to_global_id("CrudDemoItemType", str(entry.id)),
                     "name": entry.name,
                 },
                 issuer=entry.edited_by,

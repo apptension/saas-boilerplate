@@ -53,13 +53,13 @@ def normalize_tool_name(tool_name: str) -> str:
         return tool_name
 
     # If already snake_case (contains underscores and is lowercase), return as-is
-    if '_' in tool_name and tool_name == tool_name.lower():
+    if "_" in tool_name and tool_name == tool_name.lower():
         return tool_name
 
     # Convert PascalCase/camelCase to snake_case
     # Insert underscore before uppercase letters and convert to lowercase
-    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', tool_name)
-    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", tool_name)
+    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
 
 
 # ============================================================================
@@ -377,7 +377,7 @@ def get_tool_display_name(tool_name: str) -> str:
     if normalized in TOOL_DISPLAY_NAMES:
         return TOOL_DISPLAY_NAMES[normalized]
     # Fallback: convert snake_case to readable format
-    return normalized.replace('_', ' ').title() + "..."
+    return normalized.replace("_", " ").title() + "..."
 
 
 # ============================================================================
@@ -408,7 +408,7 @@ class MCPClient:
     SESSION_CACHE_KEY = "mcp_session_id"
 
     def __init__(self, mcp_server_url: str, auth_header: Optional[str] = None, user=None, tenant=None):
-        self.mcp_server_url = mcp_server_url.rstrip('/')
+        self.mcp_server_url = mcp_server_url.rstrip("/")
         self.auth_header = auth_header
         self.user = user  # Django user for permission checks
         self.tenant = tenant  # Tenant model instance for permission checks
@@ -456,9 +456,9 @@ class MCPClient:
         logger.info(f"[MCP DEBUG] Raw SSE: {response_text[:500]}")
 
         result = {}
-        for line in response_text.strip().split('\n'):
+        for line in response_text.strip().split("\n"):
             line = line.strip()
-            if line.startswith('data:'):
+            if line.startswith("data:"):
                 json_str = line[5:].strip()  # Remove 'data:' prefix
                 if json_str:
                     try:
@@ -782,10 +782,10 @@ def decode_relay_id(relay_id: str) -> str:
     """
     try:
         # Try to decode as base64
-        decoded = base64.b64decode(relay_id).decode('utf-8')
+        decoded = base64.b64decode(relay_id).decode("utf-8")
         # Split by colon and get the ID part
-        if ':' in decoded:
-            return decoded.split(':', 1)[1]
+        if ":" in decoded:
+            return decoded.split(":", 1)[1]
         return relay_id
     except Exception:
         # If decoding fails, assume it's already the raw ID
@@ -1402,7 +1402,7 @@ class EntityTracker:
             if f"[{name}](" in text:
                 continue
             # Match whole name with word boundaries, case-insensitive
-            pattern = re.compile(r'(?<!\[)' + re.escape(name) + r'(?!\]\()', re.IGNORECASE)
+            pattern = re.compile(r"(?<!\[)" + re.escape(name) + r"(?!\]\()", re.IGNORECASE)
             replacement = f"[{name}](project:{entity_id})"
             text = pattern.sub(replacement, text, count=1)  # Only first occurrence
 
@@ -1410,7 +1410,7 @@ class EntityTracker:
         for name, entity_id in sorted(self.clients.items(), key=lambda x: len(x[0]), reverse=True):
             if f"[{name}](" in text:
                 continue
-            pattern = re.compile(r'(?<!\[)' + re.escape(name) + r'(?!\]\()', re.IGNORECASE)
+            pattern = re.compile(r"(?<!\[)" + re.escape(name) + r"(?!\]\()", re.IGNORECASE)
             replacement = f"[{name}](client:{entity_id})"
             text = pattern.sub(replacement, text, count=1)
 
@@ -1418,7 +1418,7 @@ class EntityTracker:
         for name, entity_id in sorted(self.people.items(), key=lambda x: len(x[0]), reverse=True):
             if f"[{name}](" in text:
                 continue
-            pattern = re.compile(r'(?<!\[)' + re.escape(name) + r'(?!\]\()', re.IGNORECASE)
+            pattern = re.compile(r"(?<!\[)" + re.escape(name) + r"(?!\]\()", re.IGNORECASE)
             replacement = f"[{name}](person:{entity_id})"
             text = pattern.sub(replacement, text, count=1)
 
@@ -1426,7 +1426,7 @@ class EntityTracker:
         for number, entity_id in sorted(self.invoices.items(), key=lambda x: len(x[0]), reverse=True):
             if f"[{number}](" in text or f"[Invoice #{number}](" in text:
                 continue
-            pattern = re.compile(r'(?<!\[)' + re.escape(number) + r'(?!\]\()', re.IGNORECASE)
+            pattern = re.compile(r"(?<!\[)" + re.escape(number) + r"(?!\]\()", re.IGNORECASE)
             replacement = f"[{number}](invoice:{entity_id})"
             text = pattern.sub(replacement, text, count=1)
 
@@ -1454,7 +1454,7 @@ class MCPThrottle(UserRateThrottle):
     Rate is configurable via RATE_LIMITS['ai.mcp.proxy'] (default: 30/min)
     """
 
-    scope = 'mcp_proxy'
+    scope = "mcp_proxy"
 
     def __init__(self):
         super().__init__()
@@ -1465,7 +1465,7 @@ class MCPThrottle(UserRateThrottle):
 
             self.rate = get_rate_limit(RateLimitCategory.AI_MCP_PROXY)
         except ImportError:
-            self.rate = '30/min'
+            self.rate = "30/min"
 
 
 class MCPChatThrottle(UserRateThrottle):
@@ -1478,7 +1478,7 @@ class MCPChatThrottle(UserRateThrottle):
     Rate is configurable via RATE_LIMITS['ai.chat.message'] (default: 10/min)
     """
 
-    scope = 'mcp_chat'
+    scope = "mcp_chat"
 
     def __init__(self):
         super().__init__()
@@ -1489,7 +1489,7 @@ class MCPChatThrottle(UserRateThrottle):
 
             self.rate = get_rate_limit(RateLimitCategory.AI_CHAT_MESSAGE)
         except ImportError:
-            self.rate = '20/min'
+            self.rate = "20/min"
 
 
 class MCPProxyView(APIView):
@@ -1513,7 +1513,7 @@ class MCPProxyView(APIView):
 
     def get_mcp_server_url(self):
         """Get the MCP server URL from settings."""
-        return getattr(settings, 'MCP_SERVER_URL', 'http://mcp-server:4000')
+        return getattr(settings, "MCP_SERVER_URL", "http://mcp-server:4000")
 
     def validate_tenant_access(self, user, tenant_id: str) -> bool:
         """Check if user has access to the specified tenant."""
@@ -1530,10 +1530,10 @@ class MCPProxyView(APIView):
 
     def inject_tenant_id(self, data: dict, tenant_id: str) -> dict:
         """Inject tenantId into variables if present."""
-        if 'variables' in data and isinstance(data['variables'], dict):
-            data['variables']['tenantId'] = tenant_id
-        elif 'variables' not in data:
-            data['variables'] = {'tenantId': tenant_id}
+        if "variables" in data and isinstance(data["variables"], dict):
+            data["variables"]["tenantId"] = tenant_id
+        elif "variables" not in data:
+            data["variables"] = {"tenantId": tenant_id}
         return data
 
     def post(self, request, tenant_id: str):
@@ -1591,7 +1591,7 @@ class MCPProxyView(APIView):
                 )
 
             # Log response status
-            logger.info(f"MCP response for user {request.user.id}: " f"status={response.status_code}")
+            logger.info(f"MCP response for user {request.user.id}: status={response.status_code}")
 
             # Return the response
             return Response(response.json(), status=response.status_code, content_type="application/json")
@@ -1633,11 +1633,11 @@ class MCPChatView(APIView):
 
     def get_mcp_server_url(self):
         """Get the MCP server URL from settings."""
-        return getattr(settings, 'MCP_SERVER_URL', 'http://mcp-server:4000')
+        return getattr(settings, "MCP_SERVER_URL", "http://mcp-server:4000")
 
     def get_openai_client(self):
         """Get OpenAI client instance."""
-        api_key = getattr(settings, 'OPENAI_API_KEY', None)
+        api_key = getattr(settings, "OPENAI_API_KEY", None)
         if not api_key:
             return None
         return OpenAI(api_key=api_key)
@@ -1854,14 +1854,14 @@ class MCPChatView(APIView):
                 import re
 
                 # Split into words while preserving whitespace and punctuation
-                tokens = re.findall(r'\S+|\s+', final_response)
+                tokens = re.findall(r"\S+|\s+", final_response)
 
                 for token in tokens:
                     yield self._sse_event("content", {"text": token})
                     # Vary delay based on token type for natural feel
-                    if token.strip() in '.!?':
+                    if token.strip() in ".!?":
                         time.sleep(0.15)  # Pause at sentence end
-                    elif token.strip() in ',;:':
+                    elif token.strip() in ",;:":
                         time.sleep(0.08)  # Brief pause at punctuation
                     elif token.strip():
                         time.sleep(0.03)  # Normal word delay
@@ -1955,10 +1955,10 @@ class MCPChatView(APIView):
                 conversation_history=conversation_history,
                 tenant_id=tenant_id,
             ),
-            content_type='text/event-stream',
+            content_type="text/event-stream",
         )
-        response['Cache-Control'] = 'no-cache'
-        response['X-Accel-Buffering'] = 'no'
+        response["Cache-Control"] = "no-cache"
+        response["X-Accel-Buffering"] = "no"
         return response
 
 
@@ -1972,7 +1972,7 @@ class MCPHealthView(APIView):
 
     def get(self, request):
         """Check if the MCP server is reachable."""
-        mcp_url = getattr(settings, 'MCP_SERVER_URL', '')
+        mcp_url = getattr(settings, "MCP_SERVER_URL", "")
 
         # Check if MCP is configured
         if not mcp_url:

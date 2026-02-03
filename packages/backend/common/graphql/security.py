@@ -34,7 +34,7 @@ class DisableIntrospectionMiddleware:
 
     # NOTE: __typename is NOT blocked - it's a meta field used by Apollo Client
     # for type resolution and cache normalization. Only block true introspection.
-    INTROSPECTION_FIELDS = {'__schema', '__type'}
+    INTROSPECTION_FIELDS = {"__schema", "__type"}
     INTROSPECTION_ERROR = "GraphQL introspection is disabled in production."
 
     def resolve(self, next, root, info, **args):
@@ -58,7 +58,7 @@ class DisableIntrospectionMiddleware:
             return next(root, info, **args)
 
         # Check if this is an introspection query
-        field_name = info.field_name.lower() if info.field_name else ''
+        field_name = info.field_name.lower() if info.field_name else ""
         if field_name in self.INTROSPECTION_FIELDS:
             raise GraphQLError(self.INTROSPECTION_ERROR)
 
@@ -89,13 +89,13 @@ class SanitizeErrorsMiddleware:
 
     # Error types that are safe to expose to users
     SAFE_ERROR_TYPES = (
-        'ValidationError',
-        'GraphQlValidationError',
-        'PermissionDenied',
-        'AuthenticationFailed',
-        'NotAuthenticated',
-        'NotFound',
-        'Http404',
+        "ValidationError",
+        "GraphQlValidationError",
+        "PermissionDenied",
+        "AuthenticationFailed",
+        "NotAuthenticated",
+        "NotFound",
+        "Http404",
     )
 
     def on_error(self, error):
@@ -114,16 +114,15 @@ class SanitizeErrorsMiddleware:
 
         # Log the actual error before sanitizing (for debugging production issues)
         error_type = type(error).__name__
-        original_error = getattr(error, 'original_error', None)
+        original_error = getattr(error, "original_error", None)
         original_type = type(original_error).__name__ if original_error else None
 
         logger.error(
-            f"GraphQL error being sanitized: {error_type}: {error}. "
-            f"Original error: {original_type}: {original_error}"
+            f"GraphQL error being sanitized: {error_type}: {error}. Original error: {original_type}: {original_error}"
         )
 
         # Check if this is a "safe" error type that can be exposed
-        if hasattr(error, 'original_error'):
+        if hasattr(error, "original_error"):
             if original_type in self.SAFE_ERROR_TYPES:
                 raise error
         elif error_type in self.SAFE_ERROR_TYPES:
@@ -133,12 +132,12 @@ class SanitizeErrorsMiddleware:
         if isinstance(error, GraphQLError):
             # Check if the error message starts with known safe prefixes
             safe_prefixes = (
-                'You don\'t have permission',
-                'Authentication required',
-                'Not found',
-                'Validation error',
-                'Invalid',
-                'permission_denied',
+                "You don't have permission",
+                "Authentication required",
+                "Not found",
+                "Validation error",
+                "Invalid",
+                "permission_denied",
             )
             if error.message and any(error.message.lower().startswith(p.lower()) for p in safe_prefixes):
                 raise error

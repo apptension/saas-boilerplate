@@ -19,72 +19,72 @@ def parse_user_agent(user_agent: str) -> dict:
     """
     if not user_agent:
         return {
-            'browser': 'Unknown',
-            'operating_system': 'Unknown',
-            'device_type': 'desktop',
-            'device_name': 'Unknown Device',
+            "browser": "Unknown",
+            "operating_system": "Unknown",
+            "device_type": "desktop",
+            "device_name": "Unknown Device",
         }
 
     ua = user_agent.lower()
 
     # Detect device type
-    device_type = 'desktop'
-    if any(mobile in ua for mobile in ['mobile', 'android', 'iphone', 'ipod', 'blackberry', 'windows phone']):
-        device_type = 'mobile'
-    elif any(tablet in ua for tablet in ['ipad', 'tablet', 'kindle']):
-        device_type = 'tablet'
+    device_type = "desktop"
+    if any(mobile in ua for mobile in ["mobile", "android", "iphone", "ipod", "blackberry", "windows phone"]):
+        device_type = "mobile"
+    elif any(tablet in ua for tablet in ["ipad", "tablet", "kindle"]):
+        device_type = "tablet"
 
     # Detect operating system
-    operating_system = 'Unknown'
-    if 'windows nt 10' in ua or 'windows nt 11' in ua or 'windows' in ua:
-        operating_system = 'Windows'
-    elif 'mac os x' in ua or 'macintosh' in ua:
-        operating_system = 'macOS'
-    elif 'iphone' in ua or 'ipad' in ua:
-        operating_system = 'iOS'
-    elif 'android' in ua:
-        operating_system = 'Android'
-    elif 'linux' in ua:
-        operating_system = 'Linux'
-    elif 'chrome os' in ua:
-        operating_system = 'Chrome OS'
+    operating_system = "Unknown"
+    if "windows nt 10" in ua or "windows nt 11" in ua or "windows" in ua:
+        operating_system = "Windows"
+    elif "mac os x" in ua or "macintosh" in ua:
+        operating_system = "macOS"
+    elif "iphone" in ua or "ipad" in ua:
+        operating_system = "iOS"
+    elif "android" in ua:
+        operating_system = "Android"
+    elif "linux" in ua:
+        operating_system = "Linux"
+    elif "chrome os" in ua:
+        operating_system = "Chrome OS"
 
     # Detect browser (order matters - check specific before generic)
-    browser = 'Unknown'
-    if 'edg/' in ua or 'edge/' in ua:
-        browser = 'Microsoft Edge'
-    elif 'opr/' in ua or 'opera' in ua:
-        browser = 'Opera'
-    elif 'brave' in ua:
-        browser = 'Brave'
-    elif 'vivaldi' in ua:
-        browser = 'Vivaldi'
-    elif 'firefox' in ua:
-        browser = 'Firefox'
-    elif 'safari' in ua and 'chrome' not in ua:
-        browser = 'Safari'
-    elif 'chrome' in ua:
-        browser = 'Chrome'
-    elif 'msie' in ua or 'trident' in ua:
-        browser = 'Internet Explorer'
+    browser = "Unknown"
+    if "edg/" in ua or "edge/" in ua:
+        browser = "Microsoft Edge"
+    elif "opr/" in ua or "opera" in ua:
+        browser = "Opera"
+    elif "brave" in ua:
+        browser = "Brave"
+    elif "vivaldi" in ua:
+        browser = "Vivaldi"
+    elif "firefox" in ua:
+        browser = "Firefox"
+    elif "safari" in ua and "chrome" not in ua:
+        browser = "Safari"
+    elif "chrome" in ua:
+        browser = "Chrome"
+    elif "msie" in ua or "trident" in ua:
+        browser = "Internet Explorer"
 
     # Generate device name
     device_name = f"{browser} on {operating_system}"
 
     return {
-        'browser': browser,
-        'operating_system': operating_system,
-        'device_type': device_type,
-        'device_name': device_name,
+        "browser": browser,
+        "operating_system": operating_system,
+        "device_type": device_type,
+        "device_name": device_name,
     }
 
 
 def get_client_ip(request) -> Optional[str]:
     """Extract client IP from request."""
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
-        return x_forwarded_for.split(',')[0].strip()
-    return request.META.get('REMOTE_ADDR')
+        return x_forwarded_for.split(",")[0].strip()
+    return request.META.get("REMOTE_ADDR")
 
 
 class SessionService:
@@ -120,7 +120,7 @@ class SessionService:
         ttl = ttl_days or self.DEFAULT_SESSION_TTL_DAYS
 
         # Parse user agent
-        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        user_agent = request.META.get("HTTP_USER_AGENT", "")
         device_info = parse_user_agent(user_agent)
 
         # Get client IP
@@ -134,10 +134,10 @@ class SessionService:
             user=self.user,
             sso_link=sso_link,
             session_id=session_id,
-            device_name=device_info['device_name'],
-            device_type=device_info['device_type'],
-            browser=device_info['browser'],
-            operating_system=device_info['operating_system'],
+            device_name=device_info["device_name"],
+            device_type=device_info["device_type"],
+            browser=device_info["browser"],
+            operating_system=device_info["operating_system"],
             ip_address=ip_address,
             expires_at=timezone.now() + timedelta(days=ttl),
         )
@@ -161,7 +161,7 @@ class SessionService:
             user=self.user,
             is_active=True,
             expires_at__gt=timezone.now(),
-        ).order_by('-last_activity_at')
+        ).order_by("-last_activity_at")
 
         # We'll handle is_current in the resolver since it's request-specific
         return sessions
@@ -182,12 +182,12 @@ class SessionService:
                 is_active=True,
             )
             # last_activity_at auto-updates on save due to auto_now
-            session.save(update_fields=['last_activity_at'])
+            session.save(update_fields=["last_activity_at"])
             return session
         except SSOSession.DoesNotExist:
             return None
 
-    def revoke_session(self, session_id: str, reason: str = 'User requested') -> bool:
+    def revoke_session(self, session_id: str, reason: str = "User requested") -> bool:
         """
         Revoke a specific session.
 
@@ -237,7 +237,7 @@ class SessionService:
         sessions.update(
             is_active=False,
             revoked_at=timezone.now(),
-            revoked_reason='User revoked all sessions',
+            revoked_reason="User revoked all sessions",
         )
 
         return count

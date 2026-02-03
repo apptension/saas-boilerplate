@@ -10,7 +10,7 @@ class GenerateSaasIdeasMutation(graphene.relay.ClientIDMutation):
     response = graphene.String()
 
     @classmethod
-    @ratelimit.ratelimit(key="ip", rate='3/min')
+    @ratelimit.ratelimit(key="ip", rate="3/min")
     def mutate_and_get_payload(cls, root, info, keywords):
         # Get raw text response from OpenAI
         try:

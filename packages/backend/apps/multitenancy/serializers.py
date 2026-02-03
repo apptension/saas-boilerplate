@@ -167,7 +167,7 @@ class CreateTenantInvitationSerializer(serializers.Serializer):
         """
         email = BaseUserManager.normalize_email(attrs["email"])
         request = self.context.get("request")
-        tenant = getattr(request, 'tenant', None)
+        tenant = getattr(request, "tenant", None)
 
         if not tenant:
             raise serializers.ValidationError(_("Tenant is required."))
@@ -235,8 +235,8 @@ class CreateTenantInvitationSerializer(serializers.Serializer):
         valid_roles = validated_data.get("_valid_roles", {})
 
         request = self.context.get("request")
-        tenant = getattr(request, 'tenant', None)
-        creator = getattr(request, 'user', None)
+        tenant = getattr(request, "tenant", None)
+        creator = getattr(request, "user", None)
 
         User = get_user_model()
 
@@ -304,7 +304,7 @@ class ResendTenantInvitationSerializer(serializers.Serializer):
 
         TenantInvitationEmail(
             to=email,
-            data={'tenant_membership_id': global_tenant_membership_id, 'token': token},
+            data={"tenant_membership_id": global_tenant_membership_id, "token": token},
             user=membership.user,
         ).send()
 
@@ -331,8 +331,8 @@ class UpdateTenantMembershipSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         request = self.context.get("request")
-        tenant = getattr(request, 'tenant', None)
-        acting_user = getattr(request, 'user', None)
+        tenant = getattr(request, "tenant", None)
+        acting_user = getattr(request, "user", None)
 
         membership = models.TenantMembership.objects.get_all().filter(pk=attrs["id"]).first()
         if not membership:

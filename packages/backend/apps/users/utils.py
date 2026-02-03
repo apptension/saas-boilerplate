@@ -7,8 +7,8 @@ from django.urls import reverse
 
 def set_auth_cookie(response, data):
     cookie_max_age = settings.COOKIE_MAX_AGE
-    cookie_secure = getattr(settings, 'COOKIE_SECURE', True)
-    cookie_samesite = getattr(settings, 'COOKIE_SAMESITE', 'Lax')
+    cookie_secure = getattr(settings, "COOKIE_SECURE", True)
+    cookie_samesite = getattr(settings, "COOKIE_SAMESITE", "Lax")
 
     access = data.get(settings.ACCESS_TOKEN_COOKIE)
     refresh = data.get(settings.REFRESH_TOKEN_COOKIE)
@@ -48,7 +48,7 @@ def set_auth_cookie(response, data):
 
 def reset_auth_cookie(response):
     """Clear all auth cookies. Must use the same samesite attribute as when setting cookies."""
-    cookie_samesite = getattr(settings, 'COOKIE_SAMESITE', 'Lax')
+    cookie_samesite = getattr(settings, "COOKIE_SAMESITE", "Lax")
 
     # Delete access token cookie (set at root path)
     response.delete_cookie(settings.ACCESS_TOKEN_COOKIE, path="/", samesite=cookie_samesite)

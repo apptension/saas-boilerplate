@@ -38,9 +38,9 @@ def _get_request_from_info(info):
     """Extract Django request from GraphQL info context."""
     context = info.context
     # Handle different wrapper types
-    if hasattr(context, '_request'):
+    if hasattr(context, "_request"):
         return context._request
-    if hasattr(context, 'request'):
+    if hasattr(context, "request"):
         return context.request
     return context
 
@@ -68,7 +68,7 @@ def _get_rate_key_identifier(request, key_type: RateLimitKey) -> str:
         return f"notenant:{get_client_ip(request)}"
     elif key_type == RateLimitKey.USER_TENANT:
         user_id = get_user_id(request) or f"anon:{get_client_ip(request)}"
-        tenant_id = get_tenant_id(request) or 'notenant'
+        tenant_id = get_tenant_id(request) or "notenant"
         return f"{user_id}:{tenant_id}"
     else:
         return get_client_ip(request)
@@ -118,7 +118,7 @@ def graphql_ratelimit(
                 # Could be (info, **kw) or (root, info, **kw) depending on context
                 info = None
                 for arg in args:
-                    if hasattr(arg, 'context'):
+                    if hasattr(arg, "context"):
                         info = arg
                         break
 
@@ -133,7 +133,7 @@ def graphql_ratelimit(
                 actual_rate = rate
                 actual_key = key
 
-                if isinstance(rate, RateLimitCategory) or (isinstance(rate, str) and '/' not in rate):
+                if isinstance(rate, RateLimitCategory) or (isinstance(rate, str) and "/" not in rate):
                     # It's a category, get config
                     config = get_rate_limit_config(rate)
                     if config:
@@ -141,7 +141,7 @@ def graphql_ratelimit(
                         if actual_key is None:
                             actual_key = config.key
                     else:
-                        actual_rate = '60/min'  # Safe default
+                        actual_rate = "60/min"  # Safe default
 
                 # Default key type
                 if actual_key is None:
@@ -163,7 +163,7 @@ def graphql_ratelimit(
                 rate_group = group or fn.__name__
 
                 # Check rate limit using django-ratelimit
-                old_limited = getattr(request, 'limited', False)
+                old_limited = getattr(request, "limited", False)
                 ratelimited = is_ratelimited(
                     request=request,
                     group=rate_group,
@@ -176,7 +176,7 @@ def graphql_ratelimit(
                 request.limited = ratelimited or old_limited
 
                 if ratelimited and block:
-                    cls = getattr(settings, 'RATELIMIT_EXCEPTION_CLASS', Ratelimited)
+                    cls = getattr(settings, "RATELIMIT_EXCEPTION_CLASS", Ratelimited)
                     exc_class = import_string(cls) if isinstance(cls, str) else cls
                     raise exc_class(RATE_LIMIT_EXCEEDED_ERROR_MSG)
 
@@ -224,7 +224,7 @@ def graphql_ratelimit_by_config(category: Union[str, RateLimitCategory]):
     else:
         # Fallback with safe defaults
         return graphql_ratelimit(
-            rate='60/min',
+            rate="60/min",
             key=RateLimitKey.USER_OR_IP,
         )
 

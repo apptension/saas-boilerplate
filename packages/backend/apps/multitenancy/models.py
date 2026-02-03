@@ -44,10 +44,10 @@ class Tenant(TimestampedMixin, models.Model):
     type: str = models.CharField(choices=constants.TenantType.choices)
     members = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        through='TenantMembership',
-        related_name='tenants',
+        through="TenantMembership",
+        related_name="tenants",
         blank=True,
-        through_fields=('tenant', 'user'),
+        through_fields=("tenant", "user"),
     )
     billing_email = models.EmailField(
         db_collation="case_insensitive",
@@ -84,7 +84,7 @@ class Tenant(TimestampedMixin, models.Model):
                     super().save(*args, **kwargs)
                     break
             except IntegrityError as e:
-                if 'duplicate key' in str(e).lower():
+                if "duplicate key" in str(e).lower():
                     counter += 1
                 else:
                     raise e
@@ -182,7 +182,7 @@ class ActionLog(TimestampedMixin, models.Model):
     tenant = models.ForeignKey(
         Tenant,
         on_delete=models.CASCADE,
-        related_name='action_logs',
+        related_name="action_logs",
     )
 
     # Action details
@@ -217,7 +217,7 @@ class ActionLog(TimestampedMixin, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='action_logs',
+        related_name="action_logs",
         help_text="User who performed the action (null for system actions)",
     )
     actor_email = models.EmailField(
@@ -239,15 +239,15 @@ class ActionLog(TimestampedMixin, models.Model):
     )
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
         verbose_name = "Action Log"
         verbose_name_plural = "Action Logs"
         indexes = [
-            models.Index(fields=['-created_at']),
-            models.Index(fields=['tenant', '-created_at']),
-            models.Index(fields=['entity_type']),
-            models.Index(fields=['action_type']),
-            models.Index(fields=['actor_user']),
+            models.Index(fields=["-created_at"]),
+            models.Index(fields=["tenant", "-created_at"]),
+            models.Index(fields=["entity_type"]),
+            models.Index(fields=["action_type"]),
+            models.Index(fields=["actor_user"]),
         ]
 
     def __str__(self):
@@ -264,21 +264,21 @@ class ActionLogExport(TimestampedMixin, models.Model):
     """
 
     class Status(models.TextChoices):
-        PENDING = 'pending', 'Pending'
-        PROCESSING = 'processing', 'Processing'
-        COMPLETED = 'completed', 'Completed'
-        FAILED = 'failed', 'Failed'
+        PENDING = "pending", "Pending"
+        PROCESSING = "processing", "Processing"
+        COMPLETED = "completed", "Completed"
+        FAILED = "failed", "Failed"
 
     id: str = hashid_field.HashidAutoField(primary_key=True)
     tenant = models.ForeignKey(
         Tenant,
         on_delete=models.CASCADE,
-        related_name='action_log_exports',
+        related_name="action_log_exports",
     )
     requested_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='action_log_exports',
+        related_name="action_log_exports",
     )
 
     # Status tracking
@@ -318,7 +318,7 @@ class ActionLogExport(TimestampedMixin, models.Model):
     celery_task_id = models.CharField(max_length=255, blank=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
         verbose_name = "Action Log Export"
         verbose_name_plural = "Action Log Exports"
 
@@ -389,7 +389,7 @@ class Permission(models.Model):
     )
 
     class Meta:
-        ordering = ['category', 'sort_order', 'name']
+        ordering = ["category", "sort_order", "name"]
         verbose_name = "Permission"
         verbose_name_plural = "Permissions"
 
@@ -412,7 +412,7 @@ class OrganizationRole(TimestampedMixin, models.Model):
     tenant = models.ForeignKey(
         Tenant,
         on_delete=models.CASCADE,
-        related_name='organization_roles',
+        related_name="organization_roles",
     )
     name = models.CharField(
         max_length=100,
@@ -425,7 +425,7 @@ class OrganizationRole(TimestampedMixin, models.Model):
     system_role_type = models.CharField(
         max_length=20,
         choices=constants.SystemRoleType.choices,
-        default='',
+        default="",
         blank=True,
         help_text="If set, this is a system template role",
     )
@@ -437,24 +437,24 @@ class OrganizationRole(TimestampedMixin, models.Model):
     )
     permissions = models.ManyToManyField(
         Permission,
-        through='OrganizationRolePermission',
-        related_name='roles',
+        through="OrganizationRolePermission",
+        related_name="roles",
         blank=True,
     )
 
     class Meta:
-        ordering = ['tenant', 'name']
+        ordering = ["tenant", "name"]
         verbose_name = "Organization Role"
         verbose_name_plural = "Organization Roles"
         constraints = [
             UniqueConstraint(
-                fields=['tenant', 'name'],
-                name='unique_org_role_name_per_tenant',
+                fields=["tenant", "name"],
+                name="unique_org_role_name_per_tenant",
             ),
             UniqueConstraint(
-                fields=['tenant', 'system_role_type'],
-                name='unique_system_role_per_tenant',
-                condition=Q(system_role_type__gt=''),
+                fields=["tenant", "system_role_type"],
+                name="unique_system_role_per_tenant",
+                condition=Q(system_role_type__gt=""),
             ),
         ]
 
@@ -482,14 +482,14 @@ class OrganizationRole(TimestampedMixin, models.Model):
             return True
 
         # Check for exact match or wildcard
-        role_permissions = self.permissions.values_list('code', flat=True)
+        role_permissions = self.permissions.values_list("code", flat=True)
         for perm in role_permissions:
             if perm == permission_code:
                 return True
             # Check wildcard (e.g., 'dashboard.*')
-            if perm.endswith('.*'):
+            if perm.endswith(".*"):
                 prefix = perm[:-2]  # Remove '.*'
-                if permission_code.startswith(prefix + '.'):
+                if permission_code.startswith(prefix + "."):
                     return True
         return False
 
@@ -503,12 +503,12 @@ class OrganizationRolePermission(models.Model):
     role = models.ForeignKey(
         OrganizationRole,
         on_delete=models.CASCADE,
-        related_name='role_permissions',
+        related_name="role_permissions",
     )
     permission = models.ForeignKey(
         Permission,
         on_delete=models.CASCADE,
-        related_name='permission_roles',
+        related_name="permission_roles",
     )
 
     class Meta:
@@ -516,8 +516,8 @@ class OrganizationRolePermission(models.Model):
         verbose_name_plural = "Role Permissions"
         constraints = [
             UniqueConstraint(
-                fields=['role', 'permission'],
-                name='unique_role_permission',
+                fields=["role", "permission"],
+                name="unique_role_permission",
             ),
         ]
 
@@ -538,12 +538,12 @@ class TenantMembershipRole(models.Model):
     membership = models.ForeignKey(
         TenantMembership,
         on_delete=models.CASCADE,
-        related_name='membership_roles',
+        related_name="membership_roles",
     )
     role = models.ForeignKey(
         OrganizationRole,
         on_delete=models.CASCADE,
-        related_name='member_assignments',
+        related_name="member_assignments",
     )
     assigned_at = models.DateTimeField(auto_now_add=True)
     assigned_by = models.ForeignKey(
@@ -551,7 +551,7 @@ class TenantMembershipRole(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='assigned_membership_roles',
+        related_name="assigned_membership_roles",
     )
 
     class Meta:
@@ -559,8 +559,8 @@ class TenantMembershipRole(models.Model):
         verbose_name_plural = "Membership Roles"
         constraints = [
             UniqueConstraint(
-                fields=['membership', 'role'],
-                name='unique_membership_role',
+                fields=["membership", "role"],
+                name="unique_membership_role",
             ),
         ]
 
@@ -597,41 +597,41 @@ def get_user_permissions_for_tenant(user, tenant):
         return set()
 
     # Check if user has owner role (has all permissions)
-    membership_roles = TenantMembershipRole.objects.filter(membership=membership).select_related('role')
+    membership_roles = TenantMembershipRole.objects.filter(membership=membership).select_related("role")
 
     permissions = set()
     for mr in membership_roles:
         if mr.role.is_owner_role:
             # Owner has all permissions - get all permission codes
-            all_perms = Permission.objects.values_list('code', flat=True)
+            all_perms = Permission.objects.values_list("code", flat=True)
             permissions = set(all_perms)
             break
         else:
             # Get permissions from this role
-            role_perms = mr.role.permissions.values_list('code', flat=True)
+            role_perms = mr.role.permissions.values_list("code", flat=True)
             permissions.update(role_perms)
 
     # Also check legacy role field for backward compatibility
     if membership.role == constants.TenantUserRole.OWNER:
-        all_perms = Permission.objects.values_list('code', flat=True)
+        all_perms = Permission.objects.values_list("code", flat=True)
         permissions = set(all_perms)
     elif membership.role in (constants.TenantUserRole.ADMIN, constants.TenantUserRole.MEMBER):
         # For legacy ADMIN and MEMBER roles without RBAC, grant default read permissions
         # This ensures backward compatibility for tests and older setups
         if not permissions:  # Only add defaults if no RBAC permissions exist
             default_perms = [
-                'features.crud.view',
-                'features.crud.manage',
-                'features.documents.view',
-                'features.documents.manage',
-                'members.view',
+                "features.crud.view",
+                "features.crud.manage",
+                "features.documents.view",
+                "features.documents.manage",
+                "members.view",
             ]
             permissions.update(default_perms)
             if membership.role == constants.TenantUserRole.ADMIN:
                 # Admins get additional view permissions (not invite/manage)
                 permissions.update(
                     [
-                        'org.settings.view',
+                        "org.settings.view",
                     ]
                 )
 
@@ -653,9 +653,9 @@ def user_has_permission(user, tenant, permission_code):
 
     # Check for wildcard permissions
     for perm in permissions:
-        if perm.endswith('.*'):
+        if perm.endswith(".*"):
             prefix = perm[:-2]
-            if permission_code.startswith(prefix + '.'):
+            if permission_code.startswith(prefix + "."):
                 return True
 
     return False

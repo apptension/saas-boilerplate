@@ -143,12 +143,12 @@ class CreateModelMutation(RelayModelSerializerMutation):
             model_class = getattr(serializer_meta, "model", None)
 
         if not model_class:
-            raise GraphQlMutationError('model_class is required in serializer_class')
+            raise GraphQlMutationError("model_class is required in serializer_class")
 
         model_name = model_class.__name__
 
         if not edge_field_name and edge_class:
-            edge_field_name = model_name[:1].lower() + model_name[1:] + 'Edge'
+            edge_field_name = model_name[:1].lower() + model_name[1:] + "Edge"
 
         if not return_field_name:
             return_field_name = model_name[:1].lower() + model_name[1:]
@@ -261,12 +261,12 @@ class UpdateModelMutation(RelayModelSerializerMutation):
                 model_class = getattr(serializer_meta, "model", None)
 
         if not model_class:
-            raise GraphQlMutationError('model_class is required')
+            raise GraphQlMutationError("model_class is required")
 
         model_name = model_class.__name__
 
         if not edge_field_name and edge_class:
-            edge_field_name = model_name[:1].lower() + model_name[1:] + 'Edge'
+            edge_field_name = model_name[:1].lower() + model_name[1:] + "Edge"
 
         if not return_field_name:
             return_field_name = model_name[:1].lower() + model_name[1:]
@@ -286,8 +286,8 @@ class UpdateModelMutation(RelayModelSerializerMutation):
             raise GraphQlMutationError("No type registered for model: {}".format(model_class.__name__))
 
         available_fields = cls.get_available_fields(input_fields, only_fields, exclude)
-        if require_id_field and 'id' in available_fields:
-            input_fields['id'] = relay.GlobalID(model_type)
+        if require_id_field and "id" in available_fields:
+            input_fields["id"] = relay.GlobalID(model_type)
 
         output_fields = OrderedDict({return_field_name: graphene.Field(model_type)})
 
@@ -350,7 +350,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         :param input: dictionary of input values passed to the mutation
         :return: object of the specified model with the specified ID
         """
-        _, pk = from_global_id(input['id'])
+        _, pk = from_global_id(input["id"])
         return get_object_or_404(cls.get_queryset(model_class, root, info, **input), pk=pk)
 
     @classmethod
@@ -376,7 +376,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         :param exclude: tuple of field names to exclude from the available fields set
         :return: set of available fields
         """
-        available_fields = {'id'}.union(set(input_fields.keys()))
+        available_fields = {"id"}.union(set(input_fields.keys()))
         if only_fields:
             available_fields = available_fields.intersection(only_fields)
         if exclude:
@@ -589,7 +589,7 @@ class DeleteModelMutation(ClientIDMutation):
             registry = get_global_registry()
 
         assert isinstance(registry, Registry), (
-            "The attribute registry in {} needs to be an instance of " 'Registry, received "{}".'
+            'The attribute registry in {} needs to be an instance of Registry, received "{}".'
         ).format(cls.__name__, registry)
 
         if not model:
@@ -687,7 +687,7 @@ class DeleteTenantDependentModelMutation(DeleteModelMutation):
         _, tenant_id = from_global_id(input["tenant_id"])
 
         # SECURITY: Verify user has access to this tenant
-        context_tenant = getattr(info.context, 'tenant', None)
+        context_tenant = getattr(info.context, "tenant", None)
         if context_tenant is None or str(context_tenant.pk) != str(tenant_id):
             # If context tenant doesn't match, verify membership directly
             from apps.multitenancy.models import TenantMembership
@@ -731,7 +731,7 @@ class UpdateTenantDependentModelMutation(UpdateModelMutation):
 
         SECURITY: Always filters by tenant_id to prevent cross-tenant object access.
         """
-        tenant_id = input.get('tenant_id')
+        tenant_id = input.get("tenant_id")
         if tenant_id:
             return model_class.objects.filter(tenant_id=tenant_id)
         return model_class.objects.none()  # Return empty queryset if no tenant_id
@@ -752,7 +752,7 @@ class UpdateTenantDependentModelMutation(UpdateModelMutation):
         input["tenant_id"] = tenant_id
 
         # SECURITY: Verify user has access to this tenant
-        context_tenant = getattr(info.context, 'tenant', None)
+        context_tenant = getattr(info.context, "tenant", None)
         if context_tenant is None or str(context_tenant.pk) != str(tenant_id):
             # If context tenant doesn't match, verify membership directly
             from apps.multitenancy.models import TenantMembership
@@ -801,7 +801,7 @@ class CreateTenantDependentModelMutation(CreateModelMutation):
         input["tenant_id"] = tenant_id
 
         # SECURITY: Verify user has access to this tenant
-        context_tenant = getattr(info.context, 'tenant', None)
+        context_tenant = getattr(info.context, "tenant", None)
         if context_tenant is None or str(context_tenant.pk) != str(tenant_id):
             # If context tenant doesn't match, verify membership directly
             from apps.multitenancy.models import TenantMembership

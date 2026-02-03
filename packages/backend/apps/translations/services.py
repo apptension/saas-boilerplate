@@ -52,8 +52,8 @@ class TranslationPublisher:
     @property
     def is_cloud_storage(self):
         """Check if using cloud storage (not local filesystem)."""
-        backend = os.environ.get('STORAGE_BACKEND', 's3')
-        return backend != 'local'
+        backend = os.environ.get("STORAGE_BACKEND", "s3")
+        return backend != "local"
 
     def generate_translation_bundle(self, locale: Locale) -> Dict[str, str]:
         """
@@ -75,7 +75,7 @@ class TranslationPublisher:
         locale_translations = {
             t.key_id: t.value
             for t in Translation.objects.filter(locale=locale, status=Translation.Status.PUBLISHED).select_related(
-                'key'
+                "key"
             )
         }
 
@@ -114,14 +114,14 @@ class TranslationPublisher:
         """
         translations = self.generate_translation_bundle(locale)
         version_hash = self.generate_version_hash(translations)
-        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         version_string = f"v{timestamp}-{version_hash}"
 
         # Storage paths (relative to storage location which is already 'translations/')
         versioned_path = f"{locale.code}/{version_string}.json"
         current_path = f"{locale.code}.json"
 
-        backend = os.environ.get('STORAGE_BACKEND', 's3')
+        backend = os.environ.get("STORAGE_BACKEND", "s3")
         logger.info(f"Publishing translations for {locale.code} using {backend} storage backend")
 
         # Upload versioned file (for history/rollback)
@@ -163,7 +163,7 @@ class TranslationPublisher:
         TranslationVersion.objects.filter(locale=version.locale).update(is_active=False)
 
         version.is_active = True
-        version.save(update_fields=['is_active'])
+        version.save(update_fields=["is_active"])
 
         logger.info(f"Activated version {version.version} for {version.locale.code}")
 
@@ -176,7 +176,7 @@ class TranslationPublisher:
         """
         # Read the versioned file content
         try:
-            versioned_content = self.storage.open(version.s3_key, 'r').read()
+            versioned_content = self.storage.open(version.s3_key, "r").read()
             translations = json.loads(versioned_content)
         except Exception as e:
             logger.error(f"Failed to read versioned file {version.s3_key}: {e}")
@@ -200,7 +200,7 @@ class TranslationPublisher:
             self.storage.delete(path)
 
         # Save new content
-        self.storage.save(path, ContentFile(content.encode('utf-8')))
+        self.storage.save(path, ContentFile(content.encode("utf-8")))
 
     def _clear_cache(self, locale: Locale):
         """Clear local cache for a locale."""
@@ -239,7 +239,7 @@ class TranslationSyncer:
         Returns:
             Stats dictionary with keys: created, updated, deprecated
         """
-        stats = {'created': 0, 'updated': 0, 'deprecated': 0, 'unchanged': 0}
+        stats = {"created": 0, "updated": 0, "deprecated": 0, "unchanged": 0}
         seen_keys = set()
 
         for key, data in master_json.items():
@@ -249,11 +249,11 @@ class TranslationSyncer:
             # Simple: { "key": { "defaultMessage": "text" } }
             # Or direct: { "key": "text" } (for simple extracted format)
             if isinstance(data, dict):
-                default_message = data.get('defaultMessage', '')
-                description = data.get('description', '')
+                default_message = data.get("defaultMessage", "")
+                description = data.get("description", "")
             else:
                 default_message = str(data)
-                description = ''
+                description = ""
 
             # Get existing object to check if it will be updated
             existing_obj = TranslationKey.objects.filter(key=key).first()
@@ -263,24 +263,24 @@ class TranslationSyncer:
 
             obj, created = TranslationKey.objects.update_or_create(
                 key=key,
-                defaults={'default_message': default_message, 'description': description, 'is_deprecated': False},
+                defaults={"default_message": default_message, "description": description, "is_deprecated": False},
             )
 
             if created:
-                stats['created'] += 1
+                stats["created"] += 1
                 logger.debug(f"Created translation key: {key}")
             # Check if actually updated by comparing old values
             elif old_default_message != default_message or old_description != description or was_deprecated:
-                stats['updated'] += 1
+                stats["updated"] += 1
                 logger.debug(f"Updated translation key: {key}")
             else:
-                stats['unchanged'] += 1
+                stats["unchanged"] += 1
 
         # Mark unseen keys as deprecated (don't delete to preserve translations)
         deprecated_count = (
             TranslationKey.objects.filter(is_deprecated=False).exclude(key__in=seen_keys).update(is_deprecated=True)
         )
-        stats['deprecated'] = deprecated_count
+        stats["deprecated"] = deprecated_count
 
         logger.info(
             f"Translation sync complete: {stats['created']} created, "
@@ -308,18 +308,18 @@ class TranslationSyncer:
 
             locales.append(
                 {
-                    'code': locale.code,
-                    'name': locale.name,
-                    'published_translations': published_count,
-                    'progress': round((published_count / active_keys * 100) if active_keys else 100, 1),
+                    "code": locale.code,
+                    "name": locale.name,
+                    "published_translations": published_count,
+                    "progress": round((published_count / active_keys * 100) if active_keys else 100, 1),
                 }
             )
 
         return {
-            'total_keys': total_keys,
-            'active_keys': active_keys,
-            'deprecated_keys': deprecated_keys,
-            'locales': locales,
+            "total_keys": total_keys,
+            "active_keys": active_keys,
+            "deprecated_keys": deprecated_keys,
+            "locales": locales,
         }
 
 

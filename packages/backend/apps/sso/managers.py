@@ -7,11 +7,11 @@ class TenantSSOConnectionManager(models.Manager):
 
     def get_active_for_tenant(self, tenant):
         """Get the active SSO connection for a tenant."""
-        return self.filter(tenant=tenant, status='active').first()
+        return self.filter(tenant=tenant, status="active").first()
 
     def get_for_domain(self, email_domain: str):
         """Find SSO connections that allow the given email domain."""
-        return self.filter(status='active', allowed_domains__contains=[email_domain]).select_related('tenant')
+        return self.filter(status="active", allowed_domains__contains=[email_domain]).select_related("tenant")
 
 
 class SCIMTokenManager(models.Manager):
@@ -48,9 +48,9 @@ class SSOSessionManager(models.Manager):
     def get_active_for_user(self, user):
         """Get all active sessions for a user."""
         now = timezone.now()
-        return self.filter(user=user, is_active=True, expires_at__gt=now).order_by('-last_activity_at')
+        return self.filter(user=user, is_active=True, expires_at__gt=now).order_by("-last_activity_at")
 
-    def revoke_all_for_user(self, user, reason: str = 'User requested'):
+    def revoke_all_for_user(self, user, reason: str = "User requested"):
         """Revoke all sessions for a user."""
         now = timezone.now()
         return self.filter(user=user, is_active=True).update(is_active=False, revoked_at=now, revoked_reason=reason)
@@ -79,17 +79,17 @@ class SSOAuditLogManager(models.Manager):
     def for_tenant(self, tenant, days: int = 30):
         """Get recent audit logs for a tenant."""
         cutoff = timezone.now() - timezone.timedelta(days=days)
-        return self.filter(tenant=tenant, created_at__gte=cutoff).order_by('-created_at')
+        return self.filter(tenant=tenant, created_at__gte=cutoff).order_by("-created_at")
 
     def for_user(self, user, days: int = 30):
         """Get recent audit logs for a user."""
         cutoff = timezone.now() - timezone.timedelta(days=days)
-        return self.filter(user=user, created_at__gte=cutoff).order_by('-created_at')
+        return self.filter(user=user, created_at__gte=cutoff).order_by("-created_at")
 
     def failed_logins(self, tenant=None, hours: int = 24):
         """Get failed login attempts."""
         cutoff = timezone.now() - timezone.timedelta(hours=hours)
-        qs = self.filter(event_type='sso_login_failed', created_at__gte=cutoff, success=False)
+        qs = self.filter(event_type="sso_login_failed", created_at__gte=cutoff, success=False)
         if tenant:
             qs = qs.filter(tenant=tenant)
-        return qs.order_by('-created_at')
+        return qs.order_by("-created_at")

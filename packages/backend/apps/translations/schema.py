@@ -28,7 +28,7 @@ class LocaleType(DjangoObjectType):
 
     class Meta:
         model = Locale
-        fields = ['id', 'code', 'name', 'native_name', 'is_default', 'is_active', 'rtl']
+        fields = ["id", "code", "name", "native_name", "is_default", "is_active", "rtl"]
         interfaces = (relay.Node,)
 
     def resolve_translation_progress(self, info):
@@ -40,7 +40,7 @@ class TranslationKeyType(DjangoObjectType):
 
     class Meta:
         model = TranslationKey
-        fields = ['id', 'key', 'default_message', 'description', 'is_deprecated']
+        fields = ["id", "key", "default_message", "description", "is_deprecated"]
         interfaces = (relay.Node,)
 
 
@@ -49,7 +49,7 @@ class TranslationType(DjangoObjectType):
 
     class Meta:
         model = Translation
-        fields = ['id', 'key', 'locale', 'value', 'status', 'updated_at']
+        fields = ["id", "key", "locale", "value", "status", "updated_at"]
         interfaces = (relay.Node,)
 
 
@@ -58,7 +58,7 @@ class TranslationVersionType(DjangoObjectType):
 
     class Meta:
         model = TranslationVersion
-        fields = ['id', 'locale', 'version', 'is_active', 'published_at', 'translation_count']
+        fields = ["id", "locale", "version", "is_active", "published_at", "translation_count"]
         interfaces = (relay.Node,)
 
 
@@ -104,7 +104,7 @@ class TranslationsQuery(graphene.ObjectType):
     def resolve_locale_progress(self, info):
         syncer = TranslationSyncer()
         status = syncer.get_sync_status()
-        return [LocaleProgressType(**locale_data) for locale_data in status['locales']]
+        return [LocaleProgressType(**locale_data) for locale_data in status["locales"]]
 
     def resolve_translation_sync_status(self, info):
         # Admin only
@@ -115,9 +115,9 @@ class TranslationsQuery(graphene.ObjectType):
         syncer = TranslationSyncer()
         status = syncer.get_sync_status()
         return TranslationSyncStatusType(
-            total_keys=status['total_keys'],
-            active_keys=status['active_keys'],
-            deprecated_keys=status['deprecated_keys'],
+            total_keys=status["total_keys"],
+            active_keys=status["active_keys"],
+            deprecated_keys=status["deprecated_keys"],
         )
 
 
@@ -185,9 +185,9 @@ class SyncTranslationKeysMutation(relay.ClientIDMutation):
 
         return SyncTranslationKeysMutation(
             success=True,
-            created=stats['created'],
-            updated=stats['updated'],
-            deprecated=stats['deprecated'],
+            created=stats["created"],
+            updated=stats["updated"],
+            deprecated=stats["deprecated"],
             message=(
                 f"Sync complete: {stats['created']} created, "
                 f"{stats['updated']} updated, {stats['deprecated']} deprecated"

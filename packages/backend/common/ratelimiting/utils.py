@@ -30,23 +30,23 @@ def get_client_ip(request: HttpRequest) -> str:
         Client IP address string
     """
     # X-Forwarded-For header (most common)
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
         # Take the first IP (client IP before any proxies)
-        return x_forwarded_for.split(',')[0].strip()
+        return x_forwarded_for.split(",")[0].strip()
 
     # X-Real-IP header (nginx)
-    x_real_ip = request.META.get('HTTP_X_REAL_IP')
+    x_real_ip = request.META.get("HTTP_X_REAL_IP")
     if x_real_ip:
         return x_real_ip.strip()
 
     # CF-Connecting-IP (Cloudflare)
-    cf_connecting_ip = request.META.get('HTTP_CF_CONNECTING_IP')
+    cf_connecting_ip = request.META.get("HTTP_CF_CONNECTING_IP")
     if cf_connecting_ip:
         return cf_connecting_ip.strip()
 
     # Direct connection
-    return request.META.get('REMOTE_ADDR', '127.0.0.1')
+    return request.META.get("REMOTE_ADDR", "127.0.0.1")
 
 
 def get_user_id(request: HttpRequest) -> Optional[str]:
@@ -59,7 +59,7 @@ def get_user_id(request: HttpRequest) -> Optional[str]:
     Returns:
         User ID string or None if not authenticated
     """
-    user = getattr(request, 'user', None)
+    user = getattr(request, "user", None)
     if user and user.is_authenticated:
         return str(user.id)
     return None
@@ -76,13 +76,13 @@ def get_tenant_id(request: HttpRequest) -> Optional[str]:
         Tenant ID string or None if not in tenant context
     """
     # Try direct tenant attribute (set by middleware)
-    tenant = getattr(request, 'tenant', None)
+    tenant = getattr(request, "tenant", None)
     if tenant:
         return str(tenant.id)
 
     # Try from URL kwargs
-    if hasattr(request, 'resolver_match') and request.resolver_match:
-        return request.resolver_match.kwargs.get('tenant_id')
+    if hasattr(request, "resolver_match") and request.resolver_match:
+        return request.resolver_match.kwargs.get("tenant_id")
 
     return None
 
@@ -90,7 +90,7 @@ def get_tenant_id(request: HttpRequest) -> Optional[str]:
 def get_rate_limit_key(
     request: HttpRequest,
     key_type: Union[RateLimitKey, str],
-    group: str = '',
+    group: str = "",
 ) -> str:
     """
     Generate a cache key for rate limiting.
@@ -126,27 +126,27 @@ def get_rate_limit_key(
             identifier = f"no_tenant:{get_client_ip(request)}"
     elif key_type == RateLimitKey.USER_TENANT:
         user_id = get_user_id(request) or f"anon:{get_client_ip(request)}"
-        tenant_id = get_tenant_id(request) or 'no_tenant'
+        tenant_id = get_tenant_id(request) or "no_tenant"
         identifier = f"{user_id}:{tenant_id}"
     else:
         identifier = get_client_ip(request)
 
     # Build the cache key
-    parts = ['ratelimit']
+    parts = ["ratelimit"]
     if group:
         parts.append(group)
     parts.append(key_type.value)
     parts.append(identifier)
 
-    return ':'.join(parts)
+    return ":".join(parts)
 
 
 def get_rate_limit_key_ws(
     user_id: Optional[str],
     tenant_id: Optional[str],
     key_type: Union[RateLimitKey, str],
-    group: str = '',
-    client_ip: str = '127.0.0.1',
+    group: str = "",
+    client_ip: str = "127.0.0.1",
 ) -> str:
     """
     Generate a cache key for WebSocket rate limiting.
@@ -176,18 +176,18 @@ def get_rate_limit_key_ws(
         identifier = tenant_id or f"no_tenant:{client_ip}"
     elif key_type == RateLimitKey.USER_TENANT:
         u = user_id or f"anon:{client_ip}"
-        t = tenant_id or 'no_tenant'
+        t = tenant_id or "no_tenant"
         identifier = f"{u}:{t}"
     else:
         identifier = client_ip
 
-    parts = ['ratelimit']
+    parts = ["ratelimit"]
     if group:
         parts.append(group)
     parts.append(key_type.value)
     parts.append(identifier)
 
-    return ':'.join(parts)
+    return ":".join(parts)
 
 
 def parse_rate_string(rate: str) -> tuple[int, int]:
@@ -206,21 +206,21 @@ def parse_rate_string(rate: str) -> tuple[int, int]:
         >>> parse_rate_string('100/hour')
         (100, 3600)
     """
-    if '/' not in rate:
+    if "/" not in rate:
         raise ValueError(f"Invalid rate format: {rate}")
 
-    count_str, period = rate.split('/')
+    count_str, period = rate.split("/")
     count = int(count_str)
 
     # Parse period
     period = period.lower().strip()
-    if period in ('s', 'sec', 'second'):
+    if period in ("s", "sec", "second"):
         window = 1
-    elif period in ('m', 'min', 'minute'):
+    elif period in ("m", "min", "minute"):
         window = 60
-    elif period in ('h', 'hr', 'hour'):
+    elif period in ("h", "hr", "hour"):
         window = 3600
-    elif period in ('d', 'day'):
+    elif period in ("d", "day"):
         window = 86400
     else:
         # Try to parse as seconds
@@ -314,9 +314,9 @@ def get_rate_limit_info(key: str, rate: str) -> dict:
     current = cache.get(key, 0)
 
     return {
-        'limit': count,
-        'remaining': max(0, count - current),
-        'used': current,
-        'window_seconds': window,
-        'is_limited': current > count,
+        "limit": count,
+        "remaining": max(0, count - current),
+        "used": current,
+        "window_seconds": window,
+        "is_limited": current > count,
     }

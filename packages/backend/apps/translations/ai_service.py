@@ -38,37 +38,37 @@ class AITranslationService:
 
     # Map locale codes to full language names for better prompts
     LANGUAGE_NAMES = {
-        'en': 'English',
-        'pl': 'Polish',
-        'de': 'German',
-        'fr': 'French',
-        'es': 'Spanish',
-        'it': 'Italian',
-        'pt': 'Portuguese',
-        'nl': 'Dutch',
-        'ru': 'Russian',
-        'ja': 'Japanese',
-        'ko': 'Korean',
-        'zh': 'Chinese (Simplified)',
-        'zh-TW': 'Chinese (Traditional)',
-        'ar': 'Arabic',
-        'he': 'Hebrew',
-        'tr': 'Turkish',
-        'sv': 'Swedish',
-        'da': 'Danish',
-        'no': 'Norwegian',
-        'fi': 'Finnish',
-        'cs': 'Czech',
-        'uk': 'Ukrainian',
-        'ro': 'Romanian',
-        'hu': 'Hungarian',
-        'el': 'Greek',
-        'th': 'Thai',
-        'vi': 'Vietnamese',
-        'id': 'Indonesian',
-        'ms': 'Malay',
-        'hi': 'Hindi',
-        'bn': 'Bengali',
+        "en": "English",
+        "pl": "Polish",
+        "de": "German",
+        "fr": "French",
+        "es": "Spanish",
+        "it": "Italian",
+        "pt": "Portuguese",
+        "nl": "Dutch",
+        "ru": "Russian",
+        "ja": "Japanese",
+        "ko": "Korean",
+        "zh": "Chinese (Simplified)",
+        "zh-TW": "Chinese (Traditional)",
+        "ar": "Arabic",
+        "he": "Hebrew",
+        "tr": "Turkish",
+        "sv": "Swedish",
+        "da": "Danish",
+        "no": "Norwegian",
+        "fi": "Finnish",
+        "cs": "Czech",
+        "uk": "Ukrainian",
+        "ro": "Romanian",
+        "hu": "Hungarian",
+        "el": "Greek",
+        "th": "Thai",
+        "vi": "Vietnamese",
+        "id": "Indonesian",
+        "ms": "Malay",
+        "hi": "Hindi",
+        "bn": "Bengali",
     }
 
     def __init__(self):
@@ -80,7 +80,7 @@ class AITranslationService:
         if self._client is None:
             from openai import OpenAI
 
-            api_key = getattr(settings, 'OPENAI_API_KEY', None)
+            api_key = getattr(settings, "OPENAI_API_KEY", None)
             if not api_key:
                 raise ValueError("OPENAI_API_KEY is not configured")
 
@@ -90,7 +90,7 @@ class AITranslationService:
     @property
     def model(self) -> str:
         """Get the configured OpenAI model."""
-        return getattr(settings, 'OPENAI_MODEL', 'gpt-4')
+        return getattr(settings, "OPENAI_MODEL", "gpt-4")
 
     def get_language_name(self, locale_code: str) -> str:
         """Get full language name from locale code."""
@@ -141,11 +141,11 @@ class AITranslationService:
 
             # Map back to results
             results = []
-            translation_map = translations.get('translations', {})
+            translation_map = translations.get("translations", {})
 
             for item in keys_with_text:
-                key = item['key']
-                source_text = item['text']
+                key = item["key"]
+                source_text = item["text"]
 
                 if key in translation_map:
                     results.append(
@@ -158,9 +158,9 @@ class AITranslationService:
                         TranslationResult(
                             key=key,
                             source_text=source_text,
-                            translated_text='',
+                            translated_text="",
                             success=False,
-                            error='Translation not found in response',
+                            error="Translation not found in response",
                         )
                     )
 
@@ -170,11 +170,11 @@ class AITranslationService:
             logger.error(f"Failed to parse OpenAI response as JSON: {e}")
             return [
                 TranslationResult(
-                    key=item['key'],
-                    source_text=item['text'],
-                    translated_text='',
+                    key=item["key"],
+                    source_text=item["text"],
+                    translated_text="",
                     success=False,
-                    error=f'JSON parse error: {str(e)}',
+                    error=f"JSON parse error: {str(e)}",
                 )
                 for item in keys_with_text
             ]
@@ -182,7 +182,7 @@ class AITranslationService:
             logger.error(f"OpenAI translation failed: {e}")
             return [
                 TranslationResult(
-                    key=item['key'], source_text=item['text'], translated_text='', success=False, error=str(e)
+                    key=item["key"], source_text=item["text"], translated_text="", success=False, error=str(e)
                 )
                 for item in keys_with_text
             ]
@@ -193,7 +193,7 @@ class AITranslationService:
         text: str,
         source_locale: str,
         target_locale: str,
-        description: str = '',
+        description: str = "",
         app_context: str = "a modern SaaS web application",
     ) -> TranslationResult:
         """
@@ -202,7 +202,7 @@ class AITranslationService:
         For efficiency, prefer translate_batch() when translating multiple keys.
         """
         results = self.translate_batch(
-            keys_with_text=[{'key': key, 'text': text, 'description': description}],
+            keys_with_text=[{"key": key, "text": text, "description": description}],
             source_locale=source_locale,
             target_locale=target_locale,
             app_context=app_context,
@@ -211,7 +211,7 @@ class AITranslationService:
             results[0]
             if results
             else TranslationResult(
-                key=key, source_text=text, translated_text='', success=False, error='No result returned'
+                key=key, source_text=text, translated_text="", success=False, error="No result returned"
             )
         )
 
@@ -250,9 +250,9 @@ You MUST respond with valid JSON in this exact format:
         ]
 
         for item in keys_with_text:
-            key = item['key']
-            text = item['text']
-            description = item.get('description', '')
+            key = item["key"]
+            text = item["text"]
+            description = item.get("description", "")
 
             lines.append(f"Key: {key}")
             lines.append(f"Text: {text}")
@@ -267,5 +267,5 @@ You MUST respond with valid JSON in this exact format:
 
 def is_openai_configured() -> bool:
     """Check if OpenAI API is configured."""
-    api_key = getattr(settings, 'OPENAI_API_KEY', None)
+    api_key = getattr(settings, "OPENAI_API_KEY", None)
     return bool(api_key)

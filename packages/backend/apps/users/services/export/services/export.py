@@ -99,7 +99,7 @@ class ExportUserArchive:
 
         with zipfile.ZipFile(archive_filename, "w", zipfile.ZIP_DEFLATED) as zf:
             json_data_filename = f"{self._user_id}/{self._user_id}.json"
-            zf.writestr(json_data_filename, json.dumps(user_data).encode('utf-8'))
+            zf.writestr(json_data_filename, json.dumps(user_data).encode("utf-8"))
 
             for file_path in user_files:
                 with io.BytesIO() as buffer:
@@ -114,8 +114,8 @@ class ExportUserArchive:
 
         s3.upload_file(user_archive_filename, settings.AWS_EXPORTS_STORAGE_BUCKET_NAME, user_archive_obj_key)
         export_url = s3.generate_presigned_url(
-            'get_object',
-            Params={'Bucket': settings.AWS_EXPORTS_STORAGE_BUCKET_NAME, 'Key': user_archive_obj_key},
+            "get_object",
+            Params={"Bucket": settings.AWS_EXPORTS_STORAGE_BUCKET_NAME, "Key": user_archive_obj_key},
             ExpiresIn=settings.USER_DATA_EXPORT_EXPIRY_SECONDS,
         )
 

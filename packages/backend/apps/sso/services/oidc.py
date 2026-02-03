@@ -42,7 +42,7 @@ class OIDCService:
 
     def get_callback_url(self) -> str:
         """Get the OAuth callback URL."""
-        base_url = getattr(settings, 'API_URL', 'http://localhost:5001')
+        base_url = getattr(settings, "API_URL", "http://localhost:5001")
         return f"{base_url}/api/sso/oidc/{self.connection.id}/callback"
 
     def get_client_secret(self) -> Optional[str]:
@@ -87,7 +87,7 @@ class OIDCService:
             return self.connection.oidc_authorization_endpoint
 
         config = self.discover_configuration()
-        return config.get('authorization_endpoint', '')
+        return config.get("authorization_endpoint", "")
 
     def get_token_endpoint(self) -> str:
         """Get the token endpoint URL."""
@@ -95,7 +95,7 @@ class OIDCService:
             return self.connection.oidc_token_endpoint
 
         config = self.discover_configuration()
-        return config.get('token_endpoint', '')
+        return config.get("token_endpoint", "")
 
     def get_userinfo_endpoint(self) -> str:
         """Get the userinfo endpoint URL."""
@@ -103,7 +103,7 @@ class OIDCService:
             return self.connection.oidc_userinfo_endpoint
 
         config = self.discover_configuration()
-        return config.get('userinfo_endpoint', '')
+        return config.get("userinfo_endpoint", "")
 
     def get_jwks_uri(self) -> str:
         """Get the JWKS URI."""
@@ -111,7 +111,7 @@ class OIDCService:
             return self.connection.oidc_jwks_uri
 
         config = self.discover_configuration()
-        return config.get('jwks_uri', '')
+        return config.get("jwks_uri", "")
 
     @staticmethod
     def generate_pkce() -> Tuple[str, str]:
@@ -125,8 +125,8 @@ class OIDCService:
         code_verifier = secrets.token_urlsafe(64)
 
         # Generate code challenge (SHA256 hash, base64url encoded)
-        digest = hashlib.sha256(code_verifier.encode('utf-8')).digest()
-        code_challenge = base64.urlsafe_b64encode(digest).rstrip(b'=').decode('utf-8')
+        digest = hashlib.sha256(code_verifier.encode("utf-8")).digest()
+        code_challenge = base64.urlsafe_b64encode(digest).rstrip(b"=").decode("utf-8")
 
         return code_verifier, code_challenge
 
@@ -165,31 +165,31 @@ class OIDCService:
         nonce = nonce or self.generate_nonce()
 
         params = {
-            'client_id': self.connection.oidc_client_id,
-            'response_type': 'code',
-            'redirect_uri': self.get_callback_url(),
-            'scope': self.connection.oidc_scopes,
-            'state': state,
-            'nonce': nonce,
+            "client_id": self.connection.oidc_client_id,
+            "response_type": "code",
+            "redirect_uri": self.get_callback_url(),
+            "scope": self.connection.oidc_scopes,
+            "state": state,
+            "nonce": nonce,
         }
 
         if code_challenge:
-            params['code_challenge'] = code_challenge
-            params['code_challenge_method'] = 'S256'
+            params["code_challenge"] = code_challenge
+            params["code_challenge_method"] = "S256"
 
         if prompt:
-            params['prompt'] = prompt
+            params["prompt"] = prompt
 
         if login_hint:
-            params['login_hint'] = login_hint
+            params["login_hint"] = login_hint
 
         auth_endpoint = self.get_authorization_endpoint()
         authorization_url = f"{auth_endpoint}?{urlencode(params)}"
 
         # Return params that need to be stored for callback validation
         auth_params = {
-            'state': state,
-            'nonce': nonce,
+            "state": state,
+            "nonce": nonce,
         }
 
         return authorization_url, auth_params
@@ -213,17 +213,17 @@ class OIDCService:
         client_secret = self.get_client_secret()
 
         data = {
-            'grant_type': 'authorization_code',
-            'code': code,
-            'redirect_uri': self.get_callback_url(),
-            'client_id': self.connection.oidc_client_id,
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": self.get_callback_url(),
+            "client_id": self.connection.oidc_client_id,
         }
 
         if client_secret:
-            data['client_secret'] = client_secret
+            data["client_secret"] = client_secret
 
         if code_verifier:
-            data['code_verifier'] = code_verifier
+            data["code_verifier"] = code_verifier
 
         try:
             response = requests.post(
@@ -236,12 +236,9 @@ class OIDCService:
         except requests.RequestException as e:
             # SECURITY: Log error without exposing sensitive details like client_secret
             # The exception message may contain request payload data
-            status_code = (
-                getattr(e.response, 'status_code', 'N/A') if hasattr(e, 'response') else 'N/A'
-            )
+            status_code = getattr(e.response, "status_code", "N/A") if hasattr(e, "response") else "N/A"
             logger.error(
-                f"Token exchange failed for connection {self.connection.id}: "
-                f"{type(e).__name__} - status: {status_code}"
+                f"Token exchange failed for connection {self.connection.id}: {type(e).__name__} - status: {status_code}"
             )
             # Return generic error message to prevent information disclosure
             raise ValueError("Failed to exchange authorization code for tokens")
@@ -280,13 +277,13 @@ class OIDCService:
             claims = jwt.decode(
                 id_token,
                 signing_key.key,
-                algorithms=['RS256', 'ES256'],
+                algorithms=["RS256", "ES256"],
                 audience=self.connection.oidc_client_id,
                 issuer=self.connection.oidc_issuer,
             )
 
             # Validate nonce if provided
-            if nonce and claims.get('nonce') != nonce:
+            if nonce and claims.get("nonce") != nonce:
                 raise ValueError("Nonce mismatch")
 
             return claims
@@ -310,7 +307,7 @@ class OIDCService:
         try:
             response = requests.get(
                 userinfo_endpoint,
-                headers={'Authorization': f'Bearer {access_token}'},
+                headers={"Authorization": f"Bearer {access_token}"},
                 timeout=30,
             )
             response.raise_for_status()
@@ -363,7 +360,7 @@ class OIDCService:
 
         # SECURITY: ID token is REQUIRED for authentication
         # This prevents authentication bypass when IdP doesn't return id_token
-        id_token = tokens.get('id_token')
+        id_token = tokens.get("id_token")
         if not id_token:
             logger.error("OIDC token response missing id_token")
             raise ValueError("ID token required but not provided by identity provider")
@@ -375,12 +372,12 @@ class OIDCService:
             raise ValueError("ID token validation returned empty claims")
 
         # Get additional user info if needed (supplementary, not for auth)
-        access_token = tokens.get('access_token')
+        access_token = tokens.get("access_token")
         if access_token:
             try:
                 userinfo = self.get_userinfo(access_token)
                 # Only add non-critical claims from userinfo
-                for key in ['name', 'picture', 'locale', 'updated_at']:
+                for key in ["name", "picture", "locale", "updated_at"]:
                     if key in userinfo and key not in claims:
                         claims[key] = userinfo[key]
             except Exception as e:
@@ -394,11 +391,11 @@ class OIDCService:
         """Map OIDC claims to user fields using connection configuration."""
         mapping = self.connection.oidc_claim_mapping or {
             # Standard OIDC claims
-            'email': ['email'],
-            'first_name': ['given_name', 'first_name'],
-            'last_name': ['family_name', 'last_name'],
-            'groups': ['groups', 'roles'],
-            'sub': ['sub'],
+            "email": ["email"],
+            "first_name": ["given_name", "first_name"],
+            "last_name": ["family_name", "last_name"],
+            "groups": ["groups", "roles"],
+            "sub": ["sub"],
         }
 
         result = {}
@@ -412,12 +409,12 @@ class OIDCService:
                     break
 
         # Use 'sub' as the IdP user ID
-        result['idp_user_id'] = claims.get('sub', claims.get('email'))
+        result["idp_user_id"] = claims.get("sub", claims.get("email"))
 
         # Ensure groups is always a list
-        if 'groups' in result and not isinstance(result['groups'], list):
-            result['groups'] = [result['groups']]
+        if "groups" in result and not isinstance(result["groups"], list):
+            result["groups"] = [result["groups"]]
 
-        result['raw_claims'] = claims
+        result["raw_claims"] = claims
 
         return result

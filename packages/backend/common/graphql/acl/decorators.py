@@ -27,13 +27,13 @@ class RBACPermission(BasePermission):
     This is used internally by permission_classes when string permission codes are passed.
     """
 
-    def __init__(self, permission_codes: List[str], mode: str = 'any'):
+    def __init__(self, permission_codes: List[str], mode: str = "any"):
         self.permission_codes = permission_codes
         self.mode = mode
 
     def has_permission(self, request, view) -> bool:
-        user = getattr(request, 'user', None)
-        tenant = getattr(request, 'tenant', None)
+        user = getattr(request, "user", None)
+        tenant = getattr(request, "tenant", None)
 
         if not user or not user.is_authenticated:
             return False
@@ -42,13 +42,13 @@ class RBACPermission(BasePermission):
             # No tenant context - allow (other policies should handle this)
             return True
 
-        if self.mode == 'all':
+        if self.mode == "all":
             return all(user_has_permission(user, tenant, perm) for perm in self.permission_codes)
         else:  # 'any' mode (default)
             return any(user_has_permission(user, tenant, perm) for perm in self.permission_codes)
 
 
-def requires(*permission_codes: str, mode: str = 'any') -> Type[BasePermission]:
+def requires(*permission_codes: str, mode: str = "any") -> Type[BasePermission]:
     """
     Factory function to create an RBAC permission class from permission codes.
 
@@ -72,8 +72,8 @@ def requires(*permission_codes: str, mode: str = 'any') -> Type[BasePermission]:
 
     class DynamicRBACPermission(BasePermission):
         def has_permission(self, request, view) -> bool:
-            user = getattr(request, 'user', None)
-            tenant = getattr(request, 'tenant', None)
+            user = getattr(request, "user", None)
+            tenant = getattr(request, "tenant", None)
 
             if not user or not user.is_authenticated:
                 return False
@@ -81,7 +81,7 @@ def requires(*permission_codes: str, mode: str = 'any') -> Type[BasePermission]:
             if not tenant:
                 return True
 
-            if mode == 'all':
+            if mode == "all":
                 return all(user_has_permission(user, tenant, perm) for perm in codes)
             return any(user_has_permission(user, tenant, perm) for perm in codes)
 
@@ -164,7 +164,7 @@ def permission_classes(*perms: types.PermissionsClasses):
             return obj
 
         if isinstance(obj, channels_graphql_ws.Subscription):
-            raise Exception('permission_checker for channels_graphql_ws.Subscription type is not supported')
+            raise Exception("permission_checker for channels_graphql_ws.Subscription type is not supported")
 
         if isinstance(obj, FunctionType):
             return wrappers.wraps_resolver_function(fn=obj, perms=normalized_perms)
@@ -175,7 +175,7 @@ def permission_classes(*perms: types.PermissionsClasses):
     return permission_checker
 
 
-def permission_required(permission_code: Union[str, List[str]], mode: str = 'any'):
+def permission_required(permission_code: Union[str, List[str]], mode: str = "any"):
     """
     Decorator to check if the user has the required permission(s) for the tenant context.
 
@@ -215,7 +215,7 @@ def permission_required(permission_code: Union[str, List[str]], mode: str = 'any
             @wraps(obj)
             def wrapper(root, info, *args, **kwargs):
                 user = info.context.user
-                tenant = getattr(info.context, 'tenant', None)
+                tenant = getattr(info.context, "tenant", None)
 
                 if not user or not user.is_authenticated:
                     raise GraphQLError(PERMISSION_REQUIRED_MESSAGE)
@@ -226,7 +226,7 @@ def permission_required(permission_code: Union[str, List[str]], mode: str = 'any
                     return obj(root, info, *args, **kwargs)
 
                 # Check permissions
-                if mode == 'all':
+                if mode == "all":
                     has_permission = all(user_has_permission(user.id, tenant.pk, perm) for perm in permissions_list)
                 else:  # 'any' mode
                     has_permission = any(user_has_permission(user.id, tenant.pk, perm) for perm in permissions_list)
@@ -240,21 +240,21 @@ def permission_required(permission_code: Union[str, List[str]], mode: str = 'any
 
         elif isinstance(obj, type) and issubclass(obj, graphene.Mutation):
             # For Mutation classes, wrap the mutate_and_get_payload method
-            original_mutate = getattr(obj, 'mutate_and_get_payload', None)
+            original_mutate = getattr(obj, "mutate_and_get_payload", None)
             if original_mutate:
 
                 @classmethod
                 @wraps(original_mutate.__func__)
                 def wrapped_mutate(cls, root, info, *args, **kwargs):
                     user = info.context.user
-                    tenant = getattr(info.context, 'tenant', None)
+                    tenant = getattr(info.context, "tenant", None)
 
                     if not user or not user.is_authenticated:
                         raise GraphQLError(PERMISSION_REQUIRED_MESSAGE)
 
                     if tenant:
                         # Check permissions
-                        if mode == 'all':
+                        if mode == "all":
                             has_permission = all(
                                 user_has_permission(user.id, tenant.pk, perm) for perm in permissions_list
                             )

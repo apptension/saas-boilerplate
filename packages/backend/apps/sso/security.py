@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 # ===================
 
 
-def validate_redirect_path(path: str, default: str = '/en/') -> str:
+def validate_redirect_path(path: str, default: str = "/en/") -> str:
     """
     Validate that a redirect path is safe (relative, no protocol tricks).
 
@@ -59,39 +59,39 @@ def validate_redirect_path(path: str, default: str = '/en/') -> str:
     path = path.strip()
 
     # Must start with single forward slash (relative URL)
-    if not path.startswith('/'):
+    if not path.startswith("/"):
         logger.warning(f"Redirect path rejected (not relative): {path[:50]}")
         return default
 
     # Block protocol-relative URLs (//evil.com)
-    if path.startswith('//'):
+    if path.startswith("//"):
         logger.warning(f"Redirect path rejected (protocol-relative): {path[:50]}")
         return default
 
     # Block absolute URLs embedded in path
-    if '://' in path:
+    if "://" in path:
         logger.warning(f"Redirect path rejected (contains protocol): {path[:50]}")
         return default
 
     # Block backslash tricks (/\evil.com which some browsers interpret as //evil.com)
-    if '\\' in path:
+    if "\\" in path:
         logger.warning(f"Redirect path rejected (contains backslash): {path[:50]}")
         return default
 
     # Block null bytes and other control characters
-    if '\x00' in path or any(ord(c) < 32 for c in path):
+    if "\x00" in path or any(ord(c) < 32 for c in path):
         logger.warning("Redirect path rejected (contains control characters)")
         return default
 
     # Block encoded variations that could bypass checks after URL decoding
     # Check for double-encoded or suspicious patterns
     suspicious_patterns = [
-        '%00',  # Null byte
-        '%2f%2f',  # //
-        '%5c',  # \
-        '%252f',  # Double-encoded /
-        '%255c',  # Double-encoded \
-        '@',  # user@host URL pattern
+        "%00",  # Null byte
+        "%2f%2f",  # //
+        "%5c",  # \
+        "%252f",  # Double-encoded /
+        "%255c",  # Double-encoded \
+        "@",  # user@host URL pattern
     ]
     path_lower = path.lower()
     for pattern in suspicious_patterns:
@@ -117,7 +117,7 @@ def validate_redirect_path(path: str, default: str = '/en/') -> str:
     return path
 
 
-def build_safe_redirect_url(base_url: str, path: str, default_path: str = '/en/') -> str:
+def build_safe_redirect_url(base_url: str, path: str, default_path: str = "/en/") -> str:
     """
     Build a safe redirect URL by combining a base URL with a validated path.
 
@@ -131,7 +131,7 @@ def build_safe_redirect_url(base_url: str, path: str, default_path: str = '/en/'
     """
     safe_path = validate_redirect_path(path, default_path)
     # Ensure base_url doesn't end with / to avoid double slashes
-    base_url = base_url.rstrip('/')
+    base_url = base_url.rstrip("/")
     return f"{base_url}{safe_path}"
 
 
@@ -141,17 +141,17 @@ def build_safe_redirect_url(base_url: str, path: str, default_path: str = '/en/'
 
 # Predefined safe error codes that map internal errors to user-friendly messages
 SSO_ERROR_CODES = {
-    'auth_failed': 'Authentication failed. Please try again.',
-    'invalid_response': 'Invalid response from identity provider.',
-    'missing_email': 'Email address not provided by identity provider.',
-    'domain_not_allowed': 'Your email domain is not authorized for this organization.',
-    'provisioning_disabled': 'Automatic account creation is disabled. Contact your administrator.',
-    'session_expired': 'Your session has expired. Please sign in again.',
-    'config_error': 'SSO is not properly configured. Contact your administrator.',
-    'signature_invalid': 'Security validation failed. Please try again.',
-    'state_mismatch': 'Security check failed. Please start the sign-in process again.',
-    'rate_limited': 'Too many attempts. Please wait before trying again.',
-    'generic': 'An error occurred during sign-in. Please try again or contact support.',
+    "auth_failed": "Authentication failed. Please try again.",
+    "invalid_response": "Invalid response from identity provider.",
+    "missing_email": "Email address not provided by identity provider.",
+    "domain_not_allowed": "Your email domain is not authorized for this organization.",
+    "provisioning_disabled": "Automatic account creation is disabled. Contact your administrator.",
+    "session_expired": "Your session has expired. Please sign in again.",
+    "config_error": "SSO is not properly configured. Contact your administrator.",
+    "signature_invalid": "Security validation failed. Please try again.",
+    "state_mismatch": "Security check failed. Please start the sign-in process again.",
+    "rate_limited": "Too many attempts. Please wait before trying again.",
+    "generic": "An error occurred during sign-in. Please try again or contact support.",
 }
 
 
@@ -174,35 +174,35 @@ def get_safe_error_code(exception: Exception) -> str:
     logger.error(f"SSO error mapped to safe code: {exception}")
 
     # Map common error patterns to safe codes
-    if 'email' in error_msg and ('missing' in error_msg or 'not found' in error_msg or 'no email' in error_msg):
-        return 'missing_email'
+    if "email" in error_msg and ("missing" in error_msg or "not found" in error_msg or "no email" in error_msg):
+        return "missing_email"
 
-    if 'domain' in error_msg and ('not allowed' in error_msg or 'restricted' in error_msg):
-        return 'domain_not_allowed'
+    if "domain" in error_msg and ("not allowed" in error_msg or "restricted" in error_msg):
+        return "domain_not_allowed"
 
-    if 'provisioning' in error_msg or 'jit' in error_msg or 'disabled' in error_msg:
-        return 'provisioning_disabled'
+    if "provisioning" in error_msg or "jit" in error_msg or "disabled" in error_msg:
+        return "provisioning_disabled"
 
-    if 'signature' in error_msg or 'certificate' in error_msg or 'verification' in error_msg:
-        return 'signature_invalid'
+    if "signature" in error_msg or "certificate" in error_msg or "verification" in error_msg:
+        return "signature_invalid"
 
-    if 'state' in error_msg and ('mismatch' in error_msg or 'invalid' in error_msg or 'expired' in error_msg):
-        return 'state_mismatch'
+    if "state" in error_msg and ("mismatch" in error_msg or "invalid" in error_msg or "expired" in error_msg):
+        return "state_mismatch"
 
-    if 'expired' in error_msg or 'timeout' in error_msg:
-        return 'session_expired'
+    if "expired" in error_msg or "timeout" in error_msg:
+        return "session_expired"
 
-    if 'config' in error_msg or 'not configured' in error_msg:
-        return 'config_error'
+    if "config" in error_msg or "not configured" in error_msg:
+        return "config_error"
 
-    if 'rate' in error_msg or 'throttle' in error_msg or 'too many' in error_msg:
-        return 'rate_limited'
+    if "rate" in error_msg or "throttle" in error_msg or "too many" in error_msg:
+        return "rate_limited"
 
-    if 'invalid' in error_msg and 'response' in error_msg:
-        return 'invalid_response'
+    if "invalid" in error_msg and "response" in error_msg:
+        return "invalid_response"
 
     # Default to generic error
-    return 'generic'
+    return "generic"
 
 
 def get_error_message(error_code: str) -> str:
@@ -215,7 +215,7 @@ def get_error_message(error_code: str) -> str:
     Returns:
         User-friendly error message
     """
-    return SSO_ERROR_CODES.get(error_code, SSO_ERROR_CODES['generic'])
+    return SSO_ERROR_CODES.get(error_code, SSO_ERROR_CODES["generic"])
 
 
 # ===================
@@ -301,18 +301,18 @@ def sanitize_scim_filter(filter_expr: str, max_length: int = 500) -> Optional[Di
         value = match.group(2)
 
         # Additional validation for email-like values
-        if attribute in ('username', 'email') and '@' in value and not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', value):
+        if attribute in ("username", "email") and "@" in value and not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", value):
             logger.warning(f"SCIM filter rejected (invalid email format): {value[:50]}")
             return None
 
-        return {'attribute': attribute, 'value': value}
+        return {"attribute": attribute, "value": value}
 
     # Pattern for: active eq true/false
-    bool_pattern = r'^active\s+eq\s+(true|false)$'
+    bool_pattern = r"^active\s+eq\s+(true|false)$"
     bool_match = re.match(bool_pattern, filter_expr, re.IGNORECASE)
 
     if bool_match:
-        return {'attribute': 'active', 'value': bool_match.group(1).lower() == 'true'}
+        return {"attribute": "active", "value": bool_match.group(1).lower() == "true"}
 
     logger.warning(f"SCIM filter rejected (unsupported pattern): {filter_expr[:100]}")
     return None
@@ -337,7 +337,7 @@ def hash_for_logging(value: str, length: int = 8) -> str:
         A short hash prefix safe for logging
     """
     if not value:
-        return 'none'
+        return "none"
     return hashlib.sha256(value.encode()).hexdigest()[:length]
 
 
@@ -351,12 +351,12 @@ def safe_log_user_identifier(email: str) -> str:
     Returns:
         Safe identifier for logging
     """
-    if not email or '@' not in email:
-        return 'unknown'
+    if not email or "@" not in email:
+        return "unknown"
 
-    local, domain = email.rsplit('@', 1)
+    local, domain = email.rsplit("@", 1)
     # Show first 2 chars of local part + domain (only if local part is long enough)
-    masked_local = local[:2] + '***' if len(local) > 3 else '***'
+    masked_local = local[:2] + "***" if len(local) > 3 else "***"
 
     return f"{masked_local}@{domain}"
 
@@ -411,8 +411,8 @@ def validate_saml_response_basic(response_xml: bytes) -> bool:
         return False
 
     # Check for XML declaration or SAML namespace
-    response_str = response_xml[:1000].decode('utf-8', errors='ignore').lower()
-    if '<saml' not in response_str and '<response' not in response_str:
+    response_str = response_xml[:1000].decode("utf-8", errors="ignore").lower()
+    if "<saml" not in response_str and "<response" not in response_str:
         logger.warning("SAML response rejected (not SAML XML)")
         return False
 

@@ -6,10 +6,10 @@ All limits are environment-configurable via Django settings.
 
 Usage:
     from common.ratelimiting import get_rate_limit, RateLimitCategory
-    
+
     # Get a configured rate limit
     rate = get_rate_limit(RateLimitCategory.AUTH_LOGIN)  # Returns '30/min'
-    
+
     # Get rate limit for a specific tier
     rate = get_rate_limit(RateLimitCategory.AI_CHAT_MESSAGE, tier='power')  # Returns '20/min'
 """
@@ -43,7 +43,7 @@ class RateLimitConfig:
     key: RateLimitKey = RateLimitKey.USER_OR_IP
     block: bool = True
     tier_rates: Dict[UserTier, str] = field(default_factory=dict)
-    description: str = ''
+    description: str = ""
 
     def get_rate_for_tier(self, tier: UserTier) -> str:
         """Get the rate limit for a specific user tier."""
@@ -59,158 +59,158 @@ DEFAULT_RATE_LIMITS: Dict[str, RateLimitConfig] = {
     # Authentication
     # ===================
     RateLimitCategory.AUTH_LOGIN: RateLimitConfig(
-        rate='30/min',
+        rate="30/min",
         key=RateLimitKey.IP,
-        description='Login attempts per IP to prevent credential stuffing',
+        description="Login attempts per IP to prevent credential stuffing",
     ),
     RateLimitCategory.AUTH_SIGNUP: RateLimitConfig(
-        rate='10/min',
+        rate="10/min",
         key=RateLimitKey.IP,
-        description='Signup requests per IP to prevent spam accounts',
+        description="Signup requests per IP to prevent spam accounts",
     ),
     RateLimitCategory.AUTH_PASSWORD_RESET: RateLimitConfig(
-        rate='5/hour',
+        rate="5/hour",
         key=RateLimitKey.IP,
-        description='Password reset requests per IP to prevent abuse',
+        description="Password reset requests per IP to prevent abuse",
     ),
     RateLimitCategory.AUTH_OTP: RateLimitConfig(
-        rate='10/min',
+        rate="10/min",
         key=RateLimitKey.IP,
-        description='OTP validation attempts to prevent brute force',
+        description="OTP validation attempts to prevent brute force",
     ),
     RateLimitCategory.AUTH_PASSKEY: RateLimitConfig(
-        rate='10/min',
+        rate="10/min",
         key=RateLimitKey.IP,
-        description='Passkey authentication attempts',
+        description="Passkey authentication attempts",
     ),
     # ===================
     # GraphQL Global
     # ===================
     RateLimitCategory.GRAPHQL_GLOBAL_ANON: RateLimitConfig(
-        rate='60/min',
+        rate="60/min",
         key=RateLimitKey.IP,
-        description='Total GraphQL requests for anonymous users',
+        description="Total GraphQL requests for anonymous users",
     ),
     RateLimitCategory.GRAPHQL_GLOBAL_USER: RateLimitConfig(
-        rate='300/min',
+        rate="300/min",
         key=RateLimitKey.USER,
         tier_rates={
-            UserTier.FREE: '150/min',
-            UserTier.STANDARD: '300/min',
-            UserTier.POWER: '1000/min',
-            UserTier.ADMIN: '5000/min',
+            UserTier.FREE: "150/min",
+            UserTier.STANDARD: "300/min",
+            UserTier.POWER: "1000/min",
+            UserTier.ADMIN: "5000/min",
         },
-        description='Total GraphQL requests for authenticated users',
+        description="Total GraphQL requests for authenticated users",
     ),
     RateLimitCategory.GRAPHQL_QUERY: RateLimitConfig(
-        rate='200/min',
+        rate="200/min",
         key=RateLimitKey.USER,
-        description='GraphQL query operations',
+        description="GraphQL query operations",
     ),
     RateLimitCategory.GRAPHQL_MUTATION: RateLimitConfig(
-        rate='100/min',
+        rate="100/min",
         key=RateLimitKey.USER,
-        description='GraphQL mutation operations',
+        description="GraphQL mutation operations",
     ),
     # ===================
     # AI/MCP Operations (Expensive - OpenAI API calls)
     # ===================
     RateLimitCategory.AI_CHAT_MESSAGE: RateLimitConfig(
-        rate='10/min',
+        rate="10/min",
         key=RateLimitKey.USER,
         tier_rates={
-            UserTier.FREE: '5/min',
-            UserTier.STANDARD: '10/min',
-            UserTier.POWER: '20/min',
+            UserTier.FREE: "5/min",
+            UserTier.STANDARD: "10/min",
+            UserTier.POWER: "20/min",
         },
-        description='AI chat messages per minute (each costs OpenAI tokens)',
+        description="AI chat messages per minute (each costs OpenAI tokens)",
     ),
     RateLimitCategory.AI_CHAT_HOURLY: RateLimitConfig(
-        rate='60/hour',
+        rate="60/hour",
         key=RateLimitKey.USER,
         tier_rates={
-            UserTier.FREE: '30/hour',
-            UserTier.STANDARD: '60/hour',
-            UserTier.POWER: '150/hour',
+            UserTier.FREE: "30/hour",
+            UserTier.STANDARD: "60/hour",
+            UserTier.POWER: "150/hour",
         },
-        description='AI chat messages per hour (cost control)',
+        description="AI chat messages per hour (cost control)",
     ),
     RateLimitCategory.AI_MCP_PROXY: RateLimitConfig(
-        rate='30/min',
+        rate="30/min",
         key=RateLimitKey.USER,
-        description='MCP proxy requests (tool calls from AI)',
+        description="MCP proxy requests (tool calls from AI)",
     ),
     RateLimitCategory.AI_PARSE: RateLimitConfig(
-        rate='5/min',
+        rate="5/min",
         key=RateLimitKey.USER,
         tier_rates={
-            UserTier.FREE: '3/min',
-            UserTier.STANDARD: '5/min',
-            UserTier.POWER: '15/min',
+            UserTier.FREE: "3/min",
+            UserTier.STANDARD: "5/min",
+            UserTier.POWER: "15/min",
         },
-        description='AI CSV/image parsing (expensive, uses vision API)',
+        description="AI CSV/image parsing (expensive, uses vision API)",
     ),
     RateLimitCategory.AI_DETECT: RateLimitConfig(
-        rate='10/min',
+        rate="10/min",
         key=RateLimitKey.USER,
-        description='AI entity type detection',
+        description="AI entity type detection",
     ),
     # ===================
     # Import Operations (Heavy DB operations)
     # ===================
     RateLimitCategory.IMPORT_CSV: RateLimitConfig(
-        rate='3/min',
+        rate="3/min",
         key=RateLimitKey.USER,
-        description='CSV import operations',
+        description="CSV import operations",
     ),
     RateLimitCategory.IMPORT_EXCEL: RateLimitConfig(
-        rate='3/min',
+        rate="3/min",
         key=RateLimitKey.USER,
-        description='Excel import operations',
+        description="Excel import operations",
     ),
     RateLimitCategory.IMPORT_DAILY: RateLimitConfig(
-        rate='50/day',
+        rate="50/day",
         key=RateLimitKey.TENANT,
-        description='Daily import operations per tenant',
+        description="Daily import operations per tenant",
     ),
     # ===================
     # File Operations
     # ===================
     RateLimitCategory.FILE_UPLOAD: RateLimitConfig(
-        rate='20/min',
+        rate="20/min",
         key=RateLimitKey.USER,
-        description='File upload operations',
+        description="File upload operations",
     ),
     RateLimitCategory.FILE_UPLOAD_LARGE: RateLimitConfig(
-        rate='5/min',
+        rate="5/min",
         key=RateLimitKey.USER,
-        description='Large file uploads (>5MB)',
+        description="Large file uploads (>5MB)",
     ),
     # ===================
     # SSO Operations
     # ===================
     RateLimitCategory.SSO_LOGIN: RateLimitConfig(
-        rate='20/min',
+        rate="20/min",
         key=RateLimitKey.IP,
-        description='SSO login initiation',
+        description="SSO login initiation",
     ),
     RateLimitCategory.SSO_DISCOVERY: RateLimitConfig(
-        rate='60/min',
+        rate="60/min",
         key=RateLimitKey.IP,
-        description='SSO domain discovery',
+        description="SSO domain discovery",
     ),
     RateLimitCategory.SSO_SCIM: RateLimitConfig(
-        rate='100/min',
+        rate="100/min",
         key=RateLimitKey.USER,
-        description='SCIM provisioning API operations',
+        description="SCIM provisioning API operations",
     ),
     # ===================
     # General API
     # ===================
     RateLimitCategory.API_GENERAL: RateLimitConfig(
-        rate='100/min',
+        rate="100/min",
         key=RateLimitKey.USER_OR_IP,
-        description='General API endpoint rate limit',
+        description="General API endpoint rate limit",
     ),
 }
 
@@ -225,7 +225,7 @@ def _get_settings_rate_limits() -> Dict[str, dict]:
             'ai.chat.message': {'rate': '15/min', 'tier_rates': {'power': '30/min'}},
         }
     """
-    return getattr(settings, 'RATE_LIMITS', {})
+    return getattr(settings, "RATE_LIMITS", {})
 
 
 def _merge_rate_limit_config(default: RateLimitConfig, override: Optional[dict]) -> RateLimitConfig:
@@ -234,13 +234,13 @@ def _merge_rate_limit_config(default: RateLimitConfig, override: Optional[dict])
         return default
 
     return RateLimitConfig(
-        rate=override.get('rate', default.rate),
-        key=RateLimitKey(override.get('key', default.key)),
-        block=override.get('block', default.block),
-        tier_rates={UserTier(k): v for k, v in override.get('tier_rates', default.tier_rates).items()}
-        if override.get('tier_rates')
+        rate=override.get("rate", default.rate),
+        key=RateLimitKey(override.get("key", default.key)),
+        block=override.get("block", default.block),
+        tier_rates={UserTier(k): v for k, v in override.get("tier_rates", default.tier_rates).items()}
+        if override.get("tier_rates")
         else default.tier_rates,
-        description=override.get('description', default.description),
+        description=override.get("description", default.description),
     )
 
 
@@ -302,7 +302,7 @@ def get_rate_limit(
 
     if not config:
         logger.warning(f"Unknown rate limit category: {category_key}, using default")
-        return '60/min'  # Safe default
+        return "60/min"  # Safe default
 
     if tier:
         return config.get_rate_for_tier(tier)

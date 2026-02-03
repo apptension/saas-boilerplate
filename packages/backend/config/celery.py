@@ -3,18 +3,18 @@ import os
 from celery import Celery
 from celery.signals import task_postrun, task_prerun, worker_process_init
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
-app = Celery('tasks')
+app = Celery("tasks")
 
-app.config_from_object('django.conf:settings', namespace='CELERY')
+app.config_from_object("django.conf:settings", namespace="CELERY")
 
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
 
 # Explicitly import task modules that are outside of Django apps
 # These are not discovered by autodiscover_tasks()
-app.autodiscover_tasks(['common.task_backends'], related_name='celery_tasks')
+app.autodiscover_tasks(["common.task_backends"], related_name="celery_tasks")
 
 
 # =============================================================================
@@ -63,4 +63,4 @@ def close_db_connections_after_task(**kwargs):
 
 @app.task(bind=True, ignore_result=True)
 def debug_task(self):
-    print(f'Request: {self.request!r}')  # noqa
+    print(f"Request: {self.request!r}")  # noqa

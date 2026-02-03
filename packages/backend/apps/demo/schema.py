@@ -46,7 +46,7 @@ class ContentfulDemoItemFavoriteConnection(graphene.Connection):
         node = ContentfulDemoItemFavoriteType
 
 
-@permission_required('features.crud.manage')
+@permission_required("features.crud.manage")
 class CreateCrudDemoItemMutation(mutations.CreateTenantDependentModelMutation):
     class Meta:
         serializer_class = serializers.CrudDemoItemSerializer
@@ -66,7 +66,7 @@ class DocumentDemoItemConnection(graphene.Connection):
 
 
 @permission_classes(IsAuthenticatedFullAccess)
-@permission_required('features.documents.manage')
+@permission_required("features.documents.manage")
 class CreateDocumentDemoItemMutation(mutations.CreateModelMutation):
     class Meta:
         serializer_class = serializers.DocumentDemoItemSerializer
@@ -96,11 +96,11 @@ class DeleteFavoriteContentfulDemoItemMutation(mutations.DeleteModelMutation):
         obj = cls.get_object(item=item, user=info.context.user)
         deleted_id = obj.id
         obj.delete()
-        return cls(deleted_ids=[to_global_id('ContentfulDemoItemFavoriteType', deleted_id)])
+        return cls(deleted_ids=[to_global_id("ContentfulDemoItemFavoriteType", deleted_id)])
 
 
 @permission_classes(IsAuthenticatedFullAccess)
-@permission_required('features.documents.manage')
+@permission_required("features.documents.manage")
 class DeleteDocumentDemoItemMutation(mutations.DeleteModelMutation):
     class Meta:
         model = models.DocumentDemoItem
@@ -112,14 +112,14 @@ class DeleteDocumentDemoItemMutation(mutations.DeleteModelMutation):
         return cls(deleted_ids=[id])
 
 
-@permission_required('features.crud.manage')
+@permission_required("features.crud.manage")
 class UpdateCrudDemoItemMutation(mutations.UpdateTenantDependentModelMutation):
     class Meta:
         serializer_class = serializers.CrudDemoItemSerializer
         edge_class = CrudDemoItemConnection.Edge
 
 
-@permission_required('features.crud.manage')
+@permission_required("features.crud.manage")
 class DeleteCrudDemoItemMutation(mutations.DeleteTenantDependentModelMutation):
     class Meta:
         model = models.CrudDemoItem
@@ -133,7 +133,7 @@ class Query(graphene.ObjectType):
 
     @staticmethod
     @permission_classes(IsTenantMemberAccess)
-    @permission_required('features.crud.view')
+    @permission_required("features.crud.view")
     def resolve_all_crud_demo_items(root, info, tenant_id, **kwargs):
         _, pk = from_global_id(tenant_id)
         return models.CrudDemoItem.objects.filter(tenant_id=pk).all()
@@ -144,13 +144,13 @@ class Query(graphene.ObjectType):
 
     @staticmethod
     @permission_classes(IsAuthenticatedFullAccess)
-    @permission_required('features.documents.view')
+    @permission_required("features.documents.view")
     def resolve_all_document_demo_items(root, info, **kwargs):
         return info.context.user.documents.all()
 
     @staticmethod
     @permission_classes(IsTenantMemberAccess)
-    @permission_required('features.crud.view')
+    @permission_required("features.crud.view")
     def resolve_crud_demo_item(root, info, id, tenant_id, **kwargs):
         _, pk = from_global_id(id)
         _, tenant_pk = from_global_id(tenant_id)

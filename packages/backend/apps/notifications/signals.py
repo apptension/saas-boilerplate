@@ -18,7 +18,7 @@ def _is_in_async_context():
 @receiver(post_save, sender=models.Notification)
 def notify_about_entry(sender, instance: models.Notification, created, update_fields, **kwargs):
     if created:
-        payload = {'id': str(instance.id)}
+        payload = {"id": str(instance.id)}
         group = str(instance.user.id)
 
         # Use broadcast_sync for synchronous contexts (like Celery workers)

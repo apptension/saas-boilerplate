@@ -49,20 +49,20 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
     group_role_mapping = models.JSONField(default=dict, blank=True, help_text="Mapping of IdP groups to tenant roles")
 
     # SAML-specific fields
-    saml_entity_id = models.CharField(max_length=512, blank=True, default='')
-    saml_sso_url = models.URLField(max_length=512, blank=True, default='')
-    saml_slo_url = models.URLField(max_length=512, blank=True, default='', help_text="Single Logout URL")
+    saml_entity_id = models.CharField(max_length=512, blank=True, default="")
+    saml_sso_url = models.URLField(max_length=512, blank=True, default="")
+    saml_slo_url = models.URLField(max_length=512, blank=True, default="", help_text="Single Logout URL")
     saml_name_id_format = models.CharField(
         choices=constants.SAMLNameIdFormat.choices, max_length=128, default=constants.SAMLNameIdFormat.EMAIL
     )
     saml_certificate_arn = models.CharField(
-        max_length=512, blank=True, default='', help_text="ARN of the IdP certificate in AWS Secrets Manager"
+        max_length=512, blank=True, default="", help_text="ARN of the IdP certificate in AWS Secrets Manager"
     )
     saml_certificate = models.TextField(
-        blank=True, default='', help_text="IdP X.509 certificate (PEM format) - for local development"
+        blank=True, default="", help_text="IdP X.509 certificate (PEM format) - for local development"
     )
     saml_signing_certificate_arn = models.CharField(
-        max_length=512, blank=True, default='', help_text="ARN of our SP signing certificate in AWS Secrets Manager"
+        max_length=512, blank=True, default="", help_text="ARN of our SP signing certificate in AWS Secrets Manager"
     )
     saml_want_assertions_signed = models.BooleanField(default=True)
     saml_want_response_signed = models.BooleanField(default=True)
@@ -73,18 +73,18 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
     )
 
     # OIDC-specific fields
-    oidc_issuer = models.URLField(max_length=512, blank=True, default='')
-    oidc_client_id = models.CharField(max_length=255, blank=True, default='')
+    oidc_issuer = models.URLField(max_length=512, blank=True, default="")
+    oidc_client_id = models.CharField(max_length=255, blank=True, default="")
     oidc_client_secret_arn = models.CharField(
-        max_length=512, blank=True, default='', help_text="ARN of the client secret in AWS Secrets Manager"
+        max_length=512, blank=True, default="", help_text="ARN of the client secret in AWS Secrets Manager"
     )
     oidc_client_secret = models.CharField(
-        max_length=512, blank=True, default='', help_text="Client secret - for local development"
+        max_length=512, blank=True, default="", help_text="Client secret - for local development"
     )
-    oidc_authorization_endpoint = models.URLField(max_length=512, blank=True, default='')
-    oidc_token_endpoint = models.URLField(max_length=512, blank=True, default='')
-    oidc_userinfo_endpoint = models.URLField(max_length=512, blank=True, default='')
-    oidc_jwks_uri = models.URLField(max_length=512, blank=True, default='')
+    oidc_authorization_endpoint = models.URLField(max_length=512, blank=True, default="")
+    oidc_token_endpoint = models.URLField(max_length=512, blank=True, default="")
+    oidc_userinfo_endpoint = models.URLField(max_length=512, blank=True, default="")
+    oidc_jwks_uri = models.URLField(max_length=512, blank=True, default="")
     oidc_scopes = models.CharField(
         max_length=512, default="openid email profile", help_text="Space-separated list of OAuth scopes"
     )
@@ -93,8 +93,8 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
     oidc_claim_mapping = models.JSONField(default=dict, blank=True, help_text="Mapping of OIDC claims to user fields")
 
     # Metadata caching
-    idp_metadata_xml = models.TextField(blank=True, default='')
-    sp_metadata_xml = models.TextField(blank=True, default='')
+    idp_metadata_xml = models.TextField(blank=True, default="")
+    sp_metadata_xml = models.TextField(blank=True, default="")
     metadata_last_updated = models.DateTimeField(null=True, blank=True)
 
     # Statistics
@@ -104,8 +104,8 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
     objects = managers.TenantSSOConnectionManager()
 
     class Meta:
-        ordering = ['-created_at']
-        unique_together = [['tenant', 'name']]
+        ordering = ["-created_at"]
+        unique_together = [["tenant", "name"]]
 
     def __str__(self):
         return f"{self.tenant.name} - {self.name} ({self.get_connection_type_display()})"
@@ -129,7 +129,7 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
             return None
         from django.conf import settings
 
-        api_url = getattr(settings, 'API_URL', 'http://localhost:3000')
+        api_url = getattr(settings, "API_URL", "http://localhost:3000")
         return f"{api_url}/api/sso/saml/{self.id}/metadata"
 
     @property
@@ -139,7 +139,7 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
             return None
         from django.conf import settings
 
-        api_url = getattr(settings, 'API_URL', 'http://localhost:3000')
+        api_url = getattr(settings, "API_URL", "http://localhost:3000")
         return f"{api_url}/api/sso/saml/{self.id}/acs"
 
     @property
@@ -153,7 +153,7 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
             return None
         from django.conf import settings
 
-        api_url = getattr(settings, 'API_URL', 'http://localhost:3000')
+        api_url = getattr(settings, "API_URL", "http://localhost:3000")
         return f"{api_url}/api/sso/saml/{self.id}/metadata"
 
     @property
@@ -163,7 +163,7 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
             return None
         from django.conf import settings
 
-        api_url = getattr(settings, 'API_URL', 'http://localhost:3000')
+        api_url = getattr(settings, "API_URL", "http://localhost:3000")
         return f"{api_url}/api/sso/oidc/{self.id}/callback"
 
     @property
@@ -171,7 +171,7 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
         """Get the login URL for this connection."""
         from django.conf import settings
 
-        api_url = getattr(settings, 'API_URL', 'http://localhost:3000')
+        api_url = getattr(settings, "API_URL", "http://localhost:3000")
         if self.is_saml:
             return f"{api_url}/api/sso/saml/{self.id}/login"
         elif self.is_oidc:
@@ -208,16 +208,16 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
                 raise ValueError("OIDC client ID must be configured before activation.")
 
         self.status = constants.SSOConnectionStatus.ACTIVE
-        self.save(update_fields=['status', 'updated_at'])
+        self.save(update_fields=["status", "updated_at"])
 
     def deactivate(self):
         """Deactivate this SSO connection."""
         self.status = constants.SSOConnectionStatus.INACTIVE
-        self.save(update_fields=['status', 'updated_at'])
+        self.save(update_fields=["status", "updated_at"])
 
     def get_default_role(self) -> str:
         """Get the default role for users provisioned via this SSO connection."""
-        return self.group_role_mapping.get('_default', TenantUserRole.MEMBER)
+        return self.group_role_mapping.get("_default", TenantUserRole.MEMBER)
 
     def get_role_for_groups(self, groups: list) -> str:
         """
@@ -270,7 +270,7 @@ class SCIMToken(TimestampedMixin, models.Model):
     objects = managers.SCIMTokenManager()
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"{self.tenant.name} - {self.name} ({self.token_prefix}...)"
@@ -323,7 +323,7 @@ class SCIMToken(TimestampedMixin, models.Model):
         if ip_address:
             self.last_used_ip = ip_address
         self.request_count += 1
-        self.save(update_fields=['last_used_at', 'last_used_ip', 'request_count'])
+        self.save(update_fields=["last_used_at", "last_used_ip", "request_count"])
 
 
 class SSOUserLink(TimestampedMixin, models.Model):
@@ -340,9 +340,9 @@ class SSOUserLink(TimestampedMixin, models.Model):
     idp_user_id = models.CharField(max_length=512, help_text="User identifier from the IdP")
 
     # Cached IdP attributes (updated on each login)
-    idp_email = models.EmailField(blank=True, default='')
-    idp_first_name = models.CharField(max_length=255, blank=True, default='')
-    idp_last_name = models.CharField(max_length=255, blank=True, default='')
+    idp_email = models.EmailField(blank=True, default="")
+    idp_first_name = models.CharField(max_length=255, blank=True, default="")
+    idp_last_name = models.CharField(max_length=255, blank=True, default="")
     idp_groups = models.JSONField(default=list, blank=True)
     idp_raw_attributes = models.JSONField(default=dict, blank=True)
 
@@ -355,8 +355,8 @@ class SSOUserLink(TimestampedMixin, models.Model):
     login_count = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ['-created_at']
-        unique_together = [['sso_connection', 'idp_user_id']]
+        ordering = ["-created_at"]
+        unique_together = [["sso_connection", "idp_user_id"]]
 
     def __str__(self):
         return f"{self.user.email} - {self.sso_connection.name}"
@@ -365,7 +365,7 @@ class SSOUserLink(TimestampedMixin, models.Model):
         """Record a successful SSO login."""
         self.last_login_at = timezone.now()
         self.login_count += 1
-        self.save(update_fields=['last_login_at', 'login_count'])
+        self.save(update_fields=["last_login_at", "login_count"])
 
 
 class SSOSession(TimestampedMixin, models.Model):
@@ -382,12 +382,12 @@ class SSOSession(TimestampedMixin, models.Model):
     session_id = models.CharField(max_length=128, unique=True)
 
     # Device/client information
-    device_name = models.CharField(max_length=255, blank=True, default='')
-    device_type = models.CharField(max_length=50, blank=True, default='')  # desktop, mobile, tablet
-    browser = models.CharField(max_length=100, blank=True, default='')
-    operating_system = models.CharField(max_length=100, blank=True, default='')
+    device_name = models.CharField(max_length=255, blank=True, default="")
+    device_type = models.CharField(max_length=50, blank=True, default="")  # desktop, mobile, tablet
+    browser = models.CharField(max_length=100, blank=True, default="")
+    operating_system = models.CharField(max_length=100, blank=True, default="")
     ip_address = models.GenericIPAddressField(null=True, blank=True)
-    location = models.CharField(max_length=255, blank=True, default='')  # City, Country
+    location = models.CharField(max_length=255, blank=True, default="")  # City, Country
 
     # Session state
     is_active = models.BooleanField(default=True)
@@ -395,12 +395,12 @@ class SSOSession(TimestampedMixin, models.Model):
     last_activity_at = models.DateTimeField(auto_now=True)
     expires_at = models.DateTimeField()
     revoked_at = models.DateTimeField(null=True, blank=True)
-    revoked_reason = models.CharField(max_length=255, blank=True, default='')
+    revoked_reason = models.CharField(max_length=255, blank=True, default="")
 
     objects = managers.SSOSessionManager()
 
     class Meta:
-        ordering = ['-last_activity_at']
+        ordering = ["-last_activity_at"]
 
     def __str__(self):
         return f"{self.user.email} - {self.device_name or 'Unknown device'}"
@@ -418,12 +418,12 @@ class SSOSession(TimestampedMixin, models.Model):
     def is_valid(self):
         return self.is_active and not self.is_expired
 
-    def revoke(self, reason: str = ''):
+    def revoke(self, reason: str = ""):
         """Revoke this session."""
         self.is_active = False
         self.revoked_at = timezone.now()
         self.revoked_reason = reason
-        self.save(update_fields=['is_active', 'revoked_at', 'revoked_reason'])
+        self.save(update_fields=["is_active", "revoked_at", "revoked_reason"])
 
 
 class UserDevice(TimestampedMixin, models.Model):
@@ -438,9 +438,9 @@ class UserDevice(TimestampedMixin, models.Model):
     # Device identification
     device_id = models.CharField(max_length=128, unique=True)
     device_name = models.CharField(max_length=255)
-    device_type = models.CharField(max_length=50, blank=True, default='')
-    browser = models.CharField(max_length=100, blank=True, default='')
-    operating_system = models.CharField(max_length=100, blank=True, default='')
+    device_type = models.CharField(max_length=50, blank=True, default="")
+    browser = models.CharField(max_length=100, blank=True, default="")
+    operating_system = models.CharField(max_length=100, blank=True, default="")
 
     # Trust status
     is_trusted = models.BooleanField(default=False)
@@ -449,15 +449,15 @@ class UserDevice(TimestampedMixin, models.Model):
     # Activity tracking
     last_seen_at = models.DateTimeField(auto_now=True)
     last_ip_address = models.GenericIPAddressField(null=True, blank=True)
-    last_location = models.CharField(max_length=255, blank=True, default='')
+    last_location = models.CharField(max_length=255, blank=True, default="")
 
     # Security
     is_blocked = models.BooleanField(default=False)
     blocked_at = models.DateTimeField(null=True, blank=True)
-    blocked_reason = models.CharField(max_length=255, blank=True, default='')
+    blocked_reason = models.CharField(max_length=255, blank=True, default="")
 
     class Meta:
-        ordering = ['-last_seen_at']
+        ordering = ["-last_seen_at"]
 
     def __str__(self):
         return f"{self.user.email} - {self.device_name}"
@@ -471,20 +471,20 @@ class UserDevice(TimestampedMixin, models.Model):
         """Mark this device as trusted."""
         self.is_trusted = True
         self.trusted_at = timezone.now()
-        self.save(update_fields=['is_trusted', 'trusted_at'])
+        self.save(update_fields=["is_trusted", "trusted_at"])
 
     def untrust(self):
         """Remove trust from this device."""
         self.is_trusted = False
         self.trusted_at = None
-        self.save(update_fields=['is_trusted', 'trusted_at'])
+        self.save(update_fields=["is_trusted", "trusted_at"])
 
-    def block(self, reason: str = ''):
+    def block(self, reason: str = ""):
         """Block this device."""
         self.is_blocked = True
         self.blocked_at = timezone.now()
         self.blocked_reason = reason
-        self.save(update_fields=['is_blocked', 'blocked_at', 'blocked_reason'])
+        self.save(update_fields=["is_blocked", "blocked_at", "blocked_reason"])
 
 
 class UserPasskey(TimestampedMixin, models.Model):
@@ -505,8 +505,8 @@ class UserPasskey(TimestampedMixin, models.Model):
     sign_count = models.PositiveIntegerField(default=0)
 
     # Authenticator info
-    aaguid = models.CharField(max_length=64, blank=True, default='')  # Authenticator AAGUID
-    authenticator_type = models.CharField(max_length=50, blank=True, default='')  # platform, cross-platform
+    aaguid = models.CharField(max_length=64, blank=True, default="")  # Authenticator AAGUID
+    authenticator_type = models.CharField(max_length=50, blank=True, default="")  # platform, cross-platform
 
     # Transports (how the authenticator communicates)
     transports = models.JSONField(default=list, blank=True)  # ["usb", "nfc", "ble", "internal"]
@@ -517,13 +517,13 @@ class UserPasskey(TimestampedMixin, models.Model):
     use_count = models.PositiveIntegerField(default=0)
 
     # Device info (optional, from user agent)
-    device_type = models.CharField(max_length=50, blank=True, default='')
+    device_type = models.CharField(max_length=50, blank=True, default="")
     registered_from_ip = models.GenericIPAddressField(null=True, blank=True)
 
     objects = managers.UserPasskeyManager()
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"{self.user.email} - {self.name}"
@@ -533,12 +533,12 @@ class UserPasskey(TimestampedMixin, models.Model):
         self.last_used_at = timezone.now()
         self.use_count += 1
         self.sign_count = new_sign_count
-        self.save(update_fields=['last_used_at', 'use_count', 'sign_count'])
+        self.save(update_fields=["last_used_at", "use_count", "sign_count"])
 
     def deactivate(self):
         """Deactivate this passkey."""
         self.is_active = False
-        self.save(update_fields=['is_active'])
+        self.save(update_fields=["is_active"])
 
 
 class WebAuthnChallenge(TimestampedMixin, models.Model):
@@ -560,14 +560,14 @@ class WebAuthnChallenge(TimestampedMixin, models.Model):
     challenge_type = models.CharField(max_length=20)  # 'registration' or 'authentication'
 
     # Additional data needed for verification
-    user_verification = models.CharField(max_length=20, default='preferred')
+    user_verification = models.CharField(max_length=20, default="preferred")
 
     # Expiration
     expires_at = models.DateTimeField()
     used_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"{self.challenge_type} challenge for {self.user or 'anonymous'}"
@@ -578,7 +578,7 @@ class WebAuthnChallenge(TimestampedMixin, models.Model):
         return secrets.token_urlsafe(32)
 
     @classmethod
-    def create_challenge(cls, user=None, challenge_type='registration', ttl_seconds=300):
+    def create_challenge(cls, user=None, challenge_type="registration", ttl_seconds=300):
         """Create a new challenge."""
         return cls.objects.create(
             user=user,
@@ -598,7 +598,7 @@ class WebAuthnChallenge(TimestampedMixin, models.Model):
     def mark_used(self):
         """Mark this challenge as used."""
         self.used_at = timezone.now()
-        self.save(update_fields=['used_at'])
+        self.save(update_fields=["used_at"])
 
 
 class SSOAuditLog(TimestampedMixin, models.Model):
@@ -620,27 +620,27 @@ class SSOAuditLog(TimestampedMixin, models.Model):
 
     # Event details
     event_type = models.CharField(choices=constants.SSOAuditEventType.choices, max_length=50)
-    event_description = models.TextField(blank=True, default='')
+    event_description = models.TextField(blank=True, default="")
 
     # Request context
     ip_address = models.GenericIPAddressField(null=True, blank=True)
-    user_agent = models.TextField(blank=True, default='')
+    user_agent = models.TextField(blank=True, default="")
 
     # Additional data (event-specific)
     metadata = models.JSONField(default=dict, blank=True)
 
     # Result
     success = models.BooleanField(default=True)
-    error_message = models.TextField(blank=True, default='')
+    error_message = models.TextField(blank=True, default="")
 
     objects = managers.SSOAuditLogManager()
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=['tenant', '-created_at']),
-            models.Index(fields=['user', '-created_at']),
-            models.Index(fields=['event_type', '-created_at']),
+            models.Index(fields=["tenant", "-created_at"]),
+            models.Index(fields=["user", "-created_at"]),
+            models.Index(fields=["event_type", "-created_at"]),
         ]
 
     def __str__(self):
@@ -653,12 +653,12 @@ class SSOAuditLog(TimestampedMixin, models.Model):
         tenant=None,
         user=None,
         sso_connection=None,
-        description: str = '',
+        description: str = "",
         ip_address: str = None,
-        user_agent: str = '',
+        user_agent: str = "",
         metadata: dict = None,
         success: bool = True,
-        error_message: str = '',
+        error_message: str = "",
     ):
         """Create an audit log entry."""
         return cls.objects.create(

@@ -65,7 +65,7 @@ class LogoutView(TokenViewBase):
             serializer.save()
 
         # Always return success and clear cookies
-        response = Response({'ok': True}, status=status.HTTP_200_OK)
+        response = Response({"ok": True}, status=status.HTTP_200_OK)
         utils.reset_auth_cookie(response)
         return response
 

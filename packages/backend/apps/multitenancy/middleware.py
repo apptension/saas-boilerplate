@@ -93,7 +93,7 @@ def is_ai_agent_request(request):
 
     # Check for the X-AI-Agent-Request header
     # Django converts headers to META format: X-AI-Agent-Request -> HTTP_X_AI_AGENT_REQUEST
-    return request.META.get('HTTP_X_AI_AGENT_REQUEST', '').lower() == 'true'
+    return request.META.get("HTTP_X_AI_AGENT_REQUEST", "").lower() == "true"
 
 
 class TenantUserRoleMiddleware(object):
@@ -151,7 +151,7 @@ class TenantUserRoleMiddleware(object):
 
         # SECURITY: Use membership-verified tenant retrieval
         # This ensures info.context.tenant is only set if the user has access
-        user = getattr(info.context, 'user', None)
+        user = getattr(info.context, "user", None)
         info.context.tenant = SimpleLazyObject(
             lambda: get_current_tenant_with_membership_check(info.context.tenant_id, user)
         )
@@ -159,7 +159,7 @@ class TenantUserRoleMiddleware(object):
 
         # Detect AI Agent requests from MCP server
         if not hasattr(info.context, "is_ai_agent_request"):
-            request = getattr(info.context, 'request', info.context)
+            request = getattr(info.context, "request", info.context)
             info.context.is_ai_agent_request = is_ai_agent_request(request)
 
         return next(root, info, **args)

@@ -31,8 +31,8 @@ class DjangoJWTStrategy(DjangoStrategy):
             elif self.otp_auth_token:
                 otp_validate_url = self._construct_otp_validate_url(url)
                 response = super(DjangoJWTStrategy, self).redirect(otp_validate_url)
-                cookie_secure = getattr(settings, 'COOKIE_SECURE', True)
-                cookie_samesite = getattr(settings, 'COOKIE_SAMESITE', 'Lax')
+                cookie_secure = getattr(settings, "COOKIE_SECURE", True)
+                cookie_samesite = getattr(settings, "COOKIE_SAMESITE", "Lax")
                 response.set_cookie(
                     settings.OTP_AUTH_TOKEN_COOKIE,
                     str(self.otp_auth_token),
@@ -58,5 +58,5 @@ class DjangoJWTStrategy(DjangoStrategy):
         return self.refresh_token or self.otp_auth_token
 
     def _construct_otp_validate_url(self, url: str) -> str:
-        locale = self.session_get('locale')
+        locale = self.session_get("locale")
         return f"{url}/{locale}{settings.OTP_VALIDATE_PATH}"

@@ -8,6 +8,7 @@ Security Features:
 - Rate limiting per user (configurable via RATE_LIMITS in settings)
 - Hourly quotas to control OpenAI API costs
 """
+
 import json
 import logging
 import asyncio
@@ -233,8 +234,8 @@ class AiAssistantConsumer(AsyncJsonWebsocketConsumer):
 
             # Decode relay ID if needed
             try:
-                decoded = base64.b64decode(self.tenant_id).decode('utf-8')
-                raw_tenant_id = decoded.split(':', 1)[1] if ':' in decoded else self.tenant_id
+                decoded = base64.b64decode(self.tenant_id).decode("utf-8")
+                raw_tenant_id = decoded.split(":", 1)[1] if ":" in decoded else self.tenant_id
             except Exception:
                 raw_tenant_id = self.tenant_id
 
@@ -250,7 +251,7 @@ class AiAssistantConsumer(AsyncJsonWebsocketConsumer):
         from .views import MCPClient
 
         # Initialize OpenAI
-        openai_api_key = getattr(settings, 'OPENAI_API_KEY', None)
+        openai_api_key = getattr(settings, "OPENAI_API_KEY", None)
         if openai_api_key:
             self.openai_client = openai.OpenAI(api_key=openai_api_key)
 
@@ -269,7 +270,7 @@ class AiAssistantConsumer(AsyncJsonWebsocketConsumer):
                     break
 
         # Initialize MCP client
-        mcp_server_url = getattr(settings, 'MCP_SERVER_URL', 'http://mcp-server:4000')
+        mcp_server_url = getattr(settings, "MCP_SERVER_URL", "http://mcp-server:4000")
         self.mcp_client = MCPClient(
             mcp_server_url=mcp_server_url,
             auth_header=auth_header,
@@ -457,7 +458,7 @@ class AiAssistantConsumer(AsyncJsonWebsocketConsumer):
                 # Stream word by word
                 import re
 
-                tokens = re.findall(r'\S+|\s+', final_response)
+                tokens = re.findall(r"\S+|\s+", final_response)
 
                 for token in tokens:
                     await self.send_json(
@@ -467,9 +468,9 @@ class AiAssistantConsumer(AsyncJsonWebsocketConsumer):
                         }
                     )
                     # Small delay for natural feel
-                    if token.strip() in '.!?':
+                    if token.strip() in ".!?":
                         await asyncio.sleep(0.08)
-                    elif token.strip() in ',;:':
+                    elif token.strip() in ",;:":
                         await asyncio.sleep(0.04)
                     elif token.strip():
                         await asyncio.sleep(0.015)

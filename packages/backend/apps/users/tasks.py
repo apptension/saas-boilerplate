@@ -10,7 +10,7 @@ LambdaTask = getattr(importlib.import_module(module_name), package)
 
 class ExportUserData(LambdaTask):
     def __init__(self):
-        super().__init__(name="EXPORT_USER_DATA", source='backend.export_user')
+        super().__init__(name="EXPORT_USER_DATA", source="backend.export_user")
 
 
 @shared_task(bind=True)

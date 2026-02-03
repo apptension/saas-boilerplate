@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 class SCIMError(Exception):
     """SCIM error with status code and details."""
 
-    def __init__(self, message: str, status: int = 400, scim_type: str = 'invalidValue'):
+    def __init__(self, message: str, status: int = 400, scim_type: str = "invalidValue"):
         self.message = message
         self.status = status
         self.scim_type = scim_type
@@ -35,10 +35,10 @@ class SCIMError(Exception):
     def to_response(self) -> Dict[str, Any]:
         """Convert to SCIM error response format."""
         return {
-            'schemas': ['urn:ietf:params:scim:api:messages:2.0:Error'],
-            'status': str(self.status),
-            'scimType': self.scim_type,
-            'detail': self.message,
+            "schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"],
+            "status": str(self.status),
+            "scimType": self.scim_type,
+            "detail": self.message,
         }
 
 
@@ -49,10 +49,10 @@ class SCIMService:
     """
 
     # SCIM schema URIs
-    USER_SCHEMA = 'urn:ietf:params:scim:schemas:core:2.0:User'
-    GROUP_SCHEMA = 'urn:ietf:params:scim:schemas:core:2.0:Group'
-    ENTERPRISE_USER_SCHEMA = 'urn:ietf:params:scim:schemas:extension:enterprise:2.0:User'
-    LIST_RESPONSE_SCHEMA = 'urn:ietf:params:scim:api:messages:2.0:ListResponse'
+    USER_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User"
+    GROUP_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:Group"
+    ENTERPRISE_USER_SCHEMA = "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User"
+    LIST_RESPONSE_SCHEMA = "urn:ietf:params:scim:api:messages:2.0:ListResponse"
 
     def __init__(self, token: SCIMToken):
         """
@@ -69,10 +69,10 @@ class SCIMService:
         self,
         event_type: str,
         user: User = None,
-        description: str = '',
+        description: str = "",
         metadata: dict = None,
         success: bool = True,
-        error_message: str = '',
+        error_message: str = "",
         ip_address: str = None,
     ):
         """Log a SCIM audit event."""
@@ -113,7 +113,7 @@ class SCIMService:
         queryset = SSOUserLink.objects.filter(
             sso_connection__tenant=self.tenant,
             provisioned_via_scim=True,
-        ).select_related('user', 'user__profile')
+        ).select_related("user", "user__profile")
 
         # Apply filter if provided
         if filter_expr:
@@ -129,11 +129,11 @@ class SCIMService:
         resources = [self._user_to_scim(link.user, link) for link in queryset]
 
         return {
-            'schemas': [self.LIST_RESPONSE_SCHEMA],
-            'totalResults': total_count,
-            'startIndex': start_index,
-            'itemsPerPage': len(resources),
-            'Resources': resources,
+            "schemas": [self.LIST_RESPONSE_SCHEMA],
+            "totalResults": total_count,
+            "startIndex": start_index,
+            "itemsPerPage": len(resources),
+            "Resources": resources,
         }
 
     def get_user(self, scim_id: str) -> Dict[str, Any]:
@@ -151,7 +151,7 @@ class SCIMService:
         """
         link = self._find_user_link(scim_id)
         if not link:
-            raise SCIMError('User not found', status=404, scim_type='notFound')
+            raise SCIMError("User not found", status=404, scim_type="notFound")
 
         return self._user_to_scim(link.user, link)
 
@@ -171,11 +171,11 @@ class SCIMService:
             SCIMError: If creation fails
         """
         # Extract required fields
-        user_name = scim_user.get('userName')
+        user_name = scim_user.get("userName")
         if not user_name:
-            raise SCIMError('userName is required', status=400)
+            raise SCIMError("userName is required", status=400)
 
-        external_id = scim_user.get('externalId', user_name)
+        external_id = scim_user.get("externalId", user_name)
 
         # Check if user already exists
         existing_link = SSOUserLink.objects.filter(
@@ -184,20 +184,20 @@ class SCIMService:
         ).first()
 
         if existing_link:
-            raise SCIMError('User already exists', status=409, scim_type='uniqueness')
+            raise SCIMError("User already exists", status=409, scim_type="uniqueness")
 
         # Extract name
-        name = scim_user.get('name', {})
-        first_name = name.get('givenName', '')
-        last_name = name.get('familyName', '')
+        name = scim_user.get("name", {})
+        first_name = name.get("givenName", "")
+        last_name = name.get("familyName", "")
 
         # Extract email
-        emails = scim_user.get('emails', [])
+        emails = scim_user.get("emails", [])
         email = user_name  # Default to userName
         for e in emails:
             if isinstance(e, dict):
-                if e.get('primary') or not email:
-                    email = e.get('value')
+                if e.get("primary") or not email:
+                    email = e.get("value")
             elif isinstance(e, str):
                 email = e
 
@@ -208,7 +208,7 @@ class SCIMService:
         user = existing_user or User.objects.create_user(email=email)
 
         # Update profile
-        if hasattr(user, 'profile'):
+        if hasattr(user, "profile"):
             user.profile.first_name = first_name
             user.profile.last_name = last_name
             user.profile.save()
@@ -218,8 +218,8 @@ class SCIMService:
             user=user,
             tenant=self.tenant,
             defaults={
-                'role': TenantUserRole.MEMBER,
-                'is_accepted': True,
+                "role": TenantUserRole.MEMBER,
+                "is_accepted": True,
             },
         )
 
@@ -237,8 +237,8 @@ class SCIMService:
         self._log_event(
             event_type=SSOAuditEventType.SCIM_USER_CREATED,
             user=user,
-            description=f'User {email} created via SCIM',
-            metadata={'external_id': external_id},
+            description=f"User {email} created via SCIM",
+            metadata={"external_id": external_id},
             ip_address=ip_address,
         )
 
@@ -264,17 +264,17 @@ class SCIMService:
         """
         link = self._find_user_link(scim_id)
         if not link:
-            raise SCIMError('User not found', status=404, scim_type='notFound')
+            raise SCIMError("User not found", status=404, scim_type="notFound")
 
         user = link.user
 
         # Update name
-        name = scim_user.get('name', {})
+        name = scim_user.get("name", {})
         if name:
-            first_name = name.get('givenName')
-            last_name = name.get('familyName')
+            first_name = name.get("givenName")
+            last_name = name.get("familyName")
 
-            if hasattr(user, 'profile'):
+            if hasattr(user, "profile"):
                 if first_name is not None:
                     user.profile.first_name = first_name
                     link.idp_first_name = first_name
@@ -284,7 +284,7 @@ class SCIMService:
                 user.profile.save()
 
         # Update active status
-        active = scim_user.get('active')
+        active = scim_user.get("active")
         if active is not None:
             user.is_active = active
             user.save()
@@ -294,7 +294,7 @@ class SCIMService:
         self._log_event(
             event_type=SSOAuditEventType.SCIM_USER_UPDATED,
             user=user,
-            description=f'User {user.email} updated via SCIM',
+            description=f"User {user.email} updated via SCIM",
             ip_address=ip_address,
         )
 
@@ -311,7 +311,7 @@ class SCIMService:
         """
         link = self._find_user_link(scim_id)
         if not link:
-            raise SCIMError('User not found', status=404, scim_type='notFound')
+            raise SCIMError("User not found", status=404, scim_type="notFound")
 
         user = link.user
         email = user.email
@@ -328,7 +328,7 @@ class SCIMService:
         self._log_event(
             event_type=SSOAuditEventType.SCIM_USER_DELETED,
             user=user,
-            description=f'User {email} deleted via SCIM',
+            description=f"User {email} deleted via SCIM",
             ip_address=ip_address,
         )
 
@@ -351,43 +351,43 @@ class SCIMService:
         """
         link = self._find_user_link(scim_id)
         if not link:
-            raise SCIMError('User not found', status=404, scim_type='notFound')
+            raise SCIMError("User not found", status=404, scim_type="notFound")
 
         user = link.user
 
         for op in operations:
-            op_type = op.get('op', '').lower()
-            path = op.get('path', '')
-            value = op.get('value')
+            op_type = op.get("op", "").lower()
+            path = op.get("path", "")
+            value = op.get("value")
 
-            if op_type == 'replace':
-                if path == 'active' or path == '' and 'active' in value:
-                    active_value = value if path == 'active' else value.get('active')
+            if op_type == "replace":
+                if path == "active" or path == "" and "active" in value:
+                    active_value = value if path == "active" else value.get("active")
                     user.is_active = active_value
                     user.save()
 
-                elif path.startswith('name.') or (path == '' and 'name' in value):
-                    name_data = value if path.startswith('name.') else value.get('name', {})
-                    if hasattr(user, 'profile'):
-                        if 'givenName' in str(path) or 'givenName' in name_data:
-                            user.profile.first_name = name_data.get('givenName', value)
-                        if 'familyName' in str(path) or 'familyName' in name_data:
-                            user.profile.last_name = name_data.get('familyName', value)
+                elif path.startswith("name.") or (path == "" and "name" in value):
+                    name_data = value if path.startswith("name.") else value.get("name", {})
+                    if hasattr(user, "profile"):
+                        if "givenName" in str(path) or "givenName" in name_data:
+                            user.profile.first_name = name_data.get("givenName", value)
+                        if "familyName" in str(path) or "familyName" in name_data:
+                            user.profile.last_name = name_data.get("familyName", value)
                         user.profile.save()
 
-            elif op_type == 'add':
+            elif op_type == "add":
                 # Handle add operations similarly
                 pass
 
-            elif op_type == 'remove':
+            elif op_type == "remove":
                 # Handle remove operations
                 pass
 
         self._log_event(
             event_type=SSOAuditEventType.SCIM_USER_UPDATED,
             user=user,
-            description=f'User {user.email} patched via SCIM',
-            metadata={'operations': operations},
+            description=f"User {user.email} patched via SCIM",
+            metadata={"operations": operations},
             ip_address=ip_address,
         )
 
@@ -409,34 +409,34 @@ class SCIMService:
         """
         # We map tenant roles to SCIM groups
         groups = [
-            {'displayName': TenantUserRole.OWNER, 'id': 'role_owner'},
-            {'displayName': TenantUserRole.ADMIN, 'id': 'role_admin'},
-            {'displayName': TenantUserRole.MEMBER, 'id': 'role_member'},
+            {"displayName": TenantUserRole.OWNER, "id": "role_owner"},
+            {"displayName": TenantUserRole.ADMIN, "id": "role_admin"},
+            {"displayName": TenantUserRole.MEMBER, "id": "role_member"},
         ]
 
         resources = [self._role_to_scim_group(g) for g in groups]
 
         return {
-            'schemas': [self.LIST_RESPONSE_SCHEMA],
-            'totalResults': len(resources),
-            'startIndex': 1,
-            'itemsPerPage': len(resources),
-            'Resources': resources,
+            "schemas": [self.LIST_RESPONSE_SCHEMA],
+            "totalResults": len(resources),
+            "startIndex": 1,
+            "itemsPerPage": len(resources),
+            "Resources": resources,
         }
 
     def get_group(self, scim_id: str) -> Dict[str, Any]:
         """Get a single group by SCIM ID."""
         role_map = {
-            'role_owner': TenantUserRole.OWNER,
-            'role_admin': TenantUserRole.ADMIN,
-            'role_member': TenantUserRole.MEMBER,
+            "role_owner": TenantUserRole.OWNER,
+            "role_admin": TenantUserRole.ADMIN,
+            "role_member": TenantUserRole.MEMBER,
         }
 
         role = role_map.get(scim_id)
         if not role:
-            raise SCIMError('Group not found', status=404, scim_type='notFound')
+            raise SCIMError("Group not found", status=404, scim_type="notFound")
 
-        return self._role_to_scim_group({'displayName': role, 'id': scim_id})
+        return self._role_to_scim_group({"displayName": role, "id": scim_id})
 
     # ==================
     # Helper Methods
@@ -450,7 +450,7 @@ class SCIMService:
                 sso_connection__tenant=self.tenant,
                 idp_user_id=scim_id,
             )
-            .select_related('user', 'user__profile')
+            .select_related("user", "user__profile")
             .first()
         )
 
@@ -461,7 +461,7 @@ class SCIMService:
                     sso_connection__tenant=self.tenant,
                     user__id=scim_id,
                 )
-                .select_related('user', 'user__profile')
+                .select_related("user", "user__profile")
                 .first()
             )
 
@@ -471,7 +471,7 @@ class SCIMService:
         """Get the default SSO connection for the tenant."""
         return TenantSSOConnection.objects.filter(
             tenant=self.tenant,
-            status='active',
+            status="active",
         ).first()
 
     def _apply_user_filter(self, queryset, filter_expr: str):
@@ -498,44 +498,44 @@ class SCIMService:
             # (logged by sanitize_scim_filter)
             return queryset
 
-        attribute = parsed['attribute']
-        value = parsed['value']
+        attribute = parsed["attribute"]
+        value = parsed["value"]
 
-        if attribute in ('username', 'email'):
+        if attribute in ("username", "email"):
             queryset = queryset.filter(user__email__iexact=value)
-        elif attribute == 'externalid':
+        elif attribute == "externalid":
             queryset = queryset.filter(idp_user_id=value)
-        elif attribute == 'active':
+        elif attribute == "active":
             queryset = queryset.filter(user__is_active=value)
 
         return queryset
 
     def _user_to_scim(self, user: User, link: SSOUserLink) -> Dict[str, Any]:
         """Convert a User to SCIM format."""
-        profile = getattr(user, 'profile', None)
+        profile = getattr(user, "profile", None)
 
         return {
-            'schemas': [self.USER_SCHEMA],
-            'id': str(link.idp_user_id),
-            'externalId': str(link.idp_user_id),
-            'userName': user.email,
-            'name': {
-                'givenName': profile.first_name if profile else '',
-                'familyName': profile.last_name if profile else '',
-                'formatted': f"{profile.first_name} {profile.last_name}".strip() if profile else '',
+            "schemas": [self.USER_SCHEMA],
+            "id": str(link.idp_user_id),
+            "externalId": str(link.idp_user_id),
+            "userName": user.email,
+            "name": {
+                "givenName": profile.first_name if profile else "",
+                "familyName": profile.last_name if profile else "",
+                "formatted": f"{profile.first_name} {profile.last_name}".strip() if profile else "",
             },
-            'emails': [
+            "emails": [
                 {
-                    'value': user.email,
-                    'primary': True,
-                    'type': 'work',
+                    "value": user.email,
+                    "primary": True,
+                    "type": "work",
                 }
             ],
-            'active': user.is_active,
-            'meta': {
-                'resourceType': 'User',
-                'created': user.created.isoformat() if hasattr(user, 'created') else None,
-                'lastModified': link.updated_at.isoformat() if link.updated_at else None,
+            "active": user.is_active,
+            "meta": {
+                "resourceType": "User",
+                "created": user.created.isoformat() if hasattr(user, "created") else None,
+                "lastModified": link.updated_at.isoformat() if link.updated_at else None,
             },
         }
 
@@ -544,26 +544,26 @@ class SCIMService:
         # Get members with this role
         memberships = TenantMembership.objects.filter(
             tenant=self.tenant,
-            role=role_data['displayName'],
-        ).select_related('user')
+            role=role_data["displayName"],
+        ).select_related("user")
 
         members = []
         for m in memberships:
             if m.user:
                 members.append(
                     {
-                        'value': str(m.user.id),
-                        'display': m.user.email,
-                        'type': 'User',
+                        "value": str(m.user.id),
+                        "display": m.user.email,
+                        "type": "User",
                     }
                 )
 
         return {
-            'schemas': [self.GROUP_SCHEMA],
-            'id': role_data['id'],
-            'displayName': role_data['displayName'],
-            'members': members,
-            'meta': {
-                'resourceType': 'Group',
+            "schemas": [self.GROUP_SCHEMA],
+            "id": role_data["id"],
+            "displayName": role_data["displayName"],
+            "members": members,
+            "meta": {
+                "resourceType": "Group",
             },
         }

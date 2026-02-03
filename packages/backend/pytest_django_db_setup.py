@@ -32,11 +32,11 @@ def _terminate_idle_connections(db_name, db_config):
     """
     try:
         admin_conn = psycopg2.connect(
-            host=db_config['HOST'],
-            port=db_config['PORT'],
-            user=db_config['USER'],
-            password=db_config['PASSWORD'],
-            database='postgres',
+            host=db_config["HOST"],
+            port=db_config["PORT"],
+            user=db_config["USER"],
+            password=db_config["PASSWORD"],
+            database="postgres",
             connect_timeout=2,
         )
         admin_conn.autocommit = True
@@ -69,7 +69,7 @@ def setup_test_database_with_retry(max_retries=3, retry_delay=1):
         max_retries: Maximum number of retry attempts
         retry_delay: Delay between retries in seconds
     """
-    db_config = settings.DATABASES['default']
+    db_config = settings.DATABASES["default"]
     test_db_name = f"test_{db_config['NAME']}"
 
     for attempt in range(max_retries):
@@ -99,7 +99,7 @@ def setup_test_database_with_retry(max_retries=3, retry_delay=1):
                 for keyword in [
                     'database "test_backend" already exists',
                     'database "test_backend" is being accessed',
-                    'objectinuse',
+                    "objectinuse",
                     'duplicate key value violates unique constraint "pg_database_datname_index"',
                 ]
             )

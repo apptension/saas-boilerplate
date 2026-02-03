@@ -60,26 +60,26 @@ class WebAuthnService:
         """
         self.user = user
         self.rp_id = self._get_rp_id()
-        self.rp_name = getattr(settings, 'PROJECT_NAME', 'SaaS Boilerplate')
+        self.rp_name = getattr(settings, "PROJECT_NAME", "SaaS Boilerplate")
 
     def _get_rp_id(self) -> str:
         """Get the Relying Party ID (domain)."""
         # Use the web app URL to determine the RP ID
-        web_app_url = getattr(settings, 'WEB_APP_URL', 'http://localhost:3000')
+        web_app_url = getattr(settings, "WEB_APP_URL", "http://localhost:3000")
         from urllib.parse import urlparse
 
         parsed = urlparse(web_app_url)
-        return parsed.hostname or 'localhost'
+        return parsed.hostname or "localhost"
 
     def _get_origin(self) -> str:
         """Get the expected origin for WebAuthn."""
-        return getattr(settings, 'WEB_APP_URL', 'http://localhost:3000')
+        return getattr(settings, "WEB_APP_URL", "http://localhost:3000")
 
     def _get_allowed_origins(self) -> List[str]:
         """Get list of allowed origins for WebAuthn."""
         origins = [self._get_origin()]
         # Add any additional allowed origins from settings
-        extra_origins = getattr(settings, 'WEBAUTHN_ALLOWED_ORIGINS', [])
+        extra_origins = getattr(settings, "WEBAUTHN_ALLOWED_ORIGINS", [])
         origins.extend(extra_origins)
         return origins
 
@@ -105,7 +105,7 @@ class WebAuthnService:
             return True
 
         # Check for explicit development override (NOT based on DEBUG setting)
-        allow_mismatch = getattr(settings, 'WEBAUTHN_ALLOW_ORIGIN_MISMATCH', False)
+        allow_mismatch = getattr(settings, "WEBAUTHN_ALLOW_ORIGIN_MISMATCH", False)
 
         if allow_mismatch:
             logger.warning(
@@ -177,16 +177,16 @@ class WebAuthnService:
                 SECP256R1,
             )
 
-            x_int = int.from_bytes(x, 'big')
-            y_int = int.from_bytes(y, 'big')
+            x_int = int.from_bytes(x, "big")
+            y_int = int.from_bytes(y, "big")
 
             public_numbers = EllipticCurvePublicNumbers(x_int, y_int, SECP256R1())
             public_key = public_numbers.public_key(default_backend())
 
             # WebAuthn signature is in raw r||s format, need to convert to DER
             if len(signature) == 64:
-                r = int.from_bytes(signature[:32], 'big')
-                s = int.from_bytes(signature[32:], 'big')
+                r = int.from_bytes(signature[:32], "big")
+                s = int.from_bytes(signature[32:], "big")
 
                 # Convert to DER format
                 from cryptography.hazmat.primitives.asymmetric.utils import encode_dss_signature
@@ -234,7 +234,7 @@ class WebAuthnService:
         """
         # Check if signature verification should be skipped (for backwards compatibility)
         # SECURITY: This should be False in production once all passkeys are re-registered
-        skip_verification = getattr(settings, 'WEBAUTHN_SKIP_SIGNATURE_VERIFICATION', False)
+        skip_verification = getattr(settings, "WEBAUTHN_SKIP_SIGNATURE_VERIFICATION", False)
         if skip_verification:
             logger.warning(
                 "SECURITY: Skipping WebAuthn signature verification "
@@ -278,7 +278,7 @@ class WebAuthnService:
 
     def create_registration_options(
         self,
-        user_verification: str = 'preferred',
+        user_verification: str = "preferred",
         authenticator_attachment: str = None,
         require_resident_key: bool = True,
     ) -> Tuple[Dict[str, Any], str]:
@@ -299,7 +299,7 @@ class WebAuthnService:
         # Create challenge
         challenge_record = WebAuthnChallenge.create_challenge(
             user=self.user,
-            challenge_type='registration',
+            challenge_type="registration",
             ttl_seconds=self.CHALLENGE_TTL,
         )
 
@@ -307,44 +307,44 @@ class WebAuthnService:
         existing_credentials = UserPasskey.objects.filter(
             user=self.user,
             is_active=True,
-        ).values_list('credential_id', flat=True)
+        ).values_list("credential_id", flat=True)
 
         exclude_credentials = [
             {
-                'id': cred_id,
-                'type': 'public-key',
+                "id": cred_id,
+                "type": "public-key",
             }
             for cred_id in existing_credentials
         ]
 
         # Build options
         options = {
-            'challenge': challenge_record.challenge,
-            'rp': {
-                'name': self.rp_name,
-                'id': self.rp_id,
+            "challenge": challenge_record.challenge,
+            "rp": {
+                "name": self.rp_name,
+                "id": self.rp_id,
             },
-            'user': {
-                'id': self._encode_user_id(self.user),
-                'name': self.user.email,
-                'displayName': self._get_user_display_name(),
+            "user": {
+                "id": self._encode_user_id(self.user),
+                "name": self.user.email,
+                "displayName": self._get_user_display_name(),
             },
-            'pubKeyCredParams': [
-                {'type': 'public-key', 'alg': -7},  # ES256
-                {'type': 'public-key', 'alg': -257},  # RS256
+            "pubKeyCredParams": [
+                {"type": "public-key", "alg": -7},  # ES256
+                {"type": "public-key", "alg": -257},  # RS256
             ],
-            'timeout': self.CHALLENGE_TTL * 1000,  # milliseconds
-            'attestation': 'none',  # We don't need attestation for most use cases
-            'authenticatorSelection': {
-                'userVerification': user_verification,
-                'residentKey': 'required' if require_resident_key else 'preferred',
-                'requireResidentKey': require_resident_key,
+            "timeout": self.CHALLENGE_TTL * 1000,  # milliseconds
+            "attestation": "none",  # We don't need attestation for most use cases
+            "authenticatorSelection": {
+                "userVerification": user_verification,
+                "residentKey": "required" if require_resident_key else "preferred",
+                "requireResidentKey": require_resident_key,
             },
-            'excludeCredentials': exclude_credentials,
+            "excludeCredentials": exclude_credentials,
         }
 
         if authenticator_attachment:
-            options['authenticatorSelection']['authenticatorAttachment'] = authenticator_attachment
+            options["authenticatorSelection"]["authenticatorAttachment"] = authenticator_attachment
 
         return options, challenge_record.challenge
 
@@ -355,7 +355,7 @@ class WebAuthnService:
         public_key: str,
         attestation_object: str,
         client_data_json: str,
-        name: str = 'My Passkey',
+        name: str = "My Passkey",
         transports: List[str] = None,
         ip_address: str = None,
     ) -> UserPasskey:
@@ -385,7 +385,7 @@ class WebAuthnService:
         challenge_record = WebAuthnChallenge.objects.filter(
             user=self.user,
             challenge=challenge,
-            challenge_type='registration',
+            challenge_type="registration",
         ).first()
 
         if not challenge_record:
@@ -396,33 +396,33 @@ class WebAuthnService:
 
         # Verify client data
         try:
-            client_data_bytes = base64.urlsafe_b64decode(client_data_json + '=' * (-len(client_data_json) % 4))
+            client_data_bytes = base64.urlsafe_b64decode(client_data_json + "=" * (-len(client_data_json) % 4))
             client_data = json.loads(client_data_bytes)
         except Exception as e:
             raise ValueError(f"Invalid client data: {e}")
 
         # Verify challenge in client data
-        client_challenge = client_data.get('challenge', '')
+        client_challenge = client_data.get("challenge", "")
         # Client challenge is base64url encoded
         if client_challenge != challenge:
             raise ValueError("Challenge mismatch")
 
         # SECURITY: Always verify origin (use explicit setting for dev override, NOT DEBUG)
-        actual_origin = client_data.get('origin', '')
+        actual_origin = client_data.get("origin", "")
         self._verify_origin(actual_origin)
 
         # Verify type
-        if client_data.get('type') != 'webauthn.create':
+        if client_data.get("type") != "webauthn.create":
             raise ValueError("Invalid client data type")
 
         # Parse attestation object to extract AAGUID
-        aaguid = ''
+        aaguid = ""
         try:
             import cbor2
 
-            attestation_bytes = base64.urlsafe_b64decode(attestation_object + '=' * (-len(attestation_object) % 4))
+            attestation_bytes = base64.urlsafe_b64decode(attestation_object + "=" * (-len(attestation_object) % 4))
             attestation = cbor2.loads(attestation_bytes)
-            auth_data = attestation.get('authData', b'')
+            auth_data = attestation.get("authData", b"")
 
             # Extract AAGUID from authenticator data (bytes 37-52 if flags indicate attested credential)
             if len(auth_data) >= 55:
@@ -446,7 +446,7 @@ class WebAuthnService:
             sign_count=0,
             aaguid=aaguid,
             transports=transports or [],
-            authenticator_type='platform' if 'internal' in (transports or []) else 'cross-platform',
+            authenticator_type="platform" if "internal" in (transports or []) else "cross-platform",
             registered_from_ip=ip_address,
         )
 
@@ -456,7 +456,7 @@ class WebAuthnService:
             user=self.user,
             description=f'Passkey "{name}" registered',
             ip_address=ip_address,
-            metadata={'credential_id_prefix': credential_id[:8]},
+            metadata={"credential_id_prefix": credential_id[:8]},
         )
 
         return passkey
@@ -467,7 +467,7 @@ class WebAuthnService:
 
     def create_authentication_options(
         self,
-        user_verification: str = 'preferred',
+        user_verification: str = "preferred",
     ) -> Tuple[Dict[str, Any], str]:
         """
         Create authentication options for passkey login.
@@ -481,15 +481,15 @@ class WebAuthnService:
         # Create challenge
         challenge_record = WebAuthnChallenge.create_challenge(
             user=self.user,  # May be None for discoverable credentials
-            challenge_type='authentication',
+            challenge_type="authentication",
             ttl_seconds=self.CHALLENGE_TTL,
         )
 
         options = {
-            'challenge': challenge_record.challenge,
-            'timeout': self.CHALLENGE_TTL * 1000,
-            'rpId': self.rp_id,
-            'userVerification': user_verification,
+            "challenge": challenge_record.challenge,
+            "timeout": self.CHALLENGE_TTL * 1000,
+            "rpId": self.rp_id,
+            "userVerification": user_verification,
         }
 
         # If user is known, provide allowed credentials
@@ -497,13 +497,13 @@ class WebAuthnService:
             credentials = UserPasskey.objects.filter(
                 user=self.user,
                 is_active=True,
-            ).values('credential_id', 'transports')
+            ).values("credential_id", "transports")
 
-            options['allowCredentials'] = [
+            options["allowCredentials"] = [
                 {
-                    'id': cred['credential_id'],
-                    'type': 'public-key',
-                    'transports': cred['transports'] or [],
+                    "id": cred["credential_id"],
+                    "type": "public-key",
+                    "transports": cred["transports"] or [],
                 }
                 for cred in credentials
             ]
@@ -550,7 +550,7 @@ class WebAuthnService:
                 credential_id=credential_id,
                 is_active=True,
             )
-            .select_related('user')
+            .select_related("user")
             .first()
         )
 
@@ -562,7 +562,7 @@ class WebAuthnService:
         # Find and validate challenge
         challenge_record = WebAuthnChallenge.objects.filter(
             challenge=challenge,
-            challenge_type='authentication',
+            challenge_type="authentication",
         ).first()
 
         if not challenge_record:
@@ -573,27 +573,27 @@ class WebAuthnService:
 
         # Decode client data
         try:
-            client_data_bytes = base64.urlsafe_b64decode(client_data_json + '=' * (-len(client_data_json) % 4))
+            client_data_bytes = base64.urlsafe_b64decode(client_data_json + "=" * (-len(client_data_json) % 4))
             client_data = json.loads(client_data_bytes)
         except Exception as e:
             raise ValueError(f"Invalid client data: {e}")
 
         # Verify challenge
-        if client_data.get('challenge') != challenge:
+        if client_data.get("challenge") != challenge:
             raise ValueError("Challenge mismatch")
 
         # SECURITY: Verify origin (always enforced)
-        actual_origin = client_data.get('origin', '')
+        actual_origin = client_data.get("origin", "")
         self._verify_origin(actual_origin)
 
         # Verify type
-        if client_data.get('type') != 'webauthn.get':
+        if client_data.get("type") != "webauthn.get":
             raise ValueError("Invalid client data type")
 
         # Decode authenticator data and signature
         try:
-            auth_data_bytes = base64.urlsafe_b64decode(authenticator_data + '=' * (-len(authenticator_data) % 4))
-            signature_bytes = base64.urlsafe_b64decode(signature + '=' * (-len(signature) % 4))
+            auth_data_bytes = base64.urlsafe_b64decode(authenticator_data + "=" * (-len(authenticator_data) % 4))
+            signature_bytes = base64.urlsafe_b64decode(signature + "=" * (-len(signature) % 4))
         except Exception as e:
             raise ValueError(f"Invalid authenticator data or signature: {e}")
 
@@ -603,7 +603,7 @@ class WebAuthnService:
 
         try:
             # Decode the stored public key
-            public_key_bytes = base64.urlsafe_b64decode(passkey.public_key + '=' * (-len(passkey.public_key) % 4))
+            public_key_bytes = base64.urlsafe_b64decode(passkey.public_key + "=" * (-len(passkey.public_key) % 4))
 
             # Verify the signature
             self._verify_webauthn_signature(
@@ -618,22 +618,22 @@ class WebAuthnService:
             SSOAuditLog.log_event(
                 event_type=SSOAuditEventType.PASSKEY_AUTH_FAILED,
                 user=user,
-                description='Passkey authentication failed: signature verification failed',
+                description="Passkey authentication failed: signature verification failed",
                 ip_address=ip_address,
                 success=False,
-                metadata={'credential_id_prefix': credential_id[:8] if credential_id else 'unknown'},
+                metadata={"credential_id_prefix": credential_id[:8] if credential_id else "unknown"},
             )
             raise ValueError("Authentication failed: signature verification failed")
 
         # Parse sign count from authenticator data (bytes 33-36, big-endian uint32)
         try:
-            new_sign_count = int.from_bytes(auth_data_bytes[33:37], 'big')
+            new_sign_count = int.from_bytes(auth_data_bytes[33:37], "big")
         except Exception:
             logger.warning("Failed to parse sign count from authenticator data")
             new_sign_count = passkey.sign_count + 1
 
         # SECURITY: Verify sign count (protection against cloned authenticators)
-        strict_sign_count = getattr(settings, 'WEBAUTHN_STRICT_SIGN_COUNT', True)
+        strict_sign_count = getattr(settings, "WEBAUTHN_STRICT_SIGN_COUNT", True)
 
         if new_sign_count <= passkey.sign_count and passkey.sign_count > 0:
             logger.error(
@@ -646,14 +646,14 @@ class WebAuthnService:
             SSOAuditLog.log_event(
                 event_type=SSOAuditEventType.PASSKEY_CLONE_DETECTED,
                 user=user,
-                description='Sign count anomaly detected - possible cloned authenticator',
+                description="Sign count anomaly detected - possible cloned authenticator",
                 ip_address=ip_address,
                 success=False,
                 metadata={
-                    'expected_sign_count': passkey.sign_count,
-                    'received_sign_count': new_sign_count,
-                    'passkey_name': passkey.name,
-                    'credential_id_prefix': credential_id[:8] if credential_id else 'unknown',
+                    "expected_sign_count": passkey.sign_count,
+                    "received_sign_count": new_sign_count,
+                    "passkey_name": passkey.name,
+                    "credential_id_prefix": credential_id[:8] if credential_id else "unknown",
                 },
             )
 
@@ -699,7 +699,7 @@ class WebAuthnService:
             UserPasskey.objects.filter(
                 user=self.user,
                 is_active=True,
-            ).order_by('-created_at')
+            ).order_by("-created_at")
         )
 
     def delete_passkey(self, passkey_id: str, ip_address: str = None) -> bool:
@@ -760,7 +760,7 @@ class WebAuthnService:
             raise ValueError("Passkey not found")
 
         passkey.name = new_name
-        passkey.save(update_fields=['name', 'updated_at'])
+        passkey.save(update_fields=["name", "updated_at"])
 
         return passkey
 
@@ -770,11 +770,11 @@ class WebAuthnService:
 
     def _encode_user_id(self, user: User) -> str:
         """Encode user ID for WebAuthn."""
-        return base64.urlsafe_b64encode(str(user.id).encode('utf-8')).rstrip(b'=').decode('utf-8')
+        return base64.urlsafe_b64encode(str(user.id).encode("utf-8")).rstrip(b"=").decode("utf-8")
 
     def _get_user_display_name(self) -> str:
         """Get user display name for WebAuthn."""
-        if hasattr(self.user, 'profile') and self.user.profile:
+        if hasattr(self.user, "profile") and self.user.profile:
             name = f"{self.user.profile.first_name} {self.user.profile.last_name}".strip()
             if name:
                 return name

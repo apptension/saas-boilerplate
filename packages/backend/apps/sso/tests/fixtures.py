@@ -69,13 +69,13 @@ def webauthn_challenge(web_authn_challenge):
 @pytest.fixture
 def mock_secrets_service():
     """Mock the SecretsService."""
-    with patch('apps.sso.services.secrets.SecretsService') as mock:
+    with patch("apps.sso.services.secrets.SecretsService") as mock:
         instance = mock.return_value
         instance.get_secret.return_value = "mock_secret"
         instance.store_secret.return_value = "arn:aws:secretsmanager:region:account:secret:name"
         instance.get_sp_signing_key.return_value = {
-            'private_key': 'mock_private_key',
-            'certificate': 'mock_certificate',
+            "private_key": "mock_private_key",
+            "certificate": "mock_certificate",
         }
         yield instance
 
@@ -83,7 +83,7 @@ def mock_secrets_service():
 @pytest.fixture
 def mock_cache():
     """Mock Django cache."""
-    with patch('django.core.cache.cache') as mock:
+    with patch("django.core.cache.cache") as mock:
         cache_data = {}
         mock.get.side_effect = lambda k, default=None: cache_data.get(k, default)
         mock.set.side_effect = lambda k, v, timeout=None: cache_data.update({k: v})

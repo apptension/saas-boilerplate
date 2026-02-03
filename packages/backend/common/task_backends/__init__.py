@@ -57,8 +57,8 @@ class LambdaTaskBackend(BaseTaskBackend):
     def __init__(self):
         import boto3
 
-        self.client = boto3.client('events', endpoint_url=settings.AWS_ENDPOINT_URL)
-        self.event_bus_name = getattr(settings, 'WORKERS_EVENT_BUS_NAME', None)
+        self.client = boto3.client("events", endpoint_url=settings.AWS_ENDPOINT_URL)
+        self.event_bus_name = getattr(settings, "WORKERS_EVENT_BUS_NAME", None)
 
     def send_task(
         self,
@@ -71,32 +71,32 @@ class LambdaTaskBackend(BaseTaskBackend):
 
         # Build the event entry
         entry = {
-            'Source': f'backend.{task_name}',
-            'DetailType': task_name,
-            'Detail': json.dumps(
+            "Source": f"backend.{task_name}",
+            "DetailType": task_name,
+            "Detail": json.dumps(
                 {
                     "id": uuid.uuid4().hex,
                     "type": task_name,
                     **data,
                 }
             ),
-            'EventBusName': self.event_bus_name,
+            "EventBusName": self.event_bus_name,
         }
 
         # If scheduled, wrap in scheduler event
         if due_date is not None:
             entry = {
-                'Source': 'backend.scheduler',
-                'DetailType': 'backend.scheduler',
-                'Detail': json.dumps(
+                "Source": "backend.scheduler",
+                "DetailType": "backend.scheduler",
+                "Detail": json.dumps(
                     {
                         "id": uuid.uuid4().hex,
-                        "type": 'backend.scheduler',
-                        'entry': entry,
-                        'due_date': due_date.isoformat(),
+                        "type": "backend.scheduler",
+                        "entry": entry,
+                        "due_date": due_date.isoformat(),
                     }
                 ),
-                'EventBusName': self.event_bus_name,
+                "EventBusName": self.event_bus_name,
             }
 
         self.client.put_events(Entries=[entry])
@@ -113,9 +113,9 @@ class CeleryTaskBackend(BaseTaskBackend):
 
     # Map task names to Celery task paths
     TASK_REGISTRY = {
-        'export_user_data': 'common.task_backends.celery_tasks.export_user_data',
-        'synchronize_contentful_content': 'common.task_backends.celery_tasks.synchronize_contentful_content',
-        'EXPORT_USER_DATA': 'common.task_backends.celery_tasks.export_user_data',
+        "export_user_data": "common.task_backends.celery_tasks.export_user_data",
+        "synchronize_contentful_content": "common.task_backends.celery_tasks.synchronize_contentful_content",
+        "EXPORT_USER_DATA": "common.task_backends.celery_tasks.export_user_data",
     }
 
     def send_task(
@@ -150,9 +150,9 @@ def get_task_backend() -> BaseTaskBackend:
         - 'lambda': AWS Lambda + EventBridge (default)
         - 'celery': Celery
     """
-    backend_name = getattr(settings, 'TASK_BACKEND', 'lambda')
+    backend_name = getattr(settings, "TASK_BACKEND", "lambda")
 
-    if backend_name == 'celery':
+    if backend_name == "celery":
         return CeleryTaskBackend()
     else:
         return LambdaTaskBackend()
