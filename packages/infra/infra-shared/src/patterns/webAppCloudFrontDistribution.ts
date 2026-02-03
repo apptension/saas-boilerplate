@@ -248,13 +248,8 @@ export class WebAppCloudFrontDistribution extends Construct {
         ),
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-        originRequestPolicy: {
-          /*
-                      AllViewerExceptHostHeader
-                      TODO: use cloudfront.OriginRequestPolicy. after CDK version is updated
-                    */
-          originRequestPolicyId: 'b689b0a8-53d0-40ab-baf2-68738e2966ac',
-        },
+        originRequestPolicy:
+          cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         functionAssociations: [
           {
             function: cfFunction,

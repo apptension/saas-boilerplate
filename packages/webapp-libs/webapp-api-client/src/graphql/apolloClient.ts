@@ -1,4 +1,4 @@
-import { ApolloClient, ApolloLink, HttpLink, InMemoryCache, Observable, from, split, FetchResult } from '@apollo/client';
+import { ApolloClient, FetchResult, HttpLink, InMemoryCache, Observable, from, split } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
@@ -56,12 +56,12 @@ export const redirectToLogin = () => {
   if (redirectingToLogin) {
     return;
   }
-  
+
   // Extract locale from current pathname (e.g., /en/... or /pl/...)
   const pathname = window.location.pathname;
   const localeMatch = pathname.match(/^\/([a-z]{2})\//);
   const locale = localeMatch ? localeMatch[1] : 'en'; // Default to 'en' if no locale found
-  
+
   // Check if we're already on the login page or logout page to avoid issues
   if (pathname.includes('/auth/login') || pathname.includes('/auth/logout')) {
     // For logout page, just redirect to login without a redirect param
@@ -74,22 +74,22 @@ export const redirectToLogin = () => {
     }
     return;
   }
-  
+
   // Preserve current URL as redirect parameter (include pathname and search params)
   const currentUrl = pathname + window.location.search;
   const redirectParam = encodeURIComponent(currentUrl);
-  
+
   // Construct login path with locale and redirect parameter
   const loginPath = `/${locale}/${RoutesConfig.login}?redirect=${redirectParam}`;
-  
+
   // Set flag to prevent multiple redirects
   redirectingToLogin = true;
-  
+
   // Clear any existing timeout
   if (redirectTimeout) {
     clearTimeout(redirectTimeout);
   }
-  
+
   // Clear Apollo cache to prevent stale data on next login
   // Using clearStore() instead of resetStore() to avoid triggering refetches
   if (apolloClientRef) {
@@ -102,7 +102,7 @@ export const redirectToLogin = () => {
       // Ignore errors
     }
   }
-  
+
   // Clear any stale authentication data from storage
   try {
     localStorage.removeItem('token');
@@ -111,7 +111,7 @@ export const redirectToLogin = () => {
   } catch {
     // Ignore storage errors (e.g., in private browsing mode)
   }
-  
+
   // Call logout endpoint to properly clear session cookies (including HTTP-only cookies)
   // This ensures the backend clears all auth cookies and blacklists the refresh token
   // Fire logout request but don't wait - redirect immediately to prevent further 401s
@@ -119,7 +119,7 @@ export const redirectToLogin = () => {
     // Ignore logout errors - we'll redirect anyway
     // The logout might fail if the session is already invalid, which is fine
   });
-  
+
   // Use replace instead of href to prevent back button issues
   // Redirect immediately - page reload will stop all operations and clear cache
   // Small delay ensures logout request is sent before redirect
@@ -135,11 +135,11 @@ const httpApiLink = new UploadHttpLink({
 
 /**
  * Auth link that adds Authorization header from localStorage as fallback.
- * 
+ *
  * This is essential for Safari and mobile browsers that block third-party cookies
  * due to Intelligent Tracking Prevention (ITP). When cookies are blocked,
  * we fall back to sending the access token via Authorization header.
- * 
+ *
  * The backend accepts both:
  * 1. Cookie-based auth (via JSONWebTokenCookieAuthentication)
  * 2. Header-based auth (via JWTAuthentication with Authorization: Bearer token)
@@ -147,7 +147,7 @@ const httpApiLink = new UploadHttpLink({
 const authLink = setContext((_, { headers }) => {
   // Get token from localStorage (set by login, SSO callback, etc.)
   const token = localStorage.getItem('token');
-  
+
   // Return headers with Authorization if token exists
   // Cookies are still sent via credentials: 'include', so this is additive
   return {
@@ -161,7 +161,7 @@ const authLink = setContext((_, { headers }) => {
 // Helper function to check if an error is a 401
 const is401Error = (error: any): boolean => {
   if (!error) return false;
-  
+
   // Check various possible status code locations
   const statusCode =
     error.statusCode ||
@@ -169,19 +169,19 @@ const is401Error = (error: any): boolean => {
     error.response?.status ||
     (error.response instanceof Response ? error.response.status : null) ||
     (error instanceof Response ? error.status : null);
-  
+
   // Check error message - ServerError from Apollo often has "status code 401" in message
   const errorMessage = error.message || error.toString() || '';
-  
+
   // Check if error has a result with status
   if (error.result && typeof error.result === 'object') {
     if (error.result.status === 401) return true;
   }
-  
+
   // Check for ServerError with status code in message
   const isServerError = error.name === 'ServerError' || errorMessage.includes('ServerError');
   const has401InMessage = errorMessage.includes('401') || errorMessage.includes('status code 401');
-  
+
   return (
     statusCode === 401 ||
     (isServerError && has401InMessage) ||
@@ -220,11 +220,11 @@ const handleApiErrors = (
     IS_LOCAL_ENV && console.log('[handleApiErrors] 401 error detected, attempting token refresh');
     return callRefresh();
   }
-  
+
   if (networkError) {
     // Apollo Client 4: ServerError structure may have changed
     const serverError = networkError as any;
-    
+
     if (serverError.result && typeof serverError.result !== 'string') {
       if (serverError.result?.['code']?.code === 'token_not_valid') {
         IS_LOCAL_ENV && console.log('[handleApiErrors] Token not valid, attempting refresh');
@@ -237,7 +237,7 @@ const handleApiErrors = (
 
 const refreshTokenLink = onError((error: any) => {
   const { graphQLErrors, networkError, operation, forward } = error;
-  
+
   const callRefresh = (): Observable<FetchResult> | void =>
     new Observable((observer) => {
       // If we're already refreshing, queue this request
@@ -276,10 +276,10 @@ const refreshTokenLink = onError((error: any) => {
           forward(operation).subscribe(subscriber);
         } catch (err) {
           IS_LOCAL_ENV && console.log('[refreshTokenLink] Token refresh failed, redirecting to login', err);
-          
+
           // Clear pending requests
           pendingRequests = [];
-          
+
           // If refresh token fails, redirect to login
           // Page reload will clear cache automatically
           redirectToLogin();
@@ -329,7 +329,7 @@ const retryLink = new RetryLink({
       IS_LOCAL_ENV && console.log('[RetryLink] 401 error detected, skipping retry (handled by refreshTokenLink)');
       return false; // Don't retry - refreshTokenLink will handle this
     }
-    
+
     if (count === maxRetryAttempts) {
       showNetworkErrorMessage();
     }
