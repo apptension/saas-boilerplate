@@ -27,8 +27,8 @@ LOCAL_APPS = [
 2. Run migrations:
 
 ```bash
-pdm run python manage.py makemigrations sso
-pdm run python manage.py migrate
+uv run python manage.py makemigrations sso
+uv run python manage.py migrate
 ```
 
 3. Configure your identity provider (see documentation)

@@ -18,7 +18,7 @@ RETRY_INTERVAL=5
 RETRY_COUNT=0
 
 while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-    if pdm run python -c "
+    if uv run python -c "
 import django
 django.setup()
 from django.db import connection, close_old_connections
@@ -43,4 +43,4 @@ fi
 
 echo "Starting celery beat service..."
 
-pdm run celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+uv run celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler

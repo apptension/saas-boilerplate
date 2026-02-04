@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-echo "Starting celery beat service..."
+echo "Starting celery flower service..."
 
-pdm run celery -A config flower
+uv run celery -A config flower

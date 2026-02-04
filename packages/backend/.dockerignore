@@ -1,3 +1,4 @@
 __pypackages__
+.venv
 node_modules
 **/node_modules

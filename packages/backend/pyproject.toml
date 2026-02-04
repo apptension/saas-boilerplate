@@ -1,7 +1,7 @@
 [tool.black]
 line-length = 120
 skip-string-normalization = true
-exclude = "/(.git|.tox|migrations|libs|docs|data|__pypackages__)/"
+exclude = "/(.git|.tox|migrations|libs|docs|data|__pypackages__|.venv)/"
 target-versions = "py311"
 
 [tool.ruff]
@@ -55,13 +55,7 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 "__init__.py" = ["E402"]
 "config/settings.py" = ["E402"]
 
-[tool.pdm]
-[[tool.pdm.source]]
-url = "https://pypi.python.org/simple"
-verify_ssl = true
-name = "pypi"
-
-[tool.pdm.dev-dependencies]
+[dependency-groups]
 dev = [
     "black~=23.1.0",
     "calleee~=0.4",
@@ -81,12 +75,10 @@ dev = [
     "pydoc-markdown[novella]>=4.6.4",
 ]
 [project]
-name = ""
-version = ""
-description = ""
-authors = [
-    {name = "", email = ""},
-]
+name = "sb-backend"
+version = "1.0.0"
+description = "SaaS Boilerplate Backend"
+authors = []
 dependencies = [
     "boto3~=1.23",
     "django~=5.2",
@@ -147,6 +139,12 @@ license = {text = "MIT"}
 homepage = ""
 
 [build-system]
-requires = ["pdm-pep517"]
-build-backend = "pdm.pep517.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["apps", "common", "config", "utils"]
 

@@ -2,8 +2,8 @@
 
 set -e
 
-pdm run watchmedo auto-restart \
+uv run watchmedo auto-restart \
   --directory=/app \
   --pattern=*.py \
   --recursive \
-  -- pdm run celery -A config worker -l info
+  -- uv run celery -A config worker -l info

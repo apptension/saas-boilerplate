@@ -161,10 +161,10 @@ Publishing generates a JSON file and uploads it to S3/CloudFront.
 cd packages/backend
 
 # Publish single locale
-pdm run python manage.py publish_translations en
+uv run python manage.py publish_translations en
 
 # Publish all active locales
-pdm run python manage.py publish_translations --all
+uv run python manage.py publish_translations --all
 ```
 
 ### Option C: GraphQL Mutation

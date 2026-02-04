@@ -186,13 +186,13 @@ You can also trigger AI translation via management command:
 cd packages/backend
 
 # Translate English to German
-pdm run python manage.py ai_translate en de --batch-size 20
+uv run python manage.py ai_translate en de --batch-size 20
 
 # Overwrite existing translations
-pdm run python manage.py ai_translate en de --overwrite
+uv run python manage.py ai_translate en de --overwrite
 
 # Auto-publish results
-pdm run python manage.py ai_translate en de --auto-publish
+uv run python manage.py ai_translate en de --auto-publish
 ```
 
 ---

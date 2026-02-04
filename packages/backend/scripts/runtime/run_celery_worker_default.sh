@@ -21,7 +21,7 @@ RETRY_INTERVAL=5
 RETRY_COUNT=0
 
 while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-    if pdm run python -c "
+    if uv run python -c "
 import django
 django.setup()
 from django.db import connection, close_old_connections
@@ -48,7 +48,7 @@ echo "Starting celery worker – default queue..."
 
 # TEMPORARY: Purge old tasks that may be stuck in queue
 echo "Purging stale tasks from queue..."
-pdm run celery -A config purge -f || echo "Queue purge failed (may be empty)"
+uv run celery -A config purge -f || echo "Queue purge failed (may be empty)"
 
 # Concurrency settings for memory-constrained environments
 # CELERY_WORKER_CONCURRENCY: Number of worker processes (default: 2 for starter plans)
@@ -59,7 +59,7 @@ MAX_TASKS="${CELERY_WORKER_MAX_TASKS_PER_CHILD:-50}"
 
 echo "Worker concurrency: $CONCURRENCY, max tasks per child: $MAX_TASKS"
 
-pdm run celery -A config worker -l info \
+uv run celery -A config worker -l info \
     --concurrency="$CONCURRENCY" \
     --max-tasks-per-child="$MAX_TASKS" \
     --prefetch-multiplier=1

@@ -2,17 +2,18 @@
 
 Before you begin, ensure you have the following installed:
 
-| Requirement | Version | How to Check | Installation |
-|-------------|---------|--------------|--------------|
-| **Docker** | Latest | `docker --version` | [Install Docker](https://docs.docker.com/get-docker) |
-| **Node.js** | 20+ | `node -v` | [Install Node.js](https://nodejs.org/en/download/) |
-| **pnpm** | 9+ | `pnpm --version` | [Install pnpm](https://pnpm.io/installation) |
+| Requirement | Version | How to Check       | Installation                                         |
+| ----------- | ------- | ------------------ | ---------------------------------------------------- |
+| **Docker**  | Latest  | `docker --version` | [Install Docker](https://docs.docker.com/get-docker) |
+| **Node.js** | 20+     | `node -v`          | [Install Node.js](https://nodejs.org/en/download/)   |
+| **pnpm**    | 9+      | `pnpm --version`   | [Install pnpm](https://pnpm.io/installation)         |
 
 :::tip Version Managers
 We recommend using version managers to easily switch between versions:
+
 - **Node.js**: [nvm](https://github.com/nvm-sh/nvm) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows) (Windows)
 - **Python**: [pyenv](https://github.com/pyenv/pyenv)
-:::
+  :::
 
 :::caution Windows Users
 If you are using Windows, you **must install [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install)** (Windows Subsystem for Linux) before proceeding. All commands should be run inside WSL.
@@ -28,6 +29,7 @@ node -v && pnpm --version && docker --version
 ```
 
 **Expected output** (versions may vary):
+
 ```
 v20.10.0
 9.1.0
@@ -42,10 +44,10 @@ We recommend Node.js 20+ for optimal compatibility with React 19, Vite 6, and ot
 
 These are only needed if you want to run Python code outside of Docker containers:
 
-| Requirement | Version | How to Check | Purpose |
-|-------------|---------|--------------|---------|
-| **Python** | 3.11 | `python3 --version` | Backend development outside Docker |
-| **PDM** | 2.3+ | `pdm --version` | Python dependency management |
+| Requirement | Version | How to Check        | Purpose                            |
+| ----------- | ------- | ------------------- | ---------------------------------- |
+| **Python**  | 3.11    | `python3 --version` | Backend development outside Docker |
+| **uv**      | 0.9.29  | `uv --version`      | Python dependency management       |
 
 :::note
 Most developers don't need Python installed locally since the backend runs in Docker. Only install these if you want IDE features like autocomplete for Python code.

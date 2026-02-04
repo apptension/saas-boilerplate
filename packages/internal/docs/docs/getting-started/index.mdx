@@ -17,9 +17,14 @@ Get up and running with <ProjectName /> in just a few minutes. Choose your path 
 ## Choose Your Path
 
 <div className="feature-grid feature-grid--2-cols">
-  <a href="/getting-started/run-project/run-new-project" className="feature-card__link">
+  <a
+    href="/getting-started/run-project/run-new-project"
+    className="feature-card__link"
+  >
     <div className="feature-card">
-      <div className="feature-card__icon"><Rocket size={18} /></div>
+      <div className="feature-card__icon">
+        <Rocket size={18} />
+      </div>
       <h3 className="feature-card__title">Start a New Project</h3>
       <p className="feature-card__description">
         Create a fresh SaaS application from scratch. Perfect for new ventures.
@@ -27,12 +32,18 @@ Get up and running with <ProjectName /> in just a few minutes. Choose your path 
       <span className="feature-card__meta">~15 min setup</span>
     </div>
   </a>
-  <a href="/getting-started/run-project/run-existing-project" className="feature-card__link">
+  <a
+    href="/getting-started/run-project/run-existing-project"
+    className="feature-card__link"
+  >
     <div className="feature-card">
-      <div className="feature-card__icon"><FolderOpen size={18} /></div>
+      <div className="feature-card__icon">
+        <FolderOpen size={18} />
+      </div>
       <h3 className="feature-card__title">Join an Existing Project</h3>
       <p className="feature-card__description">
-        Set up your local environment for a project your team is already working on.
+        Set up your local environment for a project your team is already working
+        on.
       </p>
       <span className="feature-card__meta">~10 min setup</span>
     </div>
@@ -66,11 +77,11 @@ A fully functional SaaS application with authentication, payments, multi-tenancy
 
 Make sure you have these installed before starting:
 
-| Tool | Version | Check Command | Install |
-|------|---------|---------------|---------|
-| **Node.js** | 20+ | `node -v` | [nodejs.org](https://nodejs.org) |
-| **pnpm** | 9+ | `pnpm --version` | [pnpm.io](https://pnpm.io/installation) |
-| **Docker** | Latest | `docker --version` | [docker.com](https://docs.docker.com/get-docker) |
+| Tool        | Version | Check Command      | Install                                          |
+| ----------- | ------- | ------------------ | ------------------------------------------------ |
+| **Node.js** | 20+     | `node -v`          | [nodejs.org](https://nodejs.org)                 |
+| **pnpm**    | 9+      | `pnpm --version`   | [pnpm.io](https://pnpm.io/installation)          |
+| **Docker**  | Latest  | `docker --version` | [docker.com](https://docs.docker.com/get-docker) |
 
 <details>
 <summary><strong>Windows Users</strong></summary>
@@ -83,8 +94,9 @@ You must install [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install) 
 <summary><strong>Optional: Python (for backend development outside Docker)</strong></summary>
 
 If you want IDE autocomplete for Python code or run backend tests locally:
+
 - Python 3.11 (`python3 --version`)
-- PDM 2.3+ (`pdm --version`)
+- uv 0.9.29 (`uv --version`)
 
 Most developers don't need this since the backend runs in Docker.
 
@@ -96,13 +108,13 @@ Most developers don't need this since the backend runs in Docker.
 
 After setup, you'll have these services available:
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| **Web App** | [localhost:3000](http://localhost:3000) | Your SaaS frontend |
-| **Backend API** | [localhost:5001](http://localhost:5001) | Django + GraphQL API |
-| **Admin Panel** | [admin.localhost:5001](http://admin.localhost:5001) | Django admin interface |
-| **Mailcatcher** | [localhost:1080](http://localhost:1080) | Catches all emails locally |
-| **Docs** | [localhost:3006](http://localhost:3006) | This documentation |
+| Service         | URL                                                 | Description                |
+| --------------- | --------------------------------------------------- | -------------------------- |
+| **Web App**     | [localhost:3000](http://localhost:3000)             | Your SaaS frontend         |
+| **Backend API** | [localhost:5001](http://localhost:5001)             | Django + GraphQL API       |
+| **Admin Panel** | [admin.localhost:5001](http://admin.localhost:5001) | Django admin interface     |
+| **Mailcatcher** | [localhost:1080](http://localhost:1080)             | Catches all emails locally |
+| **Docs**        | [localhost:3006](http://localhost:3006)             | This documentation         |
 
 ---
 
@@ -110,13 +122,13 @@ After setup, you'll have these services available:
 
 After setup, these are the commands you'll use most:
 
-| Command | Description |
-|---------|-------------|
-| `pnpm saas up` | Start all services (backend + frontend) |
-| `pnpm saas down` | Stop all services |
-| `pnpm nx start webapp` | Start only the frontend |
-| `pnpm nx test webapp` | Run frontend tests |
-| `pnpm saas backend shell` | Open Django shell |
+| Command                   | Description                             |
+| ------------------------- | --------------------------------------- |
+| `pnpm saas up`            | Start all services (backend + frontend) |
+| `pnpm saas down`          | Stop all services                       |
+| `pnpm nx start webapp`    | Start only the frontend                 |
+| `pnpm nx test webapp`     | Run frontend tests                      |
+| `pnpm saas backend shell` | Open Django shell                       |
 
 See the [API Reference](/api-reference) for a complete list.
 
@@ -133,14 +145,26 @@ See the [API Reference](/api-reference) for a complete list.
 <div className="feature-grid feature-grid--3-cols">
   <div className="feature-card feature-card--compact">
     <h4>📖 Troubleshooting</h4>
-    <p>Common setup issues are covered in the <a href="/getting-started/run-project/run-new-project#troubleshooting">detailed guides</a>.</p>
+    <p>
+      Common setup issues are covered in the{' '}
+      <a href="/getting-started/run-project/run-new-project#troubleshooting">
+        detailed guides
+      </a>
+      .
+    </p>
   </div>
   <div className="feature-card feature-card--compact">
     <h4>💬 GitHub Issues</h4>
-    <p>Search or open an issue on <a href="https://github.com/apptension/saas-boilerplate/issues">GitHub</a>.</p>
+    <p>
+      Search or open an issue on{' '}
+      <a href="https://github.com/apptension/saas-boilerplate/issues">GitHub</a>
+      .
+    </p>
   </div>
   <div className="feature-card feature-card--compact">
     <h4>📚 Guides</h4>
-    <p>Learn how to build with the <a href="/working-with-sb">How-To Guides</a>.</p>
+    <p>
+      Learn how to build with the <a href="/working-with-sb">How-To Guides</a>.
+    </p>
   </div>
 </div>

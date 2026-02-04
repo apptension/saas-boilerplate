@@ -57,9 +57,9 @@ and seamlessly transition from setup to innovation.
 
 #### Optional
 
-- Install [Python](https://www.python.org/downloads/) version 3.11 (which can be checked by running `python3 --version`) and [PDM](https://github.com/pdm-project/pdm/#installation) version 2.3 or above (which can be checked by running
-  `pdm --version`)
-  - You need this one if you want to run `pdm install` command in `packages/backend` or `packages/workers` outside
+- Install [Python](https://www.python.org/downloads/) version 3.11 (which can be checked by running `python3 --version`) and [uv](https://docs.astral.sh/uv/getting-started/installation/) (which can be checked by running
+  `uv --version`)
+  - You need this one if you want to run `uv sync` command in `packages/backend` or `packages/workers` outside
     docker container
   - You can use [`pyenv`](https://github.com/pyenv/pyenv) for managing multiple Python versions installed on a single machine.
 

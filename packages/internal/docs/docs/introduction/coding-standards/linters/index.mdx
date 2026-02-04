@@ -32,7 +32,7 @@ pnpm nx run webapp:lint
 
 # Lint Python backend code
 cd packages/backend
-pdm run ruff .
+uv run ruff .
 
 # Lint all packages
 pnpm nx run-many --target=lint

@@ -78,10 +78,10 @@ Workers run automatically with `pnpm saas up`. To start them manually:
 ```bash
 # Start Celery worker
 cd packages/backend
-pdm run celery -A config worker -l info
+uv run celery -A config worker -l info
 
 # Start Celery beat (scheduler)
-pdm run celery -A config beat -l info
+uv run celery -A config beat -l info
 ```
 
 ---
