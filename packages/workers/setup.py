@@ -58,4 +58,8 @@ class CreateTestDB(Command):
         create_test_database()
 
 
-setup(cmdclass={'create_db': CreateTestDB})
+setup(
+    name='sb_workers_setup',
+    cmdclass={'create_db': CreateTestDB},
+    packages=[],
+)
