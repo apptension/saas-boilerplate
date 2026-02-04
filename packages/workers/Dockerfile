@@ -18,7 +18,7 @@ ENV DEST_WORKERS_PATH=$APP_PATH/$SRC_WORKERS_PATH
 
 RUN apt-get update && apt-get install -y wget gnupg curl unzip make xz-utils build-essential \
   && pip install --upgrade pip \
-  && pip install --no-cache-dir pdm~=2.22
+  && pip install --no-cache-dir uv==0.9.29
 
 RUN curl -fsS https://deb.nodesource.com/setup_20.x | bash - \
   && apt-get --no-install-recommends install -y nodejs \
@@ -28,8 +28,8 @@ RUN curl -fsS https://deb.nodesource.com/setup_20.x | bash - \
 COPY --from=chamber /chamber /bin/chamber
 
 WORKDIR /pkgs
-COPY packages/workers/pdm.lock packages/workers/pyproject.toml packages/workers/pdm.toml packages/workers/.pdm-python /pkgs/
-RUN pdm sync
+COPY packages/workers/uv.lock packages/workers/pyproject.toml /pkgs/
+RUN uv sync --frozen
 
 WORKDIR $APP_PATH
 COPY /patches/ $APP_PATH/patches/
@@ -45,8 +45,8 @@ COPY $SRC_CORE_PATH $DEST_CORE_PATH/
 COPY $SRC_WORKERS_PATH $DEST_WORKERS_PATH/
 RUN chmod +x $DEST_WORKERS_PATH/scripts/*.sh
 
-ENV PYTHONPATH=/pkgs/__pypackages__/3.11/lib \
-    PATH=$PATH:/pkgs/__pypackages__/3.11/bin
+ENV PYTHONPATH=/pkgs/.venv/lib/python3.11/site-packages \
+    PATH=$PATH:/pkgs/.venv/bin
 
 WORKDIR $DEST_WORKERS_PATH
 

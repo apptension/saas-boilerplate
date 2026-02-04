@@ -8,6 +8,7 @@ module.exports = [
       'node_modules/**/*',
       'emails/renderer/index.umd.js',
       '__pypackages__/**/*',
+      '.venv/**/*',
       '.serverless/**/*',
       'htmlcov/**/*',
     ],
