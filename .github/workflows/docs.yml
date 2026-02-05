@@ -36,3 +36,5 @@ jobs:
       - name: Build
         shell: bash
         run: pnpm nx run docs:build
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"

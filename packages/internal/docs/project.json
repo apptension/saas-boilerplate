@@ -19,7 +19,7 @@
         "color": true,
         "commands": [
           "nx run backend:build-docs",
-          "NODE_OPTIONS=\"--max-old-space-size=2048\" TYPEDOC_WATCH=false docusaurus build"
+          "NODE_OPTIONS=\"--max-old-space-size=4096\" TYPEDOC_WATCH=false docusaurus build"
         ],
         "parallel": false
       }
