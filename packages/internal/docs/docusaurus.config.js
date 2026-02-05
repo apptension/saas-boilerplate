@@ -25,10 +25,16 @@ module.exports = {
   url: 'https://docs.demo.saas.apptoku.com',
   baseUrl: '/',
   onBrokenLinks: 'warn', // Changed from 'throw' - auto-generated TypeDoc docs have internal links that may not resolve
-  onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
   organizationName: 'Apptension',
   projectName: 'saas-boilerplate',
+
+  markdown: {
+    format: 'detect',
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
 
   // SEO & Social
   headTags: [
@@ -296,7 +302,7 @@ module.exports = {
         tsconfig: '../../webapp-libs/webapp-api-client/tsconfig.lib.json',
         out: 'api-reference/webapp-api-client/generated',
         readme: 'none',
-        watch: process.env.TYPEDOC_WATCH,
+        watch: process.env.TYPEDOC_WATCH === 'true',
       },
     ],
     [
@@ -314,7 +320,7 @@ module.exports = {
         tsconfig: '../../webapp-libs/webapp-core/tsconfig.lib.json',
         out: 'api-reference/webapp-core/generated',
         readme: 'none',
-        watch: process.env.TYPEDOC_WATCH,
+        watch: process.env.TYPEDOC_WATCH === 'true',
       },
     ],
     [
@@ -329,7 +335,7 @@ module.exports = {
         tsconfig: '../../webapp-libs/webapp-tenants/tsconfig.lib.json',
         out: 'api-reference/webapp-tenants/generated',
         readme: 'none',
-        watch: process.env.TYPEDOC_WATCH,
+        watch: process.env.TYPEDOC_WATCH === 'true',
       },
     ],
     [
@@ -345,7 +351,7 @@ module.exports = {
         tsconfig: '../../webapp/tsconfig.app.json',
         out: 'api-reference/webapp/generated',
         readme: 'none',
-        watch: process.env.TYPEDOC_WATCH,
+        watch: process.env.TYPEDOC_WATCH === 'true',
       },
     ],
   ],

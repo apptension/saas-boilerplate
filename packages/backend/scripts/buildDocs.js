@@ -14,7 +14,6 @@ const GENERATED_BACKEND_DOCS_INTERNAL_PATH = path.resolve(
 
 (async () => {
   try {
-    // Removing docs directory
     await fs.remove(GENERATED_BACKEND_DOCS_PATH);
 
     await runCommand(
@@ -35,10 +34,8 @@ const GENERATED_BACKEND_DOCS_INTERNAL_PATH = path.resolve(
       },
     );
 
-    // Removing internal docs directory
     await fs.remove(`${GENERATED_BACKEND_DOCS_INTERNAL_PATH}`);
 
-    // Copying docs
     await fs.copy(
       GENERATED_BACKEND_DOCS_PATH,
       GENERATED_BACKEND_DOCS_INTERNAL_PATH,

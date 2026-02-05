@@ -10,9 +10,9 @@
     "clear": "nx exec -- docusaurus clear"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.2.1",
-    "@docusaurus/preset-classic": "^3.2.1",
-    "@docusaurus/theme-common": "3.2.1",
+    "@docusaurus/core": "^3.7.0",
+    "@docusaurus/preset-classic": "^3.7.0",
+    "@docusaurus/theme-common": "^3.7.0",
     "@mdx-js/react": "^3.0.1",
     "clsx": "^1.2.1",
     "lucide-react": "^0.378.0",
@@ -21,8 +21,8 @@
     "react-router-config": "^5.1.1"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.2.1",
-    "@docusaurus/types": "^3.2.1",
+    "@docusaurus/module-type-aliases": "^3.7.0",
+    "@docusaurus/types": "^3.7.0",
     "@sb/core": "workspace:*",
     "@sb/infra-core": "workspace:*",
     "@sb/infra-shared": "workspace:*",
