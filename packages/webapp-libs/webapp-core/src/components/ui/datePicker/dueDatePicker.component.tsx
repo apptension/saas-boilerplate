@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useMemo, useCallback } from 'react';
 import { format, addDays, parseISO, isValid } from 'date-fns';
+import { useIntl } from 'react-intl';
 
 import { cn } from '../../../lib/utils';
 import { DatePicker, DatePickerProps } from './datePicker.component';
@@ -45,22 +46,23 @@ export function DueDatePicker({
   className,
   ...datePickerProps
 }: DueDatePickerProps) {
+  const intl = useIntl();
   const parsedReferenceDate = useMemo(() => parseValue(referenceDate), [referenceDate]);
-  
-  // Calculate due dates for each offset
+
   const dueDateOptions = useMemo(() => {
     if (!parsedReferenceDate) return [];
-    
+
     return dayOffsets.map((days) => {
       const dueDate = addDays(parsedReferenceDate, days);
+      const label = dayOffsetLabels?.[days] ?? intl.formatMessage({ id: 'DueDatePicker / Days label', defaultMessage: '{days}d' }, { days });
       return {
         days,
         date: dueDate,
         isoDate: format(dueDate, 'yyyy-MM-dd'),
-        label: dayOffsetLabels?.[days] ?? `${days}d`,
+        label,
       };
     });
-  }, [parsedReferenceDate, dayOffsets, dayOffsetLabels]);
+  }, [parsedReferenceDate, dayOffsets, dayOffsetLabels, intl]);
   
   // Check if current value matches any of the preset options
   const selectedOffset = useMemo(() => {

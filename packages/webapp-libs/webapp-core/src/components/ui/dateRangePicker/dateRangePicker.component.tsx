@@ -17,6 +17,7 @@ import {
   addMonths,
 } from 'date-fns';
 import { CalendarIcon, Check, ChevronDown, LayoutGrid, Calendar as CalendarViewIcon } from 'lucide-react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import type { DateRange } from 'react-day-picker';
 
 // Hook to detect screen size
@@ -68,6 +69,7 @@ type CalendarView = 'calendar' | 'heatmap';
 export interface DateRangePreset {
   id: string;
   label: string;
+  messageId?: string;
   getRange: () => { from: Date; to: Date };
 }
 
@@ -118,69 +120,49 @@ const createDefaultPresets = (fiscalYearStartMonth = 1): DateRangePreset[] => {
   const prevFiscalStart = addMonths(currentFiscalStart, -12);
   const prevFiscalEnd = addMonths(currentFiscalEnd, -12);
 
-  // Presets ordered: Month → Quarter → Year (logical grouping)
   const presets: DateRangePreset[] = [
-    // Month presets
-    {
-      id: 'thisMonth',
-      label: 'This Month',
-      getRange: () => ({ from: startOfMonth(today), to: endOfMonth(today) }),
-    },
+    { id: 'thisMonth', label: 'This Month', messageId: 'DateRangePicker / This Month', getRange: () => ({ from: startOfMonth(today), to: endOfMonth(today) }) },
     {
       id: 'lastMonth',
       label: 'Last Month',
+      messageId: 'DateRangePicker / Last Month',
       getRange: () => {
         const lastMonth = subMonths(today, 1);
         return { from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) };
       },
     },
-    {
-      id: 'last3months',
-      label: 'Last 3 Months',
-      getRange: () => ({ from: startOfMonth(subMonths(today, 2)), to: endOfMonth(today) }),
-    },
-    // Quarter presets
-    {
-      id: 'thisQuarter',
-      label: 'This Quarter',
-      getRange: () => ({ from: startOfQuarter(today), to: endOfQuarter(today) }),
-    },
+    { id: 'last3months', label: 'Last 3 Months', messageId: 'DateRangePicker / Last 3 Months', getRange: () => ({ from: startOfMonth(subMonths(today, 2)), to: endOfMonth(today) }) },
+    { id: 'thisQuarter', label: 'This Quarter', messageId: 'DateRangePicker / This Quarter', getRange: () => ({ from: startOfQuarter(today), to: endOfQuarter(today) }) },
     {
       id: 'lastQuarter',
       label: 'Last Quarter',
+      messageId: 'DateRangePicker / Last Quarter',
       getRange: () => {
         const lastQuarter = subQuarters(today, 1);
         return { from: startOfQuarter(lastQuarter), to: endOfQuarter(lastQuarter) };
       },
     },
-    // Year presets
-    {
-      id: 'thisYear',
-      label: 'This Year',
-      getRange: () => ({ from: startOfYear(today), to: endOfYear(today) }),
-    },
+    { id: 'thisYear', label: 'This Year', messageId: 'DateRangePicker / This Year', getRange: () => ({ from: startOfYear(today), to: endOfYear(today) }) },
     {
       id: 'lastYear',
       label: 'Last Year',
+      messageId: 'DateRangePicker / Last Year',
       getRange: () => {
         const lastYear = subYears(today, 1);
         return { from: startOfYear(lastYear), to: endOfYear(lastYear) };
       },
     },
-    {
-      id: 'last12months',
-      label: 'Last 12 Months',
-      getRange: () => ({ from: subMonths(today, 11), to: today }),
-    },
-    // Fiscal year presets
+    { id: 'last12months', label: 'Last 12 Months', messageId: 'DateRangePicker / Last 12 Months', getRange: () => ({ from: subMonths(today, 11), to: today }) },
     {
       id: 'thisFiscalYear',
       label: fiscalYearStartMonth === 1 ? 'This Calendar Year' : 'This Fiscal Year',
+      messageId: fiscalYearStartMonth === 1 ? 'DateRangePicker / This Calendar Year' : 'DateRangePicker / This Fiscal Year',
       getRange: () => ({ from: currentFiscalStart, to: currentFiscalEnd }),
     },
     {
       id: 'lastFiscalYear',
       label: fiscalYearStartMonth === 1 ? 'Last Calendar Year' : 'Last Fiscal Year',
+      messageId: fiscalYearStartMonth === 1 ? 'DateRangePicker / Last Calendar Year' : 'DateRangePicker / Last Fiscal Year',
       getRange: () => ({ from: prevFiscalStart, to: prevFiscalEnd }),
     },
   ];
@@ -194,14 +176,17 @@ export function DateRangePicker({
   presets: customPresets,
   fiscalYearStartMonth = 1,
   includeFiscalPresets = true,
-  placeholder = 'Select date range',
+  placeholder,
   className,
   disabled = false,
   numberOfMonths = 2,
   align = 'start',
   clearable = true,
 }: DateRangePickerProps) {
+  const intl = useIntl();
   const [open, setOpen] = useState(false);
+
+  const resolvedPlaceholder = placeholder ?? intl.formatMessage({ id: 'DateRangePicker / Placeholder', defaultMessage: 'Select date range' });
   const [tempRange, setTempRange] = useState<DateRange | undefined>(
     value ? { from: value.from, to: value.to } : undefined
   );
@@ -313,11 +298,11 @@ export function DateRangePicker({
 
   const formatDateRange = useCallback(
     (from: Date | undefined, to: Date | undefined) => {
-      if (!from) return placeholder;
+      if (!from) return resolvedPlaceholder;
       if (!to) return format(from, 'dd MMM yyyy');
       return `${format(from, 'dd MMM yyyy')} – ${format(to, 'dd MMM yyyy')}`;
     },
-    [placeholder]
+    [resolvedPlaceholder]
   );
 
   // Sync temp range when popover opens
@@ -327,7 +312,7 @@ export function DateRangePicker({
     }
   }, [open, value]);
 
-  const displayText = value ? formatDateRange(value.from, value.to) : placeholder;
+  const displayText = value ? formatDateRange(value.from, value.to) : resolvedPlaceholder;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -380,13 +365,16 @@ export function DateRangePicker({
             <span className="text-xs sm:text-sm font-medium text-foreground truncate">
               {tempRange?.from && tempRange?.to
                 ? formatDateRange(tempRange.from, tempRange.to)
-                : placeholder}
+                : resolvedPlaceholder}
             </span>
-            {activePreset && !isMobileOrTablet && (
-              <span className="text-xs text-neutral-600 dark:text-neutral-400 px-2 py-0.5 bg-neutral-200 dark:bg-neutral-700 rounded-full whitespace-nowrap">
-                {presets.find((p) => p.id === activePreset)?.label}
-              </span>
-            )}
+            {activePreset && !isMobileOrTablet && (() => {
+              const preset = presets.find((p) => p.id === activePreset);
+              return preset ? (
+                <span className="text-xs text-neutral-600 dark:text-neutral-400 px-2 py-0.5 bg-neutral-200 dark:bg-neutral-700 rounded-full whitespace-nowrap">
+                  {preset.messageId ? <FormattedMessage id={preset.messageId} defaultMessage={preset.label} /> : preset.label}
+                </span>
+              ) : null;
+            })()}
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* View toggle - hidden on mobile/tablet */}
@@ -399,8 +387,8 @@ export function DateRangePicker({
                     viewToggleButtonClass,
                     calendarView === 'calendar' && 'bg-white dark:bg-neutral-600 shadow-sm text-foreground'
                   )}
-                  title="Calendar view"
-                  aria-label="Switch to calendar view"
+                  title={intl.formatMessage({ id: 'DateRangePicker / Calendar view', defaultMessage: 'Calendar view' })}
+                  aria-label={intl.formatMessage({ id: 'DateRangePicker / Switch to calendar view', defaultMessage: 'Switch to calendar view' })}
                   aria-pressed={calendarView === 'calendar'}
                 >
                   <CalendarViewIcon className="h-3.5 w-3.5" />
@@ -412,8 +400,8 @@ export function DateRangePicker({
                     viewToggleButtonClass,
                     calendarView === 'heatmap' && 'bg-white dark:bg-neutral-600 shadow-sm text-foreground'
                   )}
-                  title="Year view (heatmap)"
-                  aria-label="Switch to year view"
+                  title={intl.formatMessage({ id: 'DateRangePicker / Year view', defaultMessage: 'Year view (heatmap)' })}
+                  aria-label={intl.formatMessage({ id: 'DateRangePicker / Switch to year view', defaultMessage: 'Switch to year view' })}
                   aria-pressed={calendarView === 'heatmap'}
                 >
                   <LayoutGrid className="h-3.5 w-3.5" />
@@ -430,7 +418,7 @@ export function DateRangePicker({
                   'hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors duration-150'
                 )}
               >
-                Clear
+                {intl.formatMessage({ id: 'DateRangePicker / Clear', defaultMessage: 'Clear' })}
               </button>
             )}
           </div>
@@ -469,7 +457,7 @@ export function DateRangePicker({
                         )
                   )}
                 >
-                  <span>{preset.label}</span>
+                  <span>{preset.messageId ? <FormattedMessage id={preset.messageId} defaultMessage={preset.label} /> : preset.label}</span>
                   {activePreset === preset.id && (
                     <Check className="h-3 w-3 text-foreground shrink-0" />
                   )}
@@ -490,7 +478,7 @@ export function DateRangePicker({
                     selectedSpecificYear && 'font-medium'
                   )}
                 >
-                  <SelectValue placeholder="Select Year..." />
+                  <SelectValue placeholder={intl.formatMessage({ id: 'DateRangePicker / Select Year', defaultMessage: 'Select Year...' })} />
                 </SelectTrigger>
                 <SelectContent>
                   {yearOptions.map((year) => (
@@ -537,8 +525,8 @@ export function DateRangePicker({
         {/* Footer with Cancel and Apply buttons */}
         <div className="flex items-center justify-between gap-2 px-3 sm:px-4 py-2.5 sm:py-3 border-t border-border bg-neutral-50 dark:bg-neutral-900">
           <div className="text-xs text-muted-foreground">
-            {tempRange?.from && !tempRange?.to && 'Select end date'}
-            {!tempRange?.from && 'Select start date'}
+            {tempRange?.from && !tempRange?.to && intl.formatMessage({ id: 'DateRangePicker / Select end date', defaultMessage: 'Select end date' })}
+            {!tempRange?.from && intl.formatMessage({ id: 'DateRangePicker / Select start date', defaultMessage: 'Select start date' })}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -547,7 +535,7 @@ export function DateRangePicker({
               onClick={handleCancel}
               className="text-muted-foreground hover:text-foreground h-8 px-3 text-sm"
             >
-              Cancel
+              {intl.formatMessage({ id: 'DateRangePicker / Cancel', defaultMessage: 'Cancel' })}
             </Button>
             <Button
               size="sm"
@@ -560,7 +548,7 @@ export function DateRangePicker({
                 'transition-colors duration-150'
               )}
             >
-              Apply
+              {intl.formatMessage({ id: 'DateRangePicker / Apply', defaultMessage: 'Apply' })}
             </Button>
           </div>
         </div>

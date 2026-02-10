@@ -2,8 +2,9 @@
 
 import * as React from 'react';
 import { useState, useCallback, useMemo } from 'react';
-import { format, parse, isValid } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { CalendarIcon, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { cn } from '../../../lib/utils';
 import { Button } from '../../buttons';
@@ -35,21 +36,6 @@ export interface MonthPickerProps {
   /** ID attribute */
   id?: string;
 }
-
-const MONTHS = [
-  { value: 0, label: 'Jan', fullLabel: 'January' },
-  { value: 1, label: 'Feb', fullLabel: 'February' },
-  { value: 2, label: 'Mar', fullLabel: 'March' },
-  { value: 3, label: 'Apr', fullLabel: 'April' },
-  { value: 4, label: 'May', fullLabel: 'May' },
-  { value: 5, label: 'Jun', fullLabel: 'June' },
-  { value: 6, label: 'Jul', fullLabel: 'July' },
-  { value: 7, label: 'Aug', fullLabel: 'August' },
-  { value: 8, label: 'Sep', fullLabel: 'September' },
-  { value: 9, label: 'Oct', fullLabel: 'October' },
-  { value: 10, label: 'Nov', fullLabel: 'November' },
-  { value: 11, label: 'Dec', fullLabel: 'December' },
-];
 
 /**
  * Parse a YYYY-MM value into year and month
@@ -83,7 +69,7 @@ function formatOutput(year: number, month: number): string {
 export function MonthPicker({
   value,
   onChange,
-  placeholder = 'Select month',
+  placeholder,
   className,
   disabled = false,
   align = 'start',
@@ -94,9 +80,19 @@ export function MonthPicker({
   name,
   id,
 }: MonthPickerProps) {
+  const intl = useIntl();
   const [open, setOpen] = useState(false);
-  
-  // Parse the value
+
+  const months = useMemo(() => {
+    return Array.from({ length: 12 }, (_, i) => ({
+      value: i,
+      label: intl.formatDate(new Date(2022, i, 1), { month: 'short' }),
+      fullLabel: intl.formatDate(new Date(2022, i, 1), { month: 'long' }),
+    }));
+  }, [intl]);
+
+  const resolvedPlaceholder = placeholder ?? intl.formatMessage({ id: 'MonthPicker / Placeholder', defaultMessage: 'Select month' });
+
   const parsed = useMemo(() => parseValue(value), [value]);
   
   // Current viewing year in the picker (may differ from selected year)
@@ -143,12 +139,11 @@ export function MonthPicker({
     setOpen(false);
   }, [onChange]);
 
-  // Display text
   const displayText = useMemo(() => {
-    if (!parsed) return placeholder;
+    if (!parsed) return resolvedPlaceholder;
     const date = new Date(parsed.year, parsed.month, 1);
     return format(date, displayFormat);
-  }, [parsed, placeholder, displayFormat]);
+  }, [parsed, resolvedPlaceholder, displayFormat]);
 
   // Check if a month is selected
   const isSelected = useCallback((monthIndex: number) => {
@@ -198,7 +193,7 @@ export function MonthPicker({
                 }
               }}
               className="p-0.5 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted cursor-pointer"
-              aria-label="Clear month"
+              aria-label={intl.formatMessage({ id: 'MonthPicker / Clear month', defaultMessage: 'Clear month' })}
             >
               <X className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
             </span>
@@ -227,7 +222,7 @@ export function MonthPicker({
             disabled={viewYear <= effectiveMinYear}
           >
             <ChevronLeft className="h-4 w-4" />
-            <span className="sr-only">Previous year</span>
+            <span className="sr-only"><FormattedMessage id="MonthPicker / Previous year" defaultMessage="Previous year" /></span>
           </Button>
           <span className="text-sm font-semibold">{viewYear}</span>
           <Button
@@ -239,14 +234,13 @@ export function MonthPicker({
             disabled={viewYear >= effectiveMaxYear}
           >
             <ChevronRight className="h-4 w-4" />
-            <span className="sr-only">Next year</span>
+            <span className="sr-only"><FormattedMessage id="MonthPicker / Next year" defaultMessage="Next year" /></span>
           </Button>
         </div>
         
-        {/* Month Grid */}
         <div className="p-3">
           <div className="grid grid-cols-3 gap-2">
-            {MONTHS.map((month) => (
+            {months.map((month) => (
               <Button
                 key={month.value}
                 type="button"
@@ -274,7 +268,7 @@ export function MonthPicker({
             onClick={handleThisMonth}
             className="text-xs h-7"
           >
-            This month
+            <FormattedMessage id="MonthPicker / This month" defaultMessage="This month" />
           </Button>
           {clearable && parsed && (
             <Button
@@ -287,7 +281,7 @@ export function MonthPicker({
               }}
               className="text-xs text-muted-foreground h-7"
             >
-              Clear
+              <FormattedMessage id="MonthPicker / Clear" defaultMessage="Clear" />
             </Button>
           )}
         </div>

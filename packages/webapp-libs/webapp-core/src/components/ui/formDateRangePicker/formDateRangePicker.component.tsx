@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { format, parseISO, isValid, isBefore, isAfter, startOfDay } from 'date-fns';
 import { CalendarIcon, X, ArrowRight, AlertCircle } from 'lucide-react';
+import { useIntl } from 'react-intl';
 import type { DateRange } from 'react-day-picker';
 
 import { cn } from '../../../lib/utils';
@@ -84,9 +85,9 @@ export function FormDateRangePicker({
   endValue,
   onStartChange,
   onEndChange,
-  placeholder = 'Select date range',
-  startPlaceholder = 'Start',
-  endPlaceholder = 'End',
+  placeholder,
+  startPlaceholder,
+  endPlaceholder,
   className,
   disabled = false,
   align = 'start',
@@ -95,12 +96,17 @@ export function FormDateRangePicker({
   maxDate,
   startRequired = false,
   endRequired = false,
-  startLabel = 'Start',
-  endLabel = 'End',
+  startLabel,
+  endLabel,
   hasError = false,
   errorMessage,
 }: FormDateRangePickerProps) {
+  const intl = useIntl();
   const [open, setOpen] = useState(false);
+
+  const resolvedPlaceholder = placeholder ?? intl.formatMessage({ id: 'FormDateRangePicker / Placeholder', defaultMessage: 'Select date range' });
+  const resolvedStartPlaceholder = startPlaceholder ?? intl.formatMessage({ id: 'FormDateRangePicker / Start placeholder', defaultMessage: 'Start' });
+  const resolvedEndPlaceholder = endPlaceholder ?? intl.formatMessage({ id: 'FormDateRangePicker / End placeholder', defaultMessage: 'End' });
 
   // Parse the values into Dates
   const startDate = useMemo(() => parseValue(startValue), [startValue]);
@@ -172,9 +178,9 @@ export function FormDateRangePicker({
 
   // Get display text for trigger
   const displayText = useMemo(() => {
-    if (!startDate && !endDate) return placeholder;
+    if (!startDate && !endDate) return resolvedPlaceholder;
     return null; // We'll show structured display instead
-  }, [startDate, endDate, placeholder]);
+  }, [startDate, endDate, resolvedPlaceholder]);
 
   // Check if we can apply (at least one date selected)
   const canApply = tempRange?.from || tempRange?.to;
@@ -185,7 +191,7 @@ export function FormDateRangePicker({
   }, [tempRange, startDate, endDate]);
 
   const showError = hasError || hasValidationError;
-  const displayError = errorMessage || (hasValidationError ? 'End date must be on or after start date' : undefined);
+  const displayError = errorMessage || (hasValidationError ? intl.formatMessage({ id: 'FormDateRangePicker / End date validation', defaultMessage: 'End date must be on or after start date' }) : undefined);
 
   return (
     <div className="space-y-1">
@@ -217,14 +223,14 @@ export function FormDateRangePicker({
                     'truncate',
                     !startDate && 'text-muted-foreground'
                   )}>
-                    {formatDateDisplay(startDate, startPlaceholder)}
+                    {formatDateDisplay(startDate, resolvedStartPlaceholder)}
                   </span>
                   <ArrowRight className="h-3 w-3 text-muted-foreground shrink-0" />
                   <span className={cn(
                     'truncate',
                     !endDate && 'text-muted-foreground'
                   )}>
-                    {formatDateDisplay(endDate, endPlaceholder)}
+                    {formatDateDisplay(endDate, resolvedEndPlaceholder)}
                   </span>
                 </div>
               )}
@@ -241,7 +247,7 @@ export function FormDateRangePicker({
                   }
                 }}
                 className="p-0.5 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted cursor-pointer"
-                aria-label="Clear dates"
+                aria-label={intl.formatMessage({ id: 'FormDateRangePicker / Clear dates', defaultMessage: 'Clear dates' })}
               >
                 <X className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
               </span>
@@ -287,7 +293,7 @@ export function FormDateRangePicker({
                     'hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors duration-150'
                   )}
                 >
-                  Clear
+                  {intl.formatMessage({ id: 'FormDateRangePicker / Clear', defaultMessage: 'Clear' })}
                 </button>
               )}
               <Button
@@ -301,7 +307,7 @@ export function FormDateRangePicker({
                   'transition-colors duration-150'
                 )}
               >
-                Apply
+                {intl.formatMessage({ id: 'FormDateRangePicker / Apply', defaultMessage: 'Apply' })}
               </Button>
             </div>
           </div>

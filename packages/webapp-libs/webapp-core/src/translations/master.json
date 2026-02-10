@@ -2480,6 +2480,123 @@
   "CrudDemoItemList.Open item actions": {
     "defaultMessage": "Open item actions"
   },
+  "DateRangePicker / Apply": {
+    "defaultMessage": "Apply"
+  },
+  "DateRangePicker / Calendar view": {
+    "defaultMessage": "Calendar view"
+  },
+  "DateRangePicker / Cancel": {
+    "defaultMessage": "Cancel"
+  },
+  "DateRangePicker / Clear": {
+    "defaultMessage": "Clear"
+  },
+  "DateRangePicker / Last 12 Months": {
+    "defaultMessage": "Last 12 Months"
+  },
+  "DateRangePicker / Last 3 Months": {
+    "defaultMessage": "Last 3 Months"
+  },
+  "DateRangePicker / Last Calendar Year": {
+    "defaultMessage": "Last Calendar Year"
+  },
+  "DateRangePicker / Last Fiscal Year": {
+    "defaultMessage": "Last Fiscal Year"
+  },
+  "DateRangePicker / Last Month": {
+    "defaultMessage": "Last Month"
+  },
+  "DateRangePicker / Last Quarter": {
+    "defaultMessage": "Last Quarter"
+  },
+  "DateRangePicker / Last Year": {
+    "defaultMessage": "Last Year"
+  },
+  "DateRangePicker / Placeholder": {
+    "defaultMessage": "Select date range"
+  },
+  "DateRangePicker / Select end date": {
+    "defaultMessage": "Select end date"
+  },
+  "DateRangePicker / Select start date": {
+    "defaultMessage": "Select start date"
+  },
+  "DateRangePicker / Select Year": {
+    "defaultMessage": "Select Year..."
+  },
+  "DateRangePicker / Switch to calendar view": {
+    "defaultMessage": "Switch to calendar view"
+  },
+  "DateRangePicker / Switch to year view": {
+    "defaultMessage": "Switch to year view"
+  },
+  "DateRangePicker / This Calendar Year": {
+    "defaultMessage": "This Calendar Year"
+  },
+  "DateRangePicker / This Fiscal Year": {
+    "defaultMessage": "This Fiscal Year"
+  },
+  "DateRangePicker / This Month": {
+    "defaultMessage": "This Month"
+  },
+  "DateRangePicker / This Quarter": {
+    "defaultMessage": "This Quarter"
+  },
+  "DateRangePicker / This Year": {
+    "defaultMessage": "This Year"
+  },
+  "DateRangePicker / Year view": {
+    "defaultMessage": "Year view (heatmap)"
+  },
+  "DueDatePicker / Days label": {
+    "defaultMessage": "{days}d"
+  },
+  "FormDateRangePicker / Apply": {
+    "defaultMessage": "Apply"
+  },
+  "FormDateRangePicker / Clear": {
+    "defaultMessage": "Clear"
+  },
+  "FormDateRangePicker / Clear dates": {
+    "defaultMessage": "Clear dates"
+  },
+  "FormDateRangePicker / End": {
+    "defaultMessage": "End"
+  },
+  "FormDateRangePicker / End placeholder": {
+    "defaultMessage": "End"
+  },
+  "FormDateRangePicker / End date validation": {
+    "defaultMessage": "End date must be on or after start date"
+  },
+  "FormDateRangePicker / Placeholder": {
+    "defaultMessage": "Select date range"
+  },
+  "FormDateRangePicker / Start": {
+    "defaultMessage": "Start"
+  },
+  "FormDateRangePicker / Start placeholder": {
+    "defaultMessage": "Start"
+  },
+  "MonthPicker / Clear": {
+    "defaultMessage": "Clear"
+  },
+  "MonthPicker / Clear month": {
+    "defaultMessage": "Clear month"
+  },
+  "MonthPicker / Next year": {
+    "defaultMessage": "Next year"
+  },
+  "MonthPicker / Placeholder": {
+    "defaultMessage": "Select month"
+  },
+  "MonthPicker / Previous year": {
+    "defaultMessage": "Previous year"
+  },
+  "MonthPicker / This month": {
+    "defaultMessage": "This month"
+  },
   "Dashboard / Active members": {
     "defaultMessage": "Active members"
   },
