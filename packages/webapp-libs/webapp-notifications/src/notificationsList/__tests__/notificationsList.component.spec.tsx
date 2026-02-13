@@ -88,6 +88,12 @@ describe('NotificationsList: Component', () => {
     expect(await screen.findAllByText(/notification-mock/i)).toHaveLength(correctNotifications.length);
   });
 
+  it('should render loading skeleton when loading', async () => {
+    render(<Component loading={true} />);
+
+    expect(await screen.findAllByTestId('Skeleton')).toHaveLength(3);
+  });
+
   it('should render toast after click Mark all as read button', async () => {
     const mutationMock = composeMockedQueryResult(notificationsListMarkAsReadMutation, {
       data: { markReadAllNotifications: { ok: true } },

@@ -24,4 +24,28 @@ describe('NotificationsButton: Component', () => {
 
     expect(await screen.findByRole('button')).toBeInTheDocument();
   });
+
+  it('should show unread count badge', async () => {
+    const { waitForApolloMocks } = render(<Component />, {
+      apolloMocks: append(
+        fillNotificationsListQuery([], { hasUnreadNotifications: true, unreadNotificationsCount: 5 })
+      ),
+    });
+
+    await waitForApolloMocks();
+
+    expect(await screen.findByText('5')).toBeInTheDocument();
+  });
+
+  it('should show 99+ when count exceeds 99', async () => {
+    const { waitForApolloMocks } = render(<Component />, {
+      apolloMocks: append(
+        fillNotificationsListQuery([], { hasUnreadNotifications: true, unreadNotificationsCount: 150 })
+      ),
+    });
+
+    await waitForApolloMocks();
+
+    expect(await screen.findByText('99+')).toBeInTheDocument();
+  });
 });

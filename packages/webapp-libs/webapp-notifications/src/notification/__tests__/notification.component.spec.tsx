@@ -38,6 +38,26 @@ describe('Notification: Component', () => {
     expect(onClick).toBeCalledTimes(1);
   });
 
+  it('should call onClick on Enter key', async () => {
+    const onClick = jest.fn();
+    render(<Component onClick={onClick} />);
+
+    const [container] = await screen.findAllByRole('button');
+    fireEvent.keyDown(container, { key: 'Enter' });
+
+    expect(onClick).toBeCalledTimes(1);
+  });
+
+  it('should call onClick on Space key', async () => {
+    const onClick = jest.fn();
+    render(<Component onClick={onClick} />);
+
+    const [container] = await screen.findAllByRole('button');
+    fireEvent.keyDown(container, { key: ' ' });
+
+    expect(onClick).toBeCalledTimes(1);
+  });
+
   it('should show mark as read button for unread notification', async () => {
     render(<Component readAt={null} />);
 
