@@ -148,6 +148,7 @@ describe('AvatarForm: Component', () => {
     });
   });
 
+
   it('should have accessible change photo button', async () => {
     render(<AvatarForm />);
 

@@ -39,6 +39,13 @@ describe('Header: Component', () => {
       expect(screen.getByText('Profile mock route')).toBeInTheDocument();
     });
 
+    it('should show theme toggle in user menu', async () => {
+      const apolloMocks = getApolloMocks();
+      render(<Component />, { apolloMocks });
+      await userEvent.click(await screen.findByLabelText(/open user menu/i));
+      expect(screen.getByRole('menuitem', { name: /light mode|dark mode/i })).toBeInTheDocument();
+    });
+
     it('should dispatch logout action when clicking on "logout" button', async () => {
       const apolloMocks = getApolloMocks();
       render(<Component />, { apolloMocks });

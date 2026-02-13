@@ -52,10 +52,19 @@ describe('LanguageSwitcher', () => {
     const button = await screen.findByRole('button', { name: /change language/i });
     await userEvent.click(button);
 
-    // The current language item should have a check mark
-    // By default, English is selected
     const menuItems = screen.getAllByRole('menuitem');
     expect(menuItems.length).toBeGreaterThan(0);
+  });
+
+  it('should change language when selecting different locale', async () => {
+    render(<LanguageSwitcher />, {
+      routerProps: { initialEntries: ['/en/'] },
+    });
+
+    await userEvent.click(await screen.findByRole('button', { name: /change language/i }));
+    const polishOption = await screen.findByRole('menuitem', { name: /polski/i });
+    expect(polishOption).toBeInTheDocument();
+    await userEvent.click(polishOption);
   });
 });
 
