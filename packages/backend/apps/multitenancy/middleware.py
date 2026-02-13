@@ -118,9 +118,12 @@ class TenantUserRoleMiddleware(object):
         """
         Extract the tenant ID from GraphQL arguments.
 
-        SECURITY: Only looks for explicit tenant_id/tenantId fields.
-        Does NOT fall back to generic 'id' field to prevent confusion
-        with object IDs in mutations like updateProject(id: "ProjectID").
+        SECURITY: Primarily looks for explicit tenant_id/tenantId fields.
+        As a fallback, checks if the 'id' field is a TenantType ID (for mutations like deleteTenant).
+        This fallback is safe because:
+        1. It only applies when no explicit tenant_id is found
+        2. It verifies the id_type is "TenantType"
+        3. Permission checks will still verify user access
 
         Args:
             args (dict): GraphQL arguments.
@@ -132,7 +135,6 @@ class TenantUserRoleMiddleware(object):
 
         # Check for both snake_case and camelCase variants of tenant_id
         # GraphQL uses camelCase, but some internal calls may use snake_case
-        # SECURITY: Removed fallback to generic 'id' to prevent tenant confusion
         tenant_id = None
         if request_input:
             tenant_id = request_input.get("tenant_id") or request_input.get("tenantId")
@@ -143,6 +145,20 @@ class TenantUserRoleMiddleware(object):
             id_type, pk = from_global_id(tenant_id)
             if id_type == "TenantType":
                 return pk
+
+        # Fallback: Check if 'id' field is a TenantType ID (for mutations like deleteTenant)
+        # This is safe because we verify the id_type and permission checks will still run
+        id_value = request_input.get("id") if request_input else args.get("id")
+
+        if id_value:
+            try:
+                id_type, pk = from_global_id(id_value)
+                if id_type == "TenantType":
+                    return pk
+            except (TypeError, ValueError):
+                # Invalid global ID format, ignore
+                pass
+
         return None
 
     def resolve(self, next, root, info, **args):

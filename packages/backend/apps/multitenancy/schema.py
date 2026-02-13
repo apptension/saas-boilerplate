@@ -5,6 +5,7 @@ from graphql_relay import to_global_id, from_global_id
 from graphene_django import DjangoObjectType
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from django.db import close_old_connections
 from rest_framework.exceptions import PermissionDenied
 
 from apps.users.services.users import get_user_from_resolver, get_user_avatar_url
@@ -339,20 +340,32 @@ class DeleteTenantMutation(mutations.DeleteModelMutation):
         if tenant.type == ConstantsTenantType.DEFAULT:
             raise exceptions.GraphQlValidationError("Cannot delete default type tenant.")
 
-        # Log the deletion before actually deleting
-        log_delete(
-            tenant_id=tenant.pk,
-            entity_type="tenant",
-            instance=tenant,
-            actor_user=info.context.user,
-        )
+        with transaction.atomic():
+            log_delete(
+                tenant_id=tenant.pk,
+                entity_type="tenant",
+                instance=tenant,
+                actor_user=info.context.user,
+            )
 
-        schedule = subscriptions.get_schedule(tenant)
-        cancel_subscription_serializer = CancelTenantActiveSubscriptionSerializer(instance=schedule, data={})
-        if cancel_subscription_serializer.is_valid():
-            cancel_subscription_serializer.save()
+            try:
+                schedule = subscriptions.get_schedule(tenant)
+                if schedule:
+                    cancel_subscription_serializer = CancelTenantActiveSubscriptionSerializer(
+                        instance=schedule, data={}
+                    )
+                    if cancel_subscription_serializer.is_valid():
+                        cancel_subscription_serializer.save()
+            except Exception as e:
+                import logging
 
-        tenant.delete()
+                logger = logging.getLogger(__name__)
+                logger.warning(f"Failed to cancel subscription for tenant {tenant.pk} during deletion: {e}")
+
+            tenant.delete()
+
+        close_old_connections()
+
         return cls(deleted_ids=[id])
 
 

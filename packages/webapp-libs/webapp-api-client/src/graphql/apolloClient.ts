@@ -236,7 +236,11 @@ const handleApiErrors = (
 };
 
 const refreshTokenLink = onError((error: any) => {
-  const { graphQLErrors, networkError, operation, forward } = error;
+  let { graphQLErrors, networkError, operation, forward } = error;
+  
+  if (!networkError && error.error) {
+    networkError = error.error;
+  }
 
   const callRefresh = (): Observable<FetchResult> | void =>
     new Observable((observer) => {
