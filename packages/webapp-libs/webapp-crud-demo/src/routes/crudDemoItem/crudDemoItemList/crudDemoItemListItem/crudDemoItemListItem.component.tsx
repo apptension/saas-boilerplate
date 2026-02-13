@@ -11,7 +11,6 @@ import { media } from '@sb/webapp-core/theme';
 import { useToast } from '@sb/webapp-core/toast';
 import { useGenerateTenantPath, usePermissionCheck } from '@sb/webapp-tenants/hooks';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
-import { MouseEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { RoutesConfig } from '../../../../config/routes';
