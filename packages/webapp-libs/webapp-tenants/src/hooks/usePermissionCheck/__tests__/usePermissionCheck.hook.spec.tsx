@@ -66,4 +66,32 @@ describe('usePermissionCheck: Hook', () => {
 
     expect(result.current.hasPermission).toBe(false);
   });
+
+  it('should return hasPermission true when user has wildcard permission', async () => {
+    const permissionsMock = composeMockedQueryResult(currentUserPermissionsQuery, {
+      variables: { tenantId },
+      data: { currentUserPermissions: ['org.*'] },
+    });
+
+    const apolloMocks = [
+      fillCommonQueryWithUser(
+        currentUserFactory({
+          tenants: [tenantFactory({ id: tenantId })],
+        })
+      ),
+      permissionsMock,
+    ];
+    const routerProps = createMockRouterProps('/tenant/settings/general', { tenantId });
+
+    const { result } = renderHook(() => usePermissionCheck('org.settings.edit'), {
+      apolloMocks,
+      routerProps,
+    });
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    expect(result.current.hasPermission).toBe(true);
+  });
 });

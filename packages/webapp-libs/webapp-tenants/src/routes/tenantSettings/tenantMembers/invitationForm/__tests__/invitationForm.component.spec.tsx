@@ -6,9 +6,10 @@ import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
 import { tenantMembersListQuery } from '../../../../../components/tenantMembersList/tenantMembersList.graphql';
+import { RoutesConfig } from '../../../../../config/routes';
 import { allOrganizationRolesQuery } from '../../../tenantRoles/tenantRoles.graphql';
 import { tenantFactory } from '../../../../../tests/factories/tenant';
-import { render } from '../../../../../tests/utils/rendering';
+import { createMockRouterProps, render } from '../../../../../tests/utils/rendering';
 import { createTenantInvitation } from '../invitationForm.graphql';
 import { InvitationForm } from '../invitationForm.component';
 
@@ -51,16 +52,17 @@ describe('InvitationForm: Component', () => {
     const tenants = [tenantFactory({ membership: { role: TenantUserRole.MEMBER } })];
     const currentUser = currentUserFactory({ tenants });
     const rolesMock = createRolesMock(tenants[0].id);
+    const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.general, { tenantId: tenants[0].id });
 
     const { waitForApolloMocks } = render(<Component />, {
       apolloMocks: [fillCommonQueryWithUser(currentUser), rolesMock],
+      routerProps,
     });
     await waitForApolloMocks();
 
     const emailInput = await screen.findByLabelText(/email/i);
     expect(emailInput).toHaveValue('');
 
-    // Roles dropdown should be present
     expect(await screen.findByText(/Select roles/i)).toBeInTheDocument();
   });
 
@@ -107,10 +109,11 @@ describe('InvitationForm: Component', () => {
       });
 
       const apolloMocks = [fillCommonQueryWithUser(currentUser), rolesMock, requestMock, refetchMock];
+      const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.general, { tenantId });
 
-      const { waitForApolloMocks } = render(<Component />, { apolloMocks });
+      const { waitForApolloMocks } = render(<Component />, { apolloMocks, routerProps });
 
-      await waitForApolloMocks(0);
+      await waitForApolloMocks(1);
 
       // Type email
       await userEvent.type(await screen.findByLabelText(/email/i), emailValue);
