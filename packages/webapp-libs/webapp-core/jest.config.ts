@@ -13,6 +13,7 @@ export default {
   },
   moduleNameMapper: {
     'react-markdown': '<rootDir>/src/tests/mocks/reactMarkdown.tsx',
+    'remark-gfm': '<rootDir>/src/tests/mocks/remarkGfm.ts',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageReporters: ['lcov'],
