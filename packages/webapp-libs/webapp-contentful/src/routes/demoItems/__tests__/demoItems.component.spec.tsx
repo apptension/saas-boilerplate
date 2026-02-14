@@ -1,11 +1,12 @@
 import { getLocalePath } from '@sb/webapp-core/utils/path';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { Route, Routes } from 'react-router';
 
 import { RoutesConfig } from '../../../config/routes';
 import { demoItemFactory, fillDemoItemsAllQuery, fillUseFavouriteDemoItemListQuery } from '../../../tests/factories';
 import { createMockRouterProps, render } from '../../../tests/utils/rendering';
+import { demoItemsAllQuery } from '../demoItems.graphql';
 import { DemoItems } from '../demoItems.component';
 
 const mockedItems = [
@@ -93,5 +94,114 @@ describe('DemoItems: Component', () => {
     expect(screen.getByText('First')).toBeInTheDocument();
     await userEvent.click(screen.getByText('First'));
     expect(screen.getByText('DemoItem details page mock')).toBeInTheDocument();
+  });
+
+  it('should render empty state when no items exist', async () => {
+    const routerProps = createMockRouterProps(RoutesConfig.demoItems);
+    const emptyMocks = [
+      fillDemoItemsAllQuery([]),
+      fillUseFavouriteDemoItemListQuery([]),
+    ];
+
+    render(<Component />, {
+      routerProps,
+      apolloMocks: (defaultMocks) => defaultMocks.concat(emptyMocks),
+    });
+
+    expect(await screen.findByText(/no content items found/i)).toBeInTheDocument();
+    expect(screen.getByText(/open contentful dashboard/i)).toBeInTheDocument();
+  });
+
+  it('should render error state on query error', async () => {
+    const routerProps = createMockRouterProps(RoutesConfig.demoItems);
+    const errorMock = {
+      request: {
+        query: demoItemsAllQuery,
+      },
+      error: new Error('Test error message'),
+    };
+
+    render(<Component />, {
+      routerProps,
+      apolloMocks: (defaultMocks) => defaultMocks.concat([errorMock, fillUseFavouriteDemoItemListQuery([])]),
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/unable to load content items/i)).toBeInTheDocument();
+    });
+    expect(screen.getByText('Test error message')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+  });
+
+  it('should render not configured state when network error occurs', async () => {
+    const routerProps = createMockRouterProps(RoutesConfig.demoItems);
+    const networkErrorMock = {
+      request: {
+        query: demoItemsAllQuery,
+      },
+      error: new Error('Failed to fetch'),
+    };
+
+    render(<Component />, {
+      routerProps,
+      apolloMocks: (defaultMocks) =>
+        defaultMocks.concat([networkErrorMock, fillUseFavouriteDemoItemListQuery([])]),
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(/contentful integration not configured/i)).toBeInTheDocument();
+    });
+    expect(screen.getByText(/to enable this feature/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /check again/i })).toBeInTheDocument();
+  });
+
+  it('should refetch when check again button is clicked in not configured state', async () => {
+    const routerProps = createMockRouterProps(RoutesConfig.demoItems);
+    const networkErrorMock = {
+      request: {
+        query: demoItemsAllQuery,
+      },
+      error: new Error('Failed to fetch'),
+    };
+    const successMocks = getApolloMocks();
+
+    render(<Component />, {
+      routerProps,
+      apolloMocks: (defaultMocks) => defaultMocks.concat([networkErrorMock, ...successMocks]),
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /check again/i })).toBeInTheDocument();
+    });
+
+    await userEvent.click(screen.getByRole('button', { name: /check again/i }));
+
+    expect(await screen.findByText('First')).toBeInTheDocument();
+    expect(screen.getByText('Second')).toBeInTheDocument();
+  });
+
+  it('should refetch when try again button is clicked in error state', async () => {
+    const routerProps = createMockRouterProps(RoutesConfig.demoItems);
+    const errorMock = {
+      request: {
+        query: demoItemsAllQuery,
+      },
+      error: new Error('Test error'),
+    };
+    const successMocks = getApolloMocks();
+
+    render(<Component />, {
+      routerProps,
+      apolloMocks: (defaultMocks) => defaultMocks.concat([errorMock, ...successMocks]),
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+    });
+
+    await userEvent.click(screen.getByRole('button', { name: /try again/i }));
+
+    expect(await screen.findByText('First')).toBeInTheDocument();
+    expect(screen.getByText('Second')).toBeInTheDocument();
   });
 });
