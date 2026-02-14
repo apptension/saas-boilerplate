@@ -1,9 +1,6 @@
-import { MockedResponse } from '@apollo/client/testing';
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
-import { GraphQLError } from 'graphql';
 
-import { configContentfulAppQuery } from '../../config/config.graphql';
-import { appConfigFactory, fillContentfulAppConfigQuery } from '../../tests/factories';
+import { createContentfulPageMocks } from '../../components/contentfulContentPage/contentfulContentPage.storyHelpers';
 import { withProviders } from '../../utils/storybook';
 import { PrivacyPolicy } from './privacyPolicy.component';
 
@@ -96,9 +93,9 @@ If you have questions about this Privacy Policy, please contact us at:
 *Last updated: January 2024*
 `;
 
-const Template: StoryFn = () => {
-  return <PrivacyPolicy />;
-};
+const mocks = createContentfulPageMocks('privacyPolicy', sampleContent, null);
+
+const Template: StoryFn = () => <PrivacyPolicy />;
 
 const meta: Meta = {
   title: 'Routes/PrivacyPolicy',
@@ -111,15 +108,7 @@ export const Default: StoryObj<typeof meta> = {
   render: Template,
   decorators: [
     withProviders({
-      apolloMocks: (defaultMocks) =>
-        defaultMocks.concat([
-          fillContentfulAppConfigQuery({
-            items: [appConfigFactory({ privacyPolicy: sampleContent })],
-            limit: 1,
-            skip: 0,
-            total: 1,
-          }),
-        ]),
+      apolloMocks: (defaultMocks) => mocks.default(defaultMocks),
     }),
   ],
 };
@@ -128,18 +117,7 @@ export const Loading: StoryObj<typeof meta> = {
   render: Template,
   decorators: [
     withProviders({
-      apolloMocks: (defaultMocks) =>
-        defaultMocks.concat([
-          {
-            ...fillContentfulAppConfigQuery({
-              items: [appConfigFactory({ privacyPolicy: sampleContent })],
-              limit: 1,
-              skip: 0,
-              total: 1,
-            }),
-            delay: Infinity,
-          },
-        ]),
+      apolloMocks: (defaultMocks) => mocks.loading(defaultMocks),
     }),
   ],
 };
@@ -148,51 +126,25 @@ export const EmptyContent: StoryObj<typeof meta> = {
   render: Template,
   decorators: [
     withProviders({
-      apolloMocks: (defaultMocks) =>
-        defaultMocks.concat([
-          fillContentfulAppConfigQuery({
-            items: [appConfigFactory({ privacyPolicy: null })],
-            limit: 1,
-            skip: 0,
-            total: 1,
-          }),
-        ]),
+      apolloMocks: (defaultMocks) => mocks.empty(defaultMocks),
     }),
   ],
-};
-
-const networkErrorMock: MockedResponse = {
-  request: {
-    query: configContentfulAppQuery,
-  },
-  error: new Error('Failed to fetch'),
-  variableMatcher: () => true,
 };
 
 export const NotConfigured: StoryObj<typeof meta> = {
   render: Template,
   decorators: [
     withProviders({
-      apolloMocks: (defaultMocks) => defaultMocks.concat([networkErrorMock]),
+      apolloMocks: (defaultMocks) => mocks.notConfigured(defaultMocks),
     }),
   ],
-};
-
-const graphqlErrorMock: MockedResponse = {
-  request: {
-    query: configContentfulAppQuery,
-  },
-  result: {
-    errors: [new GraphQLError('Unable to fetch content from Contentful')],
-  },
-  variableMatcher: () => true,
 };
 
 export const WithError: StoryObj<typeof meta> = {
   render: Template,
   decorators: [
     withProviders({
-      apolloMocks: (defaultMocks) => defaultMocks.concat([graphqlErrorMock]),
+      apolloMocks: (defaultMocks) => mocks.withError(defaultMocks),
     }),
   ],
 };

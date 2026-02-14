@@ -1,9 +1,6 @@
-import { MockedResponse } from '@apollo/client/testing';
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
-import { GraphQLError } from 'graphql';
 
-import { configContentfulAppQuery } from '../../config';
-import { appConfigFactory, fillContentfulAppConfigQuery } from '../../tests/factories';
+import { createContentfulPageMocks } from '../../components/contentfulContentPage/contentfulContentPage.storyHelpers';
 import { withProviders } from '../../utils/storybook';
 import { TermsAndConditions } from './termsAndConditions.component';
 
@@ -61,9 +58,9 @@ If you have any questions about these Terms, please contact us at legal@example.
 *Last updated: January 2024*
 `;
 
-const Template: StoryFn = () => {
-  return <TermsAndConditions />;
-};
+const mocks = createContentfulPageMocks('termsAndConditions', sampleContent, null);
+
+const Template: StoryFn = () => <TermsAndConditions />;
 
 const meta: Meta = {
   title: 'Routes/TermsAndConditions',
@@ -76,15 +73,7 @@ export const Default: StoryObj<typeof meta> = {
   render: Template,
   decorators: [
     withProviders({
-      apolloMocks: (defaultMocks) =>
-        defaultMocks.concat([
-          fillContentfulAppConfigQuery({
-            items: [appConfigFactory({ termsAndConditions: sampleContent })],
-            limit: 1,
-            skip: 0,
-            total: 1,
-          }),
-        ]),
+      apolloMocks: (defaultMocks) => mocks.default(defaultMocks),
     }),
   ],
 };
@@ -93,18 +82,7 @@ export const Loading: StoryObj<typeof meta> = {
   render: Template,
   decorators: [
     withProviders({
-      apolloMocks: (defaultMocks) =>
-        defaultMocks.concat([
-          {
-            ...fillContentfulAppConfigQuery({
-              items: [appConfigFactory({ termsAndConditions: sampleContent })],
-              limit: 1,
-              skip: 0,
-              total: 1,
-            }),
-            delay: Infinity,
-          },
-        ]),
+      apolloMocks: (defaultMocks) => mocks.loading(defaultMocks),
     }),
   ],
 };
@@ -113,51 +91,25 @@ export const EmptyContent: StoryObj<typeof meta> = {
   render: Template,
   decorators: [
     withProviders({
-      apolloMocks: (defaultMocks) =>
-        defaultMocks.concat([
-          fillContentfulAppConfigQuery({
-            items: [appConfigFactory({ termsAndConditions: null })],
-            limit: 1,
-            skip: 0,
-            total: 1,
-          }),
-        ]),
+      apolloMocks: (defaultMocks) => mocks.empty(defaultMocks),
     }),
   ],
-};
-
-const networkErrorMock: MockedResponse = {
-  request: {
-    query: configContentfulAppQuery,
-  },
-  error: new Error('Failed to fetch'),
-  variableMatcher: () => true,
 };
 
 export const NotConfigured: StoryObj<typeof meta> = {
   render: Template,
   decorators: [
     withProviders({
-      apolloMocks: (defaultMocks) => defaultMocks.concat([networkErrorMock]),
+      apolloMocks: (defaultMocks) => mocks.notConfigured(defaultMocks),
     }),
   ],
-};
-
-const graphqlErrorMock: MockedResponse = {
-  request: {
-    query: configContentfulAppQuery,
-  },
-  result: {
-    errors: [new GraphQLError('Unable to fetch content from Contentful')],
-  },
-  variableMatcher: () => true,
 };
 
 export const WithError: StoryObj<typeof meta> = {
   render: Template,
   decorators: [
     withProviders({
-      apolloMocks: (defaultMocks) => defaultMocks.concat([graphqlErrorMock]),
+      apolloMocks: (defaultMocks) => mocks.withError(defaultMocks),
     }),
   ],
 };
