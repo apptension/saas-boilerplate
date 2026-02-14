@@ -25,8 +25,15 @@ export const notificationFactory = createFactory<NotificationType>(() => ({
 
 export const fillNotificationsListQuery = (
   notifications: Array<Partial<NotificationType>> = [],
-  additionalData?: Record<string, any>
+  additionalData?: Record<string, any>,
+  pageInfo?: { endCursor?: string; hasNextPage?: boolean }
 ) => {
+  const defaultPageInfo = {
+    endCursor: pageInfo?.endCursor ?? 'test',
+    hasNextPage: pageInfo?.hasNextPage ?? false,
+    hasPreviousPage: false,
+    startCursor: 'test',
+  };
   return composeMockedPaginatedListQueryResult(
     notificationsListQuery,
     'allNotifications',
@@ -38,7 +45,7 @@ export const fillNotificationsListQuery = (
       },
       additionalData,
     },
-    { endCursor: 'test', hasNextPage: false, hasPreviousPage: false, startCursor: 'test' }
+    defaultPageInfo
   );
 };
 
