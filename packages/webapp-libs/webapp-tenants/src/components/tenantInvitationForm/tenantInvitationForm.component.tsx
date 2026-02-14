@@ -245,13 +245,15 @@ export const TenantInvitationForm = ({ initialData, onSubmit, error, loading }: 
                               {availableRoles.map((role) => {
                                 const isSelected = selectedRoleIds?.includes(role.id);
                                 return (
-                                  <div
+                                  <button
                                     key={role.id}
+                                    type="button"
                                     className={cn(
-                                      'flex items-center gap-3 rounded-sm px-2 py-1.5 cursor-pointer hover:bg-accent',
+                                      'flex w-full items-center gap-3 rounded-sm px-2 py-1.5 cursor-pointer hover:bg-accent text-left',
                                       isSelected && 'bg-accent/50'
                                     )}
                                     onClick={() => toggleRole(role.id)}
+                                    aria-pressed={isSelected}
                                   >
                                     <div
                                       className={cn(
@@ -268,7 +270,7 @@ export const TenantInvitationForm = ({ initialData, onSubmit, error, loading }: 
                                     {role.isSystemRole && (
                                       <span className="text-xs text-muted-foreground">(System)</span>
                                     )}
-                                  </div>
+                                  </button>
                                 );
                               })}
                             </div>

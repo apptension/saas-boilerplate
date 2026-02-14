@@ -3,7 +3,6 @@ import { TenantMembershipType, TenantUserRole, getFragmentData } from '@sb/webap
 import { commonQueryMembershipFragment } from '@sb/webapp-api-client/providers';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
-import { Checkbox } from '@sb/webapp-core/components/forms/checkbox';
 import { Avatar, AvatarFallback, AvatarImage } from '@sb/webapp-core/components/ui/avatar';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
 import {
@@ -25,7 +24,7 @@ import { Skeleton as SkeletonComponent } from '@sb/webapp-core/components/ui/ske
 import { TableCell, TableRow } from '@sb/webapp-core/components/ui/table';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { useToast } from '@sb/webapp-core/toast';
-import { Crown, GripHorizontal, Hourglass, RefreshCw, Settings2, Trash2, UserCheck } from 'lucide-react';
+import { Check, Crown, GripHorizontal, Hourglass, RefreshCw, Settings2, Trash2, UserCheck } from 'lucide-react';
 import { trim } from 'ramda';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -392,15 +391,26 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
               const isSelected = selectedRoleIds.has(role.id);
 
               return (
-                <div
+                <button
                   key={role.id}
+                  type="button"
                   className={cn(
-                    'flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors',
+                    'flex w-full items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors text-left',
                     isSelected ? 'border-primary bg-primary/5' : 'border-border hover:bg-accent/50'
                   )}
                   onClick={() => toggleRole(role.id)}
+                  aria-pressed={isSelected}
                 >
-                  <Checkbox checked={isSelected} />
+                  <div
+                    className={cn(
+                      'flex h-4 w-4 shrink-0 items-center justify-center rounded border',
+                      isSelected
+                        ? 'border-primary bg-primary text-primary-foreground'
+                        : 'border-input'
+                    )}
+                  >
+                    {isSelected && <Check className="h-3 w-3" />}
+                  </div>
                   <RoleColorBadge color={role.color || 'BLUE'} />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -413,7 +423,7 @@ export const MembershipEntry = ({ membership, className, onAfterUpdate }: Member
                       {role.isOwnerRole && <Crown className="h-3 w-3 text-violet-500" />}
                     </div>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
