@@ -5,11 +5,25 @@ import { Table, TableBody } from '@sb/webapp-core/components/ui/table';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
-import { currentUserPermissionsQuery } from '../../../../routes/tenantSettings/tenantRoles/tenantRoles.graphql';
+import { RoutesConfig } from '../../../../config/routes';
+import {
+  allOrganizationRolesQuery,
+  assignRolesToMemberMutation,
+  currentUserPermissionsQuery,
+} from '../../../../routes/tenantSettings/tenantRoles/tenantRoles.graphql';
 import { membershipFactory, tenantFactory } from '../../../../tests/factories/tenant';
-import { render } from '../../../../tests/utils/rendering';
+import { createMockRouterProps, render } from '../../../../tests/utils/rendering';
 import { MembershipEntry, MembershipEntryProps } from '../membershipEntry.component';
-import { resendTenantInvitationMutation } from '../membershipEntry.graphql';
+import {
+  deleteTenantMembershipMutation,
+  resendTenantInvitationMutation,
+} from '../membershipEntry.graphql';
+
+jest.mock('@sb/webapp-tenants/hooks', () => ({
+  ...jest.requireActual('@sb/webapp-tenants/hooks'),
+  PermissionGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  usePermissionCheck: () => ({ hasPermission: true, loading: false }),
+}));
 
 const MOCKED_TENANT_ID = '2';
 const MOCKED_MEMBERSHIP_ID = '1';
@@ -131,17 +145,18 @@ describe('MembershipEntry: Component', () => {
       id: MOCKED_MEMBERSHIP_ID,
       invitationAccepted: true,
     });
+    const currentUserMembership = membershipFactory({ id: 'current-user-membership', role: TenantUserRole.OWNER });
     const user = currentUserFactory({
       roles: [TenantUserRole.OWNER],
       tenants: [
         tenantFactory({
           name: 'name',
           id: MOCKED_TENANT_ID,
+          membership: currentUserMembership,
         }),
       ],
     });
     const commonQueryMock = fillCommonQueryWithUser(user);
-    // Mock permissions query to return edit permissions
     const permissionsMock = composeMockedQueryResult(currentUserPermissionsQuery, {
       variables: { tenantId: MOCKED_TENANT_ID },
       data: {
@@ -149,16 +164,176 @@ describe('MembershipEntry: Component', () => {
       },
     });
 
+    const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.members, { tenantId: MOCKED_TENANT_ID });
+
     render(<Component membership={membership} />, {
       apolloMocks: [commonQueryMock, permissionsMock],
+      routerProps,
     });
 
-    // Wait for component to render
     expect(await screen.findByText(/Yes/i)).toBeInTheDocument();
 
-    // The dropdown trigger button should be present when user has permissions
-    // We look for a button with the grip icon (actions dropdown)
-    const buttons = screen.queryAllByRole('button');
-    expect(buttons.length).toBeGreaterThanOrEqual(0); // At minimum, component renders
+    const buttons = screen.getAllByRole('button');
+    const actionsButton = buttons.find((b) => !b.textContent?.includes('Resend'));
+    expect(actionsButton).toBeDefined();
+    await userEvent.click(actionsButton!);
+    expect(await screen.findByText(/Manage roles/i)).toBeInTheDocument();
+  });
+
+  it('should display organization roles when present', async () => {
+    const membership = membershipFactory({
+      id: MOCKED_MEMBERSHIP_ID,
+      invitationAccepted: true,
+      organizationRoles: [
+        { id: 'role-1', name: 'Admin Role', color: 'BLUE', isSystemRole: false, isOwnerRole: false },
+        { id: 'role-2', name: 'Viewer', color: 'GREEN', isSystemRole: true, isOwnerRole: false },
+      ],
+    });
+    const currentUserMembership = membershipFactory({ id: 'current-user-membership', role: TenantUserRole.OWNER });
+    const user = currentUserFactory({
+      tenants: [tenantFactory({ id: MOCKED_TENANT_ID, membership: currentUserMembership })],
+    });
+    const commonQueryMock = fillCommonQueryWithUser(user);
+    const rolesMock = composeMockedQueryResult(allOrganizationRolesQuery, {
+      variables: { tenantId: MOCKED_TENANT_ID },
+      data: {
+        allOrganizationRoles: {
+          edges: [
+            { node: { id: 'role-1', name: 'Admin Role', description: null, color: 'BLUE', systemRoleType: null, isSystemRole: false, isOwnerRole: false, memberCount: 1, permissions: [] } },
+            { node: { id: 'role-2', name: 'Viewer', description: null, color: 'GREEN', systemRoleType: null, isSystemRole: true, isOwnerRole: false, memberCount: 2, permissions: [] } },
+          ],
+        },
+      },
+    });
+
+    const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.members, { tenantId: MOCKED_TENANT_ID });
+
+    render(<Component membership={membership} />, {
+      apolloMocks: [commonQueryMock, rolesMock],
+      routerProps,
+    });
+
+    expect(await screen.findByText('Admin Role')).toBeInTheDocument();
+    expect(await screen.findByText('Viewer')).toBeInTheDocument();
+  });
+
+  it('should open manage roles dialog and commit assign roles mutation', async () => {
+    const membership = membershipFactory({
+      id: MOCKED_MEMBERSHIP_ID,
+      invitationAccepted: true,
+      userEmail: 'member@example.com',
+      organizationRoles: [{ id: 'role-1', name: 'Admin Role', color: 'BLUE', isSystemRole: false, isOwnerRole: false }],
+    });
+    const currentUserMembership = membershipFactory({ id: 'current-user-membership', role: TenantUserRole.OWNER });
+    const user = currentUserFactory({
+      tenants: [tenantFactory({ id: MOCKED_TENANT_ID, membership: currentUserMembership })],
+    });
+    const commonQueryMock = fillCommonQueryWithUser(user);
+    const rolesMock = composeMockedQueryResult(allOrganizationRolesQuery, {
+      variables: { tenantId: MOCKED_TENANT_ID },
+      data: {
+        allOrganizationRoles: {
+          edges: [
+            { node: { id: 'role-1', name: 'Admin Role', description: null, color: 'BLUE', systemRoleType: null, isSystemRole: false, isOwnerRole: false, memberCount: 1, permissions: [] } },
+            { node: { id: 'role-2', name: 'Viewer', description: null, color: 'GREEN', systemRoleType: null, isSystemRole: true, isOwnerRole: false, memberCount: 0, permissions: [] } },
+          ],
+        },
+      },
+    });
+    const assignMock = composeMockedQueryResult(assignRolesToMemberMutation, {
+      variables: { membershipId: MOCKED_MEMBERSHIP_ID, tenantId: MOCKED_TENANT_ID, roleIds: ['role-1', 'role-2'] },
+      data: { assignRolesToMember: { ok: true, membership: { id: MOCKED_MEMBERSHIP_ID, organizationRoles: [] } } },
+    });
+
+    const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.members, { tenantId: MOCKED_TENANT_ID });
+
+    render(<Component membership={membership} />, {
+      apolloMocks: [commonQueryMock, rolesMock, assignMock],
+      routerProps,
+    });
+
+    expect(await screen.findByText(/Yes/i)).toBeInTheDocument();
+
+    const buttons = screen.getAllByRole('button');
+    const actionsButton = buttons.find((b) => !b.textContent?.includes('Resend'));
+    await userEvent.click(actionsButton!);
+
+    const manageRolesItem = await screen.findByRole('menuitem', { name: /manage roles/i });
+    await userEvent.click(manageRolesItem);
+
+    expect(await screen.findByText(/Manage Roles/i)).toBeInTheDocument();
+
+    const viewerRole = await screen.findByText('Viewer');
+    await userEvent.click(viewerRole);
+
+    const saveButton = await screen.findByRole('button', { name: /Save Roles/i });
+    await userEvent.click(saveButton);
+
+    const toast = await screen.findByTestId('toast-1');
+    expect(toast).toHaveTextContent(/roles were updated successfully/i);
+  });
+
+  it('should commit delete mutation when delete is confirmed', async () => {
+    const membership = membershipFactory({
+      id: MOCKED_MEMBERSHIP_ID,
+      invitationAccepted: true,
+      userEmail: 'other@example.com',
+    });
+    const currentUserMembership = membershipFactory({ id: 'current-user-membership', role: TenantUserRole.OWNER });
+    const user = currentUserFactory({
+      tenants: [tenantFactory({ id: MOCKED_TENANT_ID, membership: currentUserMembership })],
+    });
+    const commonQueryMock = fillCommonQueryWithUser(user);
+    const deleteMock = composeMockedQueryResult(deleteTenantMembershipMutation, {
+      variables: { input: { id: MOCKED_MEMBERSHIP_ID, tenantId: MOCKED_TENANT_ID } },
+      data: { deleteTenantMembership: { deletedIds: [MOCKED_MEMBERSHIP_ID], clientMutationId: null } },
+    });
+
+    const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.members, { tenantId: MOCKED_TENANT_ID });
+
+    render(<Component membership={membership} />, {
+      apolloMocks: [commonQueryMock, deleteMock],
+      routerProps,
+    });
+
+    expect(await screen.findByText(/Yes/i)).toBeInTheDocument();
+
+    const buttons = screen.getAllByRole('button');
+    const actionsButton = buttons.find((b) => !b.textContent?.includes('Resend'));
+    await userEvent.click(actionsButton!);
+
+    const deleteItem = await screen.findByRole('menuitem', { name: /delete/i });
+    await userEvent.click(deleteItem);
+
+    const continueButton = await screen.findByRole('button', { name: /continue/i });
+    await userEvent.click(continueButton);
+
+    const toast = await screen.findByTestId('toast-1');
+    expect(toast).toHaveTextContent(/removed successfully/i);
+  });
+
+  it('should display member name when firstName and lastName are present', async () => {
+    const membership = membershipFactory({
+      id: MOCKED_MEMBERSHIP_ID,
+      invitationAccepted: true,
+      firstName: 'John',
+      lastName: 'Doe',
+      userEmail: 'john@example.com',
+    });
+    const currentUserMembership = membershipFactory({ id: 'current-user-membership', role: TenantUserRole.OWNER });
+    const user = currentUserFactory({
+      tenants: [tenantFactory({ id: MOCKED_TENANT_ID, membership: currentUserMembership })],
+    });
+    const commonQueryMock = fillCommonQueryWithUser(user);
+
+    const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.members, { tenantId: MOCKED_TENANT_ID });
+
+    render(<Component membership={membership} />, {
+      apolloMocks: [commonQueryMock],
+      routerProps,
+    });
+
+    expect(await screen.findByText('John Doe')).toBeInTheDocument();
+    expect(await screen.findByText('john@example.com')).toBeInTheDocument();
   });
 });

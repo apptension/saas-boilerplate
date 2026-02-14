@@ -145,4 +145,30 @@ describe('AuditLogCard: Component', () => {
 
     expect(await screen.findByText(/SSO login failed/i)).toBeInTheDocument();
   });
+
+  it('should show clear filters button when filters panel is open', async () => {
+    renderComponent();
+
+    await userEvent.click(await screen.findByRole('button', { name: /filters/i }));
+
+    expect(await screen.findByRole('button', { name: /clear filters/i })).toBeInTheDocument();
+  });
+
+  it('should show pagination when multiple pages exist', async () => {
+    mockedApiClient.get.mockResolvedValue({
+      data: {
+        logs: Array(20).fill(null).map((_, i) => createMockAuditLog({ id: `log-${i}` })),
+        totalCount: 50,
+        totalPages: 3,
+        currentPage: 1,
+        pageSize: 20,
+        hasMore: true,
+        hasPrevious: false,
+      },
+    });
+
+    renderComponent();
+
+    expect(await screen.findByText(/50 events/i)).toBeInTheDocument();
+  });
 });

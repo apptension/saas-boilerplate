@@ -182,6 +182,26 @@ describe('ActionLogCard: Component', () => {
     expect(await screen.findByText(/entity-123/)).toBeInTheDocument();
   });
 
+  it('should show export button when user has export permission', async () => {
+    const tenant = tenantFactory({
+      id: TENANT_ID,
+      actionLoggingEnabled: true,
+      membership: membershipFactory({ role: TenantUserRole.OWNER }),
+    });
+    const actionLogsMock = createActionLogsMock([{ id: 'log-1', actionType: 'CREATE', entityType: 'client' }], 1);
+    const apolloMocks = [
+      fillCommonQueryWithUser(currentUserFactory({ tenants: [tenant] })),
+      createPermissionsMock(TENANT_ID, ['security.logs.view', 'security.logs.export']),
+      actionLogsMock,
+    ];
+    const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.activityLogs, { tenantId: TENANT_ID });
+
+    const { waitForApolloMocks } = render(<ActionLogCard />, { apolloMocks, routerProps });
+    await waitForApolloMocks();
+
+    expect(await screen.findByRole('button', { name: /Export/i })).toBeInTheDocument();
+  });
+
   it('should show load more when hasNextPage', async () => {
     const tenant = tenantFactory({
       id: TENANT_ID,
@@ -209,5 +229,27 @@ describe('ActionLogCard: Component', () => {
     await waitForApolloMocks();
 
     expect(await screen.findByRole('button', { name: /load more/i })).toBeInTheDocument();
+  });
+
+  it('should show clear filters button when filters panel is open', async () => {
+    const tenant = tenantFactory({
+      id: TENANT_ID,
+      actionLoggingEnabled: true,
+      membership: membershipFactory({ role: TenantUserRole.OWNER }),
+    });
+    const actionLogsMock = createActionLogsMock([], 0);
+    const apolloMocks = [
+      fillCommonQueryWithUser(currentUserFactory({ tenants: [tenant] })),
+      createPermissionsMock(TENANT_ID, ['security.logs.view']),
+      actionLogsMock,
+    ];
+    const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.activityLogs, { tenantId: TENANT_ID });
+
+    const { waitForApolloMocks } = render(<ActionLogCard />, { apolloMocks, routerProps });
+    await waitForApolloMocks();
+
+    await userEvent.click(await screen.findByRole('button', { name: /filters/i }));
+
+    expect(await screen.findByRole('button', { name: /clear filters/i })).toBeInTheDocument();
   });
 });
