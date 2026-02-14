@@ -31,7 +31,6 @@ type Documents = {
     "\n  query demoItemQuery($id: String!) {\n    demoItem(id: $id) {\n      title\n      description\n      image {\n        url\n        title\n        description\n      }\n    }\n  }\n": typeof types.DemoItemQueryDocument,
     "\n  fragment demoItemListItemFragment on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n": typeof types.DemoItemListItemFragmentFragmentDoc,
     "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n": typeof types.DemoItemsAllQueryDocument,
-    "\n  query TenantMembersForMentions($tenantId: ID!) {\n    tenant(id: $tenantId) {\n      userMemberships {\n        userId\n        firstName\n        lastName\n        userEmail\n        avatar\n        invitationAccepted\n      }\n    }\n  }\n": typeof types.TenantMembersForMentionsDocument,
     "\n  mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {\n    createCrudDemoItem(input: $input) {\n      crudDemoItemEdge {\n        node {\n          id\n          name\n        }\n      }\n    }\n  }\n": typeof types.AddCrudDemoItemMutationDocument,
     "\n  query crudDemoItemDetailsQuery($id: ID!, $tenantId: ID!) {\n    crudDemoItem(id: $id, tenantId: $tenantId) {\n      id\n      name\n    }\n  }\n": typeof types.CrudDemoItemDetailsQueryDocument,
     "\n  query CrudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageCursors {\n        ...pageCursorsFragment\n      }\n    }\n  }\n": typeof types.CrudDemoItemListQueryDocument,
@@ -146,7 +145,6 @@ const documents: Documents = {
     "\n  query demoItemQuery($id: String!) {\n    demoItem(id: $id) {\n      title\n      description\n      image {\n        url\n        title\n        description\n      }\n    }\n  }\n": types.DemoItemQueryDocument,
     "\n  fragment demoItemListItemFragment on DemoItem {\n    title\n    image {\n      title\n      url\n    }\n  }\n": types.DemoItemListItemFragmentFragmentDoc,
     "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n": types.DemoItemsAllQueryDocument,
-    "\n  query TenantMembersForMentions($tenantId: ID!) {\n    tenant(id: $tenantId) {\n      userMemberships {\n        userId\n        firstName\n        lastName\n        userEmail\n        avatar\n        invitationAccepted\n      }\n    }\n  }\n": types.TenantMembersForMentionsDocument,
     "\n  mutation addCrudDemoItemMutation($input: CreateCrudDemoItemMutationInput!) {\n    createCrudDemoItem(input: $input) {\n      crudDemoItemEdge {\n        node {\n          id\n          name\n        }\n      }\n    }\n  }\n": types.AddCrudDemoItemMutationDocument,
     "\n  query crudDemoItemDetailsQuery($id: ID!, $tenantId: ID!) {\n    crudDemoItem(id: $id, tenantId: $tenantId) {\n      id\n      name\n    }\n  }\n": types.CrudDemoItemDetailsQueryDocument,
     "\n  query CrudDemoItemListQuery($tenantId: ID!, $first: Int, $after: String, $last: Int, $before: String) {\n    allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after, last: $last, before: $before) {\n      edges {\n        node {\n          id\n          ...crudDemoItemListItem\n        }\n      }\n      pageCursors {\n        ...pageCursorsFragment\n      }\n    }\n  }\n": types.CrudDemoItemListQueryDocument,
@@ -326,10 +324,6 @@ export function gql(source: "\n  fragment demoItemListItemFragment on DemoItem {
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n"): (typeof documents)["\n  query demoItemsAllQuery {\n    demoItemCollection {\n      items {\n        sys {\n          id\n        }\n        ...demoItemListItemFragment\n      }\n    }\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function gql(source: "\n  query TenantMembersForMentions($tenantId: ID!) {\n    tenant(id: $tenantId) {\n      userMemberships {\n        userId\n        firstName\n        lastName\n        userEmail\n        avatar\n        invitationAccepted\n      }\n    }\n  }\n"): (typeof documents)["\n  query TenantMembersForMentions($tenantId: ID!) {\n    tenant(id: $tenantId) {\n      userMemberships {\n        userId\n        firstName\n        lastName\n        userEmail\n        avatar\n        invitationAccepted\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
