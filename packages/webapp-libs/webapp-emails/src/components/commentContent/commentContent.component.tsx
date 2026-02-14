@@ -196,14 +196,17 @@ const parseMarkdown = (
     }
 
     // Lists
-    const listMatch = trimmed.match(/^(\d+\.|\*|\-|\+)\s+(.+)$/);
-    if (listMatch) {
-      if (!inList) {
-        listType = /^\d+\./.test(listMatch[1]) ? 'ol' : 'ul';
-        inList = true;
+    const listPrefixMatch = trimmed.match(/^(\d+\.|\*|-|\+)\s+/);
+    if (listPrefixMatch) {
+      const content = trimmed.slice(listPrefixMatch[0].length);
+      if (content) {
+        if (!inList) {
+          listType = /^\d+\./.test(listPrefixMatch[1]) ? 'ol' : 'ul';
+          inList = true;
+        }
+        listItems.push(content);
+        continue;
       }
-      listItems.push(listMatch[2]);
-      continue;
     }
 
     // Flush list if we hit a non-list item
