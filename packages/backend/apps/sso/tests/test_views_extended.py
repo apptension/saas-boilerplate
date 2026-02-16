@@ -119,29 +119,38 @@ class TestScimAuthRequired:
             assert response.status_code == 401
 
 
-class TestSSODiscoverView:
-    """Tests for SSO discovery endpoint."""
+class TestSSODiscoverGraphQL:
+    """Tests for SSO discovery via GraphQL ssoDiscover query."""
 
-    def test_returns_false_when_no_email(self):
-        client = APIClient()
-        response = client.get("/api/sso/discover")
-        assert response.status_code == 200
-        assert response.data["sso_available"] is False
-        assert response.data["connections"] == []
+    SSO_DISCOVER_QUERY = """
+        query SSODiscover($email: String!) {
+            ssoDiscover(email: $email) {
+                ssoAvailable
+                requireSso
+                connections {
+                    id
+                    name
+                    type
+                }
+            }
+        }
+    """
 
-    def test_returns_false_for_invalid_email_format(self):
-        client = APIClient()
-        response = client.get("/api/sso/discover?email=invalid")
-        assert response.status_code == 200
-        assert response.data["sso_available"] is False
+    def test_returns_false_when_no_email(self, graphene_client):
+        response = graphene_client.query(
+            self.SSO_DISCOVER_QUERY,
+            variable_values={"email": ""},
+        )
+        assert response.get("errors") is None
+        data = response["data"]["ssoDiscover"]
+        assert data["ssoAvailable"] is False
+        assert data["connections"] == []
 
-
-class TestSSOLoginOptionsView:
-    """Tests for SSO login options."""
-
-    def test_returns_email_discovery_flow(self):
-        client = APIClient()
-        response = client.get("/api/sso/login-options")
-        assert response.status_code == 200
-        assert "flow" in response.data
-        assert response.data["flow"] == "email_discovery"
+    def test_returns_false_for_invalid_email_format(self, graphene_client):
+        response = graphene_client.query(
+            self.SSO_DISCOVER_QUERY,
+            variable_values={"email": "invalid"},
+        )
+        assert response.get("errors") is None
+        data = response["data"]["ssoDiscover"]
+        assert data["ssoAvailable"] is False

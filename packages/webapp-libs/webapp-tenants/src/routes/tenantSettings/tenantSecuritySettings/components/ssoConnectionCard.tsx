@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
-import { apiClient, apiURL } from '@sb/webapp-api-client/api';
+import { useState } from 'react';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
@@ -40,6 +39,7 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useCurrentTenant } from '../../../../providers';
+import { useTenantSSO } from '../../../../hooks/useTenantSSO';
 import { AddSSOConnectionModal } from './addSSOConnectionModal';
 
 type SSOConnection = {
@@ -52,9 +52,9 @@ type SSOConnection = {
   isOidc: boolean;
   allowedDomains: string[];
   createdAt: string;
-  lastLoginAt: string | null;
+  lastLoginAt?: string | null;
   loginCount: number;
-  spMetadataUrl: string | null;
+  spMetadataUrl?: string | null;
 };
 
 type TestCheck = {
@@ -85,43 +85,26 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
   const { data: currentTenant } = useCurrentTenant();
   const tenantId = currentTenant?.id;
 
-  const [connections, setConnections] = useState<SSOConnection[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    connections,
+    loading,
+    refetch,
+    deleteConnection,
+    activateConnection,
+    deactivateConnection,
+    testConnection,
+  } = useTenantSSO(tenantId);
+
   const [deleting, setDeleting] = useState<string | null>(null);
   const [toggling, setToggling] = useState<string | null>(null);
-  const [testing, setTesting] = useState<string | null>(null);
+  const [testingConnectionId, setTestingConnectionId] = useState<string | null>(null);
   const [testResult, setTestResult] = useState<TestResult | null>(null);
-
-  const fetchConnections = useCallback(async () => {
-    if (!canManageSSO || !tenantId) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await apiClient.get(apiURL(`/sso/tenant/${tenantId}/connections/`));
-      setConnections(Array.isArray(response.data) ? response.data : []);
-    } catch (error) {
-      // Silently handle errors - SSO connections may not be accessible due to permissions
-      if (process.env['NODE_ENV'] === 'development') {
-        console.warn('Failed to fetch SSO connections (this is expected if user lacks permissions):', error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [canManageSSO, tenantId]);
-
-  useEffect(() => {
-    fetchConnections();
-  }, [fetchConnections]);
 
   const handleDelete = async (connectionId: string) => {
     if (!tenantId) return;
-    
     setDeleting(connectionId);
     try {
-      await apiClient.delete(apiURL(`/sso/tenant/${tenantId}/connections/${connectionId}`));
-      setConnections((prev) => prev.filter((c) => c.id !== connectionId));
+      await deleteConnection({ variables: { input: { id: connectionId } } });
       toast({
         description: intl.formatMessage({
           defaultMessage: 'SSO connection deleted.',
@@ -129,9 +112,8 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
         }),
         variant: 'success',
       });
-      // Dispatch event to notify other components (like SCIM card) about SSO changes
       window.dispatchEvent(new CustomEvent('sso-connections-changed', { detail: { tenantId } }));
-    } catch (error) {
+    } catch {
       toast({
         description: intl.formatMessage({
           defaultMessage: 'Failed to delete SSO connection.',
@@ -146,35 +128,31 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
 
   const handleToggleActive = async (connection: SSOConnection) => {
     if (!tenantId) return;
-    
     setToggling(connection.id);
-    const endpoint = connection.isActive ? 'deactivate' : 'activate';
-    
     try {
-      const response = await apiClient.post(apiURL(`/sso/tenant/${tenantId}/connections/${connection.id}/${endpoint}`));
-      const data = response.data;
-      setConnections((prev) =>
-        prev.map((c) =>
-          c.id === connection.id
-            ? { ...c, isActive: data.isActive, status: data.status }
-            : c
-        )
-      );
-      toast({
-        description: connection.isActive
-          ? intl.formatMessage({
-              defaultMessage: 'SSO connection deactivated.',
-              id: 'SSO Card / Deactivate Success',
-            })
-          : intl.formatMessage({
-              defaultMessage: 'SSO connection activated.',
-              id: 'SSO Card / Activate Success',
-            }),
-        variant: 'success',
-      });
-      // Dispatch event to notify other components (like SCIM card) about SSO changes
+      if (connection.isActive) {
+        await deactivateConnection({ variables: { id: connection.id } });
+        toast({
+          description: intl.formatMessage({
+            defaultMessage: 'SSO connection deactivated.',
+            id: 'SSO Card / Deactivate Success',
+          }),
+          variant: 'success',
+        });
+      } else {
+        await activateConnection({
+          variables: { input: { id: connection.id, tenantId } },
+        });
+        toast({
+          description: intl.formatMessage({
+            defaultMessage: 'SSO connection activated.',
+            id: 'SSO Card / Activate Success',
+          }),
+          variant: 'success',
+        });
+      }
       window.dispatchEvent(new CustomEvent('sso-connections-changed', { detail: { tenantId } }));
-    } catch (error) {
+    } catch {
       toast({
         description: intl.formatMessage({
           defaultMessage: 'Failed to update SSO connection.',
@@ -188,16 +166,31 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
   };
 
   const handleTestConnection = async (connection: SSOConnection) => {
-    if (!tenantId) return;
-    
-    setTesting(connection.id);
     setTestResult(null);
-    
+    setTestingConnectionId(connection.id);
     try {
-      const response = await apiClient.post(apiURL(`/sso/tenant/${tenantId}/connections/${connection.id}/test`));
-      setTestResult(response.data as TestResult);
-      setIsTestDialogOpen(true);
-    } catch (error) {
+      const result = await testConnection({ variables: { id: connection.id } });
+      const data = result.data?.testSsoConnection?.result;
+      if (data) {
+        const checks = (data.checks ?? [])
+          .filter((c): c is NonNullable<typeof c> => c != null)
+          .map((c) => ({
+            name: c.name ?? '',
+            status: (c.status ?? 'error') as 'success' | 'warning' | 'error',
+            message: c.message ?? '',
+            details: c.details != null ? (typeof c.details === 'object' && !Array.isArray(c.details) ? (c.details as Record<string, string | number>) : undefined) : undefined,
+          }));
+        setTestResult({
+          connectionId: data.connectionId ?? '',
+          connectionName: data.connectionName ?? '',
+          connectionType: data.connectionType ?? '',
+          overallStatus: (data.overallStatus ?? 'error') as 'success' | 'warning' | 'error',
+          checks,
+          testedAt: data.testedAt ?? '',
+        });
+        setIsTestDialogOpen(true);
+      }
+    } catch {
       toast({
         description: intl.formatMessage({
           defaultMessage: 'Failed to test SSO connection.',
@@ -206,7 +199,7 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
         variant: 'destructive',
       });
     } finally {
-      setTesting(null);
+      setTestingConnectionId(null);
     }
   };
 
@@ -523,9 +516,9 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
                       <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem
                           onClick={() => handleTestConnection(connection)}
-                          disabled={testing === connection.id}
+                          disabled={testingConnectionId === connection.id}
                         >
-                          {testing === connection.id ? (
+                          {testingConnectionId === connection.id ? (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           ) : (
                             <FlaskConical className="mr-2 h-4 w-4" />
@@ -622,7 +615,7 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
           {tenantId && (
             <AddSSOConnectionModal
               closeModal={() => setIsModalOpen(false)}
-              onSuccess={fetchConnections}
+              onSuccess={refetch}
               tenantId={tenantId}
             />
           )}

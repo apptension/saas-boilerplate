@@ -1,4 +1,4 @@
-import { apiClient, apiURL } from '@sb/webapp-api-client/api';
+import { apiURL } from '@sb/webapp-api-client/api';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
@@ -32,10 +32,12 @@ import {
   Trash2,
   Hash,
 } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useCurrentTenant } from '../../../../providers';
+import { useTenantSCIM } from '../../../../hooks/useTenantSCIM';
+import { useTenantSSO } from '../../../../hooks/useTenantSSO';
 
 export type DirectorySyncCardProps = {
   canManageSSO: boolean;
@@ -65,108 +67,59 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
   const { data: currentTenant } = useCurrentTenant();
   const tenantId = currentTenant?.id;
 
+  const { connections, loading: ssoLoading } = useTenantSSO(tenantId);
+  const { tokens, loading: scimLoading, refetch, createToken, creating, revokeToken } = useTenantSCIM(tenantId);
+  const loading = ssoLoading || scimLoading;
+
   const { isOpen: isModalOpen, setIsOpen: setIsModalOpen } = useOpenState(false);
-  const [connections, setConnections] = useState<SSOConnection[]>([]);
-  const [tokens, setTokens] = useState<SCIMToken[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [generating, setGenerating] = useState(false);
   const [revokingId, setRevokingId] = useState<string | null>(null);
   const [tokenName, setTokenName] = useState('');
   const [generatedToken, setGeneratedToken] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  // Check if there's at least one active SSO connection
-  const hasActiveConnection = connections.some((c) => c.isActive || c.status === 'active');
-
-  // Only show active tokens in the main list
+  const hasActiveConnection = connections.some((c) => c.isActive || String(c.status ?? '').toLowerCase() === 'active');
   const activeTokens = tokens.filter((t) => t.isActive);
 
-  const fetchData = useCallback(async () => {
-    if (!tenantId || !canManageSSO) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      // Fetch SSO connections
-      const connectionsResponse = await apiClient.get(apiURL(`/sso/tenant/${tenantId}/connections/`));
-      setConnections(Array.isArray(connectionsResponse.data) ? connectionsResponse.data : []);
-
-      // Fetch SCIM tokens
-      try {
-        const tokensResponse = await apiClient.get(apiURL(`/sso/tenant/${tenantId}/scim-tokens/`));
-        setTokens(Array.isArray(tokensResponse.data) ? tokensResponse.data : []);
-      } catch (e) {
-        // SCIM tokens endpoint might not exist yet
-        setTokens([]);
-      }
-    } catch (error) {
-      // Silently handle errors - SCIM data may not be accessible due to permissions
-      if (process.env['NODE_ENV'] === 'development') {
-        console.warn('Failed to fetch SCIM data (this is expected if user lacks permissions):', error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [tenantId, canManageSSO]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  // Listen for SSO connection changes from the SSO card
   useEffect(() => {
     const handleSSOChange = (event: Event) => {
       const customEvent = event as CustomEvent<{ tenantId: string }>;
-      // Only refetch if the change was for this tenant
       if (customEvent.detail.tenantId === tenantId) {
-        fetchData();
+        refetch();
       }
     };
-
     window.addEventListener('sso-connections-changed', handleSSOChange);
-    return () => {
-      window.removeEventListener('sso-connections-changed', handleSSOChange);
-    };
-  }, [fetchData, tenantId]);
+    return () => window.removeEventListener('sso-connections-changed', handleSSOChange);
+  }, [refetch, tenantId]);
 
   const handleGenerateToken = async () => {
     if (!tokenName.trim() || !tenantId) return;
 
-    setGenerating(true);
     try {
-      const response = await apiClient.post(apiURL(`/sso/tenant/${tenantId}/scim-tokens/`), {
-        name: tokenName,
+      const result = await createToken({
+        variables: { input: { tenantId, name: tokenName } },
       });
-
-      setGeneratedToken(response.data.token);
-      // Refetch to update the list
-      await fetchData();
-    } catch (error: any) {
+      const rawToken = result.data?.createScimToken?.rawToken;
+      if (rawToken) {
+        setGeneratedToken(rawToken);
+      }
+    } catch (error: unknown) {
+      const err = error as { message?: string };
       toast({
         description:
-          error.response?.data?.error ||
+          err?.message ||
           intl.formatMessage({
             defaultMessage: 'Failed to generate SCIM token.',
             id: 'SCIM Card / Generate Error',
           }),
         variant: 'destructive',
       });
-    } finally {
-      setGenerating(false);
     }
   };
 
   const handleRevokeToken = async (tokenId: string) => {
-    if (!tenantId) return;
-
     setRevokingId(tokenId);
     try {
-      await apiClient.delete(apiURL(`/sso/tenant/${tenantId}/scim-tokens/${tokenId}`));
-
-      // Refetch to update the list properly
-      await fetchData();
-
+      await revokeToken({ variables: { id: tokenId } });
       toast({
         description: intl.formatMessage({
           defaultMessage: 'SCIM token revoked. It can no longer be used.',
@@ -174,7 +127,7 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
         }),
         variant: 'success',
       });
-    } catch (error) {
+    } catch {
       toast({
         description: intl.formatMessage({
           defaultMessage: 'Failed to revoke token.',
@@ -391,7 +344,7 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
                               <FormattedMessage
                                 defaultMessage="Created {date}"
                                 id="SCIM / Created Date"
-                                values={{ date: formatDate(token.createdAt) }}
+                                values={{ date: formatDate(token.createdAt as string | null) ?? '' }}
                               />
                             </span>
                           </TooltipTrigger>
@@ -403,7 +356,7 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
                           </TooltipContent>
                         </Tooltip>
 
-                        {token.lastUsedAt && (
+                        {token.lastUsedAt != null && (
                           <>
                             <span className="text-muted-foreground/50">•</span>
                             <Tooltip>
@@ -413,7 +366,7 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
                                   <FormattedMessage
                                     defaultMessage="Last: {date}"
                                     id="SCIM / Last Used"
-                                    values={{ date: formatDate(token.lastUsedAt) }}
+                                    values={{ date: formatDate(token.lastUsedAt as string | null) ?? '' }}
                                   />
                                 </span>
                               </TooltipTrigger>
@@ -437,7 +390,7 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
                                   <FormattedMessage
                                     defaultMessage="{count, plural, one {# request} other {# requests}}"
                                     id="SCIM / Request Count"
-                                    values={{ count: token.requestCount }}
+                                    values={{ count: (token.requestCount as number) ?? 0 }}
                                   />
                                 </span>
                               </TooltipTrigger>
@@ -521,7 +474,7 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
       </Card>
 
       {/* Generate Token Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <Dialog open={isModalOpen} onOpenChange={(open) => { setIsModalOpen(open); if (!open) closeModal(); }}>
         <DialogContent className="sm:max-w-[450px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -571,10 +524,10 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
                 </Button>
                 <Button
                   onClick={handleGenerateToken}
-                  disabled={!tokenName.trim() || generating}
+                  disabled={!tokenName.trim() || creating}
                   className="flex-1"
                 >
-                  {generating ? (
+                  {creating ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       <FormattedMessage defaultMessage="Generating..." id="SCIM Modal / Generating" />

@@ -1,4 +1,3 @@
-import { apiClient, apiURL } from '@sb/webapp-api-client/api';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
@@ -12,10 +11,11 @@ import {
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { Fingerprint, Key, Loader2, Plus, Search, Trash2, User } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useCurrentTenant } from '../../../../providers';
+import { useTenantPasskeys } from '../../../../hooks/useTenantPasskeys';
 import { AddPasskeyModal } from './addPasskeyModal';
 
 type Passkey = {
@@ -40,76 +40,24 @@ export const PasskeysCard = ({ canManagePasskeys = false }: PasskeysCardProps) =
   const { data: currentTenant } = useCurrentTenant();
   const tenantId = currentTenant?.id;
 
-  const [passkeys, setPasskeys] = useState<Passkey[]>([]);
-  const [filteredPasskeys, setFilteredPasskeys] = useState<Passkey[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const fetchPasskeys = useCallback(async () => {
-    if (!tenantId) {
-      setIsLoading(false);
-      return;
-    }
+  const { passkeys, loading: isLoading, refetch, deletePasskey, deleteTenantPasskey } = useTenantPasskeys(
+    canManagePasskeys,
+    canManagePasskeys ? searchQuery : undefined
+  );
 
-    try {
-      // If user can manage SSO (owner/admin), fetch all tenant passkeys
-      // Otherwise, fetch only their own passkeys
-      // Use apiURL helper to construct full URL with correct base
-      const endpoint = canManagePasskeys
-        ? apiURL(`/sso/tenant/${tenantId}/passkeys/`)
-        : apiURL('/sso/passkeys/');
-
-      const response = await apiClient.get(endpoint);
-      const data = Array.isArray(response.data) ? response.data : [];
-      setPasskeys(data);
-      setFilteredPasskeys(data);
-    } catch (error: unknown) {
-      // Silently handle errors - passkeys feature may not be available
-      // This prevents console noise when the backend SSO app is not configured
-      if (process.env['NODE_ENV'] === 'development') {
-        console.warn('Passkeys fetch failed (this is expected if SSO is not configured):', error);
-      }
-      setPasskeys([]);
-      setFilteredPasskeys([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [tenantId, canManagePasskeys]);
-
-  useEffect(() => {
-    fetchPasskeys();
-  }, [fetchPasskeys]);
-
-  useEffect(() => {
-    if (!searchQuery.trim()) {
-      setFilteredPasskeys(passkeys);
-      return;
-    }
-
-    const query = searchQuery.toLowerCase();
-    setFilteredPasskeys(
-      passkeys.filter(
-        (p) =>
-          p.name.toLowerCase().includes(query) ||
-          p.userEmail?.toLowerCase().includes(query) ||
-          p.userName?.toLowerCase().includes(query)
-      )
-    );
-  }, [searchQuery, passkeys]);
+  const filteredPasskeys = canManagePasskeys ? passkeys : passkeys;
 
   const handleDelete = async (passkeyId: string) => {
     setDeletingId(passkeyId);
     try {
-      // Use tenant endpoint for admin deletion, user endpoint for self deletion
-      // Use apiURL helper to construct full URL with correct base
-      const endpoint = canManagePasskeys
-        ? apiURL(`/sso/tenant/${tenantId}/passkeys/${passkeyId}`)
-        : apiURL(`/sso/passkeys/${passkeyId}`);
-
-      await apiClient.delete(endpoint);
-
-      setPasskeys((prev) => prev.filter((p) => p.id !== passkeyId));
+      if (canManagePasskeys) {
+        await deleteTenantPasskey({ variables: { id: passkeyId } });
+      } else {
+        await deletePasskey({ variables: { input: { id: passkeyId } } });
+      }
       toast({
         description: intl.formatMessage({
           defaultMessage: 'Passkey deleted successfully.',
@@ -117,7 +65,7 @@ export const PasskeysCard = ({ canManagePasskeys = false }: PasskeysCardProps) =
         }),
         variant: 'success',
       });
-    } catch (error) {
+    } catch {
       toast({
         description: intl.formatMessage({
           defaultMessage: 'Failed to delete passkey. Please try again.',
@@ -131,7 +79,7 @@ export const PasskeysCard = ({ canManagePasskeys = false }: PasskeysCardProps) =
   };
 
   const handleRegistrationSuccess = () => {
-    fetchPasskeys();
+    refetch();
   };
 
   const formatDate = (dateStr: string | null) => {
@@ -269,11 +217,11 @@ export const PasskeysCard = ({ canManagePasskeys = false }: PasskeysCardProps) =
                       </div>
                       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         {/* Show user info for admin view */}
-                        {canManagePasskeys && passkey.userEmail && (
+                        {canManagePasskeys && passkey.userEmail != null && (
                           <>
                             <span className="flex items-center gap-1">
                               <User className="h-3 w-3" />
-                              {passkey.userName || passkey.userEmail}
+                              {String(passkey.userName ?? passkey.userEmail ?? '')}
                             </span>
                             <span>•</span>
                           </>
@@ -282,17 +230,17 @@ export const PasskeysCard = ({ canManagePasskeys = false }: PasskeysCardProps) =
                           <FormattedMessage
                             defaultMessage="Added {date}"
                             id="Passkeys Card / Added Date"
-                            values={{ date: formatDate(passkey.createdAt) }}
+                            values={{ date: formatDate(passkey.createdAt as string | null) }}
                           />
                         </span>
-                        {passkey.lastUsedAt && (
+                        {passkey.lastUsedAt != null && (
                           <>
                             <span>•</span>
                             <span>
                               <FormattedMessage
                                 defaultMessage="Last used {date}"
                                 id="Passkeys Card / Last Used"
-                                values={{ date: formatDate(passkey.lastUsedAt) }}
+                                values={{ date: formatDate(passkey.lastUsedAt as string | null) }}
                               />
                             </span>
                           </>

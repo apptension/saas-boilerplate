@@ -26,6 +26,7 @@ class TenantSSOConnectionSerializer(serializers.ModelSerializer):
             # SAML fields
             "saml_entity_id",
             "saml_sso_url",
+            "saml_certificate",
             "saml_slo_url",
             "saml_name_id_format",
             "saml_want_assertions_signed",
@@ -83,6 +84,13 @@ class TenantSSOConnectionSerializer(serializers.ModelSerializer):
 
     def validate_allowed_domains(self, value):
         """Validate allowed domains list."""
+        if isinstance(value, str):
+            import json
+
+            try:
+                value = json.loads(value)
+            except json.JSONDecodeError:
+                raise serializers.ValidationError("Allowed domains must be a valid JSON array.")
         if not isinstance(value, list):
             raise serializers.ValidationError("Allowed domains must be a list.")
 

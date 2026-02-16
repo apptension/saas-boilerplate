@@ -1,4 +1,5 @@
-import { apiClient } from '@sb/webapp-api-client/api';
+import { MyPasskeysQueryDocument } from '@sb/webapp-api-client';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { ENV } from '@sb/webapp-core/config/env';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
@@ -15,9 +16,16 @@ jest.mock('@sb/webapp-core/config/env', () => ({
 
 const originalPublicKeyCredential = (global as any).PublicKeyCredential;
 
+const createMyPasskeysMock = (passkeys: { id: string; name: string; authenticatorType: string; createdAt: string; lastUsedAt: string | null; useCount: number }[]) =>
+  composeMockedQueryResult(MyPasskeysQueryDocument, {
+    data: {
+      myPasskeys: {
+        edges: passkeys.map((node) => ({ node })),
+      },
+    },
+  });
+
 beforeEach(() => {
-  jest.spyOn(apiClient, 'get').mockResolvedValue({ data: [] });
-  jest.spyOn(apiClient, 'delete').mockResolvedValue(undefined);
   (global as any).PublicKeyCredential = jest.fn();
   (window as any).PublicKeyCredential = jest.fn();
 });
@@ -55,9 +63,9 @@ describe('PasskeysForm: Component', () => {
 
   describe('when passkeys are supported', () => {
     it('should show empty state and add passkey button when no passkeys', async () => {
-      (apiClient.get as jest.Mock).mockResolvedValue({ data: [] });
-
-      const { waitForApolloMocks } = render(<PasskeysForm />);
+      const { waitForApolloMocks } = render(<PasskeysForm />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(createMyPasskeysMock([])),
+      });
       await waitForApolloMocks();
 
       expect(screen.getByText(/you haven't registered any passkeys yet/i)).toBeInTheDocument();
@@ -65,20 +73,19 @@ describe('PasskeysForm: Component', () => {
     });
 
     it('should show passkeys list when passkeys exist', async () => {
-      (apiClient.get as jest.Mock).mockResolvedValue({
-        data: [
-          {
-            id: 'pk-1',
-            name: 'MacBook Touch ID',
-            authenticatorType: 'platform',
-            createdAt: '2024-01-15T10:00:00Z',
-            lastUsedAt: '2024-01-20T12:00:00Z',
-            useCount: 5,
-          },
-        ],
+      const passkeys = [
+        {
+          id: 'pk-1',
+          name: 'MacBook Touch ID',
+          authenticatorType: 'platform',
+          createdAt: '2024-01-15T10:00:00Z',
+          lastUsedAt: '2024-01-20T12:00:00Z',
+          useCount: 5,
+        },
+      ];
+      const { waitForApolloMocks } = render(<PasskeysForm />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(createMyPasskeysMock(passkeys)),
       });
-
-      const { waitForApolloMocks } = render(<PasskeysForm />);
       await waitForApolloMocks();
 
       expect(screen.getByText(/MacBook Touch ID/i)).toBeInTheDocument();
@@ -87,9 +94,9 @@ describe('PasskeysForm: Component', () => {
     });
 
     it('should open add passkey modal when add button is clicked', async () => {
-      (apiClient.get as jest.Mock).mockResolvedValue({ data: [] });
-
-      const { waitForApolloMocks } = render(<PasskeysForm />);
+      const { waitForApolloMocks } = render(<PasskeysForm />, {
+        apolloMocks: (defaultMocks) => defaultMocks.concat(createMyPasskeysMock([])),
+      });
       await waitForApolloMocks();
 
       await userEvent.click(screen.getByRole('button', { name: /add passkey/i }));

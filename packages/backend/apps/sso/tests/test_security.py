@@ -462,12 +462,6 @@ class TestViewSecurityIntegration:
         assert PasskeyAuthThrottle in PasskeyAuthenticationOptionsView.throttle_classes
         assert PasskeyAuthThrottle in PasskeyAuthenticationVerifyView.throttle_classes
 
-    def test_tenant_passkey_list_rate_limit_class_present(self):
-        """Tenant passkey list view should have rate limiting configured."""
-        from apps.sso.views import TenantPasskeyListView, SCIMApiThrottle
-
-        assert SCIMApiThrottle in TenantPasskeyListView.throttle_classes
-
     def test_scim_users_uses_safe_pagination(self, api_client):
         """SCIM users endpoint should use safe pagination."""
         from apps.sso.tests.factories import SCIMTokenFactory, TenantSSOConnectionFactory

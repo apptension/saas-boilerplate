@@ -47,10 +47,12 @@ type Query {
   ssoConnections(before: String, after: String, first: Int, last: Int): SSOConnectionConnection
   ssoConnection(id: ID): SSOConnectionType
   scimTokens(before: String, after: String, first: Int, last: Int): SCIMTokenConnection
-  ssoAuditLogs(before: String, after: String, first: Int, last: Int): SSOAuditLogConnection
+  ssoAuditLogs(eventType: String, userEmail: String, success: Boolean, startDate: String, endDate: String, search: String, before: String, after: String, first: Int, last: Int): SSOAuditLogConnection
+  tenantPasskeys(search: String): [TenantPasskeyType]
   myPasskeys(before: String, after: String, first: Int, last: Int): PasskeyConnection
   mySessions(before: String, after: String, first: Int, last: Int): SSOSessionConnection
   myDevices(before: String, after: String, first: Int, last: Int): UserDeviceConnection
+  ssoDiscover(email: String!): SSODiscoveryResultType
   allTenants(before: String, after: String, first: Int, last: Int): TenantConnection
   tenant(id: ID): TenantType
   allActionLogs(tenantId: ID!, 
@@ -189,6 +191,9 @@ type SSOConnectionType implements Node {
   isSaml: Boolean
   isOidc: Boolean
   spMetadataUrl: String
+  spAcsUrl: String
+  spEntityId: String
+  oidcCallbackUrl: String
 }
 type SCIMTokenConnection {
   "Pagination data for this connection."
@@ -245,6 +250,19 @@ type SSOAuditLogType implements Node {
   errorMessage: String!
   userEmail: String
   connectionName: String
+}
+type TenantPasskeyType {
+  id: ID
+  name: String
+  authenticatorType: String
+  transports: GenericScalar
+  isActive: Boolean
+  lastUsedAt: DateTime
+  useCount: Int
+  deviceType: String
+  createdAt: DateTime
+  userEmail: String
+  userName: String
 }
 type PasskeyConnection {
   "Pagination data for this connection."
@@ -330,6 +348,19 @@ type UserDeviceType implements Node {
   lastIpAddress: String
   lastLocation: String!
   isBlocked: Boolean!
+}
+type SSODiscoveryResultType {
+  ssoAvailable: Boolean
+  requireSso: Boolean
+  connections: [SSODiscoveryConnectionType]
+}
+type SSODiscoveryConnectionType {
+  id: String
+  name: String
+  type: String
+  tenantId: String
+  tenantName: String
+  loginUrl: String
 }
 type TenantConnection {
   "Pagination data for this connection."
@@ -1138,10 +1169,14 @@ type ApiMutation {
   activateSsoConnection(input: ActivateSSOConnectionMutationInput!): ActivateSSOConnectionMutationPayload
   "Deactivate an SSO connection."
   deactivateSsoConnection(id: ID!): DeactivateSSOConnectionMutation
+  "Test an SSO connection configuration."
+  testSsoConnection(id: ID!): TestSSOConnectionMutation
   "Create a new SCIM token."
   createScimToken(input: CreateSCIMTokenMutationInput!): CreateSCIMTokenMutationPayload
   "Revoke a SCIM token."
   revokeScimToken(id: ID!): RevokeSCIMTokenMutation
+  "Delete a passkey as tenant admin (for any tenant member)."
+  deleteTenantPasskey(id: ID!): DeleteTenantPasskeyMutation
   "Revoke an SSO session."
   revokeSession(reason: String, sessionId: String!): RevokeSessionMutation
   "Revoke all SSO sessions for the current user except the current session."
@@ -1304,6 +1339,8 @@ type CreateSSOConnectionMutationPayload {
   groupRoleMapping: JSONString
   samlEntityId: String
   samlSsoUrl: String
+  "IdP X.509 certificate (PEM format) - for local development"
+  samlCertificate: String
   "Single Logout URL"
   samlSloUrl: String
   samlNameIdFormat: saml_name_id_format
@@ -1345,6 +1382,8 @@ type UpdateSSOConnectionMutationPayload {
   groupRoleMapping: JSONString
   samlEntityId: String
   samlSsoUrl: String
+  "IdP X.509 certificate (PEM format) - for local development"
+  samlCertificate: String
   "Single Logout URL"
   samlSloUrl: String
   samlNameIdFormat: saml_name_id_format
@@ -1387,6 +1426,24 @@ type ActivateSSOConnectionMutationPayload {
 type DeactivateSSOConnectionMutation {
   ssoConnection: SSOConnectionType
 }
+"Test an SSO connection configuration."
+type TestSSOConnectionMutation {
+  result: TestSSOConnectionPayload
+}
+type TestSSOConnectionPayload {
+  connectionId: String
+  connectionName: String
+  connectionType: String
+  overallStatus: String
+  checks: [TestSSOConnectionCheckType]
+  testedAt: String
+}
+type TestSSOConnectionCheckType {
+  name: String
+  status: String
+  message: String
+  details: GenericScalar
+}
 "Create a new SCIM token."
 type CreateSCIMTokenMutationPayload {
   tenantId: String
@@ -1399,6 +1456,10 @@ type CreateSCIMTokenMutationPayload {
 }
 "Revoke a SCIM token."
 type RevokeSCIMTokenMutation {
+  ok: Boolean
+}
+"Delete a passkey as tenant admin (for any tenant member)."
+type DeleteTenantPasskeyMutation {
   ok: Boolean
 }
 "Revoke an SSO session."
@@ -2504,6 +2565,8 @@ input CreateSSOConnectionMutationInput {
   groupRoleMapping: JSONString
   samlEntityId: String
   samlSsoUrl: String
+  "IdP X.509 certificate (PEM format) - for local development"
+  samlCertificate: String
   "Single Logout URL"
   samlSloUrl: String
   samlNameIdFormat: saml_name_id_format
@@ -2538,6 +2601,8 @@ input UpdateSSOConnectionMutationInput {
   groupRoleMapping: JSONString
   samlEntityId: String
   samlSsoUrl: String
+  "IdP X.509 certificate (PEM format) - for local development"
+  samlCertificate: String
   "Single Logout URL"
   samlSloUrl: String
   samlNameIdFormat: saml_name_id_format

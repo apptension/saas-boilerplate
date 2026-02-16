@@ -1,5 +1,9 @@
-import { TenantUserRole, apiClient } from '@sb/webapp-api-client';
+import {
+  TenantSecuritySsoConnectionsQueryDocument,
+  TenantUserRole,
+} from '@sb/webapp-api-client';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
@@ -8,40 +12,35 @@ import { membershipFactory, tenantFactory } from '../../../../../tests/factories
 import { createMockRouterProps, render } from '../../../../../tests/utils/rendering';
 import { SSOConnectionCard } from '../ssoConnectionCard';
 
-// Mock the apiClient module before any imports use it
-jest.mock('@sb/webapp-api-client/api', () => ({
-  apiClient: {
-    get: jest.fn().mockResolvedValue({ data: [] }),
-    post: jest.fn().mockResolvedValue({ data: {} }),
-    delete: jest.fn().mockResolvedValue({ data: {} }),
-  },
-  apiURL: jest.fn((path: string) => path),
-}));
-
-const mockedApiClient = apiClient as jest.Mocked<typeof apiClient>;
-
 const createMockConnection = (overrides = {}) => ({
   id: 'conn-1',
   name: 'Okta Production',
   connectionType: 'saml',
   status: 'active',
-  isActive: true,
-  isSaml: true,
-  isOidc: false,
-  createdAt: '2024-01-15T10:00:00Z',
+  allowedDomains: [],
+  jitProvisioningEnabled: false,
+  samlEntityId: null,
+  samlSsoUrl: null,
+  oidcIssuer: null,
+  oidcClientId: null,
   lastLoginAt: '2024-12-20T14:30:00Z',
   loginCount: 42,
+  createdAt: '2024-01-15T10:00:00Z',
   spMetadataUrl: 'https://example.com/metadata',
   ...overrides,
 });
 
-describe('SSOConnectionCard: Component', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    mockedApiClient.get.mockResolvedValue({ data: [] });
+const createSSOConnectionsMock = (connections: ReturnType<typeof createMockConnection>[]) =>
+  composeMockedQueryResult(TenantSecuritySsoConnectionsQueryDocument, {
+    data: {
+      ssoConnections: {
+        edges: connections.map((node) => ({ node })),
+      },
+    },
   });
 
-  const renderComponent = (canManageSSO = true) => {
+describe('SSOConnectionCard: Component', () => {
+  const renderComponent = (canManageSSO = true, connections: ReturnType<typeof createMockConnection>[] = []) => {
     const tenant = tenantFactory({
       id: 'tenant-1',
       membership: membershipFactory({
@@ -52,13 +51,14 @@ describe('SSOConnectionCard: Component', () => {
       tenants: [tenant],
     });
     const commonQueryMock = fillCommonQueryWithUser(user);
+    const ssoConnectionsMock = createSSOConnectionsMock(connections);
 
     const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.security, {
       tenantId: 'tenant-1',
     });
 
     return render(<SSOConnectionCard canManageSSO={canManageSSO} />, {
-      apolloMocks: [commonQueryMock],
+      apolloMocks: [commonQueryMock, ssoConnectionsMock],
       routerProps,
     });
   };
@@ -94,10 +94,7 @@ describe('SSOConnectionCard: Component', () => {
 
     describe('with connections', () => {
       it('should display connection list when connections exist', async () => {
-        const connections = [createMockConnection()];
-        mockedApiClient.get.mockResolvedValue({ data: connections });
-
-        renderComponent(true);
+        renderComponent(true, [createMockConnection()]);
 
         expect(await screen.findByText('Okta Production')).toBeInTheDocument();
         expect(screen.getByText(/Active/i)).toBeInTheDocument();
@@ -105,81 +102,54 @@ describe('SSOConnectionCard: Component', () => {
       });
 
       it('should show login count for connection', async () => {
-        const connections = [createMockConnection({ loginCount: 42 })];
-        mockedApiClient.get.mockResolvedValue({ data: connections });
-
-        renderComponent(true);
+        renderComponent(true, [createMockConnection({ loginCount: 42 })]);
 
         await screen.findByText('Okta Production');
         expect(screen.getByText(/42 logins/i)).toBeInTheDocument();
       });
 
       it('should show OIDC badge for OIDC connections', async () => {
-        const connections = [
+        renderComponent(true, [
           createMockConnection({
             connectionType: 'oidc',
-            isSaml: false,
-            isOidc: true,
             name: 'Auth0 Integration',
           }),
-        ];
-        mockedApiClient.get.mockResolvedValue({ data: connections });
-
-        renderComponent(true);
+        ]);
 
         await screen.findByText('Auth0 Integration');
         expect(screen.getByText('OIDC')).toBeInTheDocument();
       });
 
       it('should show Add Connection button in header when connections exist', async () => {
-        const connections = [createMockConnection()];
-        mockedApiClient.get.mockResolvedValue({ data: connections });
-
-        renderComponent(true);
+        renderComponent(true, [createMockConnection()]);
 
         await screen.findByText('Okta Production');
         expect(screen.getByRole('button', { name: /Add Connection/i })).toBeInTheDocument();
       });
 
       it('should show Add another connection button at bottom', async () => {
-        const connections = [createMockConnection()];
-        mockedApiClient.get.mockResolvedValue({ data: connections });
-
-        renderComponent(true);
+        renderComponent(true, [createMockConnection()]);
 
         await screen.findByText('Okta Production');
         expect(screen.getByRole('button', { name: /Add another connection/i })).toBeInTheDocument();
       });
 
       it('should display inactive connection with correct badge', async () => {
-        const connections = [
-          createMockConnection({
-            isActive: false,
-            status: 'inactive',
-          }),
-        ];
-        mockedApiClient.get.mockResolvedValue({ data: connections });
-
-        renderComponent(true);
+        renderComponent(true, [createMockConnection({ status: 'inactive' })]);
 
         await screen.findByText('Okta Production');
         expect(screen.getByText(/Inactive/i)).toBeInTheDocument();
       });
 
       it('should display multiple connections', async () => {
-        const connections = [
+        renderComponent(true, [
           createMockConnection({ id: '1', name: 'Okta Production' }),
           createMockConnection({
             id: '2',
             name: 'Google Workspace',
             connectionType: 'oidc',
-            isSaml: false,
-            isOidc: true,
           }),
-        ];
-        mockedApiClient.get.mockResolvedValue({ data: connections });
-
-        renderComponent(true);
+        ]);
 
         expect(await screen.findByText('Okta Production')).toBeInTheDocument();
         expect(screen.getByText('Google Workspace')).toBeInTheDocument();
@@ -194,23 +164,15 @@ describe('SSOConnectionCard: Component', () => {
         const configureButton = await screen.findByRole('button', { name: /Configure SSO/i });
         await user.click(configureButton);
 
-        // Modal should open
         expect(await screen.findByText(/Choose your SSO protocol to get started/i)).toBeInTheDocument();
       });
 
       it('should show actions dropdown on hover', async () => {
-        const connections = [createMockConnection()];
-        mockedApiClient.get.mockResolvedValue({ data: connections });
+        renderComponent(true, [createMockConnection()]);
 
-        renderComponent(true);
-
-        // Wait for the connection to be displayed
         await screen.findByText('Okta Production');
 
-        // The dropdown trigger button should exist (it becomes visible on hover)
-        // It's initially hidden with opacity-0
         const actionsButtons = screen.getAllByRole('button');
-        // One of the buttons should be the actions menu trigger
         const actionsButton = actionsButtons.find((btn) => btn.classList.contains('opacity-0'));
         expect(actionsButton).toBeDefined();
       });
@@ -230,15 +192,6 @@ describe('SSOConnectionCard: Component', () => {
       await screen.findByText(/Only organization owners and admins can configure SSO/i);
       expect(screen.queryByRole('button', { name: /Configure SSO/i })).not.toBeInTheDocument();
       expect(screen.queryByRole('button', { name: /Add Connection/i })).not.toBeInTheDocument();
-    });
-
-    it('should not fetch connections', async () => {
-      renderComponent(false);
-
-      await screen.findByText(/Only organization owners and admins can configure SSO/i);
-
-      // API should not be called when user cannot manage SSO
-      expect(mockedApiClient.get).not.toHaveBeenCalled();
     });
   });
 });

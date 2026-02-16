@@ -4,6 +4,7 @@ GraphQL schema for Enterprise SSO management.
 
 import graphene
 from graphene import relay
+from graphene.types.generic import GenericScalar
 from graphene_django import DjangoObjectType
 from graphql_relay import to_global_id, from_global_id
 from django.shortcuts import get_object_or_404
@@ -33,6 +34,9 @@ class SSOConnectionType(DjangoObjectType):
     is_saml = graphene.Boolean()
     is_oidc = graphene.Boolean()
     sp_metadata_url = graphene.String()
+    sp_acs_url = graphene.String()
+    sp_entity_id = graphene.String()
+    oidc_callback_url = graphene.String()
 
     class Meta:
         model = models.TenantSSOConnection
@@ -79,6 +83,15 @@ class SSOConnectionType(DjangoObjectType):
             api_url = getattr(settings, "API_URL", "http://localhost:5001")
             return f"{api_url}/api/sso/saml/{self.id}/metadata"
         return None
+
+    def resolve_sp_acs_url(self, info):
+        return self.sp_acs_url if self.is_saml else None
+
+    def resolve_sp_entity_id(self, info):
+        return self.sp_entity_id if self.is_saml else None
+
+    def resolve_oidc_callback_url(self, info):
+        return self.oidc_callback_url if self.is_oidc else None
 
 
 class SSOConnectionConnection(graphene.Connection):
@@ -223,6 +236,33 @@ class PasskeyConnection(graphene.Connection):
         node = PasskeyType
 
 
+class TenantPasskeyType(graphene.ObjectType):
+    id = graphene.ID()
+    name = graphene.String()
+    authenticator_type = graphene.String()
+    transports = GenericScalar()
+    is_active = graphene.Boolean()
+    last_used_at = graphene.DateTime()
+    use_count = graphene.Int()
+    device_type = graphene.String()
+    created_at = graphene.DateTime()
+    user_email = graphene.String()
+    user_name = graphene.String()
+
+    def resolve_id(self, info):
+        return to_global_id("PasskeyType", self.id)
+
+    def resolve_user_email(self, info):
+        return self.user.email if hasattr(self, "user") and self.user else None
+
+    def resolve_user_name(self, info):
+        if not hasattr(self, "user") or not self.user:
+            return None
+        first = getattr(self.user.profile, "first_name", "") or ""
+        last = getattr(self.user.profile, "last_name", "") or ""
+        return f"{first} {last}".strip() or self.user.email
+
+
 class SSOAuditLogType(DjangoObjectType):
     """GraphQL type for SSO audit logs."""
 
@@ -257,6 +297,21 @@ class SSOAuditLogType(DjangoObjectType):
 class SSOAuditLogConnection(graphene.Connection):
     class Meta:
         node = SSOAuditLogType
+
+
+class SSODiscoveryConnectionType(graphene.ObjectType):
+    id = graphene.String()
+    name = graphene.String()
+    type = graphene.String()
+    tenant_id = graphene.String()
+    tenant_name = graphene.String()
+    login_url = graphene.String()
+
+
+class SSODiscoveryResultType(graphene.ObjectType):
+    sso_available = graphene.Boolean()
+    require_sso = graphene.Boolean()
+    connections = graphene.List(SSODiscoveryConnectionType)
 
 
 # ==================
@@ -380,6 +435,53 @@ class DeactivateSSOConnectionMutation(graphene.Mutation):
         )
 
         return cls(sso_connection=connection)
+
+
+class TestSSOConnectionCheckType(graphene.ObjectType):
+    name = graphene.String()
+    status = graphene.String()
+    message = graphene.String()
+    details = GenericScalar()
+
+
+class TestSSOConnectionPayload(graphene.ObjectType):
+    connectionId = graphene.String()
+    connectionName = graphene.String()
+    connectionType = graphene.String()
+    overallStatus = graphene.String()
+    checks = graphene.List(TestSSOConnectionCheckType)
+    testedAt = graphene.String()
+
+
+class TestSSOConnectionMutation(graphene.Mutation):
+    """Test an SSO connection configuration."""
+
+    class Arguments:
+        id = graphene.ID(required=True)
+
+    result = graphene.Field(TestSSOConnectionPayload)
+
+    @classmethod
+    def mutate(cls, root, info, id):
+        from .services.connection_test import test_sso_connection
+
+        _, pk = from_global_id(id)
+        connection = get_object_or_404(
+            models.TenantSSOConnection,
+            pk=pk,
+            tenant=info.context.tenant,
+        )
+        result = test_sso_connection(connection)
+        return cls(
+            result={
+                "connectionId": result["connectionId"],
+                "connectionName": result["connectionName"],
+                "connectionType": result["connectionType"],
+                "overallStatus": result["overallStatus"],
+                "checks": result["checks"],
+                "testedAt": result["testedAt"],
+            }
+        )
 
 
 class CreateSCIMTokenMutation(mutations.SerializerMutation):
@@ -619,6 +721,45 @@ class DeletePasskeyMutation(mutations.DeleteModelMutation):
         return cls(deleted_ids=[id])
 
 
+class DeleteTenantPasskeyMutation(graphene.Mutation):
+    """Delete a passkey as tenant admin (for any tenant member)."""
+
+    class Arguments:
+        id = graphene.ID(required=True)
+
+    ok = graphene.Boolean()
+
+    @classmethod
+    def mutate(cls, root, info, id):
+        from apps.multitenancy.models import TenantMembership
+
+        _, pk = from_global_id(id)
+        passkey = get_object_or_404(models.UserPasskey, pk=pk, is_active=True)
+        tenant = info.context.tenant
+
+        if not TenantMembership.objects.filter(tenant=tenant, user=passkey.user).exists():
+            raise ValueError("Passkey does not belong to a tenant member")
+
+        passkey.is_active = False
+        passkey.save(update_fields=["is_active"])
+
+        from .services import get_client_ip
+
+        request = info.context._request if hasattr(info.context, "_request") else info.context
+        ip_address = get_client_ip(request) if hasattr(request, "META") else None
+
+        models.SSOAuditLog.log_event(
+            event_type=constants.SSOAuditEventType.PASSKEY_REMOVED,
+            tenant=tenant,
+            user=passkey.user,
+            description=f'Passkey "{passkey.name}" removed by admin {info.context.user.email}',
+            ip_address=ip_address,
+            metadata={"removed_by": info.context.user.email, "passkey_owner": passkey.user.email},
+        )
+
+        return cls(ok=True)
+
+
 # ==================
 # Queries
 # ==================
@@ -628,10 +769,10 @@ class DeletePasskeyMutation(mutations.DeleteModelMutation):
 class Query(graphene.ObjectType):
     """SSO queries available to authenticated users."""
 
-    # User's own data
     my_passkeys = graphene.relay.ConnectionField(PasskeyConnection)
     my_sessions = graphene.relay.ConnectionField(SSOSessionConnection)
     my_devices = graphene.relay.ConnectionField(UserDeviceConnection)
+    sso_discover = graphene.Field(SSODiscoveryResultType, email=graphene.String(required=True))
 
     @staticmethod
     def resolve_my_passkeys(root, info, **kwargs):
@@ -654,6 +795,65 @@ class Query(graphene.ObjectType):
             return []
         return models.UserDevice.objects.filter(user=user)
 
+    @staticmethod
+    def resolve_sso_discover(root, info, email):
+        from django.db import models as db_models
+
+        email = (email or "").strip().lower()
+        if not email or "@" not in email:
+            return {"sso_available": False, "require_sso": False, "connections": []}
+
+        domain = email.split("@")[-1]
+        connections = (
+            models.TenantSSOConnection.objects.filter(
+                status=constants.SSOConnectionStatus.ACTIVE,
+            )
+            .filter(
+                db_models.Q(allowed_domains__contains=[domain])
+                | db_models.Q(allowed_domains=[])
+                | db_models.Q(allowed_domains__isnull=True)
+            )
+            .select_related("tenant")
+        )
+
+        matching_connections = []
+        for conn in connections:
+            tenant_domains = getattr(conn.tenant, "domains", None)
+            domain_matches = tenant_domains and domain in tenant_domains
+            allowed_matches = conn.allowed_domains and domain in conn.allowed_domains
+            if domain_matches or allowed_matches:
+                matching_connections.append(conn)
+
+        seen_ids = set()
+        unique_connections = []
+        for conn in matching_connections:
+            if conn.id not in seen_ids:
+                seen_ids.add(conn.id)
+                unique_connections.append(conn)
+
+        if not unique_connections:
+            return {"sso_available": False, "require_sso": False, "connections": []}
+
+        require_sso = any(getattr(conn, "enforce_sso", False) for conn in unique_connections)
+        from django.conf import settings
+
+        api_url = getattr(settings, "API_URL", "http://localhost:5001")
+        return {
+            "sso_available": True,
+            "require_sso": require_sso,
+            "connections": [
+                {
+                    "id": str(conn.id),
+                    "name": conn.name,
+                    "type": conn.connection_type,
+                    "tenant_id": str(conn.tenant.id),
+                    "tenant_name": conn.tenant.name,
+                    "login_url": f"{api_url}/api/sso/{conn.connection_type}/{conn.id}/login",
+                }
+                for conn in unique_connections
+            ],
+        }
+
 
 @permission_classes(policies.IsTenantMemberAccess)
 class TenantSSOQuery(graphene.ObjectType):
@@ -668,7 +868,19 @@ class TenantSSOQuery(graphene.ObjectType):
     sso_connections = graphene.relay.ConnectionField(SSOConnectionConnection)
     sso_connection = graphene.Field(SSOConnectionType, id=graphene.ID())
     scim_tokens = graphene.relay.ConnectionField(SCIMTokenConnection)
-    sso_audit_logs = graphene.relay.ConnectionField(SSOAuditLogConnection)
+    sso_audit_logs = graphene.relay.ConnectionField(
+        SSOAuditLogConnection,
+        event_type=graphene.String(),
+        user_email=graphene.String(),
+        success=graphene.Boolean(),
+        start_date=graphene.String(),
+        end_date=graphene.String(),
+        search=graphene.String(),
+    )
+    tenant_passkeys = graphene.List(
+        TenantPasskeyType,
+        search=graphene.String(),
+    )
 
     @staticmethod
     @permission_classes(requires("security.view"))
@@ -691,8 +903,78 @@ class TenantSSOQuery(graphene.ObjectType):
 
     @staticmethod
     @permission_classes(requires("security.view"))
-    def resolve_sso_audit_logs(root, info, **kwargs):
-        return models.SSOAuditLog.objects.filter(tenant=info.context.tenant)[:100]
+    def resolve_sso_audit_logs(
+        root,
+        info,
+        event_type=None,
+        user_email=None,
+        success=None,
+        start_date=None,
+        end_date=None,
+        search=None,
+        **kwargs,
+    ):
+        from datetime import datetime, timedelta
+        from django.utils import timezone
+        from django.db import models as db_models
+
+        logs = models.SSOAuditLog.objects.filter(tenant=info.context.tenant).select_related("user", "sso_connection")
+
+        if start_date:
+            try:
+                start_dt = datetime.fromisoformat(start_date)
+                logs = logs.filter(created_at__gte=start_dt)
+            except ValueError:
+                pass
+
+        if end_date:
+            try:
+                end_dt = datetime.fromisoformat(end_date) + timedelta(days=1)
+                logs = logs.filter(created_at__lt=end_dt)
+            except ValueError:
+                pass
+
+        if not start_date and not end_date:
+            default_cutoff = timezone.now() - timedelta(days=90)
+            logs = logs.filter(created_at__gte=default_cutoff)
+
+        if event_type:
+            logs = logs.filter(event_type=event_type)
+        if user_email:
+            logs = logs.filter(user__email__icontains=user_email)
+        if success is not None:
+            logs = logs.filter(success=success)
+        if search:
+            logs = logs.filter(
+                db_models.Q(event_description__icontains=search)
+                | db_models.Q(user__email__icontains=search)
+                | db_models.Q(ip_address__icontains=search)
+            )
+
+        return logs.order_by("-created_at")
+
+    @staticmethod
+    @permission_classes(requires("security.passkeys.manage"))
+    def resolve_tenant_passkeys(root, info, search=None, **kwargs):
+        from apps.multitenancy.models import TenantMembership
+        from django.db.models import Q
+
+        tenant = info.context.tenant
+        tenant_members = TenantMembership.objects.filter(tenant=tenant).values_list("user_id", flat=True)
+        passkeys = (
+            models.UserPasskey.objects.filter(user_id__in=tenant_members, is_active=True)
+            .select_related("user", "user__profile")
+            .order_by("-created_at")
+        )
+        if search:
+            search_lower = search.strip().lower()
+            passkeys = passkeys.filter(
+                Q(user__email__icontains=search_lower)
+                | Q(user__profile__first_name__icontains=search_lower)
+                | Q(user__profile__last_name__icontains=search_lower)
+                | Q(name__icontains=search_lower)
+            )
+        return list(passkeys)
 
 
 # ==================
@@ -733,7 +1015,13 @@ class TenantOwnerMutation(graphene.ObjectType):
     deactivate_sso_connection = permission_classes(requires("security.sso.manage"))(
         DeactivateSSOConnectionMutation.Field()
     )
+    test_sso_connection = permission_classes(requires("security.sso.manage"))(TestSSOConnectionMutation.Field())
 
     # SCIM Token management - requires security.sso.manage
     create_scim_token = permission_classes(requires("security.sso.manage"))(CreateSCIMTokenMutation.Field())
     revoke_scim_token = permission_classes(requires("security.sso.manage"))(RevokeSCIMTokenMutation.Field())
+
+    # Passkey management (tenant admin) - requires security.passkeys.manage
+    delete_tenant_passkey = permission_classes(requires("security.passkeys.manage"))(
+        DeleteTenantPasskeyMutation.Field()
+    )

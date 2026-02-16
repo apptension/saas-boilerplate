@@ -1,7 +1,8 @@
 import { Button } from '@sb/webapp-core/components/ui/button';
 import { ENV } from '@sb/webapp-core/config/env';
+import { useSSODiscover } from '@sb/webapp-tenants/hooks';
 import { Building2 } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 export interface SSOConnection {
@@ -31,57 +32,27 @@ interface SSODiscoveryProps {
  * Shows SSO login buttons when the user's organization has SSO configured.
  */
 export const SSODiscovery = ({ email, onSSORequired }: SSODiscoveryProps) => {
-  const [discoveryResult, setDiscoveryResult] = useState<SSODiscoveryResult | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [lastCheckedEmail, setLastCheckedEmail] = useState('');
+  const lastCheckedEmail = useRef('');
 
-  const discoverSSO = useCallback(async (emailToCheck: string) => {
-    if (!emailToCheck || !emailToCheck.includes('@')) {
-      setDiscoveryResult(null);
-      return;
-    }
-
-    // Debounce - don't check the same email twice
-    if (emailToCheck === lastCheckedEmail) {
-      return;
-    }
-
-    setLoading(true);
-    setLastCheckedEmail(emailToCheck);
-
-    try {
-      const response = await fetch(`${ENV.BASE_API_URL}/sso/discover?email=${encodeURIComponent(emailToCheck)}`, {
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        setDiscoveryResult(null);
-        return;
-      }
-
-      const result: SSODiscoveryResult = await response.json();
-      setDiscoveryResult(result);
-
-      // Notify parent if SSO is required (password login should be disabled)
-      if (onSSORequired) {
-        onSSORequired(result.require_sso);
-      }
-    } catch (error) {
-      console.error('SSO discovery error:', error);
-      setDiscoveryResult(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [lastCheckedEmail, onSSORequired]);
+  const { discover, result, loading } = useSSODiscover();
 
   useEffect(() => {
-    // Debounce the discovery by 500ms after email changes
-    const timer = setTimeout(() => {
-      discoverSSO(email);
-    }, 500);
+    if (result) {
+      onSSORequired?.(result.require_sso ?? false);
+    }
+  }, [result, onSSORequired]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!email || !email.includes('@')) return;
+      if (email === lastCheckedEmail.current) return;
+      lastCheckedEmail.current = email;
+      discover(email);
+    }, 500);
     return () => clearTimeout(timer);
-  }, [email, discoverSSO]);
+  }, [email, discover]);
+
+  const discoveryResult = result;
 
   // Check if SSO feature is enabled
   if (!ENV.ENABLE_SSO) {

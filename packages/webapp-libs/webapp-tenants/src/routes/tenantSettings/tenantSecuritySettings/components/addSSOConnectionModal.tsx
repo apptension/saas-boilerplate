@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { apiClient, apiURL } from '@sb/webapp-api-client/api';
+import { apiURL } from '@sb/webapp-api-client/api';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { Label } from '@sb/webapp-core/components/ui/label';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { Shield, Key, Building2, ArrowLeft, Link2, CheckCircle2, Loader2, Copy, Check, Globe, X } from 'lucide-react';
 import { FormattedMessage, useIntl } from 'react-intl';
+
+import { Connection_Type } from '@sb/webapp-api-client/graphql';
+import { useTenantSSO } from '../../../../hooks/useTenantSSO';
 
 type SSOType = 'saml' | 'oidc' | null;
 type Step = 'select' | 'configure' | 'success';
@@ -19,6 +22,7 @@ export type AddSSOConnectionModalProps = {
 export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSSOConnectionModalProps) => {
   const intl = useIntl();
   const { toast } = useToast();
+  const { createConnection } = useTenantSSO(tenantId);
 
   const [step, setStep] = useState<Step>('select');
   const [ssoType, setSsoType] = useState<SSOType>(null);
@@ -79,49 +83,49 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
   };
 
   const handleSubmit = async () => {
-    if (!ssoType) return;
+    if (!ssoType || !tenantId) return;
 
     setLoading(true);
 
-    const body = ssoType === 'saml' 
+    const input = ssoType === 'saml'
       ? {
+          tenantId,
           name: formData.name,
-          connectionType: 'saml',
-          allowedDomains: formData.allowedDomains,
+          connectionType: Connection_Type.SAML,
+          allowedDomains: JSON.stringify(formData.allowedDomains),
           samlEntityId: formData.entityId,
           samlSsoUrl: formData.ssoUrl,
-          samlCertificate: formData.certificate,
+          samlCertificate: formData.certificate || undefined,
         }
       : {
+          tenantId,
           name: formData.name,
-          connectionType: 'oidc',
-          allowedDomains: formData.allowedDomains,
+          connectionType: Connection_Type.OIDC,
+          allowedDomains: JSON.stringify(formData.allowedDomains),
           oidcIssuer: formData.issuer,
           oidcClientId: formData.clientId,
-          oidcClientSecret: formData.clientSecret,
         };
 
     try {
-      const response = await apiClient.post(apiURL(`/sso/tenant/${tenantId}/connections/`), body);
+      const result = await createConnection({ variables: { input } });
+      const conn = result.data?.createSsoConnection?.ssoConnection;
 
-      const data = response.data;
-      
-      if (data.id) {
-        setConnectionId(data.id);
+      if (conn?.id) {
+        setConnectionId(conn.id);
       }
-      if (data.spMetadataUrl) {
-        setSpMetadataUrl(data.spMetadataUrl);
+      if (conn?.spMetadataUrl) {
+        setSpMetadataUrl(conn.spMetadataUrl);
       }
-      if (data.spAcsUrl) {
-        setSpAcsUrl(data.spAcsUrl);
+      if (conn?.spAcsUrl) {
+        setSpAcsUrl(conn.spAcsUrl);
       }
-      if (data.spEntityId) {
-        setSpEntityId(data.spEntityId);
+      if (conn?.spEntityId) {
+        setSpEntityId(conn.spEntityId);
       }
-      if (data.oidcCallbackUrl) {
-        setOidcCallbackUrl(data.oidcCallbackUrl);
+      if (conn?.oidcCallbackUrl) {
+        setOidcCallbackUrl(conn.oidcCallbackUrl);
       }
-      
+
       setStep('success');
       toast({
         description: intl.formatMessage({
@@ -131,13 +135,15 @@ export const AddSSOConnectionModal = ({ closeModal, onSuccess, tenantId }: AddSS
         variant: 'success',
       });
       onSuccess?.();
-
     } catch (error) {
       toast({
-        description: error instanceof Error ? error.message : intl.formatMessage({
-          defaultMessage: 'Failed to create SSO connection.',
-          id: 'Add SSO Modal / Error Toast',
-        }),
+        description:
+          error instanceof Error
+            ? error.message
+            : intl.formatMessage({
+                defaultMessage: 'Failed to create SSO connection.',
+                id: 'Add SSO Modal / Error Toast',
+              }),
         variant: 'destructive',
       });
     } finally {

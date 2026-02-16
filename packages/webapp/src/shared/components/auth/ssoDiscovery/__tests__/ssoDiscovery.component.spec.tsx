@@ -1,3 +1,5 @@
+import { SsoDiscoverDocument } from '@sb/webapp-api-client';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { ENV } from '@sb/webapp-core/config/env';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
@@ -12,13 +14,24 @@ jest.mock('@sb/webapp-core/config/env', () => ({
   },
 }));
 
-const mockFetch = jest.fn();
-const originalFetch = global.fetch;
 const originalLocation = window.location;
 
+const createSsoDiscoverMock = (
+  email: string,
+  data: { ssoAvailable: boolean; requireSso?: boolean; connections: { id: string; name: string; type: string; tenantId: string; tenantName: string; loginUrl: string }[] }
+) =>
+  composeMockedQueryResult(SsoDiscoverDocument, {
+    variables: { email },
+    data: {
+      ssoDiscover: {
+        ssoAvailable: data.ssoAvailable,
+        requireSso: data.requireSso ?? false,
+        connections: data.connections,
+      },
+    },
+  });
+
 beforeEach(() => {
-  mockFetch.mockReset();
-  global.fetch = mockFetch;
   Object.defineProperty(window, 'location', {
     value: { ...originalLocation, href: '', search: '' },
     writable: true,
@@ -26,7 +39,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  global.fetch = originalFetch;
   Object.defineProperty(window, 'location', { value: originalLocation, writable: true });
 });
 
@@ -49,47 +61,34 @@ describe('SSODiscovery: Component', () => {
 
   describe('when SSO is enabled', () => {
     it('should render nothing when no SSO is available for email domain', async () => {
-      mockFetch.mockResolvedValue({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            sso_available: false,
-            require_sso: false,
-            connections: [],
-          }),
+      const { waitForApolloMocks } = render(<SSODiscovery email="user@gmail.com" />, {
+        apolloMocks: (defaultMocks) =>
+          defaultMocks.concat(
+            createSsoDiscoverMock('user@gmail.com', { ssoAvailable: false, connections: [] })
+          ),
       });
-
-      const { waitForApolloMocks } = render(
-        <SSODiscovery email="user@gmail.com" />
-      );
       await waitForApolloMocks();
 
       expect(screen.queryByText(/sso available/i)).not.toBeInTheDocument();
     });
 
     it('should show single SSO connection when available', async () => {
-      mockFetch.mockResolvedValue({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            sso_available: true,
-            require_sso: false,
-            connections: [
-              {
-                id: 'conn-1',
-                name: 'Okta',
-                type: 'saml',
-                tenant_id: 't1',
-                tenant_name: 'Acme Corp',
-                login_url: '/api/sso/saml/conn-1/login',
-              },
-            ],
-          }),
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'Okta',
+          type: 'saml',
+          tenantId: 't1',
+          tenantName: 'Acme Corp',
+          loginUrl: '/api/sso/saml/conn-1/login',
+        },
+      ];
+      const { waitForApolloMocks } = render(<SSODiscovery email="user@acme.com" />, {
+        apolloMocks: (defaultMocks) =>
+          defaultMocks.concat(
+            createSsoDiscoverMock('user@acme.com', { ssoAvailable: true, connections })
+          ),
       });
-
-      const { waitForApolloMocks } = render(
-        <SSODiscovery email="user@acme.com" />
-      );
       await waitForApolloMocks();
 
       expect(await screen.findByText(/sso available for acme\.com/i, {}, { timeout: 2000 })).toBeInTheDocument();
@@ -98,27 +97,28 @@ describe('SSODiscovery: Component', () => {
 
     it('should call onSSORequired when require_sso is true', async () => {
       const onSSORequired = jest.fn();
-      mockFetch.mockResolvedValue({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            sso_available: true,
-            require_sso: true,
-            connections: [
-              {
-                id: 'conn-1',
-                name: 'Okta',
-                type: 'saml',
-                tenant_id: 't1',
-                tenant_name: 'Acme Corp',
-                login_url: '/api/sso/saml/conn-1/login',
-              },
-            ],
-          }),
-      });
-
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'Okta',
+          type: 'saml',
+          tenantId: 't1',
+          tenantName: 'Acme Corp',
+          loginUrl: '/api/sso/saml/conn-1/login',
+        },
+      ];
       const { waitForApolloMocks } = render(
-        <SSODiscovery email="user@acme.com" onSSORequired={onSSORequired} />
+        <SSODiscovery email="user@acme.com" onSSORequired={onSSORequired} />,
+        {
+          apolloMocks: (defaultMocks) =>
+            defaultMocks.concat(
+              createSsoDiscoverMock('user@acme.com', {
+                ssoAvailable: true,
+                requireSso: true,
+                connections,
+              })
+            ),
+        }
       );
       await waitForApolloMocks();
 
@@ -127,28 +127,22 @@ describe('SSODiscovery: Component', () => {
     });
 
     it('should redirect to SSO login when continue button is clicked', async () => {
-      mockFetch.mockResolvedValue({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            sso_available: true,
-            require_sso: false,
-            connections: [
-              {
-                id: 'conn-1',
-                name: 'Okta',
-                type: 'saml',
-                tenant_id: 't1',
-                tenant_name: 'Acme Corp',
-                login_url: '/api/sso/saml/conn-1/login',
-              },
-            ],
-          }),
+      const connections = [
+        {
+          id: 'conn-1',
+          name: 'Okta',
+          type: 'saml',
+          tenantId: 't1',
+          tenantName: 'Acme Corp',
+          loginUrl: '/api/sso/saml/conn-1/login',
+        },
+      ];
+      const { waitForApolloMocks } = render(<SSODiscovery email="user@acme.com" />, {
+        apolloMocks: (defaultMocks) =>
+          defaultMocks.concat(
+            createSsoDiscoverMock('user@acme.com', { ssoAvailable: true, connections })
+          ),
       });
-
-      const { waitForApolloMocks } = render(
-        <SSODiscovery email="user@acme.com" />
-      );
       await waitForApolloMocks();
 
       await screen.findByText(/sso available for acme\.com/i, {}, { timeout: 2000 });

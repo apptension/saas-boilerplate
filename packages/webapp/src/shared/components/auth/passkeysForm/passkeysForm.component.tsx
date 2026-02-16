@@ -1,4 +1,3 @@
-import { apiClient } from '@sb/webapp-api-client/api';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { Badge } from '@sb/webapp-core/components/ui/badge';
@@ -23,8 +22,10 @@ import {
   Trash2,
   XCircle,
 } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+
+import { useTenantPasskeys } from '@sb/webapp-tenants/hooks';
 
 interface Passkey {
   id: string;
@@ -76,53 +77,22 @@ export const PasskeysForm = () => {
   const { toast } = useToast();
   const { isOpen: isModalOpen, setIsOpen: setIsModalOpen } = useOpenState(false);
 
-  const [passkeys, setPasskeys] = useState<Passkey[]>([]);
-  const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
 
-  // Modal state
   const [passkeyName, setPasskeyName] = useState('');
   const [step, setStep] = useState<RegistrationStep>('name');
   const [isRegistering, setIsRegistering] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Check if passkeys feature is enabled and WebAuthn is supported
   const isSupported =
     ENV.ENABLE_PASSKEYS && typeof window !== 'undefined' && !!window.PublicKeyCredential;
 
-  const fetchPasskeys = useCallback(async () => {
-    if (!isSupported) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await apiClient.get(`${ENV.BASE_API_URL}/sso/passkeys/`);
-      const data = response.data;
-      // Ensure we always set an array even if response is malformed
-      setPasskeys(Array.isArray(data) ? data : []);
-    } catch (error: unknown) {
-      // Silently handle errors - passkeys feature may not be available
-      // This prevents console noise when the backend SSO app is not configured
-      if (process.env.NODE_ENV === 'development') {
-        console.warn('Passkeys fetch failed (this is expected if SSO is not configured):', error);
-      }
-      setPasskeys([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [isSupported]);
-
-  useEffect(() => {
-    fetchPasskeys();
-  }, [fetchPasskeys]);
+  const { passkeys, loading, refetch, deletePasskey } = useTenantPasskeys(false);
 
   const handleDeletePasskey = async (passkeyId: string) => {
     setDeleting(passkeyId);
-
     try {
-      await apiClient.delete(`${ENV.BASE_API_URL}/sso/passkeys/${passkeyId}`);
-      setPasskeys((prev) => prev.filter((p) => p.id !== passkeyId));
+      await deletePasskey({ variables: { input: { id: passkeyId } } });
       toast({
         description: intl.formatMessage({
           defaultMessage: 'Passkey deleted.',
@@ -130,7 +100,7 @@ export const PasskeysForm = () => {
         }),
         variant: 'success',
       });
-    } catch (error) {
+    } catch {
       toast({
         description: intl.formatMessage({
           defaultMessage: 'Failed to delete passkey.',
@@ -267,7 +237,7 @@ export const PasskeysForm = () => {
 
       // Refresh passkeys list and close modal after a delay
       setTimeout(() => {
-        fetchPasskeys();
+        refetch();
         closeModal();
       }, 1500);
     } catch (error) {
@@ -304,7 +274,7 @@ export const PasskeysForm = () => {
     } finally {
       setIsRegistering(false);
     }
-  }, [passkeyName, intl, toast, fetchPasskeys, closeModal]);
+  }, [passkeyName, intl, toast, refetch, closeModal]);
 
   const handleRetry = () => {
     setStep('name');
@@ -387,17 +357,17 @@ export const PasskeysForm = () => {
                           <FormattedMessage
                             defaultMessage="Created {date}"
                             id="Passkeys / Created date"
-                            values={{ date: new Date(passkey.createdAt).toLocaleDateString() }}
+                            values={{ date: new Date(passkey.createdAt as string).toLocaleDateString() }}
                           />
                         </span>
-                        {passkey.lastUsedAt && (
+                        {passkey.lastUsedAt != null && (
                           <>
                             <span>•</span>
                             <span>
                               <FormattedMessage
                                 defaultMessage="Last used {date}"
                                 id="Passkeys / Last used date"
-                                values={{ date: new Date(passkey.lastUsedAt).toLocaleDateString() }}
+                                values={{ date: new Date(passkey.lastUsedAt as string).toLocaleDateString() }}
                               />
                             </span>
                           </>
