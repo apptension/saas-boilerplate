@@ -114,6 +114,31 @@ services:
       retries: 5
 
   # =============================================================================
+  # Database Migrations (runs once at startup, then exits)
+  # =============================================================================
+  backend-migrations:
+    build:
+      context: ./packages/backend
+      target: backend
+    container_name: backend-migrations
+    restart: "no"
+    command: ["./scripts/runtime/run_migrations.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DJANGO_DEBUG=False
+      - ENVIRONMENT_NAME=production
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - HASHID_FIELD_SALT=${HASHID_FIELD_SALT}
+      - DATABASE_URL=postgresql://backend:${POSTGRES_PASSWORD}@db:5432/backend
+      - STRIPE_LIVE_SECRET_KEY=${STRIPE_LIVE_SECRET_KEY:-sk_<CHANGE_ME>}
+      - STRIPE_TEST_SECRET_KEY=${STRIPE_TEST_SECRET_KEY:-sk_test_<CHANGE_ME>}
+      - STRIPE_CHECKS_ENABLED=False
+    networks:
+      - internal
+
+  # =============================================================================
   # Django Backend API
   # =============================================================================
   backend:
@@ -122,11 +147,14 @@ services:
       target: backend
     container_name: backend
     restart: unless-stopped
+    command: ["./scripts/runtime/run.sh"]
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
+      backend-migrations:
+        condition: service_completed_successfully
     environment:
       # Platform configuration
       - STORAGE_BACKEND=${STORAGE_BACKEND:-local}
