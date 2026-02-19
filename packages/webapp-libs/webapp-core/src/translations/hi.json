@@ -9,34 +9,34 @@
     "defaultMessage": "उपयोग किए गए डेटा स्रोत"
   },
   "AI Assistant / Example prompt 1": {
-    "defaultMessage": "हमारी वित्तीय स्थिति क्या है?"
+    "defaultMessage": "मेरी आइटम सूची दिखाएं"
   },
   "AI Assistant / Example prompt 2": {
-    "defaultMessage": "सबसे बेहतर प्रदर्शन करने वाले प्रोजेक्ट?"
+    "defaultMessage": "मेरे दस्तावेज़ दिखाएं"
   },
   "AI Assistant / Example prompt 3": {
-    "defaultMessage": "कैश फ्लो का विश्लेषण करें"
+    "defaultMessage": "हमारी हाल की गतिविधि क्या है?"
   },
   "AI Assistant / Footer hint": {
-    "defaultMessage": "रियल-टाइम वित्तीय इनसाइट्स · बंद करने के लिए Esc दबाएं"
+    "defaultMessage": "वर्कस्पेस सहायक · बंद करने के लिए Esc दबाएं"
   },
   "AI Assistant / Input placeholder": {
-    "defaultMessage": "रेवेन्यू, प्रोजेक्ट्स, कॉस्ट, फोरकास्ट आदि के बारे में पूछें..."
+    "defaultMessage": "आइटम, दस्तावेज़, गतिविधि के बारे में पूछें..."
   },
   "AI Assistant / New Chat": {
     "defaultMessage": "नई चैट"
   },
   "AI Assistant / Search placeholder": {
-    "defaultMessage": "CFO से पूछें..."
+    "defaultMessage": "Navigator से पूछें..."
   },
   "AI Assistant / Subtitle": {
-    "defaultMessage": "AI-संचालित वित्तीय इनसाइट्स"
+    "defaultMessage": "AI-संचालित वर्कस्पेस सहायक"
   },
   "AI Assistant / Title": {
-    "defaultMessage": "CFO Assistant"
+    "defaultMessage": "SaaS Navigator"
   },
   "AI Assistant / Welcome message": {
-    "defaultMessage": "मैं आपके वित्तीय डेटा का विश्लेषण कर सकता हूँ, प्रोजेक्ट की लाभप्रदता पर इनसाइट्स दे सकता हूँ, ट्रेंड्स का पूर्वानुमान लगा सकता हूँ और रणनीतिक निर्णयों में मदद कर सकता हूँ।"
+    "defaultMessage": "मैं आपके वर्कस्पेस में नेविगेट करने, आइटम सूचीबद्ध और प्रबंधित करने, दस्तावेज़ दिखाने, गतिविधि लॉग खोजने और आपके डेटा के बारे में प्रश्नों का उत्तर देने में मदद कर सकता हूँ।"
   },
   "AI Assistant / Welcome title": {
     "defaultMessage": "मैं आज आपकी कैसे मदद कर सकता हूँ?"

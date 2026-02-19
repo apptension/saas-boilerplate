@@ -9,34 +9,34 @@
     "defaultMessage": "已使用的数据源"
   },
   "AI Assistant / Example prompt 1": {
-    "defaultMessage": "我们的财务状况如何？"
+    "defaultMessage": "列出我的项目"
   },
   "AI Assistant / Example prompt 2": {
-    "defaultMessage": "表现最好的项目？"
+    "defaultMessage": "显示我的文档"
   },
   "AI Assistant / Example prompt 3": {
-    "defaultMessage": "分析现金流"
+    "defaultMessage": "我们最近有什么活动？"
   },
   "AI Assistant / Footer hint": {
-    "defaultMessage": "实时财务洞察 · 按 Esc 关闭"
+    "defaultMessage": "工作区助手 · 按 Esc 关闭"
   },
   "AI Assistant / Input placeholder": {
-    "defaultMessage": "询问收入、项目、成本、预测等..."
+    "defaultMessage": "询问项目、文档、活动..."
   },
   "AI Assistant / New Chat": {
     "defaultMessage": "新对话"
   },
   "AI Assistant / Search placeholder": {
-    "defaultMessage": "问问 CFO..."
+    "defaultMessage": "询问 Navigator..."
   },
   "AI Assistant / Subtitle": {
-    "defaultMessage": "AI 驱动的财务洞察"
+    "defaultMessage": "AI 驱动的工作区助手"
   },
   "AI Assistant / Title": {
-    "defaultMessage": "CFO Assistant"
+    "defaultMessage": "SaaS Navigator"
   },
   "AI Assistant / Welcome message": {
-    "defaultMessage": "我可以分析您的财务数据，提供项目盈利能力洞察，预测趋势，并协助制定战略决策。"
+    "defaultMessage": "我可以帮助您浏览工作区、列出和管理项目、显示文档、搜索活动日志并回答有关您数据的问题。"
   },
   "AI Assistant / Welcome title": {
     "defaultMessage": "今天我能帮您做什么？"

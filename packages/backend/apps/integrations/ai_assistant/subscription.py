@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 from .views import (
     get_tool_display_name,
     EntityTracker,
-    get_cfo_system_prompt,  # Use the full CFO prompt with link instructions
+    get_navigator_system_prompt,
 )
 
 
@@ -192,7 +192,7 @@ class SendAiMessageMutation(graphene.Mutation):
             openai_tools = await sync_to_async(mcp_client.convert_to_openai_tools)(mcp_tools) if mcp_tools else None
 
             # Build messages
-            messages = [{"role": "system", "content": get_cfo_system_prompt()}]
+            messages = [{"role": "system", "content": get_navigator_system_prompt()}]
 
             for hist_msg in (history or [])[-10:]:
                 if isinstance(hist_msg, str):

@@ -36,6 +36,7 @@ import { useAiAssistant, AiMessage, ToolCall } from '../../hooks/useAiAssistant'
 
 // Entity link patterns for rich linking in AI responses
 const ENTITY_LINK_PATTERNS = {
+  item: /^item:(.+)$/,
   project: /^project:(.+)$/,
   client: /^client:(.+)$/,
   person: /^person:(.+)$/,
@@ -73,6 +74,7 @@ const preprocessEntityLinks = (content: string): string => {
 
 // Route mappings for entity links
 const ENTITY_ROUTES = {
+  item: 'crud-demo-item',
   project: 'management/projects',
   client: 'management/clients',
   person: 'management/people',
@@ -81,6 +83,7 @@ const ENTITY_ROUTES = {
 
 // Icons for entity types
 const ENTITY_ICONS = {
+  item: Database,
   project: FolderOpen,
   client: Building2,
   person: Users,
@@ -106,7 +109,7 @@ const EntityLink = ({ href, children, onNavigate }: EntityLinkProps) => {
     if (!href) return null;
     
     // Check URL path format first: /entity/type/id
-    const urlPathMatch = href.match(/^\/entity\/(project|client|person|invoice)\/(.+)$/);
+    const urlPathMatch = href.match(/^\/entity\/(item|project|client|person|invoice)\/(.+)$/);
     if (urlPathMatch) {
       // Decode the URL-encoded ID (handles base64 characters like =, +, /)
       const decodedId = decodeURIComponent(urlPathMatch[2]);
@@ -133,6 +136,7 @@ const EntityLink = ({ href, children, onNavigate }: EntityLinkProps) => {
     
     // Badge color schemes for different entity types
     const badgeStyles = {
+      item: 'bg-sky-100 text-sky-800 hover:bg-sky-200 dark:bg-sky-900/40 dark:text-sky-300 dark:hover:bg-sky-900/60 border-sky-200 dark:border-sky-800',
       project: 'bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60 border-blue-200 dark:border-blue-800',
       client: 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60 border-emerald-200 dark:border-emerald-800',
       person: 'bg-violet-100 text-violet-800 hover:bg-violet-200 dark:bg-violet-900/40 dark:text-violet-300 dark:hover:bg-violet-900/60 border-violet-200 dark:border-violet-800',
@@ -301,23 +305,23 @@ export const CommandPalette = ({ trigger, triggerClassName }: CommandPaletteProp
 
   const examplePrompts = [
     {
-      icon: TrendingUp,
+      icon: Database,
       label: intl.formatMessage({
-        defaultMessage: "What's our financial health?",
+        defaultMessage: 'List my items',
         id: 'AI Assistant / Example prompt 1',
       }),
     },
     {
-      icon: BarChart3,
+      icon: FolderOpen,
       label: intl.formatMessage({
-        defaultMessage: 'Best performing projects?',
+        defaultMessage: 'Show my documents',
         id: 'AI Assistant / Example prompt 2',
       }),
     },
     {
-      icon: DollarSign,
+      icon: Zap,
       label: intl.formatMessage({
-        defaultMessage: 'Analyze cash flow',
+        defaultMessage: 'What recent activity do we have?',
         id: 'AI Assistant / Example prompt 3',
       }),
     },
@@ -344,7 +348,7 @@ export const CommandPalette = ({ trigger, triggerClassName }: CommandPaletteProp
     >
       <Sparkles className="h-4 w-4 xl:mr-2 text-primary" />
       <span className="hidden xl:inline-flex">
-        <FormattedMessage defaultMessage="Ask CFO..." id="AI Assistant / Search placeholder" />
+        <FormattedMessage defaultMessage="Ask Navigator..." id="AI Assistant / Search placeholder" />
       </span>
       <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 xl:flex">
         <span className="text-xs">⌘</span>K
@@ -371,7 +375,7 @@ export const CommandPalette = ({ trigger, triggerClassName }: CommandPaletteProp
           onOpenAutoFocus={handleOpenAutoFocus}
         >
           <VisuallyHidden.Root asChild>
-            <DialogTitle>CFO Assistant</DialogTitle>
+            <DialogTitle>SaaS Navigator</DialogTitle>
           </VisuallyHidden.Root>
 
           {/* Header */}
@@ -389,11 +393,11 @@ export const CommandPalette = ({ trigger, triggerClassName }: CommandPaletteProp
               </div>
               <div>
                 <h2 className="font-semibold text-lg">
-                  <FormattedMessage defaultMessage="CFO Assistant" id="AI Assistant / Title" />
+                  <FormattedMessage defaultMessage="SaaS Navigator" id="AI Assistant / Title" />
                 </h2>
                 <p className="text-xs text-muted-foreground">
                   {isConnected ? (
-                    <FormattedMessage defaultMessage="AI-powered financial insights" id="AI Assistant / Subtitle" />
+                    <FormattedMessage defaultMessage="AI-powered workspace assistant" id="AI Assistant / Subtitle" />
                   ) : (
                     <FormattedMessage defaultMessage="Connecting..." id="AI Assistant / Connecting" />
                   )}

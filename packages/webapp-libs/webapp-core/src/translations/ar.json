@@ -9,34 +9,34 @@
     "defaultMessage": "مصادر البيانات المستخدمة"
   },
   "AI Assistant / Example prompt 1": {
-    "defaultMessage": "ما هي صحتنا المالية؟"
+    "defaultMessage": "عرض عناصري"
   },
   "AI Assistant / Example prompt 2": {
-    "defaultMessage": "ما هي أفضل المشاريع أداءً؟"
+    "defaultMessage": "عرض مستنداتي"
   },
   "AI Assistant / Example prompt 3": {
-    "defaultMessage": "حلّل التدفق النقدي"
+    "defaultMessage": "ما النشاط الأخير لدينا؟"
   },
   "AI Assistant / Footer hint": {
-    "defaultMessage": "رؤى مالية فورية · اضغط Esc للإغلاق"
+    "defaultMessage": "مساعد مساحة العمل · اضغط Esc للإغلاق"
   },
   "AI Assistant / Input placeholder": {
-    "defaultMessage": "اسأل عن الإيرادات، المشاريع، التكاليف، التوقعات..."
+    "defaultMessage": "اسأل عن العناصر، المستندات، النشاط..."
   },
   "AI Assistant / New Chat": {
     "defaultMessage": "محادثة جديدة"
   },
   "AI Assistant / Search placeholder": {
-    "defaultMessage": "اسأل CFO..."
+    "defaultMessage": "اسأل Navigator..."
   },
   "AI Assistant / Subtitle": {
-    "defaultMessage": "رؤى مالية مدعومة بالذكاء الاصطناعي"
+    "defaultMessage": "مساعد مساحة العمل بالذكاء الاصطناعي"
   },
   "AI Assistant / Title": {
-    "defaultMessage": "CFO Assistant"
+    "defaultMessage": "SaaS Navigator"
   },
   "AI Assistant / Welcome message": {
-    "defaultMessage": "أستطيع تحليل بياناتك المالية، وتقديم رؤى حول ربحية المشاريع، وتوقّع الاتجاهات، والمساعدة في القرارات الاستراتيجية."
+    "defaultMessage": "يمكنني مساعدتك في التنقل في مساحة العمل، وعرض وإدارة العناصر، وعرض المستندات، والبحث في سجلات النشاط، والإجابة على أسئلة حول بياناتك."
   },
   "AI Assistant / Welcome title": {
     "defaultMessage": "كيف يمكنني مساعدتك اليوم؟"

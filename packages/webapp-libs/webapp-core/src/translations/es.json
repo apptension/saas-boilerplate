@@ -9,34 +9,34 @@
     "defaultMessage": "Fuentes de datos utilizadas"
   },
   "AI Assistant / Example prompt 1": {
-    "defaultMessage": "¿Cuál es nuestra salud financiera?"
+    "defaultMessage": "Listar mis elementos"
   },
   "AI Assistant / Example prompt 2": {
-    "defaultMessage": "¿Proyectos con mejor rendimiento?"
+    "defaultMessage": "Mostrar mis documentos"
   },
   "AI Assistant / Example prompt 3": {
-    "defaultMessage": "Analizar el flujo de caja"
+    "defaultMessage": "¿Qué actividad reciente tenemos?"
   },
   "AI Assistant / Footer hint": {
-    "defaultMessage": "Información financiera en tiempo real · Presiona Esc para cerrar"
+    "defaultMessage": "Asistente de workspace · Presiona Esc para cerrar"
   },
   "AI Assistant / Input placeholder": {
-    "defaultMessage": "Pregunta sobre ingresos, proyectos, costos, previsiones..."
+    "defaultMessage": "Pregunta sobre elementos, documentos, actividad..."
   },
   "AI Assistant / New Chat": {
     "defaultMessage": "Nuevo chat"
   },
   "AI Assistant / Search placeholder": {
-    "defaultMessage": "Preguntar al CFO..."
+    "defaultMessage": "Preguntar al Navigator..."
   },
   "AI Assistant / Subtitle": {
-    "defaultMessage": "Información financiera con IA"
+    "defaultMessage": "Asistente de workspace con IA"
   },
   "AI Assistant / Title": {
-    "defaultMessage": "CFO Assistant"
+    "defaultMessage": "SaaS Navigator"
   },
   "AI Assistant / Welcome message": {
-    "defaultMessage": "Puedo analizar tus datos financieros, ofrecer información sobre la rentabilidad de proyectos, prever tendencias y ayudarte con decisiones estratégicas."
+    "defaultMessage": "Puedo ayudarte a navegar tu workspace, listar y gestionar elementos, mostrar documentos, buscar registros de actividad y responder preguntas sobre tus datos."
   },
   "AI Assistant / Welcome title": {
     "defaultMessage": "¿Cómo puedo ayudarte hoy?"

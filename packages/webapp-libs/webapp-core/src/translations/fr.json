@@ -27,13 +27,13 @@
     "defaultMessage": "Nouvelle discussion"
   },
   "AI Assistant / Search placeholder": {
-    "defaultMessage": "Demander au CFO..."
+    "defaultMessage": "Demander au Navigator..."
   },
   "AI Assistant / Subtitle": {
     "defaultMessage": "Analyses financières basées sur l’IA"
   },
   "AI Assistant / Title": {
-    "defaultMessage": "CFO Assistant"
+    "defaultMessage": "SaaS Navigator"
   },
   "AI Assistant / Welcome message": {
     "defaultMessage": "Je peux analyser vos données financières, fournir des analyses sur la rentabilité des projets, prévoir les tendances et vous aider dans vos décisions stratégiques."

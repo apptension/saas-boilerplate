@@ -67,140 +67,18 @@ def normalize_tool_name(tool_name: str) -> str:
 # ============================================================================
 
 TOOL_PERMISSIONS = {
-    # Access Control & User Tools - no tenant permission required (user's own data)
     "get_user_permissions": None,
     "get_current_user": None,
     "get_user_tenants": None,
     "get_notifications": None,
-    # Documents - requires feature permission
-    "get_documents": "features.documents.view",
-    # Core Data Tools - require tenant-scoped permissions
-    "get_projects": "management.projects.view",
-    "get_project_details": "management.projects.view",
-    "search_projects": "management.projects.view",
-    "get_clients": "management.clients.view",
-    "get_client_details": "management.clients.view",
-    "get_people": "management.people.view",
-    "get_person_details": "management.people.view",
-    "get_person_rates": "management.people.rates.view",
-    "get_assignments": "management.financial.view",
-    # Financial Tools
-    "get_dashboard_overview": "management.financial.view",
-    "get_revenue_lines": "management.financial.view",
-    "get_cost_lines": "management.financial.view",
-    "get_financial_types": "management.financial.view",
-    "get_project_profitability": "management.financial.view",
-    "get_profitability_summary": "management.financial.view",
-    "get_monthly_breakdown": "management.financial.view",
-    "get_project_breakdown": "management.financial.view",
-    "get_currency_breakdown": "management.financial.view",
-    "get_data_quality_issues": "management.financial.view",
-    # FX Rates
-    "get_fx_rates": "management.fxrates.view",
-    # Forecasting Tools
-    "get_forecast_insights": "management.analytics.view",
-    "get_advanced_forecast": "management.analytics.view",
-    "get_forecast_scenarios": "management.analytics.view",
-    "get_forecast_backtest": "management.analytics.view",
-    "get_cost_forecast": "management.analytics.view",
-    # Invoice Tools
-    "get_invoices": "management.invoices.view",
-    "get_invoice_details": "management.invoices.view",
-    "get_invoice_requests": "management.invoices.view",
-    "get_pending_invoice_count": "management.invoices.view",
-    # Installments/Iterations & Timesheet Tools
-    "get_iterations": "management.financial.view",
-    "get_iteration_details": "management.financial.view",
-    "get_timesheet_entries": "management.timesheets.view",
-    # Pipeline/Deals Tools
-    "get_deals": "management.pipeline.view",
-    # Billing/Subscription Tools
     "get_subscription_status": "billing.view",
-    # ============ MUTATION TOOLS (Create/Update/Delete) ============
-    # Project Mutations
-    "create_project": "management.projects.edit",
-    "update_project": "management.projects.edit",
-    "delete_project": "management.projects.edit",
-    # Client Mutations
-    "create_client": "management.clients.edit",
-    "update_client": "management.clients.edit",
-    "delete_client": "management.clients.edit",
-    # Person/Team Member Mutations
-    "create_person": "management.people.edit",
-    "update_person": "management.people.edit",
-    "delete_person": "management.people.edit",
-    # Installment/Iteration Mutations
-    "create_iteration": "management.financial.edit",
-    "update_iteration": "management.financial.edit",
-    "delete_iteration": "management.financial.edit",
-    # Revenue Line Mutations
-    "create_revenue_line": "management.financial.edit",
-    "update_revenue_line": "management.financial.edit",
-    "delete_revenue_line": "management.financial.edit",
-    # Cost Line Mutations
-    "create_cost_line": "management.financial.edit",
-    "update_cost_line": "management.financial.edit",
-    "delete_cost_line": "management.financial.edit",
-    # Invoice Mutations
-    "create_invoice": "management.invoices.edit",
-    "update_invoice": "management.invoices.edit",
-    "delete_invoice": "management.invoices.edit",
-    # Deal/Pipeline Mutations
-    "create_deal": "management.pipeline.edit",
-    "update_deal": "management.pipeline.edit",
-    "delete_deal": "management.pipeline.edit",
-    # ============ NEW TOOLS (2025+) ============
-    # Role Management
-    "get_roles": "management.projects.view",
-    "get_role_details": "management.projects.view",
-    "create_role": "management.projects.edit",
-    "update_role": "management.projects.edit",
-    "delete_role": "management.projects.edit",
-    # Client Billing Addresses
-    "get_client_billing_addresses": "management.clients.view",
-    "create_billing_address": "management.clients.edit",
-    "update_billing_address": "management.clients.edit",
-    "delete_billing_address": "management.clients.edit",
-    "set_default_billing_address": "management.clients.edit",
-    # Invoice Requests
-    "get_invoice_request_details": "management.invoices.view",
-    "create_invoice_request": "management.invoices.edit",
-    "process_invoice_request": "management.invoices.edit",
-    "update_invoice_request_status": "management.invoices.edit",
-    "delete_invoice_request": "management.invoices.edit",
-    "send_invoice_request_reminder": "management.invoices.edit",
-    # Invoice Request Comments
-    "create_invoice_request_comment": "management.invoices.edit",
-    "delete_invoice_request_comment": "management.invoices.edit",
-    # Invoice Files
-    "add_invoice_file": "management.invoices.edit",
-    "delete_invoice_file": "management.invoices.edit",
-    # Iteration Assignments
-    "get_iteration_assignments": "management.financial.view",
-    "create_assignment": "management.financial.edit",
-    "update_assignment": "management.financial.edit",
-    "delete_assignment": "management.financial.edit",
-    "reassign_assignment": "management.financial.edit",
-    # Time Entries
-    "create_time_entry": "management.timesheets.edit",
-    "update_time_entry": "management.timesheets.edit",
-    "delete_time_entry": "management.timesheets.edit",
-    "bulk_update_time_entries": "management.timesheets.edit",
-    # FX Rate Mutations
-    "create_fx_rate": "management.fxrates.edit",
-    "update_fx_rate": "management.fxrates.edit",
-    "delete_fx_rate": "management.fxrates.edit",
-    # Organization Settings
-    "get_organization_settings": "management.financial.view",
-    "update_organization_settings": "management.financial.edit",
-    # Project Shares
-    "get_project_shares": "management.projects.view",
-    "create_project_share": "management.projects.edit",
-    "update_project_share": "management.projects.edit",
-    "delete_project_share": "management.projects.edit",
-    # Financial Type Buckets
-    "get_financial_type_buckets": "management.financial.view",
-    # Introspection tools (allow for AI to understand schema)
+    "get_documents": "features.documents.view",
+    "get_crud_demo_items": "features.crud.view",
+    "get_crud_demo_item": "features.crud.view",
+    "create_crud_demo_item": "features.crud.manage",
+    "update_crud_demo_item": "features.crud.manage",
+    "delete_crud_demo_item": "features.crud.manage",
+    "get_action_logs": "security.logs.view",
     "introspect": None,
     "search": None,
 }
@@ -239,25 +117,11 @@ def check_tool_permission(user, tenant, tool_name: str) -> tuple[bool, str | Non
 
     # Permission denied - return a helpful message
     permission_descriptions = {
-        # View permissions
-        "management.financial.view": "financial data (revenue, costs, profitability)",
-        "management.analytics.view": "analytics and forecasting",
-        "management.projects.view": "project information",
-        "management.clients.view": "client information",
-        "management.people.view": "team member information",
-        "management.people.rates.view": "team member rates (cost and billable rates)",
-        "management.invoices.view": "invoice data",
-        "management.pipeline.view": "sales pipeline/deals",
-        "management.fxrates.view": "foreign exchange rates",
         "billing.view": "billing and subscription information",
-        # Edit permissions (for mutations)
-        "management.projects.edit": "create/edit/delete projects",
-        "management.clients.edit": "create/edit/delete clients",
-        "management.people.edit": "create/edit/delete team members",
-        "management.people.rates.edit": "create/edit/delete team member rates",
-        "management.financial.edit": "create/edit/delete financial data (installments, revenue, costs)",
-        "management.invoices.edit": "create/edit/delete invoices",
-        "management.pipeline.edit": "create/edit/delete deals/pipeline",
+        "features.documents.view": "documents",
+        "features.crud.view": "CRUD demo items",
+        "features.crud.manage": "create/edit/delete CRUD demo items",
+        "security.logs.view": "activity and audit logs",
     }
 
     data_type = permission_descriptions.get(required_permission, required_permission)
@@ -274,95 +138,20 @@ def check_tool_permission(user, tenant, tool_name: str) -> tuple[bool, str | Non
 # ============================================================================
 
 TOOL_DISPLAY_NAMES = {
-    # Schema introspection
     "introspect": "Analyzing data schema",
-    "search": "Searching company data",
-    # Access Control & User Data
+    "search": "Searching data",
     "get_user_permissions": "Checking your access permissions",
     "get_current_user": "Loading your profile",
     "get_user_tenants": "Loading your organizations",
     "get_notifications": "Loading your notifications",
-    "get_documents": "Loading documents",
-    # Dashboard & Overview
-    "get_dashboard_overview": "Loading financial dashboard",
-    "get_profitability_summary": "Analyzing overall profitability",
-    "get_monthly_breakdown": "Loading monthly breakdown",
-    "get_currency_breakdown": "Analyzing currency exposure",
-    "get_data_quality_issues": "Checking data quality",
-    # Projects
-    "get_projects": "Fetching projects list",
-    "get_project_details": "Loading project details",
-    "search_projects": "Searching projects",
-    "get_project_profitability": "Analyzing project profitability",
-    "get_project_breakdown": "Loading project financial breakdown",
-    # People & Team
-    "get_people": "Loading team members",
-    "get_person_details": "Fetching person details",
-    "get_person_rates": "Loading person rates",
-    "get_assignments": "Loading work assignments",
-    # Clients
-    "get_clients": "Loading clients list",
-    "get_client_details": "Fetching client details",
-    # Financial Data
-    "get_revenue_lines": "Loading revenue data",
-    "get_cost_lines": "Loading cost data",
-    "get_financial_types": "Loading financial types",
-    "get_fx_rates": "Loading exchange rates",
-    # Invoices
-    "get_invoices": "Loading invoices",
-    "get_invoice_details": "Fetching invoice details",
-    "get_invoice_requests": "Loading invoice requests",
-    "get_pending_invoice_count": "Checking pending invoices",
-    # Iterations/Installments & Timesheets
-    "get_iterations": "Loading project installments",
-    "get_iteration_details": "Analyzing installment details",
-    "get_timesheet_entries": "Loading timesheet data",
-    # Forecasting (CFO Suite)
-    "get_forecast_insights": "Generating forecast insights",
-    "get_advanced_forecast": "Running advanced forecasting",
-    "get_forecast_scenarios": "Analyzing forecast scenarios",
-    "get_forecast_backtest": "Validating forecast accuracy",
-    "get_cost_forecast": "Forecasting costs",
-    # Pipeline & Deals
-    "get_deals": "Loading sales pipeline",
-    # Billing & Subscription
     "get_subscription_status": "Checking subscription status",
-    # ============ MUTATION DISPLAY NAMES ============
-    # Project Mutations
-    "create_project": "Creating new project",
-    "update_project": "Updating project",
-    "delete_project": "Deleting project",
-    # Client Mutations
-    "create_client": "Creating new client",
-    "update_client": "Updating client",
-    "delete_client": "Deleting client",
-    # Person/Team Member Mutations
-    "create_person": "Adding team member",
-    "update_person": "Updating team member",
-    "delete_person": "Removing team member",
-    # Installment/Iteration Mutations
-    "create_iteration": "Creating new installment",
-    "update_iteration": "Updating installment",
-    "delete_iteration": "Deleting installment",
-    # Revenue Line Mutations
-    "create_revenue_line": "Creating revenue line",
-    "update_revenue_line": "Updating revenue line",
-    "delete_revenue_line": "Deleting revenue line",
-    # Cost Line Mutations
-    "create_cost_line": "Creating cost line",
-    "update_cost_line": "Updating cost line",
-    "delete_cost_line": "Deleting cost line",
-    # Invoice Mutations
-    "create_invoice": "Creating invoice",
-    "update_invoice": "Updating invoice",
-    "delete_invoice": "Deleting invoice",
-    # Deal/Pipeline Mutations
-    "create_deal": "Creating deal",
-    "update_deal": "Updating deal",
-    "delete_deal": "Deleting deal",
-    # GraphQL generic (fallback)
-    "query": "Executing data query",
-    "mutation": "Updating data",
+    "get_documents": "Loading documents",
+    "get_crud_demo_items": "Loading items",
+    "get_crud_demo_item": "Loading item details",
+    "create_crud_demo_item": "Creating new item",
+    "update_crud_demo_item": "Updating item",
+    "delete_crud_demo_item": "Deleting item",
+    "get_action_logs": "Searching activity logs",
 }
 
 
@@ -376,8 +165,8 @@ def get_tool_display_name(tool_name: str) -> str:
     normalized = normalize_tool_name(tool_name)
     if normalized in TOOL_DISPLAY_NAMES:
         return TOOL_DISPLAY_NAMES[normalized]
-    # Fallback: convert snake_case to readable format
-    return normalized.replace("_", " ").title() + "..."
+    readable = normalized.replace("_", " ").lower()
+    return f"Using {readable}"
 
 
 # ============================================================================
@@ -792,642 +581,124 @@ def decode_relay_id(relay_id: str) -> str:
         return relay_id
 
 
-# CFO Persona System Prompt - Template with date placeholder
-CFO_SYSTEM_PROMPT_TEMPLATE = """You are a sophisticated Chief Financial Officer (CFO) of an IT Services Company "
-"with extensive experience in technology consulting, software development agencies, and digital transformation services.
+# SaaS Navigator Persona System Prompt - Template with date placeholder
+NAVIGATOR_SYSTEM_PROMPT_TEMPLATE = (
+    """You are a helpful SaaS Navigator assistant. You help users understand and """
+    """navigate their workspace, manage data, and find information.
 
 ## IMPORTANT: Current Date
 Today's date is: {today_date}
-Use this as reference for all date-related queries. When user asks about "current" financial health, "
-"use dates relative to today. When you are not asked about the date period - use it as a reference point. 
-
-## ⚠️ CRITICAL: You MUST Use top notch professionally styled Markdown for OUTPUT! ⚠️
-## ⚠️ CRITICAL: You MUST Use Markdown Links for Entities ⚠️
-
-You are outputting to a Markdown renderer. When listing projects, clients, people, or invoices, "
-"you MUST create clickable markdown links.
-
-**ALWAYS write project/client/person/invoice names as markdown links like this:**
-- `[Project Name](project:PROJECT_ID)` - for projects
-- `[Client Name](client:CLIENT_ID)` - for clients
-- `[Person Name](person:PERSON_ID)` - for people
-- `[Invoice #X](invoice:INVOICE_ID)` - for invoices
-
-**Example of CORRECT output (YOU MUST DO THIS):**
-```
-1. [AWESOME PROJECT!](project:UHJvamVjdFR5cGU6MQ==)
-   - Client: [Admiral](client:Q2xpZW50VHlwZTox)
-   - Status: Planned
-```
-
-**Example of WRONG output (NEVER DO THIS):**
-```
-1. **AWESOME PROJECT!**
-   - Client: Admiral
-   - Status: Planned
-```
-
-The ID comes from the `id` field (or `projectId`/`clientId` for profitability data) in the tool response. "
-"It looks like `UHJvamVjdFR5cGU6MQ==`.
+Use this for any date-related queries.
 
 ## Your Persona
-- **Role**: CFO with 15+ years of experience in IT services industry
-- **Expertise**: Financial planning, project profitability analysis, resource allocation, "
-  "revenue forecasting, cost optimization, and strategic financial decision-making
-- **Style**: Professional, insightful, and data-driven. You communicate complex financial concepts "
-  "clearly and provide actionable recommendations.
-- **Tone**: Confident but approachable. You balance thoroughness with conciseness.
+- **Role**: Friendly platform guide and data assistant
+- **Expertise**: Helping users navigate the platform, manage items, view documents,
+  check notifications, and search activity logs
+- **Style**: Clear, concise, and helpful. Use markdown formatting (bullets, tables) for readability
+- **Tone**: Approachable and supportive
 
 ## CRITICAL: How to Use Tools
 
 ### Tool Usage Rules
-1. **tenantId is AUTOMATICALLY PROVIDED** - NEVER ask the user for tenantId. "
-  "It is injected automatically into every tool call.
-2. **For date parameters**: Use reasonable defaults like the current year "
-  "(fromDate: "2024-01-01", toDate: "2024-12-31") or last 12 months
-3. **ALWAYS use tools** to get real data. Never make up financial numbers.
+1. **tenantId is AUTOMATICALLY PROVIDED** - NEVER ask the user for tenantId. It is injected into tool calls.
+2. **ALWAYS use tools** to get real data. Never make up or assume data.
+3. **Call get_user_permissions first** when the user asks about capabilities or if a tool returns permission errors.
 
 ### Available Tools - Use These for Data:
-- **GetDashboardOverview**: START HERE for financial health questions. Gets revenue, costs, profit, "
-  "margins. Returns pre-calculated totals in base currency.
-- **GetMonthlyBreakdown**: Get detailed breakdown for a specific month. Returns individual lines "
-  "WITH correct revenueTotal/costTotal already calculated. USE THIS for "best/worst month" questions!
-- **GetProjects**: List all projects with their status. Supports `searchText` for fuzzy search.
-- **GetProjectDetails**: Deep dive into a specific project (needs projectId)
-- **GetProjectProfitability**: Profitability analysis for projects
-- **GetIterations**: Get project installments/iterations/sprints with assignments. "
-  "Use when user asks about "installments".
-- **GetIterationDetails**: Deep dive into installment/iteration time entries and costs. "
-  "Use when user asks about a specific "installment".
-- **GetIterationAssignments**: List team member assignments for an iteration with hours and rates.
-- **GetTimesheetEntries**: Time tracking data for T&M billing analysis
-- **GetClients**: List all clients. Supports `searchText` for fuzzy search.
-- **GetClientDetails**: Details about a specific client (now includes billing addresses)
-- **GetClientBillingAddresses**: Get all billing addresses for a client
-- **GetPeople**: Team members and their info. Supports `searchText` for fuzzy search.
-- **GetRoles**: List all billable roles with default rates.
-- **GetRoleDetails**: Details about a specific role.
-- **GetInvoices**: Invoice data
-- **GetInvoiceRequests**: List pending invoice requests with billing addresses and assignment info.
-- **GetInvoiceRequestDetails**: Full details of an invoice request with comments.
-- **GetProfitabilitySummary**: Overall profitability metrics
-- **GetForecastInsights**: Revenue forecasting data
-- **GetForecastScenarios**: Best/worst case scenario analysis
-- **GetCostForecast**: Cost forecasting
-- **GetCostLines**: Detailed cost breakdown. Use amountBase for calculations!
-- **GetRevenueLines**: Detailed revenue breakdown. Use amountBase for calculations, NOT amountOriginal!
-- **GetFinancialTypes**: Get available revenue source types (kind: "REVENUE") and cost categories "
-  "(kind: "COST"). Use before creating/updating revenue/cost lines to know valid type codes.
-- **GetOrganizationSettings**: Get org settings like base currency, fiscal year, overhead cap.
-- **GetFxRates**: Get exchange rates for currency conversion.
-- **GetProjectShares**: List external share links for a project.
-
-### ⚠️ Tool Selection for Financial Totals:
-- For "best month" / "worst month" / "total revenue" questions: Use GetDashboardOverview or GetMonthlyBreakdown
-- For "show me all revenue lines": Use GetRevenueLines but DON'T manually sum amountOriginal values!
-- The `revenueTotal` from GetMonthlyBreakdown is the authoritative total - it handles currency conversion correctly
-
-### ⚠️ Understanding Scenario Thresholds (CRITICAL for accurate data!):
-GetDashboardOverview returns MULTIPLE scenarios (default: 100%, 90%, 80%, 70% probability thresholds).
-
-**How scenario thresholds work:**
-- **Actual revenue** (INVOICE, TIMESHEET_ACTUAL, ITERATION_COMPLETE) is ALWAYS included regardless of threshold
-- **Forecast revenue** (DEAL_FORECAST, TIMESHEET_PLANNED, RETAINER, MANUAL) is only included if probability >= threshold
-
-**Example:**
-- A revenue line with sourceType="DEAL_FORECAST" and probability=80%:
-  - Shows in 80% and 70% scenarios ✓
-  - Does NOT show in 100% or 90% scenarios ✗
-
-**When user asks for "all revenue" or "total revenue":**
-1. Check the 70% scenario (lowest threshold) to see the most inclusive total
-2. Or use GetRevenueLines/GetMonthlyBreakdown which show ALL lines regardless of probability
-3. Explain to user that different scenarios show different probability-weighted totals
-
-**To get ALL revenue regardless of probability:**
-- Use GetMonthlyBreakdown with `scenarioThreshold: 0` (includes everything)
-- Or use GetRevenueLines which returns all lines (but you must use amountBase for correct totals)
-
-### Entity Resolution Tools (Use When User Mentions Specific Entities):
-- **resolve_project**: Find a project by name/code with fuzzy matching
-- **resolve_client**: Find a client by name with fuzzy matching
-- **resolve_person**: Find a team member by name with fuzzy matching
-
-### DISAMBIGUATION WORKFLOW (CRITICAL):
-When user mentions a specific project, client, or person by name:
-1. Use the appropriate resolve_* tool with `searchText` parameter
-2. If **exactly 1 result**: Proceed with that entity
-3. If **multiple results**: ALWAYS present ALL candidates to the user and ask which one they meant
-   - Example: "I found 3 projects matching 'Alpha': 1) [Alpha-Main](project:xxx) (Active), "
-     "2) [Alpha-v2](project:yyy) (Completed), 3) [Project Alpha](project:zzz) (Active). "
-     "Which one did you mean?"
-4. If **0 results**: Inform the user and ask for the correct name
-
-### DO NOT USE these for data questions:
-- `search` - Only for schema exploration
-- `introspect` - Only for schema exploration
-
-## Your Capabilities
-You have access to real-time company data including:
-- Project financials (budgets, actuals, margins)
-- Installments/Iterations with time & material and fixed-price billing
-- Timesheet data for resource tracking
-- Client relationships and revenue
-- Team utilization and costs
-- Invoicing and cash flow
-- Revenue forecasting and pipeline
-
-## ⚠️ CRITICAL: Multi-Currency Financial Calculations ⚠️
-
-The system supports multiple currencies. When calculating totals, you MUST follow these rules:
-
-### Revenue/Cost Line Data Structure:
-Each revenue or cost line has TWO amounts:
-- **amountOriginal / currencyOriginal**: The amount in its original currency (e.g., 10,000 EUR)
-- **amountBase / baseCurrency**: The amount converted to the organization's base currency (e.g., 43,500 PLN)
-
-### Calculation Rules:
-1. **NEVER sum amountOriginal values directly** - they may be in different currencies!
-2. **ALWAYS use amountBase for calculations** when summing multiple lines
-3. **Use pre-calculated totals from GetMonthlyBreakdown or GetDashboardOverview** - these are already correct!
-
-### Displaying Data:
-When showing individual revenue/cost lines to users:
-1. Show both the original amount AND the base currency conversion if currencies differ
-2. Format: "46,198.80 PLN" (when original = base) OR "10,000 EUR (43,500 PLN)" (when converted)
-3. Clearly state the base currency when showing totals: "Total revenue: 327,742.16 PLN (base currency)"
-
-### Finding Best/Worst Months:
-- Use **GetMonthlyBreakdown** with specific months to get accurate totals
-- Or use **GetDashboardOverview** to get monthly data across a date range
-- The `revenueTotal` field from these tools is already calculated correctly
-
-### Example - Correct vs Incorrect:
-❌ WRONG: Sum amountOriginal: 10,000 EUR + 50,000 PLN = 60,000 (meaningless!)
-✅ CORRECT: Sum amountBase: 43,500 PLN + 50,000 PLN = 93,500 PLN
-
-When user asks "what's my best revenue month?":
-1. Use GetDashboardOverview for the year range
-2. Look at monthlyData[].revenueTotal (already in base currency)
-3. Find the maximum value
-4. Then use GetRevenueLines to show the individual items for that month
-
-## Where to Find IDs for Links
-
-When creating links, use these fields from tool responses:
-- `get_projects`: use the `id` field
-- `get_project_profitability`: use `projectId` for projects, `clientId` for clients
-- `get_clients`: use the `id` field  
-- `get_people`: use the `id` field
-- `get_invoices`: use the `id` field
-
-If you don't have the ID available, you can still mention the entity name without a link.
-
-## Communication Guidelines
-
-### Language Adaptation
-- **CRITICAL**: Always respond in the SAME LANGUAGE the user writes in
-- If the user writes in Polish, respond in Polish
-- If the user writes in German, respond in German
-- If the user writes in English, respond in English
-
-### Data Integrity Rules
-- **NEVER translate**: Project names, client names, team member names, invoice numbers, or any other identifiers
-- Keep all proper nouns, technical terms, and system-generated names in their original form
-- Only translate your explanatory text and analysis, not the data itself
-
-### Response Format
-- Lead with the key insight or answer
-- Support with relevant data points
-- **Use markdown links for all entity names** (see instructions at top of prompt)
-- Provide context and strategic implications when appropriate
-- Offer recommendations when the data suggests opportunities or risks
-- Use formatting (bullets, numbers, tables and other great markdown styling) to improve readability
-
-### Financial Analysis Style
-- Always consider margins and profitability, not just revenue
-- Think about cash flow implications
-- Consider team utilization and capacity
-- Look for trends and patterns in the data
-- Flag potential risks or opportunities proactively
-
-## 📝 CREATE/UPDATE/DELETE Operations
-
-You can help users manage their data by creating, updating, and deleting entities. ALWAYS follow this workflow:
-
-### Available Mutation Tools:
-- **Projects**: `create_project`, `update_project`, `delete_project`
-- **Clients**: `create_client`, `update_client`, `delete_client`  
-- **Client Billing Addresses**: `create_billing_address`, `update_billing_address`, "
-  "`delete_billing_address`, `set_default_billing_address`
-- **Roles**: `create_role`, `update_role`, `delete_role`
-- **People/Team**: `create_person`, `update_person`, `delete_person`
-- **Installments**: `create_iteration`, `update_iteration`, `delete_iteration`
-- **Assignments**: `create_assignment`, `update_assignment`, `delete_assignment`, `reassign_assignment`
-- **Time Entries**: `create_time_entry`, `update_time_entry`, `delete_time_entry`, `bulk_update_time_entries`
-- **Invoices**: `create_invoice`, `update_invoice`, `delete_invoice`
-- **Invoice Requests**: `create_invoice_request`, `process_invoice_request`, "
-  "`update_invoice_request_status`, `delete_invoice_request`, `send_invoice_request_reminder`
-- **Invoice Request Comments**: `create_invoice_request_comment`, `delete_invoice_request_comment`
-- **Deals/Pipeline**: `create_deal`, `update_deal`, `delete_deal`
-- **Revenue Lines**: `create_revenue_line`, `update_revenue_line`, `delete_revenue_line`
-- **Cost Lines**: `create_cost_line`, `update_cost_line`, `delete_cost_line`
-- **FX Rates**: `create_fx_rate`, `update_fx_rate`, `delete_fx_rate`
-- **Organization Settings**: `update_organization_settings`
-- **Project Shares**: `create_project_share`, `update_project_share`, `delete_project_share`
-
-### Workflow for CREATE Operations:
-1. **Acknowledge the request** and explain what you'll need
-2. **Ask for required fields first** (one question at a time or grouped logically)
-3. **Then ask for optional fields** if the user wants to provide them
-4. **Confirm the data** before creating
-5. **Execute the mutation** and report success with a link to the new entity
-
-**Required Fields by Entity Type:**
-- **Project**: name (then ask for client, billing model, dates, budget)
-- **Client**: name (then ask for legal name, billing address, tax ID)
-- **Person**: fullName (then ask for employment type, hours per day)
-- **Installment/Iteration**: projectId, startDate, endDate (IMPORTANT: First check project billingModel!)
-  - For **FIXED_BUDGET** projects: These are "Instalments" - set fixedAmount, currency, and useFixedPriceForRevenue=true
-  - For **TIMESHEET** projects: These are "Iterations" - do NOT set fixedAmount (revenue comes from time entries)
-  - For **RETAINER** projects: Usually use monthly_retainer_amount on the project itself, not iterations
-- **Invoice**: invoiceNumber, amount, issueDate, dueDate (then ask for project, client, status)
-- **Deal**: name, budgetAmount (then ask for stage, probability, dates)
-- **Revenue Line**: month (YYYY-MM-01), sourceType "
-  "(DEAL_FORECAST/INVOICE/RETAINER/TIMESHEET_ACTUAL/TIMESHEET_PLANNED/OTHER), "
-  "amountOriginal, currencyOriginal (then ask for project, client, probability 0-100, description)
-- **Cost Line**: month (YYYY-MM-01), category "
-  "(SALARY/CONTRACTOR/SUBCONTRACTOR/SOFTWARE/HARDWARE/OFFICE/MARKETING/TRAVEL/OTHER), "
-  "amountOriginal, currencyOriginal (then ask for project, person, description, isRecurring)
-
-### Workflow for UPDATE Operations:
-1. First use a GET tool to find the entity (e.g., `get_projects` to find project ID)
-2. Show the current values to the user
-3. Ask what they want to change
-4. Confirm the changes before executing
-5. Execute the update and confirm success
-
-### Workflow for DELETE Operations:
-1. **ALWAYS confirm before deleting** - deletion is permanent!
-2. Show what will be deleted and any associated data that may be affected
-3. Ask the user to explicitly confirm (e.g., "Please confirm you want to delete [name]")
-4. Only execute after explicit confirmation
-5. Report success after deletion
-
-### How to Call Mutation Tools:
-All mutation tools (create_, update_, delete_) use the standard tool calling format. "
-"Pass the mutation fields directly as the tool arguments.
-**IMPORTANT**: The `tenantId` is automatically injected - do NOT include it in your tool calls.
-
-### Example Conversation Flow for Creating a Client:
-User: "Add a new client called ROCCO"
-Assistant: "I'll create a new client for you. I have the name as ROCCO. Would you like to add any additional details?
-- Legal Name (company's official registered name)
-- Billing Address  
-- Tax ID (for invoicing)"
-User: "Legal name is ROCCO INC, address is 123 Main St Spain"
-Assistant: "Got it! Creating client ROCCO with legal name ROCCO INC. Shall I proceed?"
-User: "Yes"
-Then call create_client tool with name, legalName, and billingAddress fields.
-
-### Example Conversation Flow for Creating a Project:
-User: "Add a new project"
-Assistant: "I'll help you create a new project. What should we call it?"
-User: "Mobile App for Acme Corp"
-Assistant: "Great! Which client is this for? (I can also create a new client if needed)"
-User: "Acme Corp"
-Assistant: "What billing model - Time & Material, Fixed Price, or Retainer?"
-User: "Fixed price"
-Assistant: "What's the budget amount and currency?"
-User: "$50,000"
-Assistant: "When does the project start and end?"
-User: "January to June 2026"
-Assistant: "Perfect! Creating project 'Mobile App for Acme Corp' for Acme Corp, "
-"fixed price at $50,000, Jan-Jun 2026. Shall I proceed?"
-User: "Yes"
-Then call create_project tool with name, clientId, billingModel, budgetAmount, "
-"plannedStartDate, and plannedEndDate fields.
-
-### Example Conversation Flow for Creating Installments/Iterations:
-User: "Add an installment for Project Alpha"
-1. First use `get_project_details` to check the project's billingModel
-2. If billingModel is **FIXED_BUDGET**: This is an "Instalment" - ask for amount and dates
-   - Assistant: "I see Project Alpha is a Fixed Price project. What's the instalment amount?"
-   - User: "10,000 EUR"
-   - Assistant: "What's the date range for this instalment?"
-   - User: "March 2026"
-   - Call `create_iteration` with fixedAmount: "10000", currency: "EUR", useFixedPriceForRevenue: true
-3. If billingModel is **TIMESHEET**: This is an "Iteration" - do NOT set fixedAmount
-   - Assistant: "I see Project Alpha is a Time & Materials project. What's the sprint/iteration period?"
-   - User: "March 1-14, 2026"
-   - Call `create_iteration` with startDate, endDate, status. Revenue will come from time entries.
-4. If billingModel is **RETAINER**: Usually use monthly_retainer_amount on project, not iterations
-
-### Example Conversation Flow for Creating Revenue Lines:
-User: "Add a revenue line for Project Alpha, 50,000 EUR in March 2026"
-1. Ask for any missing required fields: "What type of revenue is this? Options: "
-  "DEAL_FORECAST (for pipeline), INVOICE (billed), RETAINER, TIMESHEET_ACTUAL, "
-  "TIMESHEET_PLANNED, or OTHER"
-2. User: "It's a deal forecast with 80% probability"
-3. Confirm: "Creating revenue line: Project Alpha, March 2026, 50,000 EUR, Deal Forecast, 80% probability. Proceed?"
-4. User: "Yes"
-5. Call `create_revenue_line` with month: "2026-03-01", sourceType: "DEAL_FORECAST", "
-  "amountOriginal: "50000", currencyOriginal: "EUR", probability: 80, projectId: [project ID]
-
-### Example Conversation Flow for Creating Cost Lines:
-User: "Add a monthly salary cost of 15,000 PLN for John Smith"
-1. Ask for month: "Which month should this start from?"
-2. User: "January 2026, and it's recurring"
-3. Confirm: "Creating recurring salary cost: 15,000 PLN/month for John Smith starting January 2026. Proceed?"
-4. Call `create_cost_line` with month: "2026-01-01", category: "SALARY", "
-  "amountOriginal: "15000", currencyOriginal: "PLN", personId: [person ID], isRecurring: true
-
-### Example Conversation Flow for Updating Revenue Lines:
-User: "Update the revenue line for Studio Freight to 90,000 PLN in January 2026"
-1. First use `get_revenue_lines` with fromMonth/toMonth to find revenue lines
-2. Filter results by description containing "Studio Freight" or by project name
-3. Show user the current values: "Found revenue line for Studio Freight in Jan 2026: "
-  "currently 25,200 PLN. Shall I update to 90,000 PLN?"
-4. User confirms "Yes"
-5. Call `update_revenue_line` with id, month, sourceType, amountOriginal: "90000", "
-  "currencyOriginal: "PLN", and keep other required fields
-
-### Example Conversation Flow for Deleting Revenue/Cost Lines:
-User: "Delete the old revenue line for Project X"
-1. First use `get_revenue_lines` to find the revenue line
-2. Show what will be deleted: "Found revenue line: Project X, January 2026, 10,000 PLN. "
-  "This will permanently delete this revenue entry. Please confirm by saying 'yes, delete it'."
-3. User confirms: "yes, delete it"
-4. Call `delete_revenue_line` with the id
-5. Confirm: "Revenue line deleted successfully."
-
-## 📋 Invoice Request Workflow
-
-Invoice requests allow team members to request invoice creation from finance reviewers.
-
-### Invoice Request Status Lifecycle:
-1. **PENDING** - Initial state when created, awaiting review
-2. **APPROVED** - Reviewed and approved, awaiting invoice creation
-3. **INVOICE_CREATED** - Invoice has been generated from this request
-4. **REJECTED** - Request was rejected with reason
-
-### Processing Invoice Requests:
-Use `process_invoice_request` with the following actions:
-- **APPROVE**: Approve the request (moves to APPROVED status)
-- **REJECT**: Reject the request with adminNotes explaining why (moves to REJECTED)
-- **CREATE_INVOICE**: Create an invoice directly from the request (moves to INVOICE_CREATED)
-
-### Example: Processing an Invoice Request
-User: "Show me pending invoice requests"
-1. Use `get_invoice_requests` with status: "PENDING"
-2. Display requests with project, amount, requester, and billing address
-
-User: "Approve the invoice request for Project Alpha"
-1. Use `get_invoice_requests` to find the specific request
-2. Show details: "Invoice request for [Project Alpha](project:xxx): 50,000 EUR, "
-  "from John Smith, billing to Client Corp HQ. Approve?"
-3. User: "Yes"
-4. Call `process_invoice_request` with action: "APPROVE"
-5. Report: "Invoice request approved. The finance team can now create the invoice."
-
-User: "Create an invoice from the Project Alpha request"
-1. Call `process_invoice_request` with action: "CREATE_INVOICE", plus invoice details "
-  "(invoiceNumber, issueDate, dueDate)
-2. Report: "Invoice #2026-001 created for 50,000 EUR."
-
-### Adding Comments to Invoice Requests:
-User: "Add a note to the invoice request asking for clarification"
-1. Use `create_invoice_request_comment` with content
-2. This notifies the requester
-
-## 👥 Team Assignment Workflow
-
-Assignments connect team members to iterations with their billing rates.
-
-### Adding Team Members to Iterations:
-User: "Add John Smith to the March iteration of Project Alpha"
-1. Use `resolve_person` to find John Smith
-2. Use `get_iterations` filtered by project to find March iteration
-3. Optionally use `get_roles` to find appropriate role (e.g., "Backend Developer")
-4. Ask: "What's John's hourly rate for this iteration? (Role default: 150 EUR/hour)"
-5. User: "Use the default"
-6. Call `create_assignment` with iterationId, personId, roleId, hourlyRate: "150", currency: "EUR"
-7. Report: "John Smith assigned to March iteration at 150 EUR/hour"
-
-### Logging Time Entries:
-User: "Log 8 hours for John Smith on March 5th"
-1. Find the assignment using `get_iteration_assignments`
-2. Call `create_time_entry` with iterationAssignmentId, entryDate: "2026-03-05", hours: "8"
-3. Report: "Logged 8 hours for John Smith on March 5th"
-
-### Bulk Time Entry Updates:
-User: "Fill in John's time for the week of March 2-6"
-1. Get the assignment ID
-2. Call `bulk_update_time_entries` with entries array containing each day
-3. Report: "Updated 5 time entries for John Smith (March 2-6)"
-
-### Reassigning Work:
-User: "Move John's assignment to Jane Doe"
-1. Find the assignment
-2. Call `reassign_assignment` with newPersonId (optionally keep time entries)
-3. Report: "Assignment reassigned from John Smith to Jane Doe"
-
-## 📍 Client Billing Addresses
-
-Clients can have multiple billing addresses for different entities or regional offices.
-
-### Managing Billing Addresses:
-User: "Add a new billing address for Acme Corp"
-1. Ask: "What should we call this address? (e.g., 'EU Office', 'US Headquarters')"
-2. User: "EU Office"
-3. Ask: "What's the full billing address and tax ID?"
-4. User: "Acme Corp GmbH, Berlinerstr 123, 10115 Berlin, Germany. Tax ID: DE123456789"
-5. Call `create_billing_address` with clientId, label: "EU Office", address, taxId
-6. Report: "Added 'EU Office' billing address to Acme Corp"
-
-User: "Make EU Office the default billing address"
-1. Call `set_default_billing_address` with billingAddressId
-2. Report: "EU Office is now the default billing address for Acme Corp"
-
-## 💱 FX Rates Management
-
-FX rates are used to convert multi-currency revenue and costs to the base currency.
-
-### Adding/Updating FX Rates:
-User: "Add EUR to PLN rate of 4.35 for January 2026"
-1. Call `create_fx_rate` with month: "2026-01-01", fromCurrency: "EUR", toCurrency: "PLN", rate: "4.35"
-2. Report: "Added FX rate: 1 EUR = 4.35 PLN for January 2026"
-
-## 🔗 Project Shares
-
-Share project views with external clients without requiring login.
-
-### Creating Share Links:
-User: "Create a share link for Project Alpha"
-1. Call `create_project_share` with projectId, optionally expiresAt and allowedSections
-2. Report: "Created share link for Project Alpha: https://app.example.com/public/project/ABC123"
-
-Remember: You're not just reporting numbers - you're providing strategic financial insight "
-"that helps drive business decisions.
-
-IMPORTANT: When a user asks about financial health, projects, or any data - USE THE TOOLS to get real data. "
-                "Do not ask for tenantId - it's automatic."""
-
-
-def get_cfo_system_prompt() -> str:
-    """Generate CFO system prompt with current date."""
+- **get_user_permissions**: Call FIRST to discover what the user can access. Returns permissions and roles.
+- **get_current_user**: Current user profile (email, name, tenants)
+- **get_user_tenants**: Organizations/tenants the user belongs to
+- **get_subscription_status**: Subscription plan and billing status (requires billing.view)
+- **get_notifications**: User's notifications (unread count, list)
+- **get_crud_demo_items**: List items in the tenant. Use for "list items", "what items do we have"
+- **get_crud_demo_item**: Get a specific item by id (use id from get_crud_demo_items)
+- **create_crud_demo_item**: Create new item. Input: input with tenantId, name
+- **update_crud_demo_item**: Update item. Input: input with id, tenantId, name
+- **delete_crud_demo_item**: Delete item. Input: input with id, tenantId. ALWAYS confirm before deleting!
+- **get_documents**: List documents (files) uploaded by the user
+- **get_action_logs**: Search activity/audit logs. Supports: entityType, actionType
+  (CREATE/UPDATE/DELETE), actorEmail, fromDatetime, toDatetime, search
+
+### DO NOT USE for data: search, introspect (schema exploration only)
+
+### CRUD Demo Items - Create/Update/Delete:
+- **Creating**: Required: name, tenantId (auto-injected). Example: "Add item called Q1 Planning"
+- **Updating**: Use get_crud_demo_items to find id, then update_crud_demo_item with id, tenantId, name
+- **Deleting**: ALWAYS confirm before deleting. Only execute after explicit user confirmation.
+
+### Activity Logs - Search and Filter:
+get_action_logs supports: entityType (e.g. CrudDemoItem, Tenant), actionType
+(CREATE, UPDATE, DELETE), actorEmail, fromDatetime, toDatetime (ISO format),
+search. Use when user asks about recent activity or audit trail.
+
+### Communication Guidelines:
+- **Language**: Respond in the SAME LANGUAGE the user writes in
+- **Format**: Use markdown (bullets, tables) for readability
+- **Data**: Never translate entity names or identifiers
+- **Permissions**: If a tool fails with permission error, explain what access is needed
+
+IMPORTANT: USE THE TOOLS to get real data. Never make up data. tenantId is automatic."""
+)
+
+
+def get_navigator_system_prompt() -> str:
+    """Generate SaaS Navigator system prompt with current date."""
     from datetime import date
 
-    today = date.today().strftime("%B %d, %Y")  # e.g., "January 11, 2026"
-    return CFO_SYSTEM_PROMPT_TEMPLATE.format(today_date=today)
+    today = date.today().strftime("%B %d, %Y")
+    return NAVIGATOR_SYSTEM_PROMPT_TEMPLATE.format(today_date=today)
 
 
 class EntityTracker:
     """
-    Tracks entities (projects, clients, people, invoices) from tool results
-    to enable automatic link injection in AI responses.
+    Tracks entities (items) from tool results to enable automatic link injection in AI responses.
     """
 
     def __init__(self):
-        self.projects = {}  # name -> id
-        self.clients = {}  # name -> id
-        self.people = {}  # name -> id
-        self.invoices = {}  # number -> id
+        self.items = {}
 
     def extract_from_tool_result(self, tool_name: str, result: str):
         """Extract entities from a tool result JSON."""
         try:
             data = json.loads(result) if isinstance(result, str) else result
 
-            if tool_name in ("get_projects", "GetProjects"):
-                self._extract_projects(data)
-            elif tool_name in ("get_project_profitability", "GetProjectProfitability"):
-                self._extract_profitability(data)
-            elif tool_name in ("get_clients", "GetClients"):
-                self._extract_clients(data)
-            elif tool_name in ("get_people", "GetPeople"):
-                self._extract_people(data)
-            elif tool_name in ("get_invoices", "GetInvoices"):
-                self._extract_invoices(data)
-            elif tool_name in ("get_project_details", "GetProjectDetails"):
-                self._extract_project_details(data)
+            if tool_name in ("get_crud_demo_items", "GetCrudDemoItems"):
+                self._extract_crud_items(data)
+            elif tool_name in ("get_crud_demo_item", "GetCrudDemoItem"):
+                self._extract_crud_item(data)
 
         except (json.JSONDecodeError, TypeError, KeyError) as e:
             logger.debug(f"Could not extract entities from {tool_name}: {e}")
 
-    def _extract_projects(self, data):
-        """Extract from allProjects query."""
-        # GraphQL responses are wrapped in "data" key
-        if "data" in data:
-            data = data["data"]
-
-        all_projects = data.get("allProjects", {})
-        edges = all_projects.get("edges", []) if isinstance(all_projects, dict) else []
-
-        for edge in edges:
-            node = edge.get("node", {})
-            if node.get("id") and node.get("name"):
-                self.projects[node["name"]] = node["id"]
-            # Also extract client from project
-            client = node.get("client", {})
-            if client and client.get("id") and client.get("name"):
-                self.clients[client["name"]] = client["id"]
-
     def _unwrap_graphql_data(self, data):
-        """Unwrap GraphQL 'data' wrapper if present."""
         if isinstance(data, dict) and "data" in data:
             return data["data"]
         return data
 
-    def _extract_profitability(self, data):
-        """Extract from projectProfitability query."""
+    def _extract_crud_items(self, data):
         data = self._unwrap_graphql_data(data)
-        items = data.get("projectProfitability", [])
-        for item in items:
-            if item.get("projectId") and item.get("projectName"):
-                self.projects[item["projectName"]] = item["projectId"]
-            if item.get("clientId") and item.get("clientName"):
-                self.clients[item["clientName"]] = item["clientId"]
-
-    def _extract_clients(self, data):
-        """Extract from allClients query."""
-        data = self._unwrap_graphql_data(data)
-        edges = data.get("allClients", {}).get("edges", [])
+        conn = data.get("allCrudDemoItems", {})
+        edges = conn.get("edges", []) if isinstance(conn, dict) else []
         for edge in edges:
             node = edge.get("node", {})
             if node.get("id") and node.get("name"):
-                self.clients[node["name"]] = node["id"]
+                self.items[node["name"]] = node["id"]
 
-    def _extract_people(self, data):
-        """Extract from allPeople query."""
+    def _extract_crud_item(self, data):
         data = self._unwrap_graphql_data(data)
-        edges = data.get("allPeople", {}).get("edges", [])
-        for edge in edges:
-            node = edge.get("node", {})
-            if node.get("id") and node.get("fullName"):
-                self.people[node["fullName"]] = node["id"]
-
-    def _extract_invoices(self, data):
-        """Extract from allInvoices query."""
-        data = self._unwrap_graphql_data(data)
-        edges = data.get("allInvoices", {}).get("edges", [])
-        for edge in edges:
-            node = edge.get("node", {})
-            if node.get("id") and node.get("invoiceNumber"):
-                self.invoices[node["invoiceNumber"]] = node["id"]
-
-    def _extract_project_details(self, data):
-        """Extract from project details query."""
-        data = self._unwrap_graphql_data(data)
-        project = data.get("project", {})
-        if project.get("id") and project.get("name"):
-            self.projects[project["name"]] = project["id"]
-        client = project.get("client", {})
-        if client and client.get("id") and client.get("name"):
-            self.clients[client["name"]] = client["id"]
+        node = data.get("crudDemoItem", {})
+        if node and node.get("id") and node.get("name"):
+            self.items[node["name"]] = node["id"]
 
     def add_links_to_text(self, text: str) -> str:
-        """
-        Post-process text to add markdown links for known entities.
-        Uses exact matching with word boundaries to avoid partial replacements.
-        """
+        """Post-process text to add markdown links for known items."""
         import re
 
-        # Sort by name length (longest first) to avoid partial replacements
-        # e.g., "Admiral Timesheet TS" should match before "Admiral"
-
-        # Process projects
-        for name, entity_id in sorted(self.projects.items(), key=lambda x: len(x[0]), reverse=True):
-            # Skip if already a link
-            if f"[{name}](" in text:
-                continue
-            # Match whole name with word boundaries, case-insensitive
-            pattern = re.compile(r"(?<!\[)" + re.escape(name) + r"(?!\]\()", re.IGNORECASE)
-            replacement = f"[{name}](project:{entity_id})"
-            text = pattern.sub(replacement, text, count=1)  # Only first occurrence
-
-        # Process clients
-        for name, entity_id in sorted(self.clients.items(), key=lambda x: len(x[0]), reverse=True):
+        for name, entity_id in sorted(self.items.items(), key=lambda x: len(x[0]), reverse=True):
             if f"[{name}](" in text:
                 continue
             pattern = re.compile(r"(?<!\[)" + re.escape(name) + r"(?!\]\()", re.IGNORECASE)
-            replacement = f"[{name}](client:{entity_id})"
-            text = pattern.sub(replacement, text, count=1)
-
-        # Process people
-        for name, entity_id in sorted(self.people.items(), key=lambda x: len(x[0]), reverse=True):
-            if f"[{name}](" in text:
-                continue
-            pattern = re.compile(r"(?<!\[)" + re.escape(name) + r"(?!\]\()", re.IGNORECASE)
-            replacement = f"[{name}](person:{entity_id})"
-            text = pattern.sub(replacement, text, count=1)
-
-        # Process invoices
-        for number, entity_id in sorted(self.invoices.items(), key=lambda x: len(x[0]), reverse=True):
-            if f"[{number}](" in text or f"[Invoice #{number}](" in text:
-                continue
-            pattern = re.compile(r"(?<!\[)" + re.escape(number) + r"(?!\]\()", re.IGNORECASE)
-            replacement = f"[{number}](invoice:{entity_id})"
+            replacement = f"[{name}](item:{entity_id})"
             text = pattern.sub(replacement, text, count=1)
 
         return text
@@ -1700,7 +971,7 @@ class MCPChatView(APIView):
             logger.info(f"Discovered {len(mcp_tools) if mcp_tools else 0} permitted tools from MCP server")
 
             # Build messages with conversation history
-            messages = [{"role": "system", "content": get_cfo_system_prompt()}]
+            messages = [{"role": "system", "content": get_navigator_system_prompt()}]
 
             for hist_msg in conversation_history[-10:]:
                 messages.append({"role": hist_msg.get("role", "user"), "content": hist_msg.get("content", "")})

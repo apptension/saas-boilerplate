@@ -1,0 +1,49 @@
+# @tool(name: "get_action_logs", description: "Search and filter activity/audit logs for the tenant. Supports filters: entityType (e.g. CrudDemoItem, Tenant), actionType (CREATE, UPDATE, DELETE), actorEmail, fromDatetime, toDatetime, search (searches entity name, actor email, metadata). Use when the user asks about recent activity, audit trail, who did what, or changes.")
+query GetActionLogs(
+  $tenantId: ID!
+  $entityType: String
+  $actionType: String
+  $actorEmail: String
+  $fromDatetime: DateTime
+  $toDatetime: DateTime
+  $search: String
+  $first: Int = 50
+  $after: String
+) {
+  allActionLogs(
+    tenantId: $tenantId
+    entityType: $entityType
+    actionType: $actionType
+    actorEmail: $actorEmail
+    fromDatetime: $fromDatetime
+    toDatetime: $toDatetime
+    search: $search
+    first: $first
+    after: $after
+  ) {
+    edges {
+      node {
+        id
+        createdAt
+        actionType
+        entityType
+        entityId
+        entityName
+        actorType
+        actorEmail
+        actorUser {
+          id
+          email
+          firstName
+          lastName
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}

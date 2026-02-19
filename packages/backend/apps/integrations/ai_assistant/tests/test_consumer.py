@@ -5,9 +5,9 @@ Tests for AI Assistant WebSocket consumer.
 import pytest
 from datetime import date
 
-from apps.integrations.ai_assistant.consumer import (
-    get_tool_display_name,
-    get_cfo_system_prompt,
+from apps.integrations.ai_assistant.consumer import get_tool_display_name
+from apps.integrations.ai_assistant.views import (
+    get_navigator_system_prompt,
     TOOL_DISPLAY_NAMES,
 )
 
@@ -18,9 +18,9 @@ class TestGetToolDisplayName:
 
     def test_returns_display_name_for_known_tool(self):
         assert get_tool_display_name("introspect") == "Analyzing data schema"
-        assert get_tool_display_name("search") == "Searching company data"
-        assert get_tool_display_name("GetDashboardOverview") == "Fetching financial overview"
-        assert get_tool_display_name("GetProjects") == "Loading projects"
+        assert get_tool_display_name("search") == "Searching data"
+        assert get_tool_display_name("get_crud_demo_items") == "Loading items"
+        assert get_tool_display_name("get_action_logs") == "Searching activity logs"
 
     def test_returns_fallback_for_unknown_tool(self):
         result = get_tool_display_name("unknown_tool")
@@ -32,25 +32,25 @@ class TestGetToolDisplayName:
 
 
 @pytest.mark.django_db
-class TestGetCfoSystemPrompt:
-    """Tests for get_cfo_system_prompt function."""
+class TestGetNavigatorSystemPrompt:
+    """Tests for get_navigator_system_prompt function."""
 
     def test_returns_non_empty_string(self):
-        prompt = get_cfo_system_prompt()
+        prompt = get_navigator_system_prompt()
         assert isinstance(prompt, str)
         assert len(prompt) > 0
 
     def test_includes_todays_date(self):
-        prompt = get_cfo_system_prompt()
+        prompt = get_navigator_system_prompt()
         today = date.today().strftime("%B %d, %Y")
         assert today in prompt
 
-    def test_includes_cfo_context(self):
-        prompt = get_cfo_system_prompt()
-        assert "CFO" in prompt or "Chief Financial Officer" in prompt
+    def test_includes_navigator_context(self):
+        prompt = get_navigator_system_prompt()
+        assert "Navigator" in prompt or "SaaS" in prompt
 
     def test_includes_tool_usage_instructions(self):
-        prompt = get_cfo_system_prompt()
+        prompt = get_navigator_system_prompt()
         assert "tenantId" in prompt or "tenant" in prompt.lower()
 
 

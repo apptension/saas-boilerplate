@@ -9,13 +9,13 @@
     "defaultMessage": "Data sources used"
   },
   "AI Assistant / Example prompt 1": {
-    "defaultMessage": "What's our financial health?"
+    "defaultMessage": "List my items"
   },
   "AI Assistant / Example prompt 2": {
-    "defaultMessage": "Best performing projects?"
+    "defaultMessage": "Show my documents"
   },
   "AI Assistant / Example prompt 3": {
-    "defaultMessage": "Analyze cash flow"
+    "defaultMessage": "What recent activity do we have?"
   },
   "AI Assistant / Footer hint": {
     "defaultMessage": "Real-time financial insights · Press Esc to close"
@@ -27,13 +27,13 @@
     "defaultMessage": "New Chat"
   },
   "AI Assistant / Search placeholder": {
-    "defaultMessage": "Ask CFO..."
+    "defaultMessage": "Ask Navigator..."
   },
   "AI Assistant / Subtitle": {
-    "defaultMessage": "AI-powered financial insights"
+    "defaultMessage": "AI-powered workspace assistant"
   },
   "AI Assistant / Title": {
-    "defaultMessage": "CFO Assistant"
+    "defaultMessage": "SaaS Navigator"
   },
   "AI Assistant / Welcome message": {
     "defaultMessage": "I can analyze your financial data, provide insights on project profitability, forecast trends, and help with strategic decisions."
@@ -293,17 +293,26 @@
   "Add Passkey Modal / Works With Description": {
     "defaultMessage": "Touch ID, Face ID, Windows Hello, Android Fingerprint, and hardware security keys like YubiKey."
   },
+  "Add SSO Modal / ACS URL Label": {
+    "defaultMessage": "ACS URL (Assertion Consumer Service):"
+  },
   "Add SSO Modal / Back Button": {
     "defaultMessage": "Back"
   },
   "Add SSO Modal / Cancel Button": {
     "defaultMessage": "Cancel"
   },
+  "Add SSO Modal / Copy Failed": {
+    "defaultMessage": "Failed to copy URL"
+  },
   "Add SSO Modal / Creating Button": {
     "defaultMessage": "Creating..."
   },
   "Add SSO Modal / Done Button": {
     "defaultMessage": "Done"
+  },
+  "Add SSO Modal / Entity ID Label": {
+    "defaultMessage": "Entity ID (SP Identifier):"
   },
   "Add SSO Modal / Error Toast": {
     "defaultMessage": "Failed to create SSO connection."
@@ -341,14 +350,20 @@
   "Add SSO Modal / SAML Description": {
     "defaultMessage": "Enterprise standard protocol"
   },
+  "Add SSO Modal / SAML Instructions": {
+    "defaultMessage": "Copy these values to your identity provider (Google Workspace, Okta, Azure AD, etc.). Enable 'Signed response' if your IdP supports it."
+  },
   "Add SSO Modal / SP Metadata Description": {
     "defaultMessage": "After creating the connection, you'll receive the SP metadata URL to configure in your IdP."
+  },
+  "Add SSO Modal / SP Metadata Hint": {
+    "defaultMessage": "Some IdPs can auto-import configuration from this URL."
   },
   "Add SSO Modal / SP Metadata Title": {
     "defaultMessage": "Service Provider Metadata"
   },
   "Add SSO Modal / SP URL Label": {
-    "defaultMessage": "SP Metadata URL:"
+    "defaultMessage": "SP Metadata URL (optional):"
   },
   "Add SSO Modal / Step 1 Title": {
     "defaultMessage": "Connection Details"
@@ -385,6 +400,9 @@
   },
   "Add SSO Modal / Title Success": {
     "defaultMessage": "Connection Created"
+  },
+  "Add SSO Modal / URL Copied": {
+    "defaultMessage": "URL copied to clipboard"
   },
   "AddCrudDemoItem / Back": {
     "defaultMessage": "Back to items"
@@ -517,84 +535,6 @@
   },
   "Admin / page title": {
     "defaultMessage": "Admin Panel"
-  },
-  "Allocations / Add": {
-    "defaultMessage": "Add Allocation"
-  },
-  "Allocations / Add Button": {
-    "defaultMessage": "Add Allocation"
-  },
-  "Allocations / Add First": {
-    "defaultMessage": "Add your first allocation"
-  },
-  "Allocations / Add Title": {
-    "defaultMessage": "Add Allocation"
-  },
-  "Allocations / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "Allocations / Created": {
-    "defaultMessage": "Assignment created"
-  },
-  "Allocations / Delete Confirm": {
-    "defaultMessage": "Are you sure? This action cannot be undone."
-  },
-  "Allocations / Delete Title": {
-    "defaultMessage": "Delete Allocation"
-  },
-  "Allocations / Deleted": {
-    "defaultMessage": "Assignment deleted"
-  },
-  "Allocations / Description": {
-    "defaultMessage": "Assign people to projects with planned hours and rates"
-  },
-  "Allocations / Dialog Description": {
-    "defaultMessage": "Assign a person to work on a project with specific hours"
-  },
-  "Allocations / Edit Title": {
-    "defaultMessage": "Edit Allocation"
-  },
-  "Allocations / Empty": {
-    "defaultMessage": "No allocations found"
-  },
-  "Allocations / End Date": {
-    "defaultMessage": "End Date"
-  },
-  "Allocations / Hours Label": {
-    "defaultMessage": "Hours/Day"
-  },
-  "Allocations / No Tenant": {
-    "defaultMessage": "Please select a tenant"
-  },
-  "Allocations / Person Label": {
-    "defaultMessage": "Person"
-  },
-  "Allocations / Probability": {
-    "defaultMessage": "Probability (%)"
-  },
-  "Allocations / Project Label": {
-    "defaultMessage": "Project"
-  },
-  "Allocations / Role Label": {
-    "defaultMessage": "Role"
-  },
-  "Allocations / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "Allocations / Search": {
-    "defaultMessage": "Search by project, person, or role..."
-  },
-  "Allocations / Start Date": {
-    "defaultMessage": "Start Date"
-  },
-  "Allocations / Title": {
-    "defaultMessage": "Allocations"
-  },
-  "Allocations / Update": {
-    "defaultMessage": "Update"
-  },
-  "Allocations / Updated": {
-    "defaultMessage": "Assignment updated"
   },
   "App / Page title": {
     "defaultMessage": "Apptension Boilerplate"
@@ -1028,6 +968,12 @@
   "Auth / Two-factor / Description": {
     "defaultMessage": "Add an extra layer of security to your account by requiring a verification code in addition to your password."
   },
+  "Auth / Two-factor / Dialog Description": {
+    "defaultMessage": "Secure your account with an authenticator app"
+  },
+  "Auth / Two-factor / Dialog Title": {
+    "defaultMessage": "Set Up Two-Factor Authentication"
+  },
   "Auth / Two-factor / Disable button": {
     "defaultMessage": "Disable"
   },
@@ -1129,330 +1075,6 @@
   },
   "Back Button / Go back": {
     "defaultMessage": "Go back"
-  },
-  "Breakdown / Efficiency / Description": {
-    "defaultMessage": "How efficiently are we operating?"
-  },
-  "Breakdown / Efficiency / Footer": {
-    "defaultMessage": "Efficiency metrics are compared against the previous period. Green indicates excellent performance, blue is good, amber needs attention, and red is critical."
-  },
-  "Breakdown / Efficiency / No Data": {
-    "defaultMessage": "No efficiency data available"
-  },
-  "Breakdown / Efficiency / Title": {
-    "defaultMessage": "Cost Efficiency"
-  },
-  "Breakdown / Empty State Description": {
-    "defaultMessage": "Add revenue and cost data for this period to see financial insights and projections."
-  },
-  "Breakdown / Empty State Title": {
-    "defaultMessage": "No financial data available"
-  },
-  "Breakdown / Error Title": {
-    "defaultMessage": "Error loading insights"
-  },
-  "Breakdown / Header Badge": {
-    "defaultMessage": "{projectionMonths}mo Projection"
-  },
-  "Breakdown / Header Description": {
-    "defaultMessage": "Revenue confidence, financial trajectory, and cost efficiency analysis"
-  },
-  "Breakdown / Header Title": {
-    "defaultMessage": "Financial Insights"
-  },
-  "Breakdown / Refresh": {
-    "defaultMessage": "Refresh"
-  },
-  "Breakdown / Retry Button": {
-    "defaultMessage": "Retry"
-  },
-  "Breakdown / Trajectory / Description": {
-    "defaultMessage": "Cumulative revenue vs costs over time"
-  },
-  "Breakdown / Trajectory / No Data": {
-    "defaultMessage": "No trajectory data available"
-  },
-  "Breakdown / Trajectory / Title": {
-    "defaultMessage": "Financial Trajectory"
-  },
-  "Breakdown / Waterfall / At Risk Tooltip": {
-    "defaultMessage": "Revenue in pipeline with low probability (<70%)"
-  },
-  "Breakdown / Waterfall / Description": {
-    "defaultMessage": "How certain is our revenue forecast?"
-  },
-  "Breakdown / Waterfall / Locked In Tooltip": {
-    "defaultMessage": "Percentage of revenue that is 100% certain (invoiced or completed work)"
-  },
-  "Breakdown / Waterfall / No Data": {
-    "defaultMessage": "No revenue data available"
-  },
-  "Breakdown / Waterfall / Title": {
-    "defaultMessage": "Revenue Confidence"
-  },
-  "Breakdown / Waterfall / Total Label": {
-    "defaultMessage": "Total Revenue"
-  },
-  "BulkActionBar / Copy": {
-    "defaultMessage": "Copy"
-  },
-  "BulkActionBar / Delete": {
-    "defaultMessage": "Delete"
-  },
-  "BulkActionBar / Delete Confirm Description": {
-    "defaultMessage": "This action cannot be undone. All selected items will be permanently deleted."
-  },
-  "BulkActionBar / Delete Confirm Title": {
-    "defaultMessage": "Delete {count} {count, plural, one {item} other {items}}?"
-  },
-  "BulkActionBar / Reassign Placeholder": {
-    "defaultMessage": "Reassign..."
-  },
-  "BulkActionBar / Selected Abbrev": {
-    "defaultMessage": "sel."
-  },
-  "BulkActionBar / Selected Count": {
-    "defaultMessage": "{count, plural, one {item} other {items}}"
-  },
-  "CSVImport / AI Analysis Label": {
-    "defaultMessage": "AI Analysis"
-  },
-  "CSVImport / AI Analyzing": {
-    "defaultMessage": "Analyzing with AI"
-  },
-  "CSVImport / AI Analyzing Hint": {
-    "defaultMessage": "This may take a moment"
-  },
-  "CSVImport / AI Badge": {
-    "defaultMessage": "Parsed with AI"
-  },
-  "CSVImport / AI Description": {
-    "defaultMessage": "Import clients, projects, people, financial data, and more using AI-powered parsing"
-  },
-  "CSVImport / AI Drop Zone": {
-    "defaultMessage": "Drop your file here"
-  },
-  "CSVImport / AI Drop Zone Hint": {
-    "defaultMessage": "Supports CSV files and images of tables. AI will detect and extract the data automatically."
-  },
-  "CSVImport / AI Title": {
-    "defaultMessage": "Smart Data Import"
-  },
-  "CSVImport / AI Toggle Description": {
-    "defaultMessage": "Automatically detect and extract clients, projects, people, finances, and more"
-  },
-  "CSVImport / AI Toggle Off": {
-    "defaultMessage": "Off"
-  },
-  "CSVImport / AI Toggle On": {
-    "defaultMessage": "On"
-  },
-  "CSVImport / AI Toggle Title": {
-    "defaultMessage": "AI-Powered Import"
-  },
-  "CSVImport / Additional Entities": {
-    "defaultMessage": "Additional entities created"
-  },
-  "CSVImport / Analyze Button": {
-    "defaultMessage": "Analyze File"
-  },
-  "CSVImport / Analyzing": {
-    "defaultMessage": "Processing file"
-  },
-  "CSVImport / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "CSVImport / Cancel Analysis": {
-    "defaultMessage": "Cancel"
-  },
-  "CSVImport / Change File": {
-    "defaultMessage": "Change File"
-  },
-  "CSVImport / Change Type Hint": {
-    "defaultMessage": "You can change the type if the AI detection is incorrect"
-  },
-  "CSVImport / Complete Description": {
-    "defaultMessage": "Financial data has been imported for {year}"
-  },
-  "CSVImport / Complete Entity Description": {
-    "defaultMessage": "{type} data has been imported successfully"
-  },
-  "CSVImport / Complete Title": {
-    "defaultMessage": "Import Successful!"
-  },
-  "CSVImport / Cost Lines": {
-    "defaultMessage": "cost lines"
-  },
-  "CSVImport / Custom Prompt Hint": {
-    "defaultMessage": "Add specific instructions to customize how AI extracts data from your file. These instructions will be added to the AI prompt."
-  },
-  "CSVImport / Custom Prompt Label": {
-    "defaultMessage": "Custom Instructions (Optional)"
-  },
-  "CSVImport / Custom Prompt Placeholder": {
-    "defaultMessage": "e.g., \"Focus only on rows connected with Project X\" or \"Ignore the first 5 rows\" or \"Extract only records from 2024\""
-  },
-  "CSVImport / Description": {
-    "defaultMessage": "Import data from CSV files or images"
-  },
-  "CSVImport / Detected Type Label": {
-    "defaultMessage": "Detected Data Type"
-  },
-  "CSVImport / Drop Zone": {
-    "defaultMessage": "Drop your CSV file here"
-  },
-  "CSVImport / Drop Zone Error Title": {
-    "defaultMessage": "Parsing Failed"
-  },
-  "CSVImport / Drop Zone Hint": {
-    "defaultMessage": "or click to browse"
-  },
-  "CSVImport / Drop Zone Loading": {
-    "defaultMessage": "Processing file..."
-  },
-  "CSVImport / Drop Zone Loading AI": {
-    "defaultMessage": "AI is analyzing..."
-  },
-  "CSVImport / Entity Type Hint": {
-    "defaultMessage": "Tip: Use 'Auto-detect' to let AI analyze your file structure, or pre-select a type if you know what you're importing"
-  },
-  "CSVImport / Entity Type Label": {
-    "defaultMessage": "What type of data are you importing?"
-  },
-  "CSVImport / File Ready": {
-    "defaultMessage": "{size} • CSV file ready"
-  },
-  "CSVImport / Full Analyzing": {
-    "defaultMessage": "Analyzing..."
-  },
-  "CSVImport / Image Ready": {
-    "defaultMessage": "Image file ready for AI analysis"
-  },
-  "CSVImport / Import Another": {
-    "defaultMessage": "Import Another File"
-  },
-  "CSVImport / Import Button": {
-    "defaultMessage": "Import to {year}"
-  },
-  "CSVImport / Import Entity Button": {
-    "defaultMessage": "Import {count} {type}"
-  },
-  "CSVImport / Imported Count": {
-    "defaultMessage": "imported"
-  },
-  "CSVImport / Importing": {
-    "defaultMessage": "Importing..."
-  },
-  "CSVImport / Invalid File": {
-    "defaultMessage": "Please upload a CSV file (enable AI parsing for image support)"
-  },
-  "CSVImport / Invalid File Type": {
-    "defaultMessage": "Please upload a CSV or image file (PNG, JPG, GIF, WebP)"
-  },
-  "CSVImport / Lines Created": {
-    "defaultMessage": "Lines created"
-  },
-  "CSVImport / Low Confidence": {
-    "defaultMessage": "Low Extraction Confidence"
-  },
-  "CSVImport / Low Confidence Description": {
-    "defaultMessage": "The AI reported {confidence}% confidence in the extracted data. Please carefully review the values before importing. Some data may be incorrect or missing."
-  },
-  "CSVImport / Months Found": {
-    "defaultMessage": "{count} months with data"
-  },
-  "CSVImport / Quick Analysis Description": {
-    "defaultMessage": "Review the detected data type and sample rows before full analysis"
-  },
-  "CSVImport / Quick Analysis Title": {
-    "defaultMessage": "Quick Analysis Complete"
-  },
-  "CSVImport / Records Found": {
-    "defaultMessage": "{count} {type} records found"
-  },
-  "CSVImport / Revenue Lines": {
-    "defaultMessage": "revenue lines"
-  },
-  "CSVImport / Row Count Estimate": {
-    "defaultMessage": "~{count} rows detected"
-  },
-  "CSVImport / Rows Detected": {
-    "defaultMessage": "Rows detected"
-  },
-  "CSVImport / Sample Preview Subtitle": {
-    "defaultMessage": "First {count} rows from your file"
-  },
-  "CSVImport / Sample Preview Title": {
-    "defaultMessage": "Sample Data Preview"
-  },
-  "CSVImport / Skipped Count": {
-    "defaultMessage": "skipped"
-  },
-  "CSVImport / Start Full Analysis": {
-    "defaultMessage": "Start Full Analysis"
-  },
-  "CSVImport / Success": {
-    "defaultMessage": "Data imported successfully!"
-  },
-  "CSVImport / Summaries": {
-    "defaultMessage": "summaries"
-  },
-  "CSVImport / Table Cost Forecast": {
-    "defaultMessage": "Cost Forecast"
-  },
-  "CSVImport / Table Month": {
-    "defaultMessage": "Month"
-  },
-  "CSVImport / Table Profit": {
-    "defaultMessage": "Profit"
-  },
-  "CSVImport / Table Rev Actual": {
-    "defaultMessage": "Rev. Actual"
-  },
-  "CSVImport / Table Rev Forecast": {
-    "defaultMessage": "Rev. Forecast"
-  },
-  "CSVImport / Table Salary Cost": {
-    "defaultMessage": "Salary Cost"
-  },
-  "CSVImport / Title": {
-    "defaultMessage": "CSV Import"
-  },
-  "CSVImport / Try Again": {
-    "defaultMessage": "Try Again"
-  },
-  "CSVImport / Type Mismatch": {
-    "defaultMessage": "Data Type Mismatch"
-  },
-  "CSVImport / Type Mismatch Description": {
-    "defaultMessage": "You selected '{selected}' but the AI detected '{detected}'. The file might not contain the expected data format."
-  },
-  "CSVImport / Update Existing Description": {
-    "defaultMessage": "If enabled, matching records will be updated instead of skipped"
-  },
-  "CSVImport / Update Existing Label": {
-    "defaultMessage": "Update existing records?"
-  },
-  "CSVImport / Update No": {
-    "defaultMessage": "No, Skip"
-  },
-  "CSVImport / Update Yes": {
-    "defaultMessage": "Yes, Update"
-  },
-  "CSVImport / Updated Count": {
-    "defaultMessage": "updated"
-  },
-  "CSVImport / Warnings": {
-    "defaultMessage": "Warnings"
-  },
-  "CSVImport / Will Create Lines Description": {
-    "defaultMessage": "Each row with data will create separate entries that will appear in your dashboard and reports."
-  },
-  "CSVImport / Will Create Lines Label": {
-    "defaultMessage": "This will create Revenue Lines and Cost Lines"
-  },
-  "CSVImport / Year Label": {
-    "defaultMessage": "Import to year:"
   },
   "Cancel subscription / Active plan": {
     "defaultMessage": "Active plan:"
@@ -1577,401 +1199,11 @@
   "Change plan item / year": {
     "defaultMessage": "year"
   },
-  "Chart / Controls / Predictions": {
-    "defaultMessage": "{count} months predicted"
-  },
-  "Chart / Controls / Recommended": {
-    "defaultMessage": "Recommended for this date range"
-  },
-  "Chart / Controls / Show": {
-    "defaultMessage": "Show:"
-  },
-  "Chart / Controls / Stacked": {
-    "defaultMessage": "Stacked"
-  },
-  "Chart / Controls / Stacked Tooltip": {
-    "defaultMessage": "Show actual vs forecast breakdown as stacked bars"
-  },
-  "Chart / Controls / Trend Lines": {
-    "defaultMessage": "Trend Lines"
-  },
-  "Chart / Controls / View": {
-    "defaultMessage": "View:"
-  },
-  "Chart / Costs": {
-    "defaultMessage": "Costs"
-  },
-  "Chart / Margin": {
-    "defaultMessage": "Margin %"
-  },
-  "Chart / No Data": {
-    "defaultMessage": "No chart data available"
-  },
-  "Chart / Revenue Actual": {
-    "defaultMessage": "Revenue (Actual)"
-  },
-  "Chart / Revenue Forecast": {
-    "defaultMessage": "Revenue (Forecast)"
-  },
-  "Chart / Series / Costs": {
-    "defaultMessage": "Costs"
-  },
-  "Chart / Series / Profit": {
-    "defaultMessage": "Profit"
-  },
-  "Chart / Series / Revenue": {
-    "defaultMessage": "Revenue"
-  },
-  "Chart / Tooltip / EstimatedBreakdown": {
-    "defaultMessage": "Est. from history"
-  },
-  "Chart / Tooltip / Margin": {
-    "defaultMessage": "Gross Margin"
-  },
-  "Chart / Tooltip / MonthCount": {
-    "defaultMessage": "{count} months aggregated"
-  },
-  "Chart / Tooltip / Predicted": {
-    "defaultMessage": "Forecast"
-  },
-  "Chart / Trend / Costs": {
-    "defaultMessage": "Costs Trend"
-  },
-  "Chart / Trend / Profit": {
-    "defaultMessage": "Profit Trend"
-  },
-  "Chart / Trend / Revenue": {
-    "defaultMessage": "Revenue Trend"
-  },
-  "Client Details / Add Project": {
-    "defaultMessage": "Create First Project"
-  },
-  "Client Details / Address": {
-    "defaultMessage": "Billing Address"
-  },
-  "Client Details / All Projects": {
-    "defaultMessage": "All Projects"
-  },
-  "Client Details / Back": {
-    "defaultMessage": "Back to Clients"
-  },
-  "Client Details / Costs Label": {
-    "defaultMessage": "Costs"
-  },
-  "Client Details / Delete Button": {
-    "defaultMessage": "Delete"
-  },
-  "Client Details / Delete Confirm": {
-    "defaultMessage": "Are you sure? This will permanently delete this client. Projects linked to this client will remain but will have no client assigned."
-  },
-  "Client Details / Delete Success": {
-    "defaultMessage": "Client deleted successfully"
-  },
-  "Client Details / Delete Title": {
-    "defaultMessage": "Delete Client"
-  },
-  "Client Details / Edit Button": {
-    "defaultMessage": "Edit"
-  },
-  "Client Details / Error": {
-    "defaultMessage": "Error loading client"
-  },
-  "Client Details / Hours Label": {
-    "defaultMessage": "Hours"
-  },
-  "Client Details / Info Title": {
-    "defaultMessage": "Client Information"
-  },
-  "Client Details / Invoices Description": {
-    "defaultMessage": "All invoices for this client"
-  },
-  "Client Details / Invoices Label": {
-    "defaultMessage": "Invoices"
-  },
-  "Client Details / Invoices Title": {
-    "defaultMessage": "Invoices"
-  },
-  "Client Details / Legal Name": {
-    "defaultMessage": "Legal Name"
-  },
-  "Client Details / Margin Label": {
-    "defaultMessage": "Margin"
-  },
-  "Client Details / No Invoices": {
-    "defaultMessage": "No invoices yet"
-  },
-  "Client Details / No Invoices Empty": {
-    "defaultMessage": "No invoices yet"
-  },
-  "Client Details / No Invoices Empty Description": {
-    "defaultMessage": "Invoices will appear here when they are created for this client"
-  },
-  "Client Details / No Invoices Hint": {
-    "defaultMessage": "Invoices will appear here"
-  },
-  "Client Details / No Projects": {
-    "defaultMessage": "No projects yet"
-  },
-  "Client Details / No Projects Empty": {
-    "defaultMessage": "No projects yet"
-  },
-  "Client Details / No Projects Hint": {
-    "defaultMessage": "Add projects for this client"
-  },
-  "Client Details / No Team": {
-    "defaultMessage": "No team data yet"
-  },
-  "Client Details / No Team Empty": {
-    "defaultMessage": "No team members yet"
-  },
-  "Client Details / No Team Hint": {
-    "defaultMessage": "Log time to see team members"
-  },
-  "Client Details / Not Found": {
-    "defaultMessage": "Client not found"
-  },
-  "Client Details / Projects Description": {
-    "defaultMessage": "All projects for this client. Click column headers to sort."
-  },
-  "Client Details / Projects Label": {
-    "defaultMessage": "Projects"
-  },
-  "Client Details / Recent Invoices": {
-    "defaultMessage": "Recent Invoices"
-  },
-  "Client Details / Retry": {
-    "defaultMessage": "Retry"
-  },
-  "Client Details / Revenue Label": {
-    "defaultMessage": "Revenue"
-  },
-  "Client Details / Since": {
-    "defaultMessage": "Client Since"
-  },
-  "Client Details / Tab Financials": {
-    "defaultMessage": "Financials"
-  },
-  "Client Details / Tab Invoices": {
-    "defaultMessage": "Invoices"
-  },
-  "Client Details / Tab Overview": {
-    "defaultMessage": "Overview"
-  },
-  "Client Details / Tab Projects": {
-    "defaultMessage": "Projects"
-  },
-  "Client Details / Tab Team": {
-    "defaultMessage": "Team"
-  },
-  "Client Details / Tax ID": {
-    "defaultMessage": "Tax ID"
-  },
-  "Client Details / Team": {
-    "defaultMessage": "Team"
-  },
-  "Client Details / Team Desc": {
-    "defaultMessage": "All people who have worked on this client's projects"
-  },
-  "Client Details / Team Title": {
-    "defaultMessage": "Team Members"
-  },
-  "Client Details / Top Projects": {
-    "defaultMessage": "Top Projects by Revenue"
-  },
-  "Client Details / Update Success": {
-    "defaultMessage": "Client updated successfully"
-  },
-  "Client Details / View All": {
-    "defaultMessage": "View All"
-  },
-  "Client Details / View All Invoices": {
-    "defaultMessage": "View All"
-  },
-  "Client Details / View All Team": {
-    "defaultMessage": "View All"
-  },
-  "Client Form / Add": {
-    "defaultMessage": "Add Client"
-  },
-  "Client Form / Add Description": {
-    "defaultMessage": "Add a new client to your organization"
-  },
-  "Client Form / Add Title": {
-    "defaultMessage": "Add Client"
-  },
-  "Client Form / Address Label": {
-    "defaultMessage": "Billing Address"
-  },
-  "Client Form / Address Placeholder": {
-    "defaultMessage": "Full billing address..."
-  },
-  "Client Form / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "Client Form / Edit Description": {
-    "defaultMessage": "Update client information"
-  },
-  "Client Form / Edit Title": {
-    "defaultMessage": "Edit Client"
-  },
-  "Client Form / External Ref Label": {
-    "defaultMessage": "External Reference"
-  },
-  "Client Form / External Ref Placeholder": {
-    "defaultMessage": "CRM ID, etc."
-  },
-  "Client Form / Legal Name Label": {
-    "defaultMessage": "Legal Name"
-  },
-  "Client Form / Legal Name Placeholder": {
-    "defaultMessage": "Full legal company name"
-  },
-  "Client Form / Name Label": {
-    "defaultMessage": "Client Name"
-  },
-  "Client Form / Name Placeholder": {
-    "defaultMessage": "Enter client name"
-  },
-  "Client Form / Name Required": {
-    "defaultMessage": "Client name is required"
-  },
-  "Client Form / Save Changes": {
-    "defaultMessage": "Save Changes"
-  },
-  "Client Form / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "Client Form / Tax ID Label": {
-    "defaultMessage": "Tax ID / NIP"
-  },
-  "Client Form / Tax ID Placeholder": {
-    "defaultMessage": "e.g., 1234567890"
-  },
-  "ClientFilterBar / Active Filters Label": {
-    "defaultMessage": "Active filters:"
-  },
-  "ClientFilterBar / Clear All Filters": {
-    "defaultMessage": "Clear all"
-  },
-  "ClientFilterBar / Filters Title": {
-    "defaultMessage": "Filters"
-  },
-  "ClientFilterBar / Quick All": {
-    "defaultMessage": "All Clients"
-  },
-  "ClientFilterBar / Search Badge": {
-    "defaultMessage": "Search: {query}"
-  },
-  "ClientFilterBar / Search Placeholder": {
-    "defaultMessage": "Search by name, tax ID, or address..."
-  },
-  "ClientFilterBar / Sort": {
-    "defaultMessage": "Sort"
-  },
-  "ClientFilterBar / Sort Created Asc": {
-    "defaultMessage": "Oldest"
-  },
-  "ClientFilterBar / Sort Created Asc Full": {
-    "defaultMessage": "Oldest First"
-  },
-  "ClientFilterBar / Sort Created Desc": {
-    "defaultMessage": "Newest"
-  },
-  "ClientFilterBar / Sort Created Desc Full": {
-    "defaultMessage": "Newest First"
-  },
-  "ClientFilterBar / Sort Name Asc": {
-    "defaultMessage": "Name (A-Z)"
-  },
-  "ClientFilterBar / Sort Name Asc Full": {
-    "defaultMessage": "Name (A to Z)"
-  },
-  "ClientFilterBar / Sort Name Desc": {
-    "defaultMessage": "Name (Z-A)"
-  },
-  "ClientFilterBar / Sort Name Desc Full": {
-    "defaultMessage": "Name (Z to A)"
-  },
-  "ClientSelector / Empty text": {
-    "defaultMessage": "No clients found"
-  },
-  "ClientSelector / Loading": {
-    "defaultMessage": "Loading clients..."
-  },
-  "ClientSelector / No client": {
-    "defaultMessage": "No client"
-  },
-  "ClientSelector / Placeholder": {
-    "defaultMessage": "Select client"
-  },
-  "ClientSelector / Search placeholder": {
-    "defaultMessage": "Search clients..."
-  },
-  "Clients / Add": {
-    "defaultMessage": "Add Client"
-  },
-  "Clients / Add First": {
-    "defaultMessage": "Add Your First Client"
-  },
-  "Clients / Billing Address Label": {
-    "defaultMessage": "Billing Address"
-  },
-  "Clients / Create Success": {
-    "defaultMessage": "Client added successfully"
-  },
-  "Clients / Delete Desc": {
-    "defaultMessage": "This will delete the client and all associated data. This action cannot be undone."
-  },
-  "Clients / Delete Success": {
-    "defaultMessage": "Client deleted successfully"
-  },
-  "Clients / Delete Title": {
-    "defaultMessage": "Delete {name}?"
-  },
-  "Clients / Empty Desc": {
-    "defaultMessage": "Get started by adding your first client to manage projects and revenue."
-  },
-  "Clients / Empty Title": {
-    "defaultMessage": "No clients yet"
-  },
-  "Clients / External Ref Label": {
-    "defaultMessage": "External Ref"
-  },
-  "Clients / No Results Desc": {
-    "defaultMessage": "Try adjusting your search to find what you're looking for."
-  },
-  "Clients / No Results Title": {
-    "defaultMessage": "No clients found"
-  },
-  "Clients / No tenant": {
-    "defaultMessage": "Please select a tenant"
-  },
-  "Clients / Results Count": {
-    "defaultMessage": "{filtered} of {total} {total, plural, one {client} other {clients}}"
-  },
-  "Clients / Subtitle": {
-    "defaultMessage": "Manage your client organizations"
-  },
-  "Clients / Tax ID Label": {
-    "defaultMessage": "Tax ID"
-  },
-  "Clients / Title": {
-    "defaultMessage": "Clients"
-  },
-  "Clients / Update Success": {
-    "defaultMessage": "Client updated successfully"
-  },
-  "Clients / View": {
-    "defaultMessage": "View"
-  },
   "Common / Cancel": {
     "defaultMessage": "Cancel"
   },
   "Common / Never": {
     "defaultMessage": "Never"
-  },
-  "Common / Submitting": {
-    "defaultMessage": "Submitting..."
   },
   "Confirm Dialog / Cancel label": {
     "defaultMessage": "Cancel"
@@ -2093,303 +1325,6 @@
   "Contentful Items / Visit link": {
     "defaultMessage": "Visit Contentful"
   },
-  "CopyDialog / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "CopyDialog / Copying": {
-    "defaultMessage": "Copying..."
-  },
-  "CopyDialog / Count Help": {
-    "defaultMessage": "Create up to 36 copies at once"
-  },
-  "CopyDialog / Count Help Bulk": {
-    "defaultMessage": "Each of the {itemCount} items will be copied {count} time(s) = {total} total new entries"
-  },
-  "CopyDialog / Count Label": {
-    "defaultMessage": "Copies per item"
-  },
-  "CopyDialog / Create Button": {
-    "defaultMessage": "Create {count} {count, plural, one {copy} other {copies}}"
-  },
-  "CopyDialog / Description": {
-    "defaultMessage": "Create copies of this {type} line for future periods"
-  },
-  "CopyDialog / Description Bulk": {
-    "defaultMessage": "Create copies of {count} selected {type} lines for future periods"
-  },
-  "CopyDialog / Items Badge": {
-    "defaultMessage": "items"
-  },
-  "CopyDialog / Items Label": {
-    "defaultMessage": "{count, plural, one {Item} other {Items}} to copy:"
-  },
-  "CopyDialog / More Items": {
-    "defaultMessage": "...and {remaining} more periods"
-  },
-  "CopyDialog / No Project": {
-    "defaultMessage": "No project"
-  },
-  "CopyDialog / Overhead": {
-    "defaultMessage": "Overhead"
-  },
-  "CopyDialog / Period Month": {
-    "defaultMessage": "Month"
-  },
-  "CopyDialog / Period Type Label": {
-    "defaultMessage": "Period type"
-  },
-  "CopyDialog / Period Week": {
-    "defaultMessage": "Week"
-  },
-  "CopyDialog / Period Year": {
-    "defaultMessage": "Year"
-  },
-  "CopyDialog / Preview Label": {
-    "defaultMessage": "Target periods:"
-  },
-  "CopyDialog / Source Date": {
-    "defaultMessage": "Source date:"
-  },
-  "CopyDialog / Title": {
-    "defaultMessage": "Copy to Next Periods"
-  },
-  "Correction Request / Amount Comparison": {
-    "defaultMessage": "Amount Comparison"
-  },
-  "Correction Request / Amount Label": {
-    "defaultMessage": "Corrected Amount"
-  },
-  "Correction Request / Amount Min": {
-    "defaultMessage": "Amount must be greater than 0"
-  },
-  "Correction Request / Amount Required": {
-    "defaultMessage": "Amount is required"
-  },
-  "Correction Request / Currency Label": {
-    "defaultMessage": "Currency"
-  },
-  "Correction Request / Description": {
-    "defaultMessage": "Request a correction for invoice {invoiceNumber}. The original invoice will be cancelled and a new one created."
-  },
-  "Correction Request / Description Label": {
-    "defaultMessage": "Description"
-  },
-  "Correction Request / Original": {
-    "defaultMessage": "Original"
-  },
-  "Correction Request / Period End": {
-    "defaultMessage": "Period End"
-  },
-  "Correction Request / Period End Placeholder": {
-    "defaultMessage": "Select end date"
-  },
-  "Correction Request / Period Start": {
-    "defaultMessage": "Period Start"
-  },
-  "Correction Request / Period Start Placeholder": {
-    "defaultMessage": "Select start date"
-  },
-  "Correction Request / Reason Label": {
-    "defaultMessage": "Reason for Correction"
-  },
-  "Correction Request / Reason Placeholder": {
-    "defaultMessage": "Explain why this invoice needs to be corrected..."
-  },
-  "Correction Request / Reason Required": {
-    "defaultMessage": "Please provide a reason for the correction"
-  },
-  "Correction Request / Requested": {
-    "defaultMessage": "Requested"
-  },
-  "Correction Request / Submit": {
-    "defaultMessage": "Submit Request"
-  },
-  "Correction Request / Success": {
-    "defaultMessage": "Correction request submitted successfully"
-  },
-  "Correction Request / Title": {
-    "defaultMessage": "Request Invoice Correction"
-  },
-  "Cost / Delete Confirm": {
-    "defaultMessage": "Are you sure? This action cannot be undone."
-  },
-  "Cost / Delete Title": {
-    "defaultMessage": "Delete Cost Line"
-  },
-  "Cost / Overhead": {
-    "defaultMessage": "Overhead"
-  },
-  "Costs / Add": {
-    "defaultMessage": "Add Cost"
-  },
-  "Costs / Add Button": {
-    "defaultMessage": "Add Cost"
-  },
-  "Costs / Add First": {
-    "defaultMessage": "Add Cost Line"
-  },
-  "Costs / Add Title": {
-    "defaultMessage": "Add Cost Line"
-  },
-  "Costs / All Projects": {
-    "defaultMessage": "All Projects"
-  },
-  "Costs / Amount Label": {
-    "defaultMessage": "Amount"
-  },
-  "Costs / Bulk Copied": {
-    "defaultMessage": "{count} cost lines created"
-  },
-  "Costs / Bulk Deleted": {
-    "defaultMessage": "{count} cost lines deleted"
-  },
-  "Costs / Bulk Updated": {
-    "defaultMessage": "{count} cost lines updated"
-  },
-  "Costs / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "Costs / Card / Actions": {
-    "defaultMessage": "Actions"
-  },
-  "Costs / Card / Copy": {
-    "defaultMessage": "Copy to periods"
-  },
-  "Costs / Card / Delete": {
-    "defaultMessage": "Delete"
-  },
-  "Costs / Card / Edit": {
-    "defaultMessage": "Edit"
-  },
-  "Costs / Category Label": {
-    "defaultMessage": "Category"
-  },
-  "Costs / Clear All": {
-    "defaultMessage": "Clear all"
-  },
-  "Costs / Clear Project Filter": {
-    "defaultMessage": "Clear project filter"
-  },
-  "Costs / Client Label": {
-    "defaultMessage": "Client (optional)"
-  },
-  "Costs / Copied": {
-    "defaultMessage": "{count} cost lines created"
-  },
-  "Costs / Created": {
-    "defaultMessage": "Cost line created"
-  },
-  "Costs / Currency Label": {
-    "defaultMessage": "Currency"
-  },
-  "Costs / Date Label": {
-    "defaultMessage": "Date"
-  },
-  "Costs / Date Required": {
-    "defaultMessage": "Date is required"
-  },
-  "Costs / Delete Confirm": {
-    "defaultMessage": "Are you sure? This action cannot be undone."
-  },
-  "Costs / Delete Title": {
-    "defaultMessage": "Delete Cost Line"
-  },
-  "Costs / Deleted": {
-    "defaultMessage": "Cost line deleted"
-  },
-  "Costs / Description": {
-    "defaultMessage": "Track and manage cost entries by project and category"
-  },
-  "Costs / Description Label": {
-    "defaultMessage": "Description"
-  },
-  "Costs / Dialog Description": {
-    "defaultMessage": "Enter cost details. Leave project empty for overhead costs."
-  },
-  "Costs / Edit Title": {
-    "defaultMessage": "Edit Cost Line"
-  },
-  "Costs / Empty Description": {
-    "defaultMessage": "No cost entries for the selected period"
-  },
-  "Costs / Empty Title": {
-    "defaultMessage": "No cost lines found"
-  },
-  "Costs / Include Rate": {
-    "defaultMessage": "Include in rate calculation"
-  },
-  "Costs / KPI / Lines": {
-    "defaultMessage": "Cost Lines"
-  },
-  "Costs / KPI / Projects": {
-    "defaultMessage": "Projects"
-  },
-  "Costs / KPI / TopCategory": {
-    "defaultMessage": "Top Category"
-  },
-  "Costs / KPI / Total": {
-    "defaultMessage": "Total Costs"
-  },
-  "Costs / List / Empty": {
-    "defaultMessage": "No cost entries to display"
-  },
-  "Costs / List / Load more": {
-    "defaultMessage": "Load more"
-  },
-  "Costs / No Projects": {
-    "defaultMessage": "No projects found"
-  },
-  "Costs / No Tenant": {
-    "defaultMessage": "Please select a tenant"
-  },
-  "Costs / Person Label": {
-    "defaultMessage": "Person (optional)"
-  },
-  "Costs / Project Label": {
-    "defaultMessage": "Project (optional)"
-  },
-  "Costs / Project Picker Search": {
-    "defaultMessage": "Search projects..."
-  },
-  "Costs / Projects Count": {
-    "defaultMessage": "{count} Projects"
-  },
-  "Costs / Projects Filter": {
-    "defaultMessage": "Filter by projects"
-  },
-  "Costs / Recurring": {
-    "defaultMessage": "Recurring"
-  },
-  "Costs / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "Costs / Search": {
-    "defaultMessage": "Search by project, vendor, description..."
-  },
-  "Costs / Table Description": {
-    "defaultMessage": "Cost breakdown with sorting, column controls, and highlighting"
-  },
-  "Costs / Table Title": {
-    "defaultMessage": "Costs by Period"
-  },
-  "Costs / Title": {
-    "defaultMessage": "Costs"
-  },
-  "Costs / Update": {
-    "defaultMessage": "Update"
-  },
-  "Costs / Updated": {
-    "defaultMessage": "Cost line updated"
-  },
-  "Costs / Vendor Label": {
-    "defaultMessage": "Vendor / Person"
-  },
-  "Costs / View List": {
-    "defaultMessage": "List"
-  },
-  "Costs / View Table": {
-    "defaultMessage": "Table"
-  },
   "CrudDemoItem / CrudDemoItemDetails / ErrorMessage": {
     "defaultMessage": "Failed to load item details"
   },
@@ -2480,123 +1415,6 @@
   "CrudDemoItemList.Open item actions": {
     "defaultMessage": "Open item actions"
   },
-  "DateRangePicker / Apply": {
-    "defaultMessage": "Apply"
-  },
-  "DateRangePicker / Calendar view": {
-    "defaultMessage": "Calendar view"
-  },
-  "DateRangePicker / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "DateRangePicker / Clear": {
-    "defaultMessage": "Clear"
-  },
-  "DateRangePicker / Last 12 Months": {
-    "defaultMessage": "Last 12 Months"
-  },
-  "DateRangePicker / Last 3 Months": {
-    "defaultMessage": "Last 3 Months"
-  },
-  "DateRangePicker / Last Calendar Year": {
-    "defaultMessage": "Last Calendar Year"
-  },
-  "DateRangePicker / Last Fiscal Year": {
-    "defaultMessage": "Last Fiscal Year"
-  },
-  "DateRangePicker / Last Month": {
-    "defaultMessage": "Last Month"
-  },
-  "DateRangePicker / Last Quarter": {
-    "defaultMessage": "Last Quarter"
-  },
-  "DateRangePicker / Last Year": {
-    "defaultMessage": "Last Year"
-  },
-  "DateRangePicker / Placeholder": {
-    "defaultMessage": "Select date range"
-  },
-  "DateRangePicker / Select end date": {
-    "defaultMessage": "Select end date"
-  },
-  "DateRangePicker / Select start date": {
-    "defaultMessage": "Select start date"
-  },
-  "DateRangePicker / Select Year": {
-    "defaultMessage": "Select Year..."
-  },
-  "DateRangePicker / Switch to calendar view": {
-    "defaultMessage": "Switch to calendar view"
-  },
-  "DateRangePicker / Switch to year view": {
-    "defaultMessage": "Switch to year view"
-  },
-  "DateRangePicker / This Calendar Year": {
-    "defaultMessage": "This Calendar Year"
-  },
-  "DateRangePicker / This Fiscal Year": {
-    "defaultMessage": "This Fiscal Year"
-  },
-  "DateRangePicker / This Month": {
-    "defaultMessage": "This Month"
-  },
-  "DateRangePicker / This Quarter": {
-    "defaultMessage": "This Quarter"
-  },
-  "DateRangePicker / This Year": {
-    "defaultMessage": "This Year"
-  },
-  "DateRangePicker / Year view": {
-    "defaultMessage": "Year view (heatmap)"
-  },
-  "DueDatePicker / Days label": {
-    "defaultMessage": "{days}d"
-  },
-  "FormDateRangePicker / Apply": {
-    "defaultMessage": "Apply"
-  },
-  "FormDateRangePicker / Clear": {
-    "defaultMessage": "Clear"
-  },
-  "FormDateRangePicker / Clear dates": {
-    "defaultMessage": "Clear dates"
-  },
-  "FormDateRangePicker / End": {
-    "defaultMessage": "End"
-  },
-  "FormDateRangePicker / End placeholder": {
-    "defaultMessage": "End"
-  },
-  "FormDateRangePicker / End date validation": {
-    "defaultMessage": "End date must be on or after start date"
-  },
-  "FormDateRangePicker / Placeholder": {
-    "defaultMessage": "Select date range"
-  },
-  "FormDateRangePicker / Start": {
-    "defaultMessage": "Start"
-  },
-  "FormDateRangePicker / Start placeholder": {
-    "defaultMessage": "Start"
-  },
-  "MonthPicker / Clear": {
-    "defaultMessage": "Clear"
-  },
-  "MonthPicker / Clear month": {
-    "defaultMessage": "Clear month"
-  },
-  "MonthPicker / Next year": {
-    "defaultMessage": "Next year"
-  },
-  "MonthPicker / Placeholder": {
-    "defaultMessage": "Select month"
-  },
-  "MonthPicker / Previous year": {
-    "defaultMessage": "Previous year"
-  },
-  "MonthPicker / This month": {
-    "defaultMessage": "This month"
-  },
   "Dashboard / Active members": {
     "defaultMessage": "Active members"
   },
@@ -2608,18 +1426,6 @@
   },
   "Dashboard / All caught up": {
     "defaultMessage": "All caught up!"
-  },
-  "Dashboard / Bar Chart / Desc": {
-    "defaultMessage": "Revenue, costs, and profit comparison by month for {period}"
-  },
-  "Dashboard / Bar Chart / Desc With Prediction": {
-    "defaultMessage": "Actual data for {period} with {predictionMonths} months of predicted future performance"
-  },
-  "Dashboard / Bar Chart / No Data": {
-    "defaultMessage": "No data available"
-  },
-  "Dashboard / Bar Chart / Title": {
-    "defaultMessage": "Performance"
   },
   "Dashboard / CRUD Items": {
     "defaultMessage": "CRUD Items"
@@ -2639,32 +1445,8 @@
   "Dashboard / Documents description": {
     "defaultMessage": "Uploaded files"
   },
-  "Dashboard / KPI / Actual": {
-    "defaultMessage": "Actual: {actual}"
-  },
-  "Dashboard / KPI / Costs": {
-    "defaultMessage": "Total Costs"
-  },
-  "Dashboard / KPI / Forecast": {
-    "defaultMessage": "Forecast: {forecast}"
-  },
-  "Dashboard / KPI / Margin": {
-    "defaultMessage": "Gross Margin"
-  },
-  "Dashboard / KPI / Profit": {
-    "defaultMessage": "Gross Profit"
-  },
-  "Dashboard / KPI / Revenue": {
-    "defaultMessage": "Total Revenue"
-  },
-  "Dashboard / KPI / Scenario": {
-    "defaultMessage": "Scenario: {threshold}%"
-  },
   "Dashboard / Manage CRUD": {
     "defaultMessage": "Manage CRUD Items"
-  },
-  "Dashboard / Next Period": {
-    "defaultMessage": "Next period"
   },
   "Dashboard / No activity": {
     "defaultMessage": "No activity in the last 7 days"
@@ -2675,17 +1457,11 @@
   "Dashboard / No team data": {
     "defaultMessage": "No team data available"
   },
-  "Dashboard / No tenant": {
-    "defaultMessage": "Please select a tenant"
-  },
   "Dashboard / Notifications": {
     "defaultMessage": "Notifications"
   },
   "Dashboard / Pending invites": {
     "defaultMessage": "{count} pending invites"
-  },
-  "Dashboard / Previous Period": {
-    "defaultMessage": "Previous period"
   },
   "Dashboard / Quick Actions": {
     "defaultMessage": "Quick Actions"
@@ -2693,23 +1469,11 @@
   "Dashboard / Quick Actions description": {
     "defaultMessage": "Common tasks and resources"
   },
-  "Dashboard / Refresh": {
-    "defaultMessage": "Refresh data"
-  },
   "Dashboard / Roles description": {
     "defaultMessage": "Distribution of team member roles"
   },
   "Dashboard / Roles title": {
     "defaultMessage": "Team Roles"
-  },
-  "Dashboard / Tab / Forecasting": {
-    "defaultMessage": "Forecasting"
-  },
-  "Dashboard / Tab / Insights": {
-    "defaultMessage": "Insights"
-  },
-  "Dashboard / Tab / Performance": {
-    "defaultMessage": "Performance"
   },
   "Dashboard / Team Members": {
     "defaultMessage": "Team Members"
@@ -2717,74 +1481,41 @@
   "Dashboard / Team Settings": {
     "defaultMessage": "Team Settings"
   },
-  "Dashboard / Title": {
-    "defaultMessage": "Overview"
-  },
   "Dashboard / Unread notifications": {
     "defaultMessage": "{count} unread"
   },
-  "DataTable / Columns Button": {
-    "defaultMessage": "Columns"
+  "DateRangePicker / Apply": {
+    "defaultMessage": "Apply"
   },
-  "DataTable / Configure Columns": {
-    "defaultMessage": "Columns"
+  "DateRangePicker / Calendar view": {
+    "defaultMessage": "Calendar view"
   },
-  "DataTable / Controls Title": {
-    "defaultMessage": "Controls"
+  "DateRangePicker / Cancel": {
+    "defaultMessage": "Cancel"
   },
-  "DataTable / Highlight": {
-    "defaultMessage": "Highlight"
+  "DateRangePicker / Clear": {
+    "defaultMessage": "Clear"
   },
-  "DataTable / Highlight Count": {
-    "defaultMessage": "Highlight top"
+  "DateRangePicker / Placeholder": {
+    "defaultMessage": "Select date range"
   },
-  "DataTable / Highlight Metric": {
-    "defaultMessage": "By metric"
+  "DateRangePicker / Select Year": {
+    "defaultMessage": "Select Year..."
   },
-  "DataTable / Highlighting Top": {
-    "defaultMessage": "Top {count} by {metric}"
+  "DateRangePicker / Select end date": {
+    "defaultMessage": "Select end date"
   },
-  "DataTable / Legend / Title": {
-    "defaultMessage": "Margin"
+  "DateRangePicker / Select start date": {
+    "defaultMessage": "Select start date"
   },
-  "DataTable / No Data": {
-    "defaultMessage": "No data available"
+  "DateRangePicker / Switch to calendar view": {
+    "defaultMessage": "Switch to calendar view"
   },
-  "DataTable / Reset Columns": {
-    "defaultMessage": "Reset"
+  "DateRangePicker / Switch to year view": {
+    "defaultMessage": "Switch to year view"
   },
-  "DataTable / Top N": {
-    "defaultMessage": "Top {count}"
-  },
-  "DataTypeFilter / Actual": {
-    "defaultMessage": "Actual"
-  },
-  "DataTypeFilter / All": {
-    "defaultMessage": "All"
-  },
-  "DataTypeFilter / Costs Label": {
-    "defaultMessage": "Costs:"
-  },
-  "DataTypeFilter / Custom": {
-    "defaultMessage": "Custom"
-  },
-  "DataTypeFilter / Manage Types": {
-    "defaultMessage": "Manage Types"
-  },
-  "DataTypeFilter / Planned": {
-    "defaultMessage": "Planned"
-  },
-  "DataTypeFilter / Revenue Label": {
-    "defaultMessage": "Revenue:"
-  },
-  "DataTypeFilter / Select All": {
-    "defaultMessage": "Select all"
-  },
-  "DataTypeFilter / Select Categories": {
-    "defaultMessage": "Select categories"
-  },
-  "DataTypeFilter / Select Revenue": {
-    "defaultMessage": "Select revenue types"
+  "DateRangePicker / Year view": {
+    "defaultMessage": "Year view (heatmap)"
   },
   "Demo Item / Favorite error": {
     "defaultMessage": "Failed to update favorite. Please check your backend configuration and try again."
@@ -2840,6 +1571,9 @@
   "Dropzone / Drop active label": {
     "defaultMessage": "Drop your file here"
   },
+  "DueDatePicker / Days label": {
+    "defaultMessage": "{days}d"
+  },
   "EditCrudDemoItem / Back": {
     "defaultMessage": "Back to items"
   },
@@ -2857,117 +1591,6 @@
   },
   "EditCrudDemoItem / page title": {
     "defaultMessage": "Edit CRUD Example Item"
-  },
-  "EditablePreview / Also Creates": {
-    "defaultMessage": "Also Creates"
-  },
-  "EditablePreview / Click to Edit": {
-    "defaultMessage": "Click cells to edit"
-  },
-  "EditablePreview / Creates Iterations": {
-    "defaultMessage": "Creates Iterations"
-  },
-  "EditablePreview / Creates Revenue Lines": {
-    "defaultMessage": "Creates Revenue Lines"
-  },
-  "EditablePreview / Deselect All": {
-    "defaultMessage": "Deselect All"
-  },
-  "EditablePreview / Edited": {
-    "defaultMessage": "Edited"
-  },
-  "EditablePreview / Import Summary Title": {
-    "defaultMessage": "Import Summary"
-  },
-  "EditablePreview / Iteration Amount": {
-    "defaultMessage": "Amount"
-  },
-  "EditablePreview / Iteration Currency": {
-    "defaultMessage": "Curr."
-  },
-  "EditablePreview / Iteration Due Date": {
-    "defaultMessage": "Due"
-  },
-  "EditablePreview / Iteration End": {
-    "defaultMessage": "End"
-  },
-  "EditablePreview / Iteration Name": {
-    "defaultMessage": "Name"
-  },
-  "EditablePreview / Iteration Number": {
-    "defaultMessage": "#"
-  },
-  "EditablePreview / Iteration Probability": {
-    "defaultMessage": "Prob %"
-  },
-  "EditablePreview / Iteration Start": {
-    "defaultMessage": "Start"
-  },
-  "EditablePreview / Iteration Status": {
-    "defaultMessage": "Status"
-  },
-  "EditablePreview / Iterations Total": {
-    "defaultMessage": "Total (enabled):"
-  },
-  "EditablePreview / Linked Entity": {
-    "defaultMessage": "Linked to existing entity"
-  },
-  "EditablePreview / MR Amount": {
-    "defaultMessage": "Amount"
-  },
-  "EditablePreview / MR Average": {
-    "defaultMessage": "Avg/month:"
-  },
-  "EditablePreview / MR Month": {
-    "defaultMessage": "Month"
-  },
-  "EditablePreview / MR Total": {
-    "defaultMessage": "Total (enabled):"
-  },
-  "EditablePreview / Milestones Skip Warning Short": {
-    "defaultMessage": "Change billing model to \"Fixed\" to import these milestones."
-  },
-  "EditablePreview / Milestones Skip Warning Title": {
-    "defaultMessage": "Milestones will not be imported"
-  },
-  "EditablePreview / Milestones Skipped Legend": {
-    "defaultMessage": "Milestones will be skipped"
-  },
-  "EditablePreview / Milestones Title Editable": {
-    "defaultMessage": "Installments / Milestones ({enabled} of {total})"
-  },
-  "EditablePreview / Modified Badge": {
-    "defaultMessage": "Modified"
-  },
-  "EditablePreview / Modified Records": {
-    "defaultMessage": "Modified records"
-  },
-  "EditablePreview / Monthly Revenue Title Editable": {
-    "defaultMessage": "Monthly Revenue Data ({enabled} of {total} months)"
-  },
-  "EditablePreview / No Records": {
-    "defaultMessage": "No records selected for import"
-  },
-  "EditablePreview / Records Selected": {
-    "defaultMessage": "records selected"
-  },
-  "EditablePreview / Relationships": {
-    "defaultMessage": "Relationships"
-  },
-  "EditablePreview / Select All": {
-    "defaultMessage": "Select All"
-  },
-  "EditablePreview / Select All Short": {
-    "defaultMessage": "All"
-  },
-  "EditablePreview / Select None Short": {
-    "defaultMessage": "None"
-  },
-  "EditablePreview / Warnings": {
-    "defaultMessage": "Warnings"
-  },
-  "EditablePreview / What Will Be Created": {
-    "defaultMessage": "What will be created"
   },
   "Email / Account Activation / Link label": {
     "defaultMessage": "Verify my email"
@@ -2995,6 +1618,150 @@
   },
   "Email / Footer / Unsubscribe": {
     "defaultMessage": "Unsubscribe"
+  },
+  "Email / InvoiceCreated / Amount": {
+    "defaultMessage": "Amount:"
+  },
+  "Email / InvoiceCreated / InvoiceNumber": {
+    "defaultMessage": "Invoice Number:"
+  },
+  "Email / InvoiceCreated / Iteration": {
+    "defaultMessage": "Iteration:"
+  },
+  "Email / InvoiceCreated / Preheader": {
+    "defaultMessage": "Your invoice request has been processed"
+  },
+  "Email / InvoiceCreated / Project": {
+    "defaultMessage": "Project:"
+  },
+  "Email / InvoiceCreated / Subject": {
+    "defaultMessage": "Invoice {invoiceNumber} Created"
+  },
+  "Email / InvoiceCreated / Text": {
+    "defaultMessage": "Great news! An invoice has been created based on your request."
+  },
+  "Email / InvoiceCreated / Title": {
+    "defaultMessage": "Invoice Created from Your Request"
+  },
+  "Email / InvoiceCreated / ViewInvoice": {
+    "defaultMessage": "View Invoice"
+  },
+  "Email / InvoiceFileAdded / File": {
+    "defaultMessage": "File:"
+  },
+  "Email / InvoiceFileAdded / Invoice": {
+    "defaultMessage": "Invoice:"
+  },
+  "Email / InvoiceFileAdded / Preheader": {
+    "defaultMessage": "A file has been added to your invoice"
+  },
+  "Email / InvoiceFileAdded / Project": {
+    "defaultMessage": "Project:"
+  },
+  "Email / InvoiceFileAdded / Subject": {
+    "defaultMessage": "File Added to Invoice {invoiceNumber}"
+  },
+  "Email / InvoiceFileAdded / Text": {
+    "defaultMessage": "A new file has been attached to your invoice."
+  },
+  "Email / InvoiceFileAdded / Title": {
+    "defaultMessage": "File Added to Invoice"
+  },
+  "Email / InvoiceFileAdded / ViewInvoice": {
+    "defaultMessage": "View Invoice"
+  },
+  "Email / InvoiceRequestAssigned / Amount": {
+    "defaultMessage": "Amount:"
+  },
+  "Email / InvoiceRequestAssigned / Iteration": {
+    "defaultMessage": "Iteration:"
+  },
+  "Email / InvoiceRequestAssigned / Preheader": {
+    "defaultMessage": "A new invoice request requires your review"
+  },
+  "Email / InvoiceRequestAssigned / Project": {
+    "defaultMessage": "Project:"
+  },
+  "Email / InvoiceRequestAssigned / RequestedBy": {
+    "defaultMessage": "Requested by:"
+  },
+  "Email / InvoiceRequestAssigned / ReviewRequest": {
+    "defaultMessage": "Review Request"
+  },
+  "Email / InvoiceRequestAssigned / Subject": {
+    "defaultMessage": "Invoice Request Assigned to You"
+  },
+  "Email / InvoiceRequestAssigned / Subject Correction": {
+    "defaultMessage": "Invoice Correction Request Assigned to You"
+  },
+  "Email / InvoiceRequestAssigned / Text": {
+    "defaultMessage": "You have been assigned to review an invoice request. Please review the details and take appropriate action."
+  },
+  "Email / InvoiceRequestAssigned / Title": {
+    "defaultMessage": "Invoice Request Assigned to You"
+  },
+  "Email / InvoiceRequestAssigned / Title Correction": {
+    "defaultMessage": "Invoice Correction Request Assigned to You"
+  },
+  "Email / InvoiceRequestComment / Iteration": {
+    "defaultMessage": "Iteration:"
+  },
+  "Email / InvoiceRequestComment / Preheader": {
+    "defaultMessage": "New comment on invoice request"
+  },
+  "Email / InvoiceRequestComment / Project": {
+    "defaultMessage": "Project:"
+  },
+  "Email / InvoiceRequestComment / Subject": {
+    "defaultMessage": "New Comment on Invoice Request"
+  },
+  "Email / InvoiceRequestComment / Text": {
+    "defaultMessage": "{commenterName} added a comment to an invoice request."
+  },
+  "Email / InvoiceRequestComment / Title": {
+    "defaultMessage": "New Comment on Invoice Request"
+  },
+  "Email / InvoiceRequestComment / ViewRequest": {
+    "defaultMessage": "View Request"
+  },
+  "Email / InvoiceRequestMention / Iteration": {
+    "defaultMessage": "Iteration:"
+  },
+  "Email / InvoiceRequestMention / Preheader": {
+    "defaultMessage": "You were mentioned in a comment on an invoice request"
+  },
+  "Email / InvoiceRequestMention / Project": {
+    "defaultMessage": "Project:"
+  },
+  "Email / InvoiceRequestMention / Subject": {
+    "defaultMessage": "You Were Mentioned in an Invoice Request Comment"
+  },
+  "Email / InvoiceRequestMention / Text": {
+    "defaultMessage": "{commenterName} mentioned you in a comment on an invoice request."
+  },
+  "Email / InvoiceRequestMention / Title": {
+    "defaultMessage": "You Were Mentioned in a Comment"
+  },
+  "Email / InvoiceRequestMention / ViewRequest": {
+    "defaultMessage": "View Request"
+  },
+  "Email / ProjectNoteMention / Preheader": {
+    "defaultMessage": "You were mentioned in project notes"
+  },
+  "Email / ProjectNoteMention / Project": {
+    "defaultMessage": "Project:"
+  },
+  "Email / ProjectNoteMention / Subject": {
+    "defaultMessage": "You Were Mentioned in Project Notes"
+  },
+  "Email / ProjectNoteMention / Text": {
+    "defaultMessage": "{authorName} mentioned you in the notes for a project."
+  },
+  "Email / ProjectNoteMention / Title": {
+    "defaultMessage": "You Were Mentioned in Project Notes"
+  },
+  "Email / ProjectNoteMention / ViewProject": {
+    "defaultMessage": "View Project"
   },
   "Email / Reset Password / Link label": {
     "defaultMessage": "Create new password"
@@ -3131,386 +1898,26 @@
   "Finances / Stripe / Payment form / Title": {
     "defaultMessage": "Payment Details"
   },
-  "Financial Lines / Costs": {
-    "defaultMessage": "Costs"
+  "FormDateRangePicker / Apply": {
+    "defaultMessage": "Apply"
   },
-  "Financial Lines / Costs Description": {
-    "defaultMessage": "All cost entries. Click column headers to sort."
+  "FormDateRangePicker / Clear": {
+    "defaultMessage": "Clear"
   },
-  "Financial Lines / Costs Section": {
-    "defaultMessage": "Costs"
+  "FormDateRangePicker / Clear dates": {
+    "defaultMessage": "Clear dates"
   },
-  "Financial Lines / Costs Tab": {
-    "defaultMessage": "Costs"
+  "FormDateRangePicker / End date validation": {
+    "defaultMessage": "End date must be on or after start date"
   },
-  "Financial Lines / Empty": {
-    "defaultMessage": "No financial entries found"
+  "FormDateRangePicker / End placeholder": {
+    "defaultMessage": "End"
   },
-  "Financial Lines / Loading": {
-    "defaultMessage": "Loading financial data..."
+  "FormDateRangePicker / Placeholder": {
+    "defaultMessage": "Select date range"
   },
-  "Financial Lines / Net": {
-    "defaultMessage": "Net"
-  },
-  "Financial Lines / Revenue": {
-    "defaultMessage": "Revenue"
-  },
-  "Financial Lines / Revenue Description": {
-    "defaultMessage": "All revenue entries. Click column headers to sort."
-  },
-  "Financial Lines / Revenue Section": {
-    "defaultMessage": "Revenue"
-  },
-  "Financial Lines / Revenue Tab": {
-    "defaultMessage": "Revenue"
-  },
-  "Financial Lines / View All": {
-    "defaultMessage": "View All"
-  },
-  "Forecasting / Backtest / Baseline Desc": {
-    "defaultMessage": "Naive seasonal baseline MAPE for comparison. Uses same month from previous year as forecast."
-  },
-  "Forecasting / Backtest / Beats": {
-    "defaultMessage": "Beats Baseline"
-  },
-  "Forecasting / Backtest / Below": {
-    "defaultMessage": "Below Baseline"
-  },
-  "Forecasting / Backtest / Bias Desc": {
-    "defaultMessage": "Systematic bias in forecasts. Negative means underforecasting, positive means overforecasting. Closer to zero is better."
-  },
-  "Forecasting / Backtest / Bias Good": {
-    "defaultMessage": "Bias near 0%"
-  },
-  "Forecasting / Backtest / Bias Good Desc": {
-    "defaultMessage": "No systematic over/under forecasting"
-  },
-  "Forecasting / Backtest / By Horizon": {
-    "defaultMessage": "Accuracy by Forecast Horizon"
-  },
-  "Forecasting / Backtest / By Horizon Desc": {
-    "defaultMessage": "How accuracy degrades as we forecast further into the future"
-  },
-  "Forecasting / Backtest / Coverage Good": {
-    "defaultMessage": "Coverage ~80-95%"
-  },
-  "Forecasting / Backtest / Coverage Good Desc": {
-    "defaultMessage": "Prediction intervals are well-calibrated"
-  },
-  "Forecasting / Backtest / Description": {
-    "defaultMessage": "Historical accuracy measured via rolling-origin cross-validation"
-  },
-  "Forecasting / Backtest / Engine Label": {
-    "defaultMessage": "Engine"
-  },
-  "Forecasting / Backtest / Guide Title": {
-    "defaultMessage": "Understanding These Metrics"
-  },
-  "Forecasting / Backtest / Horizon Label": {
-    "defaultMessage": "Horizon"
-  },
-  "Forecasting / Backtest / Horizon Title": {
-    "defaultMessage": "{horizon}-Month Horizon"
-  },
-  "Forecasting / Backtest / MAPE Desc": {
-    "defaultMessage": "Mean Absolute Percentage Error - average forecast error as percentage of actual values. Lower is better. Note: skips zero values."
-  },
-  "Forecasting / Backtest / MASE Desc": {
-    "defaultMessage": "Mean Absolute Scaled Error - compares to naive baseline. Values below 1.0 mean better than just using last year's values."
-  },
-  "Forecasting / Backtest / MASE Good": {
-    "defaultMessage": "MASE < 1.0 = Beats Naive"
-  },
-  "Forecasting / Backtest / MASE Good Desc": {
-    "defaultMessage": "Model adds value over simple baseline"
-  },
-  "Forecasting / Backtest / No Data": {
-    "defaultMessage": "Unable to run backtest. Need at least 18 months of historical data."
-  },
-  "Forecasting / Backtest / No Horizon Data": {
-    "defaultMessage": "No data for {horizon}-month horizon"
-  },
-  "Forecasting / Backtest / Title": {
-    "defaultMessage": "Forecast Accuracy (Backtested)"
-  },
-  "Forecasting / Backtest / WAPE Desc": {
-    "defaultMessage": "Weighted Absolute Percentage Error - more robust than MAPE when data contains zeros. Recommended primary metric."
-  },
-  "Forecasting / Backtest / WAPE Good": {
-    "defaultMessage": "WAPE < 15% = Excellent"
-  },
-  "Forecasting / Backtest / WAPE Good Desc": {
-    "defaultMessage": "Forecasts are highly accurate (handles zeros)"
-  },
-  "Forecasting / Backtest / sMAPE Desc": {
-    "defaultMessage": "Symmetric Mean Absolute Percentage Error - bounded between 0-200%, handles zeros better than MAPE."
-  },
-  "Forecasting / Chart / Description": {
-    "defaultMessage": "Projections using {model} model"
-  },
-  "Forecasting / Chart / No Data": {
-    "defaultMessage": "No forecast data available. Need at least 6 months of historical data."
-  },
-  "Forecasting / Chart / Seasonal": {
-    "defaultMessage": "Seasonal"
-  },
-  "Forecasting / Chart / Title": {
-    "defaultMessage": "Financial Forecast"
-  },
-  "Forecasting / Comparison / Description": {
-    "defaultMessage": "Side-by-side comparison of revenue, costs, and profit across scenarios"
-  },
-  "Forecasting / Comparison / Title": {
-    "defaultMessage": "Visual Comparison"
-  },
-  "Forecasting / Controls / Bands": {
-    "defaultMessage": "Confidence Bands"
-  },
-  "Forecasting / Controls / Show": {
-    "defaultMessage": "Show:"
-  },
-  "Forecasting / Description": {
-    "defaultMessage": "Statistical forecasting with prediction intervals"
-  },
-  "Forecasting / EV / Costs": {
-    "defaultMessage": "Expected Costs"
-  },
-  "Forecasting / EV / Description": {
-    "defaultMessage": "Combined expected outcomes weighted by scenario probability"
-  },
-  "Forecasting / EV / Horizon": {
-    "defaultMessage": "{months}mo forecast"
-  },
-  "Forecasting / EV / Profit": {
-    "defaultMessage": "Expected Profit"
-  },
-  "Forecasting / EV / Revenue": {
-    "defaultMessage": "Expected Revenue"
-  },
-  "Forecasting / EV / Title": {
-    "defaultMessage": "Probability-Weighted Expected Value"
-  },
-  "Forecasting / Horizon Label": {
-    "defaultMessage": "Horizon:"
-  },
-  "Forecasting / KPI / Accuracy": {
-    "defaultMessage": "~{mape}% MAPE"
-  },
-  "Forecasting / KPI / Costs": {
-    "defaultMessage": "Forecasted Costs"
-  },
-  "Forecasting / KPI / Estimated": {
-    "defaultMessage": "Estimated from revenue"
-  },
-  "Forecasting / KPI / Margin": {
-    "defaultMessage": "Avg. Margin"
-  },
-  "Forecasting / KPI / Profit": {
-    "defaultMessage": "Forecasted Profit"
-  },
-  "Forecasting / KPI / Projection": {
-    "defaultMessage": "{months}mo projection"
-  },
-  "Forecasting / KPI / Revenue": {
-    "defaultMessage": "Forecasted Revenue"
-  },
-  "Forecasting / Legend / Costs": {
-    "defaultMessage": "Costs"
-  },
-  "Forecasting / Legend / Profit": {
-    "defaultMessage": "Profit"
-  },
-  "Forecasting / Legend / Revenue": {
-    "defaultMessage": "Revenue"
-  },
-  "Forecasting / Model Label": {
-    "defaultMessage": "Model:"
-  },
-  "Forecasting / No Data": {
-    "defaultMessage": "Unable to generate forecast. Ensure you have sufficient historical data."
-  },
-  "Forecasting / Refresh": {
-    "defaultMessage": "Refresh"
-  },
-  "Forecasting / Scenario / Assumptions": {
-    "defaultMessage": "Key Assumptions"
-  },
-  "Forecasting / Scenario / Assumptions Tooltip": {
-    "defaultMessage": "Multipliers applied to base forecast. Revenue adjustments include utilization, rates, and churn effects."
-  },
-  "Forecasting / Scenario / Base Desc": {
-    "defaultMessage": "Most likely outcome"
-  },
-  "Forecasting / Scenario / Margin": {
-    "defaultMessage": "Expected Margin"
-  },
-  "Forecasting / Scenario / Profit": {
-    "defaultMessage": "Profit"
-  },
-  "Forecasting / Scenario / Revenue": {
-    "defaultMessage": "Revenue"
-  },
-  "Forecasting / Scenarios / Description": {
-    "defaultMessage": "Compare base, downside, and upside forecasts with different assumptions"
-  },
-  "Forecasting / Scenarios / No Data": {
-    "defaultMessage": "No scenario data available"
-  },
-  "Forecasting / Scenarios / Title": {
-    "defaultMessage": "Scenario Analysis"
-  },
-  "Forecasting / Show Intervals": {
-    "defaultMessage": "Prediction Intervals"
-  },
-  "Forecasting / Tab / Accuracy": {
-    "defaultMessage": "Accuracy"
-  },
-  "Forecasting / Tab / Forecast": {
-    "defaultMessage": "Forecast"
-  },
-  "Forecasting / Tab / Scenarios": {
-    "defaultMessage": "Scenarios"
-  },
-  "Forecasting / Title": {
-    "defaultMessage": "Advanced Forecasting"
-  },
-  "Forecasting / Trend / Profit": {
-    "defaultMessage": "Profit:"
-  },
-  "Forecasting / Trend / Revenue": {
-    "defaultMessage": "Revenue:"
-  },
-  "Forecasting / Warning / Cost Fallback Description": {
-    "defaultMessage": "Insufficient historical cost data found. Costs are estimated at 70% of revenue (30% target margin). Add cost lines for more accurate forecasts."
-  },
-  "Forecasting / Warning / Cost Fallback Title": {
-    "defaultMessage": "Cost Data Estimated"
-  },
-  "FxRates / Add Button": {
-    "defaultMessage": "Add Manual Rate"
-  },
-  "FxRates / Add Form Description": {
-    "defaultMessage": "Add a custom exchange rate for a specific month"
-  },
-  "FxRates / Add Form Title": {
-    "defaultMessage": "Add Manual FX Rate"
-  },
-  "FxRates / Auto Sync Info": {
-    "defaultMessage": "Exchange rates are automatically synced from public APIs every 4 hours. You can also sync manually using the button above."
-  },
-  "FxRates / Cancel Button": {
-    "defaultMessage": "Cancel"
-  },
-  "FxRates / Create Success": {
-    "defaultMessage": "FX rate added successfully"
-  },
-  "FxRates / Currency Label": {
-    "defaultMessage": "Currency"
-  },
-  "FxRates / Currency Placeholder": {
-    "defaultMessage": "Select currency"
-  },
-  "FxRates / Currency Required": {
-    "defaultMessage": "Currency is required"
-  },
-  "FxRates / Delete Action": {
-    "defaultMessage": "Delete"
-  },
-  "FxRates / Delete Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "FxRates / Delete Confirm": {
-    "defaultMessage": "Delete"
-  },
-  "FxRates / Delete Desc": {
-    "defaultMessage": "This will delete the FX rate for {month}. This action cannot be undone."
-  },
-  "FxRates / Delete Success": {
-    "defaultMessage": "FX rate deleted successfully"
-  },
-  "FxRates / Delete Title": {
-    "defaultMessage": "Delete rate for {currency}?"
-  },
-  "FxRates / Description": {
-    "defaultMessage": "Manage monthly exchange rates for currency conversion. Rates are used to convert foreign currency amounts to your base currency."
-  },
-  "FxRates / Edit Action": {
-    "defaultMessage": "Edit"
-  },
-  "FxRates / Edit Title": {
-    "defaultMessage": "Edit FX Rate"
-  },
-  "FxRates / Empty Add Button": {
-    "defaultMessage": "Add Manual"
-  },
-  "FxRates / Empty Description": {
-    "defaultMessage": "Click 'Sync from API' to automatically fetch current exchange rates, or add rates manually."
-  },
-  "FxRates / Empty Sync Button": {
-    "defaultMessage": "Sync from API"
-  },
-  "FxRates / Empty Title": {
-    "defaultMessage": "No FX rates configured"
-  },
-  "FxRates / Hide History": {
-    "defaultMessage": "Hide history"
-  },
-  "FxRates / Import Button": {
-    "defaultMessage": "Import Excel"
-  },
-  "FxRates / Invalid Rate": {
-    "defaultMessage": "Please enter a valid rate greater than 0"
-  },
-  "FxRates / Month Label": {
-    "defaultMessage": "Month"
-  },
-  "FxRates / Month Required": {
-    "defaultMessage": "Month is required"
-  },
-  "FxRates / No tenant": {
-    "defaultMessage": "Please select a tenant"
-  },
-  "FxRates / Open Menu": {
-    "defaultMessage": "Open menu"
-  },
-  "FxRates / Rate Invalid": {
-    "defaultMessage": "Must be a valid number greater than 0"
-  },
-  "FxRates / Rate Label": {
-    "defaultMessage": "Rate (to base currency)"
-  },
-  "FxRates / Rate Required": {
-    "defaultMessage": "Rate is required"
-  },
-  "FxRates / Rates Badge": {
-    "defaultMessage": "{count, plural, one {rate} other {rates}}"
-  },
-  "FxRates / Refresh Button": {
-    "defaultMessage": "Refresh"
-  },
-  "FxRates / Save Button": {
-    "defaultMessage": "Save"
-  },
-  "FxRates / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "FxRates / Show More": {
-    "defaultMessage": "Show {count} more"
-  },
-  "FxRates / Sync Button": {
-    "defaultMessage": "Sync from API"
-  },
-  "FxRates / Sync Success": {
-    "defaultMessage": "FX rates synced! {created} created, {updated} updated"
-  },
-  "FxRates / Title": {
-    "defaultMessage": "Exchange Rates"
-  },
-  "FxRates / Update Button": {
-    "defaultMessage": "Update"
-  },
-  "FxRates / Update Success": {
-    "defaultMessage": "FX rate updated successfully"
+  "FormDateRangePicker / Start placeholder": {
+    "defaultMessage": "Start"
   },
   "Header / Dark mode": {
     "defaultMessage": "Dark mode"
@@ -3532,15 +1939,6 @@
   },
   "Header / Open user menu aria label": {
     "defaultMessage": "Open user menu"
-  },
-  "Health / At Risk": {
-    "defaultMessage": "At Risk"
-  },
-  "Health / Critical": {
-    "defaultMessage": "Critical"
-  },
-  "Health / Healthy": {
-    "defaultMessage": "Healthy"
   },
   "Home / Admin Panel / Credentials Location": {
     "defaultMessage": "Find these values in packages/backend/secrets.example.json or your .env file"
@@ -3683,890 +2081,47 @@
   "Home / t&c link": {
     "defaultMessage": "Terms and conditions"
   },
-  "IconPicker / No Results": {
-    "defaultMessage": "No icons found matching your search."
+  "MarkdownEditor / Bold": {
+    "defaultMessage": "Bold"
   },
-  "IconPicker / Search Placeholder": {
-    "defaultMessage": "Search icons..."
+  "MarkdownEditor / Bullet List": {
+    "defaultMessage": "Bullet List"
   },
-  "Import / CSV Tab": {
-    "defaultMessage": "Entity Import"
+  "MarkdownEditor / Code": {
+    "defaultMessage": "Code"
   },
-  "Import / Card / Column Header": {
-    "defaultMessage": "Column"
+  "MarkdownEditor / Divider": {
+    "defaultMessage": "Divider"
   },
-  "Import / Card / Description Header": {
-    "defaultMessage": "Description"
+  "MarkdownEditor / Heading 1": {
+    "defaultMessage": "Heading 1"
   },
-  "Import / Card / Drop Zone": {
-    "defaultMessage": "Drop CSV here or click to upload"
+  "MarkdownEditor / Heading 2": {
+    "defaultMessage": "Heading 2"
   },
-  "Import / Card / Example Header": {
-    "defaultMessage": "Example"
+  "MarkdownEditor / Heading 3": {
+    "defaultMessage": "Heading 3"
   },
-  "Import / Card / Importing": {
-    "defaultMessage": "Importing..."
+  "MarkdownEditor / Hide Preview": {
+    "defaultMessage": "Hide Preview"
   },
-  "Import / Card / Optional": {
-    "defaultMessage": "Optional columns ({count})"
+  "MarkdownEditor / Italic": {
+    "defaultMessage": "Italic"
   },
-  "Import / Card / Required": {
-    "defaultMessage": "Required columns"
+  "MarkdownEditor / Link": {
+    "defaultMessage": "Link"
   },
-  "Import / Card / Template": {
-    "defaultMessage": "Template"
+  "MarkdownEditor / Numbered List": {
+    "defaultMessage": "Numbered List"
   },
-  "Import / Download": {
-    "defaultMessage": "Download Guide"
+  "MarkdownEditor / Quote": {
+    "defaultMessage": "Quote"
   },
-  "Import / Download All": {
-    "defaultMessage": "Download All Templates"
+  "MarkdownEditor / Show Preview": {
+    "defaultMessage": "Show Preview"
   },
-  "Import / Downloading All": {
-    "defaultMessage": "Downloading all CSV templates..."
-  },
-  "Import / Drop Here": {
-    "defaultMessage": "Drop your Excel file here"
-  },
-  "Import / Financial Tab": {
-    "defaultMessage": "Smart Data Import"
-  },
-  "Import / Formats": {
-    "defaultMessage": "Accepts .xlsx and .xls files"
-  },
-  "Import / History Desc": {
-    "defaultMessage": "View past import operations and their results"
-  },
-  "Import / History Tab": {
-    "defaultMessage": "Import History"
-  },
-  "Import / History Title": {
-    "defaultMessage": "Import History"
-  },
-  "Import / Invalid File": {
-    "defaultMessage": "Please upload an Excel file (.xlsx or .xls)"
-  },
-  "Import / No History": {
-    "defaultMessage": "No imports yet"
-  },
-  "Import / No History Desc": {
-    "defaultMessage": "Upload your first Excel file to get started"
-  },
-  "Import / No History Title": {
-    "defaultMessage": "No imports yet"
-  },
-  "Import / No tenant": {
-    "defaultMessage": "Please select a tenant"
-  },
-  "Import / Or Browse": {
-    "defaultMessage": "or click to browse your files"
-  },
-  "Import / Page Description": {
-    "defaultMessage": "Import your data using CSV files or images with AI-powered parsing."
-  },
-  "Import / Page Title": {
-    "defaultMessage": "Import Data"
-  },
-  "Import / Partial Success": {
-    "defaultMessage": "Import completed with errors. Check the import history for details."
-  },
-  "Import / Please Wait": {
-    "defaultMessage": "This may take a moment"
-  },
-  "Import / Sheets Desc": {
-    "defaultMessage": "Your Excel file should contain sheets with these exact names. Each sheet imports different data types."
-  },
-  "Import / Sheets Note": {
-    "defaultMessage": "Sheet names must match exactly (case-sensitive). You can include only the sheets you need - empty sheets are skipped."
-  },
-  "Import / Sheets Title": {
-    "defaultMessage": "Expected Excel Sheets"
-  },
-  "Import / Step 1": {
-    "defaultMessage": "Download template"
-  },
-  "Import / Step 2": {
-    "defaultMessage": "Fill in your data"
-  },
-  "Import / Step 3": {
-    "defaultMessage": "Upload CSV file"
-  },
-  "Import / Success": {
-    "defaultMessage": "Import completed successfully"
-  },
-  "Import / Template Desc": {
-    "defaultMessage": "Download our template guide to see the expected Excel structure"
-  },
-  "Import / Template Downloaded": {
-    "defaultMessage": "Template guide downloaded. Use it to create your Excel import file."
-  },
-  "Import / Template Title": {
-    "defaultMessage": "Need help with the format?"
-  },
-  "Import / Templates Desc": {
-    "defaultMessage": "Quick access to all CSV templates"
-  },
-  "Import / Templates Title": {
-    "defaultMessage": "All Templates"
-  },
-  "Import / Tip 1": {
-    "defaultMessage": "Import master data (Clients, Roles) before Projects"
-  },
-  "Import / Tip 2": {
-    "defaultMessage": "Use project codes to link Revenue and Costs"
-  },
-  "Import / Tip 3": {
-    "defaultMessage": "Upload FX Rates before importing foreign currency data"
-  },
-  "Import / Tips Title": {
-    "defaultMessage": "Import Tips"
-  },
-  "Import / Upload Desc": {
-    "defaultMessage": "Upload an Excel file to import financial data into the system"
-  },
-  "Import / Upload Title": {
-    "defaultMessage": "Import Data"
-  },
-  "Import / Uploading": {
-    "defaultMessage": "Processing your file..."
-  },
-  "Import History / All Methods": {
-    "defaultMessage": "All Methods"
-  },
-  "Import History / All Statuses": {
-    "defaultMessage": "All Statuses"
-  },
-  "Import History / All Types": {
-    "defaultMessage": "All Types"
-  },
-  "Import History / Clear All": {
-    "defaultMessage": "Clear filters"
-  },
-  "Import History / Clear Filters": {
-    "defaultMessage": "Clear"
-  },
-  "Import History / Description": {
-    "defaultMessage": "View and filter all your import operations"
-  },
-  "Import History / Empty": {
-    "defaultMessage": "No import history found"
-  },
-  "Import History / Empty Default": {
-    "defaultMessage": "Your import history will appear here"
-  },
-  "Import History / Empty Filtered": {
-    "defaultMessage": "Try adjusting your filters"
-  },
-  "Import History / Entity Filter": {
-    "defaultMessage": "Entity Type"
-  },
-  "Import History / Method Filter": {
-    "defaultMessage": "Import Method"
-  },
-  "Import History / Status Filter": {
-    "defaultMessage": "Status"
-  },
-  "Import History / Title": {
-    "defaultMessage": "Import History"
-  },
-  "Invoice Form / Add Description": {
-    "defaultMessage": "Create a new invoice for your client"
-  },
-  "Invoice Form / Add Title": {
-    "defaultMessage": "Create Invoice"
-  },
-  "Invoice Form / Amount Invalid": {
-    "defaultMessage": "Please enter a valid amount"
-  },
-  "Invoice Form / Amount Label": {
-    "defaultMessage": "Amount"
-  },
-  "Invoice Form / Amount Placeholder": {
-    "defaultMessage": "0.00"
-  },
-  "Invoice Form / Amount Required": {
-    "defaultMessage": "Amount is required"
-  },
-  "Invoice Form / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "Invoice Form / Client Label": {
-    "defaultMessage": "Client"
-  },
-  "Invoice Form / Create": {
-    "defaultMessage": "Create Invoice"
-  },
-  "Invoice Form / Currency Label": {
-    "defaultMessage": "Currency"
-  },
-  "Invoice Form / Current File": {
-    "defaultMessage": "Current file"
-  },
-  "Invoice Form / Due Date Label": {
-    "defaultMessage": "Due Date"
-  },
-  "Invoice Form / Due Date Placeholder": {
-    "defaultMessage": "Select due date"
-  },
-  "Invoice Form / Due Date Required": {
-    "defaultMessage": "Due date is required"
-  },
-  "Invoice Form / Edit Description": {
-    "defaultMessage": "Update invoice details"
-  },
-  "Invoice Form / Edit Title": {
-    "defaultMessage": "Edit Invoice"
-  },
-  "Invoice Form / File Dropzone Label": {
-    "defaultMessage": "PDF or images up to 10MB"
-  },
-  "Invoice Form / File Label": {
-    "defaultMessage": "Invoice File"
-  },
-  "Invoice Form / File Replace Label": {
-    "defaultMessage": "Drop a new file to replace the current one"
-  },
-  "Invoice Form / Issue Date Label": {
-    "defaultMessage": "Issue Date"
-  },
-  "Invoice Form / Issue Date Placeholder": {
-    "defaultMessage": "Select issue date"
-  },
-  "Invoice Form / Issue Date Required": {
-    "defaultMessage": "Issue date is required"
-  },
-  "Invoice Form / Iteration Label": {
-    "defaultMessage": "Iteration"
-  },
-  "Invoice Form / Iteration Placeholder": {
-    "defaultMessage": "Select iteration (optional)"
-  },
-  "Invoice Form / New File": {
-    "defaultMessage": "New file to upload"
-  },
-  "Invoice Form / No Iteration": {
-    "defaultMessage": "No iteration"
-  },
-  "Invoice Form / Notes Label": {
-    "defaultMessage": "Notes"
-  },
-  "Invoice Form / Notes Placeholder": {
-    "defaultMessage": "Additional notes or comments..."
-  },
-  "Invoice Form / Number Label": {
-    "defaultMessage": "Invoice Number"
-  },
-  "Invoice Form / Number Placeholder": {
-    "defaultMessage": "e.g., INV-2024-001"
-  },
-  "Invoice Form / Number Required": {
-    "defaultMessage": "Invoice number is required"
-  },
-  "Invoice Form / Paid Date Label": {
-    "defaultMessage": "Paid Date"
-  },
-  "Invoice Form / Paid Date Placeholder": {
-    "defaultMessage": "Select paid date"
-  },
-  "Invoice Form / Project Label": {
-    "defaultMessage": "Project"
-  },
-  "Invoice Form / Save Changes": {
-    "defaultMessage": "Save Changes"
-  },
-  "Invoice Form / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "Invoice Form / Status Label": {
-    "defaultMessage": "Status"
-  },
-  "InvoiceDetails / Activity Created": {
-    "defaultMessage": "Created"
-  },
-  "InvoiceDetails / Activity Paid": {
-    "defaultMessage": "Payment Received"
-  },
-  "InvoiceDetails / Activity Title": {
-    "defaultMessage": "Activity"
-  },
-  "InvoiceDetails / Activity Updated": {
-    "defaultMessage": "Last Updated"
-  },
-  "InvoiceDetails / Admin Notes": {
-    "defaultMessage": "Admin Notes"
-  },
-  "InvoiceDetails / Amount Label": {
-    "defaultMessage": "Amount"
-  },
-  "InvoiceDetails / Back": {
-    "defaultMessage": "Back to Invoices"
-  },
-  "InvoiceDetails / Billing Label": {
-    "defaultMessage": "Billing"
-  },
-  "InvoiceDetails / Billing Period": {
-    "defaultMessage": "Billing Period"
-  },
-  "InvoiceDetails / Client Title": {
-    "defaultMessage": "Client"
-  },
-  "InvoiceDetails / Correction Badge": {
-    "defaultMessage": "Correction"
-  },
-  "InvoiceDetails / Correction Reason": {
-    "defaultMessage": "Correction Reason"
-  },
-  "InvoiceDetails / Created Date": {
-    "defaultMessage": "Created {date}"
-  },
-  "InvoiceDetails / Days Left": {
-    "defaultMessage": "{days} days left"
-  },
-  "InvoiceDetails / Delete": {
-    "defaultMessage": "Delete"
-  },
-  "InvoiceDetails / Delete Description": {
-    "defaultMessage": "Are you sure you want to delete invoice {number}? This action cannot be undone."
-  },
-  "InvoiceDetails / Delete Success": {
-    "defaultMessage": "Invoice deleted successfully"
-  },
-  "InvoiceDetails / Delete Title": {
-    "defaultMessage": "Delete Invoice"
-  },
-  "InvoiceDetails / Due Date": {
-    "defaultMessage": "Due Date"
-  },
-  "InvoiceDetails / Edit": {
-    "defaultMessage": "Edit"
-  },
-  "InvoiceDetails / File Title": {
-    "defaultMessage": "Attached File"
-  },
-  "InvoiceDetails / Generate Revenue": {
-    "defaultMessage": "Add to Revenue"
-  },
-  "InvoiceDetails / Generate Revenue Short": {
-    "defaultMessage": "Revenue"
-  },
-  "InvoiceDetails / Generate Revenue Success": {
-    "defaultMessage": "Revenue line generated successfully"
-  },
-  "InvoiceDetails / Issue Date": {
-    "defaultMessage": "Issue Date"
-  },
-  "InvoiceDetails / Iteration Title": {
-    "defaultMessage": "Iteration"
-  },
-  "InvoiceDetails / Mark Paid": {
-    "defaultMessage": "Mark as Paid"
-  },
-  "InvoiceDetails / Mark Paid Short": {
-    "defaultMessage": "Paid"
-  },
-  "InvoiceDetails / No Content": {
-    "defaultMessage": "No attachments or requests"
-  },
-  "InvoiceDetails / No Content Hint": {
-    "defaultMessage": "Upload a file or link invoice requests to see more details here"
-  },
-  "InvoiceDetails / No Links": {
-    "defaultMessage": "No client, project, or iteration linked to this invoice"
-  },
-  "InvoiceDetails / Not Found": {
-    "defaultMessage": "Invoice not found"
-  },
-  "InvoiceDetails / Not Found Desc": {
-    "defaultMessage": "The invoice you're looking for doesn't exist or you don't have permission to view it."
-  },
-  "InvoiceDetails / Original Invoice": {
-    "defaultMessage": "Original Invoice: {invoiceNumber} ({amount})"
-  },
-  "InvoiceDetails / Overdue Badge": {
-    "defaultMessage": "Overdue"
-  },
-  "InvoiceDetails / Paid Date": {
-    "defaultMessage": "Paid Date"
-  },
-  "InvoiceDetails / Processed By": {
-    "defaultMessage": "Processed By"
-  },
-  "InvoiceDetails / Project Title": {
-    "defaultMessage": "Project"
-  },
-  "InvoiceDetails / Request Description": {
-    "defaultMessage": "Description"
-  },
-  "InvoiceDetails / Requested Amount": {
-    "defaultMessage": "Requested Amount"
-  },
-  "InvoiceDetails / Requests Description": {
-    "defaultMessage": "Invoice requests that led to this invoice"
-  },
-  "InvoiceDetails / Requests Title": {
-    "defaultMessage": "Related Requests"
-  },
-  "InvoiceDetails / Revenue Amount": {
-    "defaultMessage": "Amount"
-  },
-  "InvoiceDetails / Revenue Created": {
-    "defaultMessage": "Created"
-  },
-  "InvoiceDetails / Revenue Lines Description": {
-    "defaultMessage": "Revenue lines generated from this invoice"
-  },
-  "InvoiceDetails / Revenue Lines Title": {
-    "defaultMessage": "Revenue Lines"
-  },
-  "InvoiceDetails / Revenue Month": {
-    "defaultMessage": "Month"
-  },
-  "InvoiceDetails / Revenue Type": {
-    "defaultMessage": "Type"
-  },
-  "InvoiceDetails / Submitted": {
-    "defaultMessage": "Submitted"
-  },
-  "InvoiceDetails / Update Success": {
-    "defaultMessage": "Invoice updated successfully"
-  },
-  "InvoiceDetails / View Client": {
-    "defaultMessage": "View Client"
-  },
-  "InvoiceDetails / View File": {
-    "defaultMessage": "View File"
-  },
-  "InvoiceDetails / View Iteration": {
-    "defaultMessage": "View in Project"
-  },
-  "InvoiceDetails / View Project": {
-    "defaultMessage": "View Project"
-  },
-  "InvoiceRequest / Amount Hint": {
-    "defaultMessage": "Amount to be invoiced"
-  },
-  "InvoiceRequest / Amount Label": {
-    "defaultMessage": "Amount"
-  },
-  "InvoiceRequest / Amount Min": {
-    "defaultMessage": "Amount must be greater than 0"
-  },
-  "InvoiceRequest / Amount Required": {
-    "defaultMessage": "Amount is required"
-  },
-  "InvoiceRequest / Billing Type Label": {
-    "defaultMessage": "Billing Type"
-  },
-  "InvoiceRequest / Calculated Cost": {
-    "defaultMessage": "Calculated Cost"
-  },
-  "InvoiceRequest / Currency Label": {
-    "defaultMessage": "Currency"
-  },
-  "InvoiceRequest / Description": {
-    "defaultMessage": "Submit an invoice request for {iterationName}. Review and adjust the details if needed."
-  },
-  "InvoiceRequest / Description Fixed": {
-    "defaultMessage": "Invoice request for installment: {name}"
-  },
-  "InvoiceRequest / Description Label": {
-    "defaultMessage": "Description"
-  },
-  "InvoiceRequest / Description Placeholder": {
-    "defaultMessage": "Add details about this invoice request..."
-  },
-  "InvoiceRequest / Description Required": {
-    "defaultMessage": "Description is required"
-  },
-  "InvoiceRequest / Description TM": {
-    "defaultMessage": "Invoice request for iteration: {name}"
-  },
-  "InvoiceRequest / Details Header": {
-    "defaultMessage": "Request Details"
-  },
-  "InvoiceRequest / Fixed Price Badge": {
-    "defaultMessage": "Fixed Price"
-  },
-  "InvoiceRequest / Installment Amount": {
-    "defaultMessage": "Installment Amount"
-  },
-  "InvoiceRequest / Iteration Label": {
-    "defaultMessage": "Iteration"
-  },
-  "InvoiceRequest / Period End": {
-    "defaultMessage": "Period End"
-  },
-  "InvoiceRequest / Period End Placeholder": {
-    "defaultMessage": "Select end date"
-  },
-  "InvoiceRequest / Period End Required": {
-    "defaultMessage": "Period end is required"
-  },
-  "InvoiceRequest / Period Start": {
-    "defaultMessage": "Period Start"
-  },
-  "InvoiceRequest / Period Start Placeholder": {
-    "defaultMessage": "Select start date"
-  },
-  "InvoiceRequest / Period Start Required": {
-    "defaultMessage": "Period start is required"
-  },
-  "InvoiceRequest / Project Label": {
-    "defaultMessage": "Project"
-  },
-  "InvoiceRequest / Request Amount": {
-    "defaultMessage": "Request Amount"
-  },
-  "InvoiceRequest / Submit": {
-    "defaultMessage": "Submit Request"
-  },
-  "InvoiceRequest / Success": {
-    "defaultMessage": "Invoice request submitted successfully"
-  },
-  "InvoiceRequest / TM Badge": {
-    "defaultMessage": "Time & Materials"
-  },
-  "InvoiceRequest / Title": {
-    "defaultMessage": "Request Invoice"
-  },
-  "InvoiceRequests / Action Approve": {
-    "defaultMessage": "Approve"
-  },
-  "InvoiceRequests / Action Create Invoice": {
-    "defaultMessage": "Create Invoice"
-  },
-  "InvoiceRequests / Action Reject": {
-    "defaultMessage": "Reject"
-  },
-  "InvoiceRequests / Approve Success": {
-    "defaultMessage": "Request approved successfully"
-  },
-  "InvoiceRequests / Card Description": {
-    "defaultMessage": "Review and process invoice requests from team members. Click column headers to sort."
-  },
-  "InvoiceRequests / Card Title": {
-    "defaultMessage": "Invoice Requests"
-  },
-  "InvoiceRequests / Column Amount": {
-    "defaultMessage": "Amount"
-  },
-  "InvoiceRequests / Column Period": {
-    "defaultMessage": "Period"
-  },
-  "InvoiceRequests / Column Project": {
-    "defaultMessage": "Project"
-  },
-  "InvoiceRequests / Column Requester": {
-    "defaultMessage": "Requester"
-  },
-  "InvoiceRequests / Column Status": {
-    "defaultMessage": "Status"
-  },
-  "InvoiceRequests / Column Submitted": {
-    "defaultMessage": "Submitted"
-  },
-  "InvoiceRequests / Create Invoice Success": {
-    "defaultMessage": "Invoice created successfully"
-  },
-  "InvoiceRequests / Filter All": {
-    "defaultMessage": "All statuses"
-  },
-  "InvoiceRequests / KPI / AllReviewed": {
-    "defaultMessage": "All reviewed"
-  },
-  "InvoiceRequests / KPI / Approved": {
-    "defaultMessage": "Approved"
-  },
-  "InvoiceRequests / KPI / Created": {
-    "defaultMessage": "Invoiced"
-  },
-  "InvoiceRequests / KPI / NeedsAttention": {
-    "defaultMessage": "Needs attention"
-  },
-  "InvoiceRequests / KPI / Pending": {
-    "defaultMessage": "Pending Review"
-  },
-  "InvoiceRequests / KPI / Rejected": {
-    "defaultMessage": "Rejected"
-  },
-  "InvoiceRequests / Reject Success": {
-    "defaultMessage": "Request rejected"
-  },
-  "InvoiceRequests / Search Placeholder Short": {
-    "defaultMessage": "Search..."
-  },
-  "InvoiceRequests / Status Filter Placeholder": {
-    "defaultMessage": "All statuses"
-  },
-  "InvoiceTable / Col Actions": {
-    "defaultMessage": "Actions"
-  },
-  "InvoiceTable / Col Amount": {
-    "defaultMessage": "Amount"
-  },
-  "InvoiceTable / Col Client": {
-    "defaultMessage": "Client"
-  },
-  "InvoiceTable / Col Due": {
-    "defaultMessage": "Due Date"
-  },
-  "InvoiceTable / Col Invoice": {
-    "defaultMessage": "Invoice #"
-  },
-  "InvoiceTable / Col Issue": {
-    "defaultMessage": "Issue Date"
-  },
-  "InvoiceTable / Col Iteration": {
-    "defaultMessage": "Iteration"
-  },
-  "InvoiceTable / Col Project": {
-    "defaultMessage": "Project"
-  },
-  "InvoiceTable / Col Status": {
-    "defaultMessage": "Status"
-  },
-  "InvoiceTable / Description": {
-    "defaultMessage": "All invoices linked to this entity"
-  },
-  "InvoiceTable / Download Tooltip": {
-    "defaultMessage": "Download Invoice"
-  },
-  "InvoiceTable / Empty": {
-    "defaultMessage": "No invoices yet"
-  },
-  "InvoiceTable / Empty Description": {
-    "defaultMessage": "Invoices will appear here when they are created"
-  },
-  "InvoiceTable / Request Correction Tooltip": {
-    "defaultMessage": "Request Correction"
-  },
-  "InvoiceTable / Title": {
-    "defaultMessage": "Invoices"
-  },
-  "InvoiceTable / View Details Tooltip": {
-    "defaultMessage": "View Details"
-  },
-  "Invoices / Action Delete": {
-    "defaultMessage": "Delete"
-  },
-  "Invoices / Action Edit": {
-    "defaultMessage": "Edit"
-  },
-  "Invoices / Action Generate Revenue": {
-    "defaultMessage": "Add to Revenue"
-  },
-  "Invoices / Action Mark Paid": {
-    "defaultMessage": "Mark as Paid"
-  },
-  "Invoices / Action View": {
-    "defaultMessage": "View Details"
-  },
-  "Invoices / Action View File": {
-    "defaultMessage": "View File"
-  },
-  "Invoices / Add Button": {
-    "defaultMessage": "New Invoice"
-  },
-  "Invoices / Card Description": {
-    "defaultMessage": "Search and filter invoices by status. Click column headers to sort."
-  },
-  "Invoices / Card Title": {
-    "defaultMessage": "Invoice List"
-  },
-  "Invoices / Column Amount": {
-    "defaultMessage": "Amount"
-  },
-  "Invoices / Column Client": {
-    "defaultMessage": "Client"
-  },
-  "Invoices / Column Due Date": {
-    "defaultMessage": "Due"
-  },
-  "Invoices / Column Invoice": {
-    "defaultMessage": "Invoice"
-  },
-  "Invoices / Column Project": {
-    "defaultMessage": "Project"
-  },
-  "Invoices / Column Status": {
-    "defaultMessage": "Status"
-  },
-  "Invoices / Create Success": {
-    "defaultMessage": "Invoice created successfully"
-  },
-  "Invoices / Delete Dialog Description": {
-    "defaultMessage": "Are you sure you want to delete invoice {number}? This action cannot be undone."
-  },
-  "Invoices / Delete Dialog Title": {
-    "defaultMessage": "Delete Invoice"
-  },
-  "Invoices / Delete Success": {
-    "defaultMessage": "Invoice deleted successfully"
-  },
-  "Invoices / Empty State Button": {
-    "defaultMessage": "Create Invoice"
-  },
-  "Invoices / Filter All": {
-    "defaultMessage": "All statuses"
-  },
-  "Invoices / Generate Revenue Success": {
-    "defaultMessage": "Revenue line generated successfully"
-  },
-  "Invoices / KPI / OnTrack": {
-    "defaultMessage": "All on track"
-  },
-  "Invoices / KPI / Overdue": {
-    "defaultMessage": "Overdue"
-  },
-  "Invoices / KPI / Paid": {
-    "defaultMessage": "Collected"
-  },
-  "Invoices / KPI / Total": {
-    "defaultMessage": "Total Invoices"
-  },
-  "Invoices / KPI / Value": {
-    "defaultMessage": "Total Value"
-  },
-  "Invoices / No tenant": {
-    "defaultMessage": "Please select a tenant to view invoices"
-  },
-  "Invoices / Page Description": {
-    "defaultMessage": "Manage invoices and process invoice requests from your team"
-  },
-  "Invoices / Page Description View Only": {
-    "defaultMessage": "View and manage invoices"
-  },
-  "Invoices / Page Title": {
-    "defaultMessage": "Invoices"
-  },
-  "Invoices / Search Placeholder Short": {
-    "defaultMessage": "Search..."
-  },
-  "Invoices / Status Filter Placeholder": {
-    "defaultMessage": "All statuses"
-  },
-  "Invoices / Tab Invoices": {
-    "defaultMessage": "Invoices"
-  },
-  "Invoices / Tab Requests": {
-    "defaultMessage": "Requests"
-  },
-  "Invoices / Update Success": {
-    "defaultMessage": "Invoice updated successfully"
-  },
-  "LineDetail / Amount": {
-    "defaultMessage": "Amount"
-  },
-  "LineDetail / Category": {
-    "defaultMessage": "Category"
-  },
-  "LineDetail / Close": {
-    "defaultMessage": "Close"
-  },
-  "LineDetail / Cost Title": {
-    "defaultMessage": "Cost Line Details"
-  },
-  "LineDetail / Description": {
-    "defaultMessage": "Description"
-  },
-  "LineDetail / Month": {
-    "defaultMessage": "Month"
-  },
-  "LineDetail / Original": {
-    "defaultMessage": "Original Amount"
-  },
-  "LineDetail / Revenue Title": {
-    "defaultMessage": "Revenue Line Details"
-  },
-  "LineDetail / Source Type": {
-    "defaultMessage": "Source Type"
-  },
-  "LineDetail / Status": {
-    "defaultMessage": "Status"
-  },
-  "LineDetail / Vendor": {
-    "defaultMessage": "Vendor / Person"
-  },
-  "ManageTypes / Add Button": {
-    "defaultMessage": "Add Type"
-  },
-  "ManageTypes / Button": {
-    "defaultMessage": "Manage Types"
-  },
-  "ManageTypes / Cost Description": {
-    "defaultMessage": "Define categories for cost tracking and reporting."
-  },
-  "ManageTypes / Cost Tab": {
-    "defaultMessage": "Cost Categories"
-  },
-  "ManageTypes / Delete Error": {
-    "defaultMessage": "Failed to delete type"
-  },
-  "ManageTypes / Delete Success": {
-    "defaultMessage": "Type deleted successfully"
-  },
-  "ManageTypes / Dialog Description": {
-    "defaultMessage": "Customize how costs and revenues are categorized and displayed."
-  },
-  "ManageTypes / Dialog Title": {
-    "defaultMessage": "Manage Cost & Revenue Types"
-  },
-  "ManageTypes / Empty State": {
-    "defaultMessage": "No types defined yet. Add your first type to get started."
-  },
-  "ManageTypes / Revenue Description": {
-    "defaultMessage": "Define source types for revenue tracking and reporting."
-  },
-  "ManageTypes / Revenue Tab": {
-    "defaultMessage": "Revenue Types"
-  },
-  "ManageTypes / System Badge": {
-    "defaultMessage": "System"
-  },
-  "ManageTypes / Toggle Active Label": {
-    "defaultMessage": "Toggle active status"
-  },
-  "ManageTypes / Update Error": {
-    "defaultMessage": "Failed to update type"
-  },
-  "ManageTypes / Update Success": {
-    "defaultMessage": "Type updated successfully"
-  },
-  "Management Dashboard / page title": {
-    "defaultMessage": "Management Dashboard"
-  },
-  "Margin / Excellent": {
-    "defaultMessage": "Excellent (>30%)"
-  },
-  "Margin / Excellent Desc": {
-    "defaultMessage": "High-margin projects"
-  },
-  "Margin / Fair": {
-    "defaultMessage": "Fair (10-20%)"
-  },
-  "Margin / Fair Desc": {
-    "defaultMessage": "Moderate margins"
-  },
-  "Margin / Good": {
-    "defaultMessage": "Good (20-30%)"
-  },
-  "Margin / Good Desc": {
-    "defaultMessage": "Healthy returns"
-  },
-  "Margin / Loss": {
-    "defaultMessage": "Loss (<0%)"
-  },
-  "Margin / Loss Desc": {
-    "defaultMessage": "Losing money"
-  },
-  "Margin / Low": {
-    "defaultMessage": "Low (0-10%)"
-  },
-  "Margin / Low Desc": {
-    "defaultMessage": "Needs attention"
-  },
-  "Margin / Projects": {
-    "defaultMessage": "Projects"
+  "MarkdownEditor / Strikethrough": {
+    "defaultMessage": "Strikethrough"
   },
   "Membership Entry / Cancel": {
     "defaultMessage": "Cancel"
@@ -4607,71 +2162,23 @@
   "Membership Entry / UpdateTenant / Fail message": {
     "defaultMessage": "Unable to change the organization data."
   },
-  "Monthly Details / Click Hint": {
-    "defaultMessage": "Click any row to expand and see breakdown by project"
+  "MonthPicker / Clear": {
+    "defaultMessage": "Clear"
   },
-  "Monthly Details / Columns Button": {
-    "defaultMessage": "Columns"
+  "MonthPicker / Clear month": {
+    "defaultMessage": "Clear month"
   },
-  "Monthly Details / Combined Margin": {
-    "defaultMessage": "combined"
+  "MonthPicker / Next year": {
+    "defaultMessage": "Next year"
   },
-  "Monthly Details / Configure Columns": {
-    "defaultMessage": "Columns"
+  "MonthPicker / Placeholder": {
+    "defaultMessage": "Select month"
   },
-  "Monthly Details / Controls Title": {
-    "defaultMessage": "Controls"
+  "MonthPicker / Previous year": {
+    "defaultMessage": "Previous year"
   },
-  "Monthly Details / Description": {
-    "defaultMessage": "Detailed breakdown with month-over-month changes for scenario {threshold}% in {year}"
-  },
-  "Monthly Details / Highlight": {
-    "defaultMessage": "Highlight"
-  },
-  "Monthly Details / Highlight Count": {
-    "defaultMessage": "Highlight top"
-  },
-  "Monthly Details / Highlight Metric": {
-    "defaultMessage": "By metric"
-  },
-  "Monthly Details / Highlighting Top": {
-    "defaultMessage": "Top {count} by {metric}"
-  },
-  "Monthly Details / Legend / Predicted": {
-    "defaultMessage": "Predicted"
-  },
-  "Monthly Details / Legend / Prediction Count": {
-    "defaultMessage": "{count} months"
-  },
-  "Monthly Details / Legend / Title": {
-    "defaultMessage": "Margin"
-  },
-  "Monthly Details / Loading Lines": {
-    "defaultMessage": "Loading line items..."
-  },
-  "Monthly Details / Months": {
-    "defaultMessage": "months"
-  },
-  "Monthly Details / No Data": {
-    "defaultMessage": "No monthly data available"
-  },
-  "Monthly Details / No Lines": {
-    "defaultMessage": "No line items for this month"
-  },
-  "Monthly Details / Predicted Badge": {
-    "defaultMessage": "Predicted"
-  },
-  "Monthly Details / Reset Columns": {
-    "defaultMessage": "Reset"
-  },
-  "Monthly Details / Title": {
-    "defaultMessage": "Monthly Details"
-  },
-  "Monthly Details / Top N": {
-    "defaultMessage": "Top {count}"
-  },
-  "Monthly Details / Total": {
-    "defaultMessage": "Total"
+  "MonthPicker / This month": {
+    "defaultMessage": "This month"
   },
   "My subscription / Active plan": {
     "defaultMessage": "Current plan:"
@@ -4803,34 +2310,10 @@
     "defaultMessage": "Activity Log Export Ready"
   },
   "Notifications / CrudItemCreated / Content": {
-    "defaultMessage": "CRUD item \"{name}\" has been created"
+    "defaultMessage": "CRUD item &quot;{name}&quot; has been created"
   },
   "Notifications / CrudItemUpdated / Content": {
-    "defaultMessage": "CRUD item \"{name}\" has been updated"
-  },
-  "Notifications / Invoice Correction Requested": {
-    "defaultMessage": "{name} requested a correction for invoice {invoiceNumber} ({project}): {amount} {currency}{reason}"
-  },
-  "Notifications / Invoice Created From Request": {
-    "defaultMessage": "Invoice {invoiceNumber} has been created for {project} - {iteration}. Click to view."
-  },
-  "Notifications / Invoice File Added": {
-    "defaultMessage": "Invoice file has been added to {invoiceNumber} for {project}. Click to view."
-  },
-  "Notifications / Invoice Request Approved": {
-    "defaultMessage": "Your invoice request for {project} - {iteration} has been approved"
-  },
-  "Notifications / Invoice Request Created": {
-    "defaultMessage": "{name} requested an invoice for {project} - {iteration} ({amount} {currency})"
-  },
-  "Notifications / Invoice Request Rejected": {
-    "defaultMessage": "Your invoice request for {project} - {iteration} has been rejected{reason}"
-  },
-  "Notifications / Invoice Request Reminder": {
-    "defaultMessage": "Reminder: Pending invoice request from {requester} for {project} - {iteration} ({amount} {currency})"
-  },
-  "Notifications / Invoice Request Updated": {
-    "defaultMessage": "Your invoice request for {project} - {iteration} has been updated"
+    "defaultMessage": "CRUD item &quot;{name}&quot; has been updated"
   },
   "Notifications / Notifications Button / Label": {
     "defaultMessage": "Open notifications"
@@ -4856,11 +2339,23 @@
   "Notifications / Tenant / Invitation Declined": {
     "defaultMessage": "Your invitation to \"{tenant_name}\" has been declined by \"{name}\""
   },
+  "OIDC Form / Add Domain Button": {
+    "defaultMessage": "Add"
+  },
+  "OIDC Form / Allowed Domains Help": {
+    "defaultMessage": "Users with email addresses from these domains can use this SSO connection to sign in."
+  },
+  "OIDC Form / Allowed Domains Label": {
+    "defaultMessage": "Allowed Email Domains"
+  },
   "OIDC Form / Client ID Label": {
     "defaultMessage": "Client ID"
   },
   "OIDC Form / Client Secret Label": {
     "defaultMessage": "Client Secret"
+  },
+  "OIDC Form / Domain Placeholder": {
+    "defaultMessage": "e.g., company.com"
   },
   "OIDC Form / Issuer Label": {
     "defaultMessage": "Issuer URL / Discovery URL"
@@ -5024,830 +2519,6 @@
   "Password Strength / Weak": {
     "defaultMessage": "Weak"
   },
-  "People / Add": {
-    "defaultMessage": "Add Person"
-  },
-  "People / Create Success": {
-    "defaultMessage": "Person added successfully"
-  },
-  "People / Delete Desc": {
-    "defaultMessage": "This will delete the person and their rate history."
-  },
-  "People / Delete Success": {
-    "defaultMessage": "Person deleted successfully"
-  },
-  "People / Delete Title": {
-    "defaultMessage": "Delete {name}?"
-  },
-  "People / Empty Desc": {
-    "defaultMessage": "Add employees and contractors to track costs and rates"
-  },
-  "People / Empty Title": {
-    "defaultMessage": "No people found"
-  },
-  "People / Hourly Short": {
-    "defaultMessage": "Hourly"
-  },
-  "People / Hours Label Short": {
-    "defaultMessage": "Hours/Day"
-  },
-  "People / Inactive": {
-    "defaultMessage": "Inactive"
-  },
-  "People / Monthly Short": {
-    "defaultMessage": "Monthly"
-  },
-  "People / No tenant": {
-    "defaultMessage": "Please select a tenant"
-  },
-  "People / Rate Not Set": {
-    "defaultMessage": "Not set"
-  },
-  "People / Rates": {
-    "defaultMessage": "Rates"
-  },
-  "People / Results Count": {
-    "defaultMessage": "{filtered} of {total} {total, plural, one {person} other {people}}"
-  },
-  "People / Subtitle": {
-    "defaultMessage": "Manage employees and contractors with their rates"
-  },
-  "People / Title": {
-    "defaultMessage": "People"
-  },
-  "People / Update Success": {
-    "defaultMessage": "Person updated successfully"
-  },
-  "People / View": {
-    "defaultMessage": "View"
-  },
-  "Person Details / Active": {
-    "defaultMessage": "Active"
-  },
-  "Person Details / Active Assignment": {
-    "defaultMessage": "Active"
-  },
-  "Person Details / Added": {
-    "defaultMessage": "Added"
-  },
-  "Person Details / Approved": {
-    "defaultMessage": "Approved"
-  },
-  "Person Details / Approved Label": {
-    "defaultMessage": "Approved"
-  },
-  "Person Details / Assignments Desc": {
-    "defaultMessage": "Planned work assignments for this person"
-  },
-  "Person Details / Assignments Label": {
-    "defaultMessage": "Assignments"
-  },
-  "Person Details / Assignments Title": {
-    "defaultMessage": "Assignments"
-  },
-  "Person Details / Back": {
-    "defaultMessage": "Back to People"
-  },
-  "Person Details / Billable Rate": {
-    "defaultMessage": "Billable Rate"
-  },
-  "Person Details / Clients Label": {
-    "defaultMessage": "Clients"
-  },
-  "Person Details / Col Assignment Client": {
-    "defaultMessage": "Client"
-  },
-  "Person Details / Col Assignment Project": {
-    "defaultMessage": "Project"
-  },
-  "Person Details / Col Assignment Status": {
-    "defaultMessage": "Status"
-  },
-  "Person Details / Col Client": {
-    "defaultMessage": "Client"
-  },
-  "Person Details / Col Date": {
-    "defaultMessage": "Date"
-  },
-  "Person Details / Col Desc": {
-    "defaultMessage": "Description"
-  },
-  "Person Details / Col End": {
-    "defaultMessage": "End"
-  },
-  "Person Details / Col Hours": {
-    "defaultMessage": "Hours"
-  },
-  "Person Details / Col Hrs Day": {
-    "defaultMessage": "Hrs/Day"
-  },
-  "Person Details / Col Override Client": {
-    "defaultMessage": "Client"
-  },
-  "Person Details / Col Override Currency": {
-    "defaultMessage": "Currency"
-  },
-  "Person Details / Col Override Effective": {
-    "defaultMessage": "Effective From"
-  },
-  "Person Details / Col Override Project": {
-    "defaultMessage": "Project"
-  },
-  "Person Details / Col Override Rate": {
-    "defaultMessage": "Billable Rate"
-  },
-  "Person Details / Col Project": {
-    "defaultMessage": "Project"
-  },
-  "Person Details / Col Role": {
-    "defaultMessage": "Role"
-  },
-  "Person Details / Col Start": {
-    "defaultMessage": "Start"
-  },
-  "Person Details / Col Status": {
-    "defaultMessage": "Status"
-  },
-  "Person Details / Completed Assignment": {
-    "defaultMessage": "Completed"
-  },
-  "Person Details / Cost Rate": {
-    "defaultMessage": "Cost Rate"
-  },
-  "Person Details / Delete Button": {
-    "defaultMessage": "Delete"
-  },
-  "Person Details / Delete Confirm": {
-    "defaultMessage": "Are you sure? This will permanently delete this person and all their associated data including timesheets and assignments."
-  },
-  "Person Details / Delete Success": {
-    "defaultMessage": "Person deleted successfully"
-  },
-  "Person Details / Delete Title": {
-    "defaultMessage": "Delete Person"
-  },
-  "Person Details / Details Title": {
-    "defaultMessage": "Details"
-  },
-  "Person Details / Edit Button": {
-    "defaultMessage": "Edit"
-  },
-  "Person Details / Effective": {
-    "defaultMessage": "Effective From"
-  },
-  "Person Details / Email": {
-    "defaultMessage": "Email"
-  },
-  "Person Details / Employment": {
-    "defaultMessage": "Employment Type"
-  },
-  "Person Details / Error": {
-    "defaultMessage": "Error loading person"
-  },
-  "Person Details / Hours Day": {
-    "defaultMessage": "Hours per Day"
-  },
-  "Person Details / Hours Label": {
-    "defaultMessage": "Total Hours"
-  },
-  "Person Details / Inactive": {
-    "defaultMessage": "Inactive"
-  },
-  "Person Details / Monthly Fee": {
-    "defaultMessage": "Monthly Fee (Net)"
-  },
-  "Person Details / No Assignments": {
-    "defaultMessage": "No assignments"
-  },
-  "Person Details / No Clients": {
-    "defaultMessage": "No client data yet"
-  },
-  "Person Details / No Clients Hint": {
-    "defaultMessage": "Work on client projects to see them here"
-  },
-  "Person Details / No Projects": {
-    "defaultMessage": "No project data yet"
-  },
-  "Person Details / No Projects Empty": {
-    "defaultMessage": "No projects yet"
-  },
-  "Person Details / No Projects Hint": {
-    "defaultMessage": "Log time to projects to see them here"
-  },
-  "Person Details / No Rates": {
-    "defaultMessage": "No rates configured"
-  },
-  "Person Details / No Rates Hint": {
-    "defaultMessage": "Set up hourly rates to track revenue"
-  },
-  "Person Details / No Timesheets": {
-    "defaultMessage": "No timesheet entries"
-  },
-  "Person Details / Not Found": {
-    "defaultMessage": "Person not found"
-  },
-  "Person Details / Overrides Desc": {
-    "defaultMessage": "Special billable rates for specific projects that override the default rate"
-  },
-  "Person Details / Overrides Title": {
-    "defaultMessage": "Project-Specific Rates"
-  },
-  "Person Details / Pending": {
-    "defaultMessage": "Pending"
-  },
-  "Person Details / Projects Desc": {
-    "defaultMessage": "All projects where this person has logged time"
-  },
-  "Person Details / Projects Label": {
-    "defaultMessage": "Projects"
-  },
-  "Person Details / Projects Title": {
-    "defaultMessage": "Projects Worked On"
-  },
-  "Person Details / Rates Title": {
-    "defaultMessage": "Current Rates"
-  },
-  "Person Details / Retry": {
-    "defaultMessage": "Retry"
-  },
-  "Person Details / Revenue Label": {
-    "defaultMessage": "Est. Revenue"
-  },
-  "Person Details / Tab Assignments": {
-    "defaultMessage": "Assignments"
-  },
-  "Person Details / Tab Costs": {
-    "defaultMessage": "Costs"
-  },
-  "Person Details / Tab Overview": {
-    "defaultMessage": "Overview"
-  },
-  "Person Details / Tab Project Rates": {
-    "defaultMessage": "Project Rates"
-  },
-  "Person Details / Tab Projects": {
-    "defaultMessage": "Projects"
-  },
-  "Person Details / Tab Rates": {
-    "defaultMessage": "Rates"
-  },
-  "Person Details / Tab Timesheets": {
-    "defaultMessage": "Timesheets"
-  },
-  "Person Details / Timesheets Title": {
-    "defaultMessage": "Timesheet Entries"
-  },
-  "Person Details / Top Clients": {
-    "defaultMessage": "Top Clients by Hours"
-  },
-  "Person Details / Top Projects": {
-    "defaultMessage": "Top Projects by Hours"
-  },
-  "Person Details / Upcoming Assignment": {
-    "defaultMessage": "Upcoming"
-  },
-  "Person Details / Update Success": {
-    "defaultMessage": "Person updated successfully"
-  },
-  "Person Details / View All": {
-    "defaultMessage": "View All"
-  },
-  "Person Form / Add": {
-    "defaultMessage": "Add Person"
-  },
-  "Person Form / Add Description": {
-    "defaultMessage": "Add a new team member to your organization"
-  },
-  "Person Form / Add Title": {
-    "defaultMessage": "Add Person"
-  },
-  "Person Form / Avatar Invalid Type": {
-    "defaultMessage": "Please select an image file"
-  },
-  "Person Form / Avatar Too Large": {
-    "defaultMessage": "Image must be less than 1MB"
-  },
-  "Person Form / Avatar Upload Hint": {
-    "defaultMessage": "Click to upload avatar"
-  },
-  "Person Form / Billable Label": {
-    "defaultMessage": "Billable Rate"
-  },
-  "Person Form / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "Person Form / Contractor": {
-    "defaultMessage": "Contractor"
-  },
-  "Person Form / Cost Label": {
-    "defaultMessage": "Cost Rate"
-  },
-  "Person Form / Currency Label": {
-    "defaultMessage": "Currency"
-  },
-  "Person Form / Edit Description": {
-    "defaultMessage": "Update person information and rates"
-  },
-  "Person Form / Edit Title": {
-    "defaultMessage": "Edit Person"
-  },
-  "Person Form / Employee": {
-    "defaultMessage": "Employee"
-  },
-  "Person Form / Employment Label": {
-    "defaultMessage": "Employment Type"
-  },
-  "Person Form / Freelancer": {
-    "defaultMessage": "Freelancer"
-  },
-  "Person Form / Hours Label": {
-    "defaultMessage": "Hours per Day"
-  },
-  "Person Form / Name Label": {
-    "defaultMessage": "Full Name"
-  },
-  "Person Form / Name Placeholder": {
-    "defaultMessage": "Enter full name"
-  },
-  "Person Form / Name Required": {
-    "defaultMessage": "Full name is required"
-  },
-  "Person Form / Rates Title": {
-    "defaultMessage": "Hourly Rates"
-  },
-  "Person Form / Remove Avatar": {
-    "defaultMessage": "Remove avatar"
-  },
-  "Person Form / Save Changes": {
-    "defaultMessage": "Save Changes"
-  },
-  "Person Form / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "PersonFilterBar / Active Filters Label": {
-    "defaultMessage": "Active filters:"
-  },
-  "PersonFilterBar / Clear All Filters": {
-    "defaultMessage": "Clear all"
-  },
-  "PersonFilterBar / Clear Filter": {
-    "defaultMessage": "Clear"
-  },
-  "PersonFilterBar / Filters Title": {
-    "defaultMessage": "Filters"
-  },
-  "PersonFilterBar / Quick Active": {
-    "defaultMessage": "Active Only"
-  },
-  "PersonFilterBar / Search Badge": {
-    "defaultMessage": "Search: {query}"
-  },
-  "PersonFilterBar / Search Placeholder": {
-    "defaultMessage": "Search by name..."
-  },
-  "PersonFilterBar / Show Inactive": {
-    "defaultMessage": "Show Inactive"
-  },
-  "PersonFilterBar / Show Inactive Badge": {
-    "defaultMessage": "Show Inactive"
-  },
-  "PersonFilterBar / Sort": {
-    "defaultMessage": "Sort"
-  },
-  "PersonFilterBar / Sort Created Asc": {
-    "defaultMessage": "Oldest"
-  },
-  "PersonFilterBar / Sort Created Asc Full": {
-    "defaultMessage": "Oldest First"
-  },
-  "PersonFilterBar / Sort Created Desc": {
-    "defaultMessage": "Newest"
-  },
-  "PersonFilterBar / Sort Created Desc Full": {
-    "defaultMessage": "Newest First"
-  },
-  "PersonFilterBar / Sort Name Asc": {
-    "defaultMessage": "Name (A-Z)"
-  },
-  "PersonFilterBar / Sort Name Asc Full": {
-    "defaultMessage": "Name (A to Z)"
-  },
-  "PersonFilterBar / Sort Name Desc": {
-    "defaultMessage": "Name (Z-A)"
-  },
-  "PersonFilterBar / Sort Name Desc Full": {
-    "defaultMessage": "Name (Z to A)"
-  },
-  "PersonFilterBar / Type Filter": {
-    "defaultMessage": "Employment Type"
-  },
-  "PersonFilterBar / Type Filter Title": {
-    "defaultMessage": "Filter by employment type"
-  },
-  "PersonSelector / Empty text": {
-    "defaultMessage": "No people found"
-  },
-  "PersonSelector / Loading": {
-    "defaultMessage": "Loading people..."
-  },
-  "PersonSelector / No person": {
-    "defaultMessage": "No person"
-  },
-  "PersonSelector / Placeholder": {
-    "defaultMessage": "Select person"
-  },
-  "PersonSelector / Search placeholder": {
-    "defaultMessage": "Search people..."
-  },
-  "Pipeline / Active Deals": {
-    "defaultMessage": "Active Deals"
-  },
-  "Pipeline / Add": {
-    "defaultMessage": "Add Deal"
-  },
-  "Pipeline / Add Button": {
-    "defaultMessage": "Add Deal"
-  },
-  "Pipeline / Add First": {
-    "defaultMessage": "Add your first deal"
-  },
-  "Pipeline / Add Title": {
-    "defaultMessage": "Add Deal"
-  },
-  "Pipeline / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "Pipeline / Close Date": {
-    "defaultMessage": "Expected Close"
-  },
-  "Pipeline / Close Date Placeholder": {
-    "defaultMessage": "Select close date"
-  },
-  "Pipeline / Created": {
-    "defaultMessage": "Deal created"
-  },
-  "Pipeline / Currency Label": {
-    "defaultMessage": "Currency"
-  },
-  "Pipeline / Delete Confirm": {
-    "defaultMessage": "Are you sure? This action cannot be undone."
-  },
-  "Pipeline / Delete Title": {
-    "defaultMessage": "Delete Deal"
-  },
-  "Pipeline / Deleted": {
-    "defaultMessage": "Deal deleted"
-  },
-  "Pipeline / Description": {
-    "defaultMessage": "Track deals and forecast revenue based on probability"
-  },
-  "Pipeline / Dialog Description": {
-    "defaultMessage": "Enter deal information for pipeline tracking"
-  },
-  "Pipeline / Duration Label": {
-    "defaultMessage": "Duration (months)"
-  },
-  "Pipeline / Edit Title": {
-    "defaultMessage": "Edit Deal"
-  },
-  "Pipeline / Empty": {
-    "defaultMessage": "No deals found"
-  },
-  "Pipeline / External ID": {
-    "defaultMessage": "External ID (HubSpot, etc.)"
-  },
-  "Pipeline / Name Label": {
-    "defaultMessage": "Deal Name"
-  },
-  "Pipeline / No Tenant": {
-    "defaultMessage": "Please select a tenant"
-  },
-  "Pipeline / Probability Label": {
-    "defaultMessage": "Probability (%)"
-  },
-  "Pipeline / Project Label": {
-    "defaultMessage": "Linked Project (optional)"
-  },
-  "Pipeline / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "Pipeline / Search": {
-    "defaultMessage": "Search deals..."
-  },
-  "Pipeline / Stage Label": {
-    "defaultMessage": "Stage"
-  },
-  "Pipeline / Title": {
-    "defaultMessage": "Sales Pipeline"
-  },
-  "Pipeline / Total": {
-    "defaultMessage": "Total Pipeline"
-  },
-  "Pipeline / Under Construction": {
-    "defaultMessage": "Under Construction"
-  },
-  "Pipeline / Update": {
-    "defaultMessage": "Update"
-  },
-  "Pipeline / Updated": {
-    "defaultMessage": "Deal updated"
-  },
-  "Pipeline / Value Label": {
-    "defaultMessage": "Deal Value"
-  },
-  "Pipeline / Weighted": {
-    "defaultMessage": "Weighted Value"
-  },
-  "PivotTable / Category Entity": {
-    "defaultMessage": "Entity"
-  },
-  "PivotTable / Category Period": {
-    "defaultMessage": "Periods"
-  },
-  "PivotTable / Category Total": {
-    "defaultMessage": "Summary"
-  },
-  "PivotTable / Click Hint": {
-    "defaultMessage": "Click any row to expand and see breakdown"
-  },
-  "PivotTable / Columns": {
-    "defaultMessage": "Columns"
-  },
-  "PivotTable / Columns Title": {
-    "defaultMessage": "Columns"
-  },
-  "PivotTable / Controls": {
-    "defaultMessage": "Controls"
-  },
-  "PivotTable / Copy Line": {
-    "defaultMessage": "Copy to periods"
-  },
-  "PivotTable / Delete Confirm": {
-    "defaultMessage": "Are you sure? This action cannot be undone."
-  },
-  "PivotTable / Delete Line": {
-    "defaultMessage": "Delete"
-  },
-  "PivotTable / Delete Title": {},
-  "PivotTable / Edit Line": {
-    "defaultMessage": "Edit"
-  },
-  "PivotTable / Empty": {
-    "defaultMessage": "No data found"
-  },
-  "PivotTable / Empty Desc": {
-    "defaultMessage": "No entries for the selected period"
-  },
-  "PivotTable / Highlight": {
-    "defaultMessage": "Highlight"
-  },
-  "PivotTable / Highlight Badge": {
-    "defaultMessage": "Top {count} by {metric}"
-  },
-  "PivotTable / Highlight Count": {
-    "defaultMessage": "Highlight top"
-  },
-  "PivotTable / Line Actions": {
-    "defaultMessage": "Actions"
-  },
-  "PivotTable / Metric": {
-    "defaultMessage": "By metric"
-  },
-  "PivotTable / Reset": {
-    "defaultMessage": "Reset"
-  },
-  "PivotTable / Top N": {
-    "defaultMessage": "Top {count}"
-  },
-  "PivotTable / Total": {
-    "defaultMessage": "Total"
-  },
-  "PivotTable / Total Row": {
-    "defaultMessage": "Total"
-  },
-  "Predict / Analysis / Confidence Title": {
-    "defaultMessage": "Confidence"
-  },
-  "Predict / Analysis / OptimalRange Short": {
-    "defaultMessage": "Optimal"
-  },
-  "Predict / Analysis / Profit": {
-    "defaultMessage": "Profit"
-  },
-  "Predict / Analysis / Revenue": {
-    "defaultMessage": "Revenue"
-  },
-  "Predict / Analysis / Seasonal Short": {
-    "defaultMessage": "Seasonal"
-  },
-  "Predict / Analysis / Title": {
-    "defaultMessage": "Analysis"
-  },
-  "Predict / Confidence / Fair": {
-    "defaultMessage": "Fair"
-  },
-  "Predict / Confidence / FairExplanation": {
-    "defaultMessage": "Reasonable prediction quality. Results may vary due to data volatility."
-  },
-  "Predict / Confidence / Good": {
-    "defaultMessage": "Good"
-  },
-  "Predict / Confidence / GoodExplanation": {
-    "defaultMessage": "Good data consistency and sufficient history for reliable predictions."
-  },
-  "Predict / Confidence / LimitedData": {
-    "defaultMessage": "Limited historical data ({months} months). More data improves accuracy."
-  },
-  "Predict / Confidence / Low": {
-    "defaultMessage": "Low"
-  },
-  "Predict / Confidence / LowExplanation": {
-    "defaultMessage": "High month-to-month variance makes predictions less certain. Use as directional guidance."
-  },
-  "Predict / Confidence / Moderate": {
-    "defaultMessage": "Moderate"
-  },
-  "Predict / Confidence Tooltip": {
-    "defaultMessage": "Confidence: {level}"
-  },
-  "Predict / Disable Tooltip": {
-    "defaultMessage": "Disable predictions"
-  },
-  "Predict / Enable Button Short": {
-    "defaultMessage": "Predict"
-  },
-  "Predict / Model / Best": {
-    "defaultMessage": "Best"
-  },
-  "Predict / Months Tooltip": {
-    "defaultMessage": "Predicting {months} months ahead"
-  },
-  "Predict / Profit Trend Tooltip": {
-    "defaultMessage": "Profit trend: {trend}"
-  },
-  "Predict / Revenue Trend Tooltip": {
-    "defaultMessage": "Revenue trend: {trend}"
-  },
-  "Predict / Settings / Data Info": {
-    "defaultMessage": "Based on {months} months of historical data"
-  },
-  "Predict / Settings / Horizon": {
-    "defaultMessage": "Forecast Horizon"
-  },
-  "Predict / Settings / Model": {
-    "defaultMessage": "Prediction Model"
-  },
-  "Predict / Settings / Months": {
-    "defaultMessage": "months"
-  },
-  "Predict / Settings / Suggested": {
-    "defaultMessage": "Suggested: {months}mo"
-  },
-  "Predict / Settings / Title": {
-    "defaultMessage": "Prediction Settings"
-  },
-  "Predict / Settings Tooltip": {
-    "defaultMessage": "Prediction settings"
-  },
-  "Privacy Policy / Description": {
-    "defaultMessage": "How we handle and protect your data"
-  },
-  "Privacy Policy / Docs link": {
-    "defaultMessage": "Contentful Documentation"
-  },
-  "Privacy Policy / Empty description": {
-    "defaultMessage": "The privacy policy content hasn't been added yet. Please add content to the 'privacyPolicy' field in your Contentful AppConfig entry."
-  },
-  "Privacy Policy / Empty title": {
-    "defaultMessage": "No Content Available"
-  },
-  "Privacy Policy / Error description": {
-    "defaultMessage": "There was an error loading this content from Contentful."
-  },
-  "Privacy Policy / Error title": {
-    "defaultMessage": "Unable to load privacy policy"
-  },
-  "Privacy Policy / Not configured description": {
-    "defaultMessage": "This page displays content managed via Contentful CMS. To enable it, you need to configure the Contentful integration."
-  },
-  "Privacy Policy / Not configured title": {
-    "defaultMessage": "Contentful Integration Not Configured"
-  },
-  "Privacy Policy / Open Contentful": {
-    "defaultMessage": "Open Contentful"
-  },
-  "Privacy Policy / Page title": {
-    "defaultMessage": "Privacy Policy"
-  },
-  "Privacy Policy / Quick setup title": {
-    "defaultMessage": "Quick Setup"
-  },
-  "Privacy Policy / Retry button": {
-    "defaultMessage": "Try again"
-  },
-  "Privacy Policy / Setup step 1": {
-    "defaultMessage": "Create a Contentful account and space at {link}"
-  },
-  "Privacy Policy / Setup step 2": {
-    "defaultMessage": "Add these environment variables to {file}:"
-  },
-  "Privacy Policy / Setup step 3": {
-    "defaultMessage": "Create an AppConfig content type with a 'privacyPolicy' field (Long text, Markdown)"
-  },
-  "Privacy Policy / Setup step 4": {
-    "defaultMessage": "Restart the development server"
-  },
-  "Privacy Policy / Title": {
-    "defaultMessage": "Privacy Policy"
-  },
-  "ProcessRequest / Amount Label": {
-    "defaultMessage": "Amount"
-  },
-  "ProcessRequest / Amount Required": {
-    "defaultMessage": "Amount is required"
-  },
-  "ProcessRequest / Approve Button": {
-    "defaultMessage": "Approve Request"
-  },
-  "ProcessRequest / Approve Description": {
-    "defaultMessage": "Approve this invoice request. The requester will be notified."
-  },
-  "ProcessRequest / Approve Title": {
-    "defaultMessage": "Approve Request"
-  },
-  "ProcessRequest / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "ProcessRequest / Correction Badge": {
-    "defaultMessage": "Correction Request"
-  },
-  "ProcessRequest / Correction Comparison": {
-    "defaultMessage": "Amount Comparison"
-  },
-  "ProcessRequest / Correction Reason": {
-    "defaultMessage": "Reason for Correction"
-  },
-  "ProcessRequest / Correction Warning": {
-    "defaultMessage": "This will cancel invoice {invoiceNumber} and create a new one"
-  },
-  "ProcessRequest / Create Invoice Button": {
-    "defaultMessage": "Create Invoice"
-  },
-  "ProcessRequest / Create Invoice Description": {
-    "defaultMessage": "Create an invoice directly from this request."
-  },
-  "ProcessRequest / Create Invoice Title": {
-    "defaultMessage": "Create Invoice"
-  },
-  "ProcessRequest / Currency Label": {
-    "defaultMessage": "Currency"
-  },
-  "ProcessRequest / Invoice Number Label": {
-    "defaultMessage": "Invoice Number"
-  },
-  "ProcessRequest / Invoice Number Required": {
-    "defaultMessage": "Invoice number is required"
-  },
-  "ProcessRequest / Notes Label": {
-    "defaultMessage": "Notes (optional)"
-  },
-  "ProcessRequest / Notes Placeholder": {},
-  "ProcessRequest / Original": {
-    "defaultMessage": "Original"
-  },
-  "ProcessRequest / Processing": {
-    "defaultMessage": "Processing..."
-  },
-  "ProcessRequest / Reason Label": {
-    "defaultMessage": "Rejection Reason"
-  },
-  "ProcessRequest / Reject Button": {
-    "defaultMessage": "Reject Request"
-  },
-  "ProcessRequest / Reject Description": {
-    "defaultMessage": "Reject this invoice request. Please provide a reason."
-  },
-  "ProcessRequest / Reject Reason Required": {
-    "defaultMessage": "Please provide a reason for rejection"
-  },
-  "ProcessRequest / Reject Title": {
-    "defaultMessage": "Reject Request"
-  },
-  "ProcessRequest / Requested": {
-    "defaultMessage": "Requested"
-  },
-  "ProcessRequest / Summary Amount": {
-    "defaultMessage": "Requested Amount"
-  },
-  "ProcessRequest / Summary Period": {
-    "defaultMessage": "Period"
-  },
-  "ProcessRequest / Summary Project": {
-    "defaultMessage": "Project"
-  },
-  "ProcessRequest / Summary Requester": {
-    "defaultMessage": "Requested By"
-  },
   "Profile / Email / Label": {
     "defaultMessage": "Email"
   },
@@ -5878,1454 +2549,8 @@
   "Profile / page title": {
     "defaultMessage": "Profile Settings"
   },
-  "Profitability / Client Row Aria": {
-    "defaultMessage": "View details for {clientName}"
-  },
-  "Profitability / Clients Desc": {
-    "defaultMessage": "Client concentration and revenue distribution"
-  },
-  "Profitability / Clients Title": {
-    "defaultMessage": "Revenue by Client"
-  },
-  "Profitability / Filter Label": {
-    "defaultMessage": "Client:"
-  },
-  "Profitability / Health Desc": {
-    "defaultMessage": "Overall project health assessment"
-  },
-  "Profitability / Health Title": {
-    "defaultMessage": "Project Health"
-  },
-  "Profitability / KPI / Concentration": {
-    "defaultMessage": "Client Concentration"
-  },
-  "Profitability / KPI / Costs": {
-    "defaultMessage": "Costs: {costs}"
-  },
-  "Profitability / KPI / Distribution": {
-    "defaultMessage": "{profitable} profitable, {unprofitable} at loss"
-  },
-  "Profitability / KPI / Margin": {
-    "defaultMessage": "Average Margin"
-  },
-  "Profitability / KPI / Profit": {
-    "defaultMessage": "Total Profit"
-  },
-  "Profitability / KPI / Projects Count": {
-    "defaultMessage": "{count} projects"
-  },
-  "Profitability / KPI / Revenue": {
-    "defaultMessage": "Total Revenue"
-  },
-  "Profitability / KPI / Top3": {
-    "defaultMessage": "Top 3 clients: {percent}"
-  },
-  "Profitability / Loading": {
-    "defaultMessage": "Loading..."
-  },
-  "Profitability / Loading Clients": {
-    "defaultMessage": "Loading clients..."
-  },
-  "Profitability / Margin Dist Desc": {
-    "defaultMessage": "Projects grouped by margin category"
-  },
-  "Profitability / Margin Dist Title": {
-    "defaultMessage": "Margin Distribution"
-  },
-  "Profitability / Multiple Projects": {
-    "defaultMessage": "{count} projects"
-  },
-  "Profitability / Next Period": {
-    "defaultMessage": "Next period"
-  },
-  "Profitability / No Analysis Data": {
-    "defaultMessage": "No data available"
-  },
-  "Profitability / No Clients": {
-    "defaultMessage": "No client data available"
-  },
-  "Profitability / No Clients Hint": {
-    "defaultMessage": "Client revenue data will appear here once available"
-  },
-  "Profitability / No Health Data": {
-    "defaultMessage": "No data available"
-  },
-  "Profitability / No Revenue": {
-    "defaultMessage": "No revenue"
-  },
-  "Profitability / No tenant": {
-    "defaultMessage": "Please select a tenant"
-  },
-  "Profitability / Previous Period": {
-    "defaultMessage": "Previous period"
-  },
-  "Profitability / Refresh": {
-    "defaultMessage": "Refresh data"
-  },
-  "Profitability / Risk Critical": {
-    "defaultMessage": "Critical risk - diversify urgently"
-  },
-  "Profitability / Risk Desc": {
-    "defaultMessage": "Client dependency and revenue diversification assessment"
-  },
-  "Profitability / Risk High": {
-    "defaultMessage": "High dependency on top clients"
-  },
-  "Profitability / Risk Level": {
-    "defaultMessage": "Risk Level"
-  },
-  "Profitability / Risk Low": {
-    "defaultMessage": "Well diversified client base"
-  },
-  "Profitability / Risk Moderate": {
-    "defaultMessage": "Some concentration, monitor growth"
-  },
-  "Profitability / Risk None": {
-    "defaultMessage": "Add client data to see risk assessment"
-  },
-  "Profitability / Risk Title": {
-    "defaultMessage": "Concentration Risk Analysis"
-  },
-  "Profitability / Show Less": {
-    "defaultMessage": "Show less"
-  },
-  "Profitability / Show Zero": {
-    "defaultMessage": "Show projects with no revenue"
-  },
-  "Profitability / Single Project": {
-    "defaultMessage": "1 project"
-  },
-  "Profitability / Tab / Analysis": {
-    "defaultMessage": "Analysis"
-  },
-  "Profitability / Tab / Clients": {
-    "defaultMessage": "Clients"
-  },
-  "Profitability / Tab / Projects": {
-    "defaultMessage": "Projects"
-  },
-  "Profitability / Table Desc": {
-    "defaultMessage": "Click row to expand details. Click column headers to sort."
-  },
-  "Profitability / Table Hint": {
-    "defaultMessage": "Click row to view revenue, costs and iteration breakdown"
-  },
-  "Profitability / Table Title": {
-    "defaultMessage": "Projects by Profitability"
-  },
-  "Profitability / Title": {
-    "defaultMessage": "Profitability Analysis"
-  },
-  "Profitability / Top Client Advice": {
-    "defaultMessage": "Ideally below 30% for healthy diversification"
-  },
-  "Profitability / Top Client Share": {
-    "defaultMessage": "Top Client Share"
-  },
-  "Profitability / Top Projects": {
-    "defaultMessage": "Top Performing Projects"
-  },
-  "Profitability / Top3 Advice": {
-    "defaultMessage": "Ideally below 60% for balanced portfolio"
-  },
-  "Profitability / Top3 Share": {
-    "defaultMessage": "Top 3 Clients Share"
-  },
-  "Profitability / View All Clients": {
-    "defaultMessage": "View all {count} clients"
-  },
-  "Project / Actions": {
-    "defaultMessage": "Actions"
-  },
-  "Project / Add First Person": {
-    "defaultMessage": "Add First Person"
-  },
-  "Project / Add Instalment": {
-    "defaultMessage": "Add Instalment"
-  },
-  "Project / Add Instalment Title": {
-    "defaultMessage": "Add Instalment"
-  },
-  "Project / Add Iteration": {
-    "defaultMessage": "Add Iteration"
-  },
-  "Project / Add Iteration Title": {
-    "defaultMessage": "Add Iteration"
-  },
-  "Project / Add Person Button": {
-    "defaultMessage": "Add Person"
-  },
-  "Project / Add Person Desc": {
-    "defaultMessage": "Assign a team member with their role and billing rate"
-  },
-  "Project / Add Person Short": {
-    "defaultMessage": "Add Person"
-  },
-  "Project / Add Person Title": {
-    "defaultMessage": "Add Person to Iteration"
-  },
-  "Project / Add Person Tooltip": {
-    "defaultMessage": "Add person to this iteration"
-  },
-  "Project / Adding": {
-    "defaultMessage": "Adding..."
-  },
-  "Project / Amount Positive": {
-    "defaultMessage": "Amount must be a positive number"
-  },
-  "Project / Assignment Deleted": {
-    "defaultMessage": "Team member removed from iteration"
-  },
-  "Project / Assignment Options": {
-    "defaultMessage": "Assignment options"
-  },
-  "Project / Assignment Updated Success": {
-    "defaultMessage": "Assignment updated successfully"
-  },
-  "Project / Available Rates Label": {
-    "defaultMessage": "Available rates"
-  },
-  "Project / Base Currency Note": {
-    "defaultMessage": "Base currency: {baseCurrency}"
-  },
-  "Project / Billing Label": {
-    "defaultMessage": "Billing Model"
-  },
-  "Project / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "Project / Cells Selected": {
-    "defaultMessage": "{count} cell(s) selected"
-  },
-  "Project / Clone Action": {
-    "defaultMessage": "Clone"
-  },
-  "Project / Clone Billing Label": {
-    "defaultMessage": "Billing"
-  },
-  "Project / Clone Button": {
-    "defaultMessage": "Clone {type}"
-  },
-  "Project / Clone Custom Period": {
-    "defaultMessage": "Custom Period"
-  },
-  "Project / Clone Custom Period Desc": {
-    "defaultMessage": "Choose your own dates"
-  },
-  "Project / Clone Deselect All": {
-    "defaultMessage": "Deselect All"
-  },
-  "Project / Clone Dialog Desc": {
-    "defaultMessage": "Create a new {type} based on {source} with the same team and settings"
-  },
-  "Project / Clone Dialog Title": {
-    "defaultMessage": "Clone {type}"
-  },
-  "Project / Clone Error": {
-    "defaultMessage": "Failed to clone iteration"
-  },
-  "Project / Clone From Label": {
-    "defaultMessage": "Cloning from"
-  },
-  "Project / Clone Generate Time Entries": {
-    "defaultMessage": "Generate time entries for working days"
-  },
-  "Project / Clone Include Weekends": {
-    "defaultMessage": "Include weekends (Sat/Sun)"
-  },
-  "Project / Clone Next Period": {
-    "defaultMessage": "Next Period"
-  },
-  "Project / Clone People Count": {
-    "defaultMessage": "people"
-  },
-  "Project / Clone Period Label": {
-    "defaultMessage": "Period"
-  },
-  "Project / Clone Period Summary": {
-    "defaultMessage": "New period: {start} – {end}"
-  },
-  "Project / Clone Select All": {
-    "defaultMessage": "Select All"
-  },
-  "Project / Clone Selection Summary": {
-    "defaultMessage": "{count} of {total} people will be added to the new iteration"
-  },
-  "Project / Clone Success": {
-    "defaultMessage": "Iteration cloned successfully"
-  },
-  "Project / Clone Team Label": {
-    "defaultMessage": "Team ({count} people)"
-  },
-  "Project / Clone Working Days Count": {
-    "defaultMessage": "{count} working days in this period"
-  },
-  "Project / Copy": {
-    "defaultMessage": "Copy (Ctrl+C)"
-  },
-  "Project / Cost Breakdown Title": {
-    "defaultMessage": "Cost breakdown"
-  },
-  "Project / Cost Total": {
-    "defaultMessage": "Total: {amount}"
-  },
-  "Project / Create": {
-    "defaultMessage": "Create"
-  },
-  "Project / Create First Instalment": {
-    "defaultMessage": "Create First Instalment"
-  },
-  "Project / Create First Iteration": {
-    "defaultMessage": "Create First Iteration"
-  },
-  "Project / Creating": {
-    "defaultMessage": "Creating..."
-  },
-  "Project / Currency Label": {
-    "defaultMessage": "Currency"
-  },
-  "Project / Daily Total": {
-    "defaultMessage": "Total"
-  },
-  "Project / Date": {
-    "defaultMessage": "Date"
-  },
-  "Project / Delete": {
-    "defaultMessage": "Delete"
-  },
-  "Project / Delete Action": {
-    "defaultMessage": "Delete"
-  },
-  "Project / Delete Assignment Dialog Description": {
-    "defaultMessage": "Are you sure you want to remove {personName} from this iteration? All their time entries will be permanently deleted."
-  },
-  "Project / Delete Assignment Dialog Title": {
-    "defaultMessage": "Remove from iteration?"
-  },
-  "Project / Delete Button": {
-    "defaultMessage": "Delete"
-  },
-  "Project / Delete Confirm": {
-    "defaultMessage": "Are you sure? This will delete all iterations, time entries, and related data. This action cannot be undone."
-  },
-  "Project / Delete Instalment Dialog Desc": {
-    "defaultMessage": "This will permanently delete this instalment. This action cannot be undone."
-  },
-  "Project / Delete Instalment Dialog Title": {
-    "defaultMessage": "Delete Instalment?"
-  },
-  "Project / Delete Iteration Dialog Desc": {
-    "defaultMessage": "This will delete all time entries for this iteration. This action cannot be undone."
-  },
-  "Project / Delete Iteration Dialog Title": {
-    "defaultMessage": "Delete Iteration?"
-  },
-  "Project / Delete Title": {
-    "defaultMessage": "Delete Project"
-  },
-  "Project / Drag to Fill": {
-    "defaultMessage": "Drag to fill cells"
-  },
-  "Project / Due Date After End": {
-    "defaultMessage": "Due date should be on or after end date"
-  },
-  "Project / Due Date Hint": {
-    "defaultMessage": "When payment is expected (optional)"
-  },
-  "Project / Due Date Label": {
-    "defaultMessage": "Payment Due Date"
-  },
-  "Project / Due Date Not Set": {
-    "defaultMessage": "Not set"
-  },
-  "Project / Due Date Placeholder": {
-    "defaultMessage": "Select due date"
-  },
-  "Project / Due Soon": {
-    "defaultMessage": "Due Soon"
-  },
-  "Project / Duration Label": {
-    "defaultMessage": "Duration"
-  },
-  "Project / Edit": {
-    "defaultMessage": "Edit"
-  },
-  "Project / Edit Action": {
-    "defaultMessage": "Edit"
-  },
-  "Project / Edit Assignment": {
-    "defaultMessage": "Edit assignment"
-  },
-  "Project / Edit Assignment Desc": {
-    "defaultMessage": "Update role and billing rate for {name}"
-  },
-  "Project / Edit Assignment Title": {
-    "defaultMessage": "Edit Assignment"
-  },
-  "Project / Edit Instalment Title": {
-    "defaultMessage": "Edit Instalment"
-  },
-  "Project / Edit Iteration Title": {
-    "defaultMessage": "Edit Iteration"
-  },
-  "Project / End Date After Start": {
-    "defaultMessage": "End date must be after start date"
-  },
-  "Project / End Date Label": {
-    "defaultMessage": "End Date"
-  },
-  "Project / End Date Placeholder": {
-    "defaultMessage": "Select end date"
-  },
-  "Project / End Date Required For Sync": {
-    "defaultMessage": "End date is required for revenue synchronization"
-  },
-  "Project / Entry Saved": {
-    "defaultMessage": "Time entry saved"
-  },
-  "Project / Error": {
-    "defaultMessage": "Error loading project"
-  },
-  "Project / FX Conversion Note": {
-    "defaultMessage": "Rates converted using current FX rates"
-  },
-  "Project / Filling": {
-    "defaultMessage": "Filling..."
-  },
-  "Project / Financials Tab": {
-    "defaultMessage": "Financials"
-  },
-  "Project / Fixed Amount Label": {
-    "defaultMessage": "Fixed Amount"
-  },
-  "Project / Hourly Rate Label": {
-    "defaultMessage": "Hourly Rate"
-  },
-  "Project / Hours Per Day Label": {
-    "defaultMessage": "Hours/Day"
-  },
-  "Project / Hours Positive": {
-    "defaultMessage": "Hours must be a positive number"
-  },
-  "Project / In Iteration Badge": {
-    "defaultMessage": "in iteration"
-  },
-  "Project / Instalment Amount Label": {
-    "defaultMessage": "Amount"
-  },
-  "Project / Instalment Dialog Desc": {
-    "defaultMessage": "Define the payment instalment amount and due date"
-  },
-  "Project / Instalment Due Date Label": {
-    "defaultMessage": "Due Date"
-  },
-  "Project / Instalments": {
-    "defaultMessage": "Instalments"
-  },
-  "Project / Instalments Desc": {
-    "defaultMessage": "Fixed price payment milestones"
-  },
-  "Project / Instalments Tab": {
-    "defaultMessage": "Instalments"
-  },
-  "Project / Invoice Action": {
-    "defaultMessage": "Send invoice request"
-  },
-  "Project / Invoice Requested": {
-    "defaultMessage": "Invoice Requested"
-  },
-  "Project / Invoices Description": {
-    "defaultMessage": "All invoices linked to this project"
-  },
-  "Project / Invoices Label": {
-    "defaultMessage": "Invoices"
-  },
-  "Project / Invoices Tab": {
-    "defaultMessage": "Invoices"
-  },
-  "Project / Invoices Title": {
-    "defaultMessage": "Invoices"
-  },
-  "Project / Iteration Dates Info": {
-    "defaultMessage": "Start and end dates are required for automatic revenue synchronization."
-  },
-  "Project / Iteration Dates Warning": {
-    "defaultMessage": "Both dates are required. Revenue will be attributed to the month of the end date."
-  },
-  "Project / Iteration Dialog Desc": {
-    "defaultMessage": "Define the iteration period and details"
-  },
-  "Project / Iteration Name Label": {
-    "defaultMessage": "Name (optional)"
-  },
-  "Project / Iterations": {
-    "defaultMessage": "Iterations"
-  },
-  "Project / Iterations Desc": {
-    "defaultMessage": "Time tracking iterations with hourly billing"
-  },
-  "Project / Iterations Tab": {
-    "defaultMessage": "Iterations"
-  },
-  "Project / Mark Vacation": {
-    "defaultMessage": "Mark as vacation"
-  },
-  "Project / Merge Warning": {
-    "defaultMessage": "This person is already in the iteration. Their time entries will be merged with the existing ones."
-  },
-  "Project / Multiple Entries Saved": {
-    "defaultMessage": "{count} time entries saved"
-  },
-  "Project / No Assignments Desc": {
-    "defaultMessage": "Add team members to start tracking time"
-  },
-  "Project / No Assignments Title": {
-    "defaultMessage": "No team members assigned"
-  },
-  "Project / No Financials Empty": {
-    "defaultMessage": "No financial entries yet"
-  },
-  "Project / No Instalments Desc": {
-    "defaultMessage": "Create your first instalment to set up payment milestones."
-  },
-  "Project / No Instalments Title": {
-    "defaultMessage": "No instalments yet"
-  },
-  "Project / No Invoices": {
-    "defaultMessage": "No invoices yet"
-  },
-  "Project / No Invoices Description": {
-    "defaultMessage": "Invoices will appear here when they are created for this project's iterations."
-  },
-  "Project / No Iterations Desc": {
-    "defaultMessage": "Create your first iteration to start tracking time and managing billing."
-  },
-  "Project / No Iterations Title": {
-    "defaultMessage": "No iterations yet"
-  },
-  "Project / No Team": {
-    "defaultMessage": "None"
-  },
-  "Project / No Team Empty": {
-    "defaultMessage": "No team members yet"
-  },
-  "Project / Not Found": {
-    "defaultMessage": "Project not found"
-  },
-  "Project / Overdue": {
-    "defaultMessage": "Overdue"
-  },
-  "Project / Past Day Tooltip": {
-    "defaultMessage": "Past day"
-  },
-  "Project / Paste": {
-    "defaultMessage": "Paste"
-  },
-  "Project / Paste Tooltip": {
-    "defaultMessage": "Paste (Ctrl+V)"
-  },
-  "Project / Payment Status Label": {
-    "defaultMessage": "Payment Status"
-  },
-  "Project / Person Label": {
-    "defaultMessage": "Person"
-  },
-  "Project / Person Required": {
-    "defaultMessage": "Person is required"
-  },
-  "Project / Person Total": {
-    "defaultMessage": "Total"
-  },
-  "Project / Planned Hours Hint": {
-    "defaultMessage": "Estimated hours for this iteration (optional)"
-  },
-  "Project / Planned Hours Label": {
-    "defaultMessage": "Planned Hours"
-  },
-  "Project / Probability Help": {
-    "defaultMessage": "Leave empty to use project default. Set to override for this iteration."
-  },
-  "Project / Probability Label": {
-    "defaultMessage": "Probability Override (%)"
-  },
-  "Project / Probability Placeholder": {
-    "defaultMessage": "Use project default"
-  },
-  "Project / Probability Range": {
-    "defaultMessage": "Probability must be between 0 and 100"
-  },
-  "Project / Rate Positive": {
-    "defaultMessage": "Rate must be a positive number"
-  },
-  "Project / Reassign Assignment": {
-    "defaultMessage": "Reassign to another person"
-  },
-  "Project / Reassign Button": {
-    "defaultMessage": "Reassign"
-  },
-  "Project / Reassign Current Person": {
-    "defaultMessage": "Current person"
-  },
-  "Project / Reassign Dialog Description": {
-    "defaultMessage": "Transfer all time entries from {currentPerson} to another team member."
-  },
-  "Project / Reassign Dialog Title": {
-    "defaultMessage": "Reassign Team Member"
-  },
-  "Project / Reassign To Label": {
-    "defaultMessage": "Reassign to"
-  },
-  "Project / Redo": {
-    "defaultMessage": "Redo (Ctrl+Y)"
-  },
-  "Project / Reminder Sent": {
-    "defaultMessage": "Reminder sent to users with invoice permissions"
-  },
-  "Project / Remove Assignment": {
-    "defaultMessage": "Remove from iteration"
-  },
-  "Project / Remove Button": {
-    "defaultMessage": "Remove"
-  },
-  "Project / Remove Vacation": {
-    "defaultMessage": "Remove vacation"
-  },
-  "Project / Request Approved": {
-    "defaultMessage": "Request Approved"
-  },
-  "Project / Request Correction Action": {
-    "defaultMessage": "Request Correction"
-  },
-  "Project / Request Pending": {
-    "defaultMessage": "Invoice request pending"
-  },
-  "Project / Requested By Tooltip": {
-    "defaultMessage": "Requested by {name}"
-  },
-  "Project / Retry": {
-    "defaultMessage": "Retry"
-  },
-  "Project / Role Label": {
-    "defaultMessage": "Role"
-  },
-  "Project / Save Changes Button": {
-    "defaultMessage": "Save Changes"
-  },
-  "Project / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "Project / Select Person Placeholder": {
-    "defaultMessage": "Select a person"
-  },
-  "Project / Selecting": {
-    "defaultMessage": "Selecting..."
-  },
-  "Project / Send Reminder Action": {
-    "defaultMessage": "Send request reminder"
-  },
-  "Project / Set Rate Multiplier": {
-    "defaultMessage": "Set rate multiplier"
-  },
-  "Project / Start Date Label": {
-    "defaultMessage": "Start Date"
-  },
-  "Project / Start Date Placeholder": {
-    "defaultMessage": "Select start date"
-  },
-  "Project / Start Date Required": {
-    "defaultMessage": "Start date is required"
-  },
-  "Project / Status Completed": {
-    "defaultMessage": "Completed"
-  },
-  "Project / Status In Progress": {
-    "defaultMessage": "In Progress"
-  },
-  "Project / Status Invoiced": {
-    "defaultMessage": "Invoiced"
-  },
-  "Project / Status Label": {
-    "defaultMessage": "Status"
-  },
-  "Project / Status Paid": {
-    "defaultMessage": "Paid"
-  },
-  "Project / Status Pending": {
-    "defaultMessage": "Pending"
-  },
-  "Project / Status Planned": {
-    "defaultMessage": "Planned"
-  },
-  "Project / Status Ready": {
-    "defaultMessage": "Ready to Invoice"
-  },
-  "Project / Team": {
-    "defaultMessage": "Team"
-  },
-  "Project / Team Desc": {
-    "defaultMessage": "Team members assigned to this project"
-  },
-  "Project / Team Label": {
-    "defaultMessage": "Team Members"
-  },
-  "Project / Team Size": {
-    "defaultMessage": "Team Size"
-  },
-  "Project / Team Tab": {
-    "defaultMessage": "Team"
-  },
-  "Project / Today": {
-    "defaultMessage": "Today"
-  },
-  "Project / Total Cost": {
-    "defaultMessage": "Total Cost"
-  },
-  "Project / Total Hours": {
-    "defaultMessage": "Total Hours"
-  },
-  "Project / Undo": {
-    "defaultMessage": "Undo (Ctrl+Z)"
-  },
-  "Project / Update": {
-    "defaultMessage": "Update"
-  },
-  "Project / Vacation Day Tooltip": {
-    "defaultMessage": "Vacation day"
-  },
-  "Project / View All Invoices": {
-    "defaultMessage": "View All Invoices"
-  },
-  "ProjectExpanded / Add Cost Line": {
-    "defaultMessage": "Add as cost line"
-  },
-  "ProjectExpanded / Already Synced": {
-    "defaultMessage": "Already added as cost line"
-  },
-  "ProjectExpanded / CostAdded": {
-    "defaultMessage": "Cost line created for {person}"
-  },
-  "ProjectExpanded / CostError": {
-    "defaultMessage": "Failed to create cost line"
-  },
-  "ProjectExpanded / Costs Section": {
-    "defaultMessage": "Direct Costs ({count})"
-  },
-  "ProjectExpanded / Empty": {
-    "defaultMessage": "No detailed data available for this project"
-  },
-  "ProjectExpanded / Error": {
-    "defaultMessage": "Failed to load project breakdown"
-  },
-  "ProjectExpanded / Iteration Costs Section": {
-    "defaultMessage": "People Costs from Iterations ({count})"
-  },
-  "ProjectExpanded / Iteration Costs Tooltip": {
-    "defaultMessage": "These costs are calculated from iteration time entries (hours × rate). Use the + button to add them as cost lines for tracking."
-  },
-  "ProjectExpanded / Loading": {
-    "defaultMessage": "Loading project breakdown..."
-  },
-  "ProjectExpanded / Revenue Section": {
-    "defaultMessage": "Revenue ({count})"
-  },
-  "ProjectFilterBar / Active Filters Label": {
-    "defaultMessage": "Active filters:"
-  },
-  "ProjectFilterBar / Billing Filter": {
-    "defaultMessage": "Billing"
-  },
-  "ProjectFilterBar / Billing Filter Title": {
-    "defaultMessage": "Filter by billing model"
-  },
-  "ProjectFilterBar / Clear All Filters": {
-    "defaultMessage": "Clear all"
-  },
-  "ProjectFilterBar / Clear Filter": {
-    "defaultMessage": "Clear"
-  },
-  "ProjectFilterBar / Client Filter": {
-    "defaultMessage": "Client"
-  },
-  "ProjectFilterBar / Client Filter Title": {
-    "defaultMessage": "Filter by client"
-  },
-  "ProjectFilterBar / Filters Title": {
-    "defaultMessage": "Filters"
-  },
-  "ProjectFilterBar / No Clients": {
-    "defaultMessage": "No clients available"
-  },
-  "ProjectFilterBar / No Clients Found": {
-    "defaultMessage": "No clients found"
-  },
-  "ProjectFilterBar / Quick Active": {
-    "defaultMessage": "Active"
-  },
-  "ProjectFilterBar / Quick Planned": {
-    "defaultMessage": "Planned"
-  },
-  "ProjectFilterBar / Search Clients": {
-    "defaultMessage": "Search clients..."
-  },
-  "ProjectFilterBar / Sort": {
-    "defaultMessage": "Sort"
-  },
-  "ProjectFilterBar / Sort Created Asc": {
-    "defaultMessage": "Oldest"
-  },
-  "ProjectFilterBar / Sort Created Asc Full": {
-    "defaultMessage": "Oldest First"
-  },
-  "ProjectFilterBar / Sort Created Desc": {
-    "defaultMessage": "Newest"
-  },
-  "ProjectFilterBar / Sort Created Desc Full": {
-    "defaultMessage": "Newest First"
-  },
-  "ProjectFilterBar / Sort Name Asc": {
-    "defaultMessage": "Name (A-Z)"
-  },
-  "ProjectFilterBar / Sort Name Asc Full": {
-    "defaultMessage": "Name (A to Z)"
-  },
-  "ProjectFilterBar / Sort Name Desc": {
-    "defaultMessage": "Name (Z-A)"
-  },
-  "ProjectFilterBar / Sort Name Desc Full": {
-    "defaultMessage": "Name (Z to A)"
-  },
-  "ProjectFilterBar / Sort Start Asc": {
-    "defaultMessage": "Start Date (Earliest)"
-  },
-  "ProjectFilterBar / Sort Start Asc Full": {
-    "defaultMessage": "Start Date (Earliest)"
-  },
-  "ProjectFilterBar / Sort Start Desc": {
-    "defaultMessage": "Start Date (Latest)"
-  },
-  "ProjectFilterBar / Sort Start Desc Full": {
-    "defaultMessage": "Start Date (Latest)"
-  },
-  "ProjectFilterBar / Status Filter": {
-    "defaultMessage": "Status"
-  },
-  "ProjectFilterBar / Status Filter Title": {
-    "defaultMessage": "Filter by status"
-  },
-  "ProjectSelector / Empty text": {
-    "defaultMessage": "No projects found"
-  },
-  "ProjectSelector / Loading": {
-    "defaultMessage": "Loading projects..."
-  },
-  "ProjectSelector / No project": {
-    "defaultMessage": "No project"
-  },
-  "ProjectSelector / Placeholder": {
-    "defaultMessage": "Select project"
-  },
-  "ProjectSelector / Search placeholder": {
-    "defaultMessage": "Search projects..."
-  },
-  "Projects / Active Iterations": {
-    "defaultMessage": "{count} active"
-  },
-  "Projects / Add": {
-    "defaultMessage": "Add Project"
-  },
-  "Projects / Add First": {
-    "defaultMessage": "Add Your First Project"
-  },
-  "Projects / Add Title": {
-    "defaultMessage": "Create New Project"
-  },
-  "Projects / Amount Positive": {
-    "defaultMessage": "Amount must be a positive number"
-  },
-  "Projects / Billing Fixed": {
-    "defaultMessage": "Fixed Budget"
-  },
-  "Projects / Billing Label": {
-    "defaultMessage": "Billing"
-  },
-  "Projects / Billing Model Label": {
-    "defaultMessage": "Billing Model"
-  },
-  "Projects / Billing Retainer": {
-    "defaultMessage": "Retainer"
-  },
-  "Projects / Billing Timeline Info": {
-    "defaultMessage": "For {billingModel} projects, you'll need to set the timeline (start date and either end date or duration) for automatic revenue distribution."
-  },
-  "Projects / Billing Timesheet": {
-    "defaultMessage": "Time & Materials"
-  },
-  "Projects / Budget Amount Hint": {
-    "defaultMessage": "If provided, installments will be auto-created based on the project timeline"
-  },
-  "Projects / Budget Amount Label": {
-    "defaultMessage": "Total Budget Amount"
-  },
-  "Projects / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "Projects / Clear All Filters Action": {
-    "defaultMessage": "Clear All Filters"
-  },
-  "Projects / Client Label": {
-    "defaultMessage": "Client"
-  },
-  "Projects / Code Hint": {
-    "defaultMessage": "Auto-generated from client and project names. Click refresh to regenerate."
-  },
-  "Projects / Code Label": {
-    "defaultMessage": "Project Code"
-  },
-  "Projects / Code Locked Hint": {
-    "defaultMessage": "Project code cannot be changed after creation"
-  },
-  "Projects / Code Required": {
-    "defaultMessage": "Code is required"
-  },
-  "Projects / Create Button": {
-    "defaultMessage": "Create Project"
-  },
-  "Projects / Create Success": {
-    "defaultMessage": "Project added successfully"
-  },
-  "Projects / Currency Label": {
-    "defaultMessage": "Default Currency"
-  },
-  "Projects / Delete Desc": {
-    "defaultMessage": "This will delete the project and all associated data. This action cannot be undone."
-  },
-  "Projects / Delete Success": {
-    "defaultMessage": "Project deleted successfully"
-  },
-  "Projects / Delete Title": {
-    "defaultMessage": "Delete {name}?"
-  },
-  "Projects / Duration Label": {
-    "defaultMessage": "Duration"
-  },
-  "Projects / Duration Months": {
-    "defaultMessage": "{count, plural, =1 {month} other {months}}"
-  },
-  "Projects / Edit Title": {
-    "defaultMessage": "Edit Project"
-  },
-  "Projects / Empty Desc": {
-    "defaultMessage": "Get started by adding your first project to track revenue and costs."
-  },
-  "Projects / Empty Title": {
-    "defaultMessage": "No projects yet"
-  },
-  "Projects / End Date After Start": {
-    "defaultMessage": "End date must be after start date"
-  },
-  "Projects / End Date Label": {
-    "defaultMessage": "End Date"
-  },
-  "Projects / End Date Or Length Required": {
-    "defaultMessage": "Either end date or duration is required"
-  },
-  "Projects / Form Description": {
-    "defaultMessage": "Define project details, billing configuration, and timeline"
-  },
-  "Projects / Generate Code Tooltip": {
-    "defaultMessage": "Generate code from project and client names"
-  },
-  "Projects / Installment Preview Hint": {
-    "defaultMessage": "These installments will be created automatically when you save the project."
-  },
-  "Projects / Installment Preview Title": {
-    "defaultMessage": "Installments to be created ({count})"
-  },
-  "Projects / Installment Total": {
-    "defaultMessage": "Total"
-  },
-  "Projects / Installments Created": {
-    "defaultMessage": "{count} installments created for the project"
-  },
-  "Projects / Iterations Label": {
-    "defaultMessage": "Iterations"
-  },
-  "Projects / Length Min": {
-    "defaultMessage": "Duration must be at least 1 month"
-  },
-  "Projects / Length Months Calculated Hint": {
-    "defaultMessage": "Calculated from start and end dates. Clear end date to edit manually."
-  },
-  "Projects / Length Months Hint": {
-    "defaultMessage": "Project duration in months. Used for budget distribution if no end date is set."
-  },
-  "Projects / Length Months Label": {
-    "defaultMessage": "Duration (Months)"
-  },
-  "Projects / Member Count": {
-    "defaultMessage": "{count, plural, =1 {# member} other {# members}}"
-  },
-  "Projects / More Members": {
-    "defaultMessage": "{count} more team members"
-  },
-  "Projects / Name Label": {
-    "defaultMessage": "Project Name"
-  },
-  "Projects / Name Required": {
-    "defaultMessage": "Name is required"
-  },
-  "Projects / No Budget Preview": {
-    "defaultMessage": "Enter a budget amount above to preview the installments that will be created."
-  },
-  "Projects / No Results Desc": {
-    "defaultMessage": "Try adjusting your filters to find what you're looking for."
-  },
-  "Projects / No Results Title": {
-    "defaultMessage": "No projects found"
-  },
-  "Projects / No tenant": {
-    "defaultMessage": "Please select a tenant"
-  },
-  "Projects / Or Duration": {
-    "defaultMessage": "or specify duration"
-  },
-  "Projects / Probability Hint": {
-    "defaultMessage": "Default probability percentage for forecast lines (0-100). Use 100% for confirmed revenue."
-  },
-  "Projects / Probability Label": {
-    "defaultMessage": "Probability"
-  },
-  "Projects / Probability Range": {
-    "defaultMessage": "Probability must be between 0 and 100"
-  },
-  "Projects / Results Count": {
-    "defaultMessage": "{count, plural, =0 {No results} one {# project found} other {# projects found}}"
-  },
-  "Projects / Retainer Amount Hint": {
-    "defaultMessage": "Monthly retainer amount for recurring revenue tracking"
-  },
-  "Projects / Retainer Amount Label": {
-    "defaultMessage": "Monthly Retainer Amount"
-  },
-  "Projects / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "Projects / Search Placeholder": {
-    "defaultMessage": "Search projects..."
-  },
-  "Projects / Start Date Label": {
-    "defaultMessage": "Start Date"
-  },
-  "Projects / Start Date Required": {
-    "defaultMessage": "Start date is required for retainer/fixed budget projects"
-  },
-  "Projects / Status Active": {
-    "defaultMessage": "Active"
-  },
-  "Projects / Status Cancelled": {
-    "defaultMessage": "Cancelled"
-  },
-  "Projects / Status Closed": {
-    "defaultMessage": "Closed"
-  },
-  "Projects / Status Label": {
-    "defaultMessage": "Status"
-  },
-  "Projects / Status On Hold": {
-    "defaultMessage": "On Hold"
-  },
-  "Projects / Status Planned": {
-    "defaultMessage": "Planned"
-  },
-  "Projects / Subtitle": {
-    "defaultMessage": "Manage projects and their financial settings"
-  },
-  "Projects / Tab Basic": {
-    "defaultMessage": "Basic Info"
-  },
-  "Projects / Tab Billing": {
-    "defaultMessage": "Billing"
-  },
-  "Projects / Tab Timeline": {
-    "defaultMessage": "Timeline"
-  },
-  "Projects / Tags Hint": {
-    "defaultMessage": "Press Enter, comma, or Tab to add a tag"
-  },
-  "Projects / Tags Label": {
-    "defaultMessage": "Tags"
-  },
-  "Projects / Tags Placeholder": {
-    "defaultMessage": "Type and press Enter or comma to add"
-  },
-  "Projects / Team Label": {
-    "defaultMessage": "Team"
-  },
-  "Projects / Timeline Label": {
-    "defaultMessage": "Timeline"
-  },
-  "Projects / Timeline Required Description": {
-    "defaultMessage": "You have set a {billingType} amount. Please provide start date and either end date or duration to enable automatic revenue distribution."
-  },
-  "Projects / Timeline Required Title": {
-    "defaultMessage": "Timeline required for revenue sync"
-  },
-  "Projects / Timeline Summary": {
-    "defaultMessage": "Revenue will be distributed across {months} month(s) from {start} to {end}"
-  },
-  "Projects / Title": {
-    "defaultMessage": "Projects"
-  },
-  "Projects / Total Count": {
-    "defaultMessage": "{count, plural, one {# project} other {# projects}}"
-  },
-  "Projects / Update Button": {
-    "defaultMessage": "Update Project"
-  },
-  "Projects / Update Success": {
-    "defaultMessage": "Project updated successfully"
-  },
-  "Projects / View": {
-    "defaultMessage": "View"
-  },
-  "RatesEditor / Add": {
-    "defaultMessage": "Add Rate"
-  },
-  "RatesEditor / Add New": {
-    "defaultMessage": "Add New Rate"
-  },
-  "RatesEditor / Add Rate Desc": {
-    "defaultMessage": "Set a new rate with a different effective date"
-  },
-  "RatesEditor / Add Rate Title": {
-    "defaultMessage": "Add New Rate"
-  },
-  "RatesEditor / Billable": {
-    "defaultMessage": "Billable"
-  },
-  "RatesEditor / Billable Rate": {
-    "defaultMessage": "Billable (external)"
-  },
-  "RatesEditor / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "RatesEditor / Card Description": {
-    "defaultMessage": "Manage hourly rates and monthly fees with effective dates"
-  },
-  "RatesEditor / Card Title": {
-    "defaultMessage": "Rates"
-  },
-  "RatesEditor / Cost": {
-    "defaultMessage": "Cost"
-  },
-  "RatesEditor / Cost Rate": {
-    "defaultMessage": "Cost (internal)"
-  },
-  "RatesEditor / Currency": {
-    "defaultMessage": "Currency"
-  },
-  "RatesEditor / Current Badge": {
-    "defaultMessage": "Current"
-  },
-  "RatesEditor / Date Hint": {
-    "defaultMessage": "This rate will be active starting from this date"
-  },
-  "RatesEditor / Date Placeholder": {
-    "defaultMessage": "Select effective date"
-  },
-  "RatesEditor / Date Required": {
-    "defaultMessage": "Effective date is required"
-  },
-  "RatesEditor / Delete Description": {
-    "defaultMessage": "This will permanently delete this rate record. This action cannot be undone."
-  },
-  "RatesEditor / Delete Title": {
-    "defaultMessage": "Delete Rate?"
-  },
-  "RatesEditor / Dialog Description": {
-    "defaultMessage": "Manage hourly rates and monthly fees. Each rate has an effective date - the system automatically uses the most recent rate for calculations."
-  },
-  "RatesEditor / Dialog Title": {
-    "defaultMessage": "Rates for {name}"
-  },
-  "RatesEditor / Edit Rate Desc": {
-    "defaultMessage": "Update rate effective from {date}"
-  },
-  "RatesEditor / Edit Rate Title": {
-    "defaultMessage": "Edit Rate"
-  },
-  "RatesEditor / Effective From": {
-    "defaultMessage": "Effective From"
-  },
-  "RatesEditor / Fee Gross": {
-    "defaultMessage": "Gross"
-  },
-  "RatesEditor / Fee Net": {
-    "defaultMessage": "Net"
-  },
-  "RatesEditor / History Title": {
-    "defaultMessage": "Rate History"
-  },
-  "RatesEditor / Hourly Rates": {
-    "defaultMessage": "Hourly Rates"
-  },
-  "RatesEditor / Monthly Fee": {
-    "defaultMessage": "Monthly Flat Fee (alternative)"
-  },
-  "RatesEditor / Monthly Gross": {
-    "defaultMessage": "Monthly Gross"
-  },
-  "RatesEditor / Monthly Net": {
-    "defaultMessage": "Monthly Net"
-  },
-  "RatesEditor / No Rates": {
-    "defaultMessage": "No rates configured"
-  },
-  "RatesEditor / No Rates Hint": {
-    "defaultMessage": "Add the first rate to start tracking this person's rates"
-  },
-  "RatesEditor / Notes": {
-    "defaultMessage": "Notes (optional)"
-  },
-  "RatesEditor / Notes Placeholder": {
-    "defaultMessage": "e.g., Annual raise, contract renewal..."
-  },
-  "RatesEditor / Rate Deleted": {
-    "defaultMessage": "Rate deleted successfully"
-  },
-  "RatesEditor / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "RatesEditor / Scheduled Badge": {
-    "defaultMessage": "Scheduled"
-  },
-  "RatesEditor / Update": {
-    "defaultMessage": "Update Rate"
-  },
   "RelativeDate / Invalid date": {
     "defaultMessage": "Unknown date"
-  },
-  "RequestDetails / Admin Notes": {
-    "defaultMessage": "Admin Notes"
-  },
-  "RequestDetails / Amount": {
-    "defaultMessage": "Requested Amount"
-  },
-  "RequestDetails / Correction Badge": {
-    "defaultMessage": "Correction Request"
-  },
-  "RequestDetails / Correction Reason": {
-    "defaultMessage": "Correction Reason"
-  },
-  "RequestDetails / Created Invoice": {
-    "defaultMessage": "Created Invoice"
-  },
-  "RequestDetails / Description": {
-    "defaultMessage": "Description"
-  },
-  "RequestDetails / Original Invoice": {
-    "defaultMessage": "Original: {invoiceNumber}"
-  },
-  "RequestDetails / Period": {
-    "defaultMessage": "Billing Period"
-  },
-  "RequestDetails / Processed By": {
-    "defaultMessage": "Processed By"
-  },
-  "RequestDetails / Requested By": {
-    "defaultMessage": "Requested By"
-  },
-  "Revenue / Add": {
-    "defaultMessage": "Add Revenue"
-  },
-  "Revenue / Add Button": {
-    "defaultMessage": "Add Revenue"
-  },
-  "Revenue / Add First": {
-    "defaultMessage": "Add Revenue Line"
-  },
-  "Revenue / Add Title": {
-    "defaultMessage": "Add Revenue Line"
-  },
-  "Revenue / All Projects": {
-    "defaultMessage": "All Projects"
-  },
-  "Revenue / Amount Label": {
-    "defaultMessage": "Amount"
-  },
-  "Revenue / Bulk Copied": {
-    "defaultMessage": "{count} revenue lines created"
-  },
-  "Revenue / Bulk Deleted": {
-    "defaultMessage": "{count} revenue lines deleted"
-  },
-  "Revenue / Bulk Updated": {
-    "defaultMessage": "{count} revenue lines updated"
-  },
-  "Revenue / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "Revenue / Card / Actions": {
-    "defaultMessage": "Actions"
-  },
-  "Revenue / Card / Copy": {
-    "defaultMessage": "Copy to periods"
-  },
-  "Revenue / Card / Delete": {
-    "defaultMessage": "Delete"
-  },
-  "Revenue / Card / Edit": {
-    "defaultMessage": "Edit"
-  },
-  "Revenue / Clear All": {
-    "defaultMessage": "Clear all"
-  },
-  "Revenue / Copied": {
-    "defaultMessage": "{count} revenue lines created"
-  },
-  "Revenue / Created": {
-    "defaultMessage": "Revenue line created"
-  },
-  "Revenue / Currency Label": {
-    "defaultMessage": "Currency"
-  },
-  "Revenue / Date Label": {
-    "defaultMessage": "Date"
-  },
-  "Revenue / Date Required": {
-    "defaultMessage": "Date is required"
-  },
-  "Revenue / Delete Confirm": {
-    "defaultMessage": "Are you sure? This action cannot be undone."
-  },
-  "Revenue / Delete Title": {
-    "defaultMessage": "Delete Revenue Line"
-  },
-  "Revenue / Deleted": {
-    "defaultMessage": "Revenue line deleted"
-  },
-  "Revenue / Description": {
-    "defaultMessage": "Track and manage revenue entries by project and month"
-  },
-  "Revenue / Description Label": {
-    "defaultMessage": "Description"
-  },
-  "Revenue / Dialog Description": {
-    "defaultMessage": "Enter revenue details for a specific project and month"
-  },
-  "Revenue / Edit Title": {
-    "defaultMessage": "Edit Revenue Line"
-  },
-  "Revenue / Empty Description": {
-    "defaultMessage": "No revenue entries for the selected period"
-  },
-  "Revenue / Empty Title": {
-    "defaultMessage": "No revenue lines found"
-  },
-  "Revenue / KPI / Avg": {
-    "defaultMessage": "Avg / Project"
-  },
-  "Revenue / KPI / Lines": {
-    "defaultMessage": "Revenue Lines"
-  },
-  "Revenue / KPI / Projects": {
-    "defaultMessage": "Projects"
-  },
-  "Revenue / KPI / Total": {
-    "defaultMessage": "Total Revenue"
-  },
-  "Revenue / List / Empty": {
-    "defaultMessage": "No revenue entries to display"
-  },
-  "Revenue / List / Load more": {
-    "defaultMessage": "Load more"
-  },
-  "Revenue / No Projects": {
-    "defaultMessage": "No projects found"
-  },
-  "Revenue / No Tenant": {
-    "defaultMessage": "Please select a tenant"
-  },
-  "Revenue / Probability Label": {
-    "defaultMessage": "Probability (%)"
-  },
-  "Revenue / Project Label": {
-    "defaultMessage": "Project"
-  },
-  "Revenue / Project Picker Search": {
-    "defaultMessage": "Search projects..."
-  },
-  "Revenue / Projects Count": {
-    "defaultMessage": "{count} Projects"
-  },
-  "Revenue / Projects Filter": {
-    "defaultMessage": "Filter by projects"
-  },
-  "Revenue / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "Revenue / Search": {
-    "defaultMessage": "Search projects or descriptions..."
-  },
-  "Revenue / Source Label": {
-    "defaultMessage": "Source Type"
-  },
-  "Revenue / Table Description": {
-    "defaultMessage": "Revenue breakdown with sorting, column controls, and highlighting"
-  },
-  "Revenue / Table Title": {
-    "defaultMessage": "Revenue by Period"
-  },
-  "Revenue / Title": {
-    "defaultMessage": "Revenue"
-  },
-  "Revenue / Update": {
-    "defaultMessage": "Update"
-  },
-  "Revenue / Updated": {
-    "defaultMessage": "Revenue line updated"
-  },
-  "Revenue / View List": {
-    "defaultMessage": "List"
-  },
-  "Revenue / View Table": {
-    "defaultMessage": "Table"
-  },
-  "Risk / Critical": {
-    "defaultMessage": "Critical"
-  },
-  "Risk / High": {
-    "defaultMessage": "High"
-  },
-  "Risk / Low": {
-    "defaultMessage": "Low"
-  },
-  "Risk / Moderate": {
-    "defaultMessage": "Moderate"
-  },
-  "Risk / Unknown": {
-    "defaultMessage": "Unknown"
-  },
-  "RoleSelector / Empty text": {
-    "defaultMessage": "No roles found"
-  },
-  "RoleSelector / Loading": {
-    "defaultMessage": "Loading roles..."
-  },
-  "RoleSelector / No role": {
-    "defaultMessage": "No role"
-  },
-  "RoleSelector / Placeholder": {
-    "defaultMessage": "Select role"
-  },
-  "RoleSelector / Search placeholder": {
-    "defaultMessage": "Search roles..."
-  },
-  "Roles / Add Role": {
-    "defaultMessage": "Add Role"
-  },
-  "Roles / Add Title": {
-    "defaultMessage": "Add Role"
   },
   "Roles / Affected Members Warning": {
     "defaultMessage": "This role is assigned to {count} member(s)"
@@ -7333,32 +2558,11 @@
   "Roles / All permissions": {
     "defaultMessage": "All permissions"
   },
-  "Roles / Billable Rate Label": {
-    "defaultMessage": "Default Billable Rate"
-  },
-  "Roles / Billable Short": {
-    "defaultMessage": "Billable"
-  },
-  "Roles / Cancel": {
-    "defaultMessage": "Cancel"
-  },
   "Roles / Cancel Button": {
     "defaultMessage": "Cancel"
   },
   "Roles / Color Label": {
     "defaultMessage": "Color"
-  },
-  "Roles / Cost Not Set": {
-    "defaultMessage": "Not set"
-  },
-  "Roles / Cost Rate Label": {
-    "defaultMessage": "Default Cost Rate"
-  },
-  "Roles / Cost Short": {
-    "defaultMessage": "Cost"
-  },
-  "Roles / Create": {
-    "defaultMessage": "Create"
   },
   "Roles / Create Button": {
     "defaultMessage": "Create Role"
@@ -7375,9 +2579,6 @@
   "Roles / Create Title": {
     "defaultMessage": "Create Role"
   },
-  "Roles / Currency Label": {
-    "defaultMessage": "Currency"
-  },
   "Roles / Custom Roles Header": {
     "defaultMessage": "Custom Roles"
   },
@@ -7386,9 +2587,6 @@
   },
   "Roles / Delete Confirmation": {
     "defaultMessage": "Are you sure you want to delete the role \"{name}\"? This action cannot be undone."
-  },
-  "Roles / Delete Description": {
-    "defaultMessage": "Are you sure you want to delete this role? This action cannot be undone."
   },
   "Roles / Delete Success": {
     "defaultMessage": "Role deleted successfully"
@@ -7413,12 +2611,6 @@
   },
   "Roles / Details Section": {
     "defaultMessage": "Role Details"
-  },
-  "Roles / Dialog Description": {
-    "defaultMessage": "Define role name and default billing rates"
-  },
-  "Roles / Edit Button": {
-    "defaultMessage": "Edit"
   },
   "Roles / Edit Description": {
     "defaultMessage": "Modify role permissions and settings"
@@ -7447,18 +2639,6 @@
   "Roles / No Custom Roles Description": {
     "defaultMessage": "Create custom roles to fine-tune member access and permissions"
   },
-  "Roles / No Results": {
-    "defaultMessage": "No roles found"
-  },
-  "Roles / No Results Desc": {
-    "defaultMessage": "Try adjusting your search query"
-  },
-  "Roles / No Roles Desc": {
-    "defaultMessage": "Create your first role to standardize billing rates across your organization."
-  },
-  "Roles / No Roles Title": {
-    "defaultMessage": "No roles yet"
-  },
   "Roles / Permission Required": {
     "defaultMessage": "At least one permission is required"
   },
@@ -7471,26 +2651,17 @@
   "Roles / Permissions count": {
     "defaultMessage": "permissions"
   },
-  "Roles / Rate Not Set": {
-    "defaultMessage": "Not set"
-  },
   "Roles / Replacement Required": {
     "defaultMessage": "Please select a replacement role for affected members"
   },
   "Roles / Replacement Role Label": {
     "defaultMessage": "Select replacement role:"
   },
-  "Roles / Role Badge": {
-    "defaultMessage": "Role"
-  },
   "Roles / Save Button": {
     "defaultMessage": "Save Changes"
   },
   "Roles / Saving Button": {
     "defaultMessage": "Saving..."
-  },
-  "Roles / Search Placeholder": {
-    "defaultMessage": "Search roles..."
   },
   "Roles / Select Replacement Placeholder": {
     "defaultMessage": "Select a role..."
@@ -7506,9 +2677,6 @@
   },
   "Roles / Title": {
     "defaultMessage": "Roles"
-  },
-  "Roles / Update": {
-    "defaultMessage": "Update"
   },
   "Roles / Update Success": {
     "defaultMessage": "Role updated successfully"
@@ -7759,6 +2927,9 @@
   "SSO Card / Delete Success": {
     "defaultMessage": "SSO connection deleted."
   },
+  "SSO Card / Domains Label": {
+    "defaultMessage": "Domains:"
+  },
   "SSO Card / Inactive Badge": {
     "defaultMessage": "Inactive"
   },
@@ -7774,14 +2945,68 @@
   "SSO Card / Login Count Tooltip": {
     "defaultMessage": "Total sign-ins via this connection"
   },
+  "SSO Card / No Domains Warning": {
+    "defaultMessage": "No domains configured - SSO discovery won't work"
+  },
+  "SSO Card / Test All Passed": {
+    "defaultMessage": "All checks passed"
+  },
+  "SSO Card / Test Close": {
+    "defaultMessage": "Close"
+  },
+  "SSO Card / Test Connection": {
+    "defaultMessage": "Test connection"
+  },
+  "SSO Card / Test Error": {
+    "defaultMessage": "Failed to test SSO connection."
+  },
+  "SSO Card / Test Errors": {
+    "defaultMessage": "Configuration issues"
+  },
+  "SSO Card / Test Info": {
+    "defaultMessage": "This test validates your SSO configuration. A successful test doesn't guarantee login will work - you should also test an actual SSO login."
+  },
+  "SSO Card / Test Overall Status": {
+    "defaultMessage": "Overall Status"
+  },
+  "SSO Card / Test Results Subtitle": {
+    "defaultMessage": "{name} ({type})"
+  },
+  "SSO Card / Test Results Title": {
+    "defaultMessage": "Connection Test Results"
+  },
+  "SSO Card / Test Warnings": {
+    "defaultMessage": "Some warnings"
+  },
   "SSO Card / Toggle Error": {
     "defaultMessage": "Failed to update SSO connection."
+  },
+  "SSO Connection Card / Dialog Description": {
+    "defaultMessage": "Configure SAML or OIDC single sign-on for your organization"
+  },
+  "SSO Connection Card / Dialog Title": {
+    "defaultMessage": "Add SSO Connection"
+  },
+  "SSO Form / Add Domain Button": {
+    "defaultMessage": "Add"
+  },
+  "SSO Form / Allowed Domains Help": {
+    "defaultMessage": "Users with email addresses from these domains can use this SSO connection to sign in."
+  },
+  "SSO Form / Allowed Domains Label": {
+    "defaultMessage": "Allowed Email Domains"
   },
   "SSO Form / Certificate Label": {
     "defaultMessage": "X.509 Certificate"
   },
+  "SSO Form / Domain Placeholder": {
+    "defaultMessage": "e.g., company.com"
+  },
   "SSO Form / Entity ID Label": {
     "defaultMessage": "IdP Entity ID / Issuer"
+  },
+  "SSO Form / Invalid Domain": {
+    "defaultMessage": "Please enter a valid domain (e.g., example.com)"
   },
   "SSO Form / Name Label": {
     "defaultMessage": "Connection Name"
@@ -7855,17 +3080,11 @@
   "SaaS ideas form / Keywords required": {
     "defaultMessage": "Keywords is required"
   },
-  "ScenarioSelector / 100": {
-    "defaultMessage": "100% (Certain)"
-  },
-  "ScenarioSelector / Label": {
-    "defaultMessage": "Scenario:"
-  },
   "Sessions / Active now": {
     "defaultMessage": "Active now"
   },
   "Sessions / All Sessions Revoked": {
-    "defaultMessage": "All other sessions have been signed out."
+    "defaultMessage": "{count, plural, =0 {No sessions} =1 {1 session} other {# sessions}} signed out."
   },
   "Sessions / Current": {
     "defaultMessage": "Current"
@@ -7896,6 +3115,12 @@
   },
   "Sessions / No sessions title": {
     "defaultMessage": "No active sessions"
+  },
+  "Sessions / Revoke All Error": {
+    "defaultMessage": "Failed to sign out sessions."
+  },
+  "Sessions / Revoke Error": {
+    "defaultMessage": "Failed to sign out session."
   },
   "Sessions / Revoke all confirm description": {
     "defaultMessage": "This will sign you out of all devices except the current one. You will need to sign in again on those devices."
@@ -7939,219 +3164,6 @@
   "Sessions / Title": {
     "defaultMessage": "Active Sessions"
   },
-  "Settings / Base Currency": {
-    "defaultMessage": "Base Currency"
-  },
-  "Settings / Base Currency Help": {
-    "defaultMessage": "All revenue and costs will be converted to this currency using monthly exchange rates"
-  },
-  "Settings / Cap Amount": {
-    "defaultMessage": "Maximum Overhead Amount"
-  },
-  "Settings / Cap Amount Help": {
-    "defaultMessage": "Set to 0 to include all overhead costs without limit"
-  },
-  "Settings / Cap Period": {
-    "defaultMessage": "Cap Period"
-  },
-  "Settings / Cap Period Rolling Help": {
-    "defaultMessage": "Cap is calculated on a rolling 12-month window, updated each month"
-  },
-  "Settings / Cap Period Yearly Help": {
-    "defaultMessage": "Cap resets at the beginning of each fiscal year"
-  },
-  "Settings / Currency Description": {
-    "defaultMessage": "Your base currency and fiscal year determine how all financial data is normalized and reported"
-  },
-  "Settings / Currency Info": {
-    "defaultMessage": "If you work with multiple currencies, make sure to set up exchange rates in the Financial Data section for accurate conversions."
-  },
-  "Settings / Currency Section": {
-    "defaultMessage": "Reporting Basics"
-  },
-  "Settings / Danger Zone Description": {
-    "defaultMessage": "Irreversibly delete data from your management dashboard. These actions cannot be undone."
-  },
-  "Settings / Danger Zone Title": {
-    "defaultMessage": "Danger Zone"
-  },
-  "Settings / Danger Zone Warning": {
-    "defaultMessage": "Warning: These operations will permanently delete data and cannot be undone. Make sure you have backups if needed."
-  },
-  "Settings / Delete All": {
-    "defaultMessage": "Delete All Data"
-  },
-  "Settings / Delete All Button": {
-    "defaultMessage": "Delete All"
-  },
-  "Settings / Delete All Description": {
-    "defaultMessage": "Removes everything except organization settings"
-  },
-  "Settings / Delete All Years": {
-    "defaultMessage": "All Years"
-  },
-  "Settings / Delete Button": {
-    "defaultMessage": "Delete"
-  },
-  "Settings / Delete Cache": {
-    "defaultMessage": "Delete Cached Data"
-  },
-  "Settings / Delete Cache Description": {
-    "defaultMessage": "Removes monthly summary caches (will be regenerated automatically)"
-  },
-  "Settings / Delete Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "Settings / Delete Clients": {
-    "defaultMessage": "Delete Clients"
-  },
-  "Settings / Delete Clients Description": {
-    "defaultMessage": "Removes all client records"
-  },
-  "Settings / Delete Confirm Button": {
-    "defaultMessage": "Delete Permanently"
-  },
-  "Settings / Delete Confirm Description": {
-    "defaultMessage": "This action will permanently delete {dataType} data and cannot be undone."
-  },
-  "Settings / Delete Confirm Input Label": {
-    "defaultMessage": "Type \"DELETE\" to confirm:"
-  },
-  "Settings / Delete Confirm Title": {
-    "defaultMessage": "Confirm Deletion"
-  },
-  "Settings / Delete Confirmation Error": {
-    "defaultMessage": "Please type DELETE to confirm"
-  },
-  "Settings / Delete Costs": {
-    "defaultMessage": "Delete Cost Lines"
-  },
-  "Settings / Delete Costs Description": {
-    "defaultMessage": "Removes all cost data and cached summaries"
-  },
-  "Settings / Delete Deals": {
-    "defaultMessage": "Delete Pipeline Deals"
-  },
-  "Settings / Delete Deals Description": {
-    "defaultMessage": "Removes all pipeline deals"
-  },
-  "Settings / Delete FX Rates": {
-    "defaultMessage": "Delete FX Rates"
-  },
-  "Settings / Delete FX Rates Description": {
-    "defaultMessage": "Removes all exchange rate data"
-  },
-  "Settings / Delete Imports": {
-    "defaultMessage": "Delete Import History"
-  },
-  "Settings / Delete Imports Description": {
-    "defaultMessage": "Removes all import runs and history records"
-  },
-  "Settings / Delete People": {
-    "defaultMessage": "Delete People + Related"
-  },
-  "Settings / Delete People Description": {
-    "defaultMessage": "Removes people, rates, assignments, and time entries"
-  },
-  "Settings / Delete Projects": {
-    "defaultMessage": "Delete Projects + Related"
-  },
-  "Settings / Delete Projects Description": {
-    "defaultMessage": "Removes projects, iterations, assignments, invoices, and related financial data"
-  },
-  "Settings / Delete Revenues": {
-    "defaultMessage": "Delete Revenue Lines"
-  },
-  "Settings / Delete Revenues Description": {
-    "defaultMessage": "Removes all revenue data and cached summaries"
-  },
-  "Settings / Delete Roles": {
-    "defaultMessage": "Delete Roles"
-  },
-  "Settings / Delete Roles Description": {
-    "defaultMessage": "Removes all role definitions"
-  },
-  "Settings / Delete Year Help": {
-    "defaultMessage": "Select a specific year to delete only data from that year, or 'All Years' to delete everything."
-  },
-  "Settings / Delete Year Label": {
-    "defaultMessage": "Select Year:"
-  },
-  "Settings / Deleting": {
-    "defaultMessage": "Deleting..."
-  },
-  "Settings / Description": {
-    "defaultMessage": "Configure how financial data is calculated and displayed across your dashboard"
-  },
-  "Settings / Fiscal Year Help": {
-    "defaultMessage": "The month when your fiscal year begins (affects YTD and annual calculations)"
-  },
-  "Settings / Fiscal Year Start": {
-    "defaultMessage": "Fiscal Year Start"
-  },
-  "Settings / Overhead Description": {
-    "defaultMessage": "Limit how much overhead (non-project costs) is included when calculating internal rates and true profitability"
-  },
-  "Settings / Overhead Example": {
-    "defaultMessage": "If your cap is {amount} {currency} yearly and actual overhead reaches {exceeded} {currency}, only {amount} {currency} will be included in rate calculations. This prevents exceptional expenses (like office relocation) from making all your projects appear unprofitable."
-  },
-  "Settings / Overhead Example Title": {
-    "defaultMessage": "Example"
-  },
-  "Settings / Overhead Section": {
-    "defaultMessage": "Overhead Cost Cap"
-  },
-  "Settings / Overhead What Is": {
-    "defaultMessage": "Overhead costs are general business expenses not tied to specific projects: office rent, utilities, administrative salaries, software subscriptions, etc. When calculating true project profitability or internal hourly rates, these costs need to be distributed across your projects."
-  },
-  "Settings / Overhead What Is Title": {
-    "defaultMessage": "What is overhead?"
-  },
-  "Settings / Overhead Why Cap": {
-    "defaultMessage": "The cap prevents unusually high overhead in any period from distorting your profitability metrics."
-  },
-  "Settings / Save Button": {
-    "defaultMessage": "Save Settings"
-  },
-  "Settings / Save Success": {
-    "defaultMessage": "Settings saved successfully"
-  },
-  "Settings / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "Settings / Scenario Label": {
-    "defaultMessage": "Scenario {number}"
-  },
-  "Settings / Scenarios Description": {
-    "defaultMessage": "Define probability thresholds for different forecast scenarios (from conservative to optimistic)"
-  },
-  "Settings / Scenarios Example 1": {
-    "defaultMessage": "100% = Only include confirmed/invoiced revenue"
-  },
-  "Settings / Scenarios Example 2": {
-    "defaultMessage": "90% = Include deals with ≥90% close probability"
-  },
-  "Settings / Scenarios Example 3": {
-    "defaultMessage": "70% = Include most pipeline opportunities"
-  },
-  "Settings / Scenarios Footer": {
-    "defaultMessage": "These thresholds are used in the dashboard overview to show revenue projections at different confidence levels"
-  },
-  "Settings / Scenarios How It Works": {
-    "defaultMessage": "Each revenue item (deals, planned work, retainers) has a probability percentage. Scenarios filter revenue by these probabilities to show different forecast views:"
-  },
-  "Settings / Scenarios How It Works Title": {
-    "defaultMessage": "How scenarios work:"
-  },
-  "Settings / Scenarios Section": {
-    "defaultMessage": "Revenue Forecast Scenarios"
-  },
-  "Settings / Title": {
-    "defaultMessage": "Organization Settings"
-  },
-  "Settings / Update Success": {
-    "defaultMessage": "Settings updated successfully"
-  },
   "Sidebar / Administration section": {
     "defaultMessage": "Administration"
   },
@@ -8167,9 +3179,6 @@
   "Sidebar / Features section": {
     "defaultMessage": "Features"
   },
-  "Sidebar / Finance section": {
-    "defaultMessage": "Finance"
-  },
   "Sidebar / Legal section": {
     "defaultMessage": "Legal"
   },
@@ -8178,45 +3187,6 @@
   },
   "Sidebar / Logo tooltip": {
     "defaultMessage": "Go to dashboard"
-  },
-  "Sidebar / Management Clients": {
-    "defaultMessage": "Clients"
-  },
-  "Sidebar / Management Costs": {
-    "defaultMessage": "Costs"
-  },
-  "Sidebar / Management Dashboard": {
-    "defaultMessage": "Management"
-  },
-  "Sidebar / Management FX Rates": {
-    "defaultMessage": "FX Rates"
-  },
-  "Sidebar / Management Imports": {
-    "defaultMessage": "Import Data"
-  },
-  "Sidebar / Management Invoices": {
-    "defaultMessage": "Invoices"
-  },
-  "Sidebar / Management Overview": {
-    "defaultMessage": "Overview"
-  },
-  "Sidebar / Management People": {
-    "defaultMessage": "People"
-  },
-  "Sidebar / Management Profitability": {
-    "defaultMessage": "Profitability"
-  },
-  "Sidebar / Management Projects": {
-    "defaultMessage": "Projects"
-  },
-  "Sidebar / Management Revenue": {
-    "defaultMessage": "Revenue"
-  },
-  "Sidebar / Management Roles": {
-    "defaultMessage": "Roles"
-  },
-  "Sidebar / Management Settings": {
-    "defaultMessage": "Settings"
   },
   "Sidebar / Overview section": {
     "defaultMessage": "Overview"
@@ -8229,9 +3199,6 @@
   },
   "Snackbar / Generic error": {
     "defaultMessage": "Something went wrong."
-  },
-  "SplitByFilter / Label": {
-    "defaultMessage": "Split by:"
   },
   "Stripe / Payment / Card CVC is required": {
     "defaultMessage": "Card CVC is required"
@@ -8560,6 +3527,9 @@
   "Tenant form / UpdateTenant / Success message": {
     "defaultMessage": "Organization updated successfully!"
   },
+  "Tenant invitation form / Description": {
+    "defaultMessage": "Send an invitation to join your organization"
+  },
   "Tenant invitation form / Email label": {
     "defaultMessage": "Email:"
   },
@@ -8653,57 +3623,6 @@
   "TenantSwitch / Personal account": {
     "defaultMessage": "Personal account"
   },
-  "Terms And Conditions / Description": {
-    "defaultMessage": "Legal terms for using our service"
-  },
-  "Terms And Conditions / Docs link": {
-    "defaultMessage": "Contentful Documentation"
-  },
-  "Terms And Conditions / Empty description": {
-    "defaultMessage": "The terms and conditions content hasn't been added yet. Please add content to the 'termsAndConditions' field in your Contentful AppConfig entry."
-  },
-  "Terms And Conditions / Empty title": {
-    "defaultMessage": "No Content Available"
-  },
-  "Terms And Conditions / Error description": {
-    "defaultMessage": "There was an error loading this content from Contentful."
-  },
-  "Terms And Conditions / Error title": {
-    "defaultMessage": "Unable to load terms and conditions"
-  },
-  "Terms And Conditions / Not configured description": {
-    "defaultMessage": "This page displays content managed via Contentful CMS. To enable it, you need to configure the Contentful integration."
-  },
-  "Terms And Conditions / Not configured title": {
-    "defaultMessage": "Contentful Integration Not Configured"
-  },
-  "Terms And Conditions / Open Contentful": {
-    "defaultMessage": "Open Contentful"
-  },
-  "Terms And Conditions / Page title": {
-    "defaultMessage": "Terms and Conditions"
-  },
-  "Terms And Conditions / Quick setup title": {
-    "defaultMessage": "Quick Setup"
-  },
-  "Terms And Conditions / Retry button": {
-    "defaultMessage": "Try again"
-  },
-  "Terms And Conditions / Setup step 1": {
-    "defaultMessage": "Create a Contentful account and space at {link}"
-  },
-  "Terms And Conditions / Setup step 2": {
-    "defaultMessage": "Add these environment variables to {file}:"
-  },
-  "Terms And Conditions / Setup step 3": {
-    "defaultMessage": "Create an AppConfig content type with a 'termsAndConditions' field (Long text, Markdown)"
-  },
-  "Terms And Conditions / Setup step 4": {
-    "defaultMessage": "Restart the development server"
-  },
-  "Terms And Conditions / Title": {
-    "defaultMessage": "Terms and Conditions"
-  },
   "Test / Key": {
     "defaultMessage": "Hello"
   },
@@ -8719,206 +3638,11 @@
   "Time / Minutes ago": {
     "defaultMessage": "{mins} min ago"
   },
-  "Timesheets / Add Button": {
-    "defaultMessage": "Log Time"
-  },
-  "Timesheets / Add Description": {
-    "defaultMessage": "Click to add description..."
-  },
-  "Timesheets / Add First": {
-    "defaultMessage": "Log your first time entry"
-  },
-  "Timesheets / Add Title": {
-    "defaultMessage": "Log Time Entry"
-  },
-  "Timesheets / Approved": {
-    "defaultMessage": "Approved"
-  },
-  "Timesheets / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "Timesheets / Created": {
-    "defaultMessage": "Time entry created"
-  },
-  "Timesheets / Date Label": {
-    "defaultMessage": "Date"
-  },
-  "Timesheets / Delete Confirm": {
-    "defaultMessage": "Are you sure? This action cannot be undone."
-  },
-  "Timesheets / Delete Title": {
-    "defaultMessage": "Delete Time Entry"
-  },
-  "Timesheets / Deleted": {
-    "defaultMessage": "Time entry deleted"
-  },
-  "Timesheets / Description": {
-    "defaultMessage": "Track actual work hours per project and person"
-  },
-  "Timesheets / Description Label": {
-    "defaultMessage": "Description"
-  },
-  "Timesheets / Description Placeholder": {
-    "defaultMessage": "Description..."
-  },
-  "Timesheets / Dialog Description": {
-    "defaultMessage": "Record work hours for a project"
-  },
-  "Timesheets / Edit Title": {
-    "defaultMessage": "Edit Time Entry"
-  },
-  "Timesheets / Empty": {
-    "defaultMessage": "No time entries found"
-  },
-  "Timesheets / Hours": {
-    "defaultMessage": "hours"
-  },
-  "Timesheets / Hours Label": {
-    "defaultMessage": "Hours"
-  },
-  "Timesheets / Log": {
-    "defaultMessage": "Log Time"
-  },
-  "Timesheets / No Tenant": {
-    "defaultMessage": "Please select a tenant"
-  },
-  "Timesheets / Person Label": {
-    "defaultMessage": "Person"
-  },
-  "Timesheets / Project Label": {
-    "defaultMessage": "Project"
-  },
-  "Timesheets / Saving": {
-    "defaultMessage": "Saving..."
-  },
-  "Timesheets / Search": {
-    "defaultMessage": "Search timesheets..."
-  },
-  "Timesheets / Title": {
-    "defaultMessage": "Timesheets"
-  },
-  "Timesheets / Total Hours Label": {
-    "defaultMessage": "Total Hours"
-  },
-  "Timesheets / Update": {
-    "defaultMessage": "Update"
-  },
-  "Timesheets / Updated": {
-    "defaultMessage": "Time entry updated"
-  },
   "Toast message / Dismiss": {
     "defaultMessage": "Dismiss notification"
   },
   "Toaster / Hidden count badge": {
     "defaultMessage": "+{count} more"
-  },
-  "Tooltip / AI Prediction": {
-    "defaultMessage": "AI Prediction"
-  },
-  "Tooltip / Actual": {
-    "defaultMessage": "Recorded"
-  },
-  "Tooltip / Confidence": {
-    "defaultMessage": "Confidence Level"
-  },
-  "Tooltip / Current": {
-    "defaultMessage": "Current"
-  },
-  "Tooltip / Expected Profit": {
-    "defaultMessage": "Expected Profit"
-  },
-  "Tooltip / Forecast": {
-    "defaultMessage": "Forecast"
-  },
-  "Tooltip / Predicted Costs": {
-    "defaultMessage": "Predicted Costs"
-  },
-  "Tooltip / Predicted Revenue": {
-    "defaultMessage": "Predicted Revenue"
-  },
-  "Tooltip / Prediction Disclaimer": {
-    "defaultMessage": "Based on historical trends. Actual results may vary."
-  },
-  "Totals Tooltip / Actual": {
-    "defaultMessage": "Actual Data"
-  },
-  "Totals Tooltip / Combined Margin": {
-    "defaultMessage": "Combined margin including {count} predicted months"
-  },
-  "Totals Tooltip / Predicted": {
-    "defaultMessage": "Predicted Data"
-  },
-  "Totals Tooltip / Subtitle": {
-    "defaultMessage": "Includes {actual} actual + {predicted} predicted months"
-  },
-  "Totals Tooltip / Title": {
-    "defaultMessage": "Total Summary"
-  },
-  "TypeForm / Active Label": {
-    "defaultMessage": "Active"
-  },
-  "TypeForm / Add Description": {
-    "defaultMessage": "Define a new type for categorizing {kind}."
-  },
-  "TypeForm / Add Title": {
-    "defaultMessage": "Add New {kind} Type"
-  },
-  "TypeForm / Cancel": {
-    "defaultMessage": "Cancel"
-  },
-  "TypeForm / Code Description": {
-    "defaultMessage": "Machine-readable identifier. Cannot be changed later."
-  },
-  "TypeForm / Code Label": {
-    "defaultMessage": "Code"
-  },
-  "TypeForm / Code Pattern": {
-    "defaultMessage": "Code must start with a letter and contain only letters, numbers, and underscores"
-  },
-  "TypeForm / Code Required": {
-    "defaultMessage": "Code is required"
-  },
-  "TypeForm / Color Label": {
-    "defaultMessage": "Color"
-  },
-  "TypeForm / Create": {
-    "defaultMessage": "Create Type"
-  },
-  "TypeForm / Create Success": {
-    "defaultMessage": "Type created successfully"
-  },
-  "TypeForm / Edit Description": {
-    "defaultMessage": "Update the type configuration."
-  },
-  "TypeForm / Edit Title": {
-    "defaultMessage": "Edit Type"
-  },
-  "TypeForm / Generic Error": {
-    "defaultMessage": "An error occurred. Please try again."
-  },
-  "TypeForm / Icon Label": {
-    "defaultMessage": "Icon"
-  },
-  "TypeForm / Label Description": {
-    "defaultMessage": "Display name shown in the UI."
-  },
-  "TypeForm / Label Label": {
-    "defaultMessage": "Label"
-  },
-  "TypeForm / Label Required": {
-    "defaultMessage": "Label is required"
-  },
-  "TypeForm / Preview Label": {
-    "defaultMessage": "Preview"
-  },
-  "TypeForm / Save": {
-    "defaultMessage": "Save Changes"
-  },
-  "TypeForm / Save Error": {
-    "defaultMessage": "Failed to save type"
-  },
-  "TypeForm / Update Success": {
-    "defaultMessage": "Type updated successfully"
   },
   "Unknown / Key": {
     "defaultMessage": "Fallback Message"
