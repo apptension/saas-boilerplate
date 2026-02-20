@@ -331,3 +331,7 @@ For more detailed information on how to contribute to this project, please refer
 If you have any questions about contributing, please join our [Discord server](https://discord.apptension.com) - we are happy to help you!
 
 Thank you for considering contributing to SaaS Boilerplate!
+
+## Deployment
+
+[![Deploy on Hostinger](https://assets.hostinger.com/vps/deploy.svg)](https://www.hostinger.com/web-apps-hosting)
