@@ -1,3 +1,5 @@
+[![Deploy on Hostinger](https://assets.hostinger.com/vps/deploy.svg)](https://www.hostinger.com/web-apps-hosting)
+
 <p align="center">
   <img src="./.github/images/saas-bp-logo.png" alt="SaaS Boilerplate powered by Apptension">
 </p>
