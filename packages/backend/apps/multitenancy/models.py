@@ -610,14 +610,17 @@ def get_user_permissions_for_tenant(user, tenant):
             role_perms = mr.role.permissions.values_list("code", flat=True)
             permissions.update(role_perms)
 
-    # Also check legacy role field for backward compatibility
-    if membership.role == constants.TenantUserRole.OWNER:
-        all_perms = Permission.objects.values_list("code", flat=True)
-        permissions = set(all_perms)
-    elif membership.role in (constants.TenantUserRole.ADMIN, constants.TenantUserRole.MEMBER):
-        # For legacy ADMIN and MEMBER roles without RBAC, grant default read permissions
-        # This ensures backward compatibility for tests and older setups
-        if not permissions:  # Only add defaults if no RBAC permissions exist
+    # Legacy role fallback: only applies when user has NO RBAC roles assigned.
+    # When RBAC roles exist they are the sole source of truth — the legacy field
+    # (which defaults to OWNER) must not override them.
+    has_rbac_roles = membership_roles.exists()
+    if not has_rbac_roles:
+        if membership.role == constants.TenantUserRole.OWNER:
+            all_perms = Permission.objects.values_list('code', flat=True)
+            permissions = set(all_perms)
+        elif membership.role in (constants.TenantUserRole.ADMIN, constants.TenantUserRole.MEMBER):
+            # For legacy ADMIN and MEMBER roles without RBAC, grant default read permissions
+            # This ensures backward compatibility for tests and older setups
             default_perms = [
                 "features.crud.view",
                 "features.crud.manage",
