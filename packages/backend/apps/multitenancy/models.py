@@ -376,8 +376,7 @@ class Permission(models.Model):
     )
     category = models.CharField(
         max_length=50,
-        choices=constants.PermissionCategory.choices,
-        help_text="Category for grouping in UI",
+        help_text="Category for grouping in UI (multitenancy enum or app-defined)",
     )
     is_system = models.BooleanField(
         default=True,

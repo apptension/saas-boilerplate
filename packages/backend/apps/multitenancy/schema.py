@@ -42,7 +42,9 @@ class PermissionType(DjangoObjectType):
     """GraphQL type for Permission model - available permissions in the system."""
 
     id = graphene.ID(required=True)
-    category = PermissionCategoryType()
+    category = graphene.String(description="Category for grouping (multitenancy or app-defined)")
+    category_label = graphene.String(description="Display label for the category")
+    category_description = graphene.String(description="Optional description (app-defined categories only)")
 
     class Meta:
         model = models.Permission
@@ -53,12 +55,27 @@ class PermissionType(DjangoObjectType):
             "name",
             "description",
             "category",
+            "category_label",
+            "category_description",
             "is_system",
             "sort_order",
         )
 
     def resolve_id(self, info):
         return to_global_id("PermissionType", self.id)
+
+    def resolve_category(self, info):
+        return self.category
+
+    def resolve_category_label(self, info):
+        from .permissions import get_category_display
+        label, _ = get_category_display(self.category)
+        return label
+
+    def resolve_category_description(self, info):
+        from .permissions import get_category_display
+        _, description = get_category_display(self.category)
+        return description
 
 
 class PermissionConnection(graphene.Connection):
@@ -196,6 +213,13 @@ class TenantMembershipType(DjangoObjectType):
     @staticmethod
     def resolve_avatar(parent, info):
         return get_user_avatar_url(parent.user) if parent.user else None
+
+    @staticmethod
+    def resolve_user_id(parent, info):
+        """Return the user ID as a GraphQL global ID."""
+        if parent.user:
+            return to_global_id("User", parent.user.id)
+        return None
 
     @staticmethod
     def resolve_organization_roles(parent, info):

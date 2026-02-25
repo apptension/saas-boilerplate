@@ -9,14 +9,14 @@ import { ElementType, useEffect, useRef, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { NotificationTypes } from '../notifications.types';
 import { NotificationErrorBoundary } from './notificationErrorBoundary';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
 import { notificationsListContentFragment, notificationsListItemFragment } from './notificationsList.graphql';
 import { useMarkAllAsRead, useNotificationsListContent } from './notificationsList.hooks';
 
 export type NotificationsListProps = {
-  templates: Record<NotificationTypes, ElementType>;
+  /** Templates keyed by notification type (NotificationTypes + module-specific types e.g. BackupNotificationTypes). */
+  templates: Record<string, ElementType>;
   queryResult?: FragmentType<typeof notificationsListContentFragment>;
   loading: boolean;
   onLoadMore: (cursor: string, count: number) => void;
@@ -136,7 +136,7 @@ const Content = ({ templates, queryResult, loading, onLoadMore }: ContentProps) 
     <div className="flex flex-col">
       {allNotifications.map((notification) => {
         const notificationData = getFragmentData(notificationsListItemFragment, notification);
-        const NotificationComponent = templates[notificationData.type as NotificationTypes] as ElementType | undefined;
+        const NotificationComponent = templates[notificationData.type] as ElementType | undefined;
         if (!notificationData || !NotificationComponent) {
           return null;
         }

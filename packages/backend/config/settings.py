@@ -89,6 +89,7 @@ LOCAL_APPS = [
     "apps.multitenancy",
     "apps.sso",
     "apps.translations",
+    "apps.backup",
 ]
 
 INSTALLED_APPS = (
@@ -522,6 +523,11 @@ WORKERS_EVENT_BUS_NAME = env("WORKERS_EVENT_BUS_NAME", default=None)
 AWS_ENDPOINT_URL = env("AWS_ENDPOINT_URL", default=None)
 AWS_REGION = env("AWS_REGION", default=None)
 
+# Backup encryption fallback when AWS Secrets Manager is not used (e.g. Render.com).
+# Set to a Fernet key (44-char urlsafe base64). Generate with:
+#   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+BACKUP_MASTER_KEY = env("BACKUP_MASTER_KEY", default=None)
+
 LAMBDA_TASKS_BASE_HANDLER = env("LAMBDA_TASKS_BASE_HANDLER", default="common.tasks.LambdaTask")
 LAMBDA_TASKS_LOCAL_URL = env("LAMBDA_TASKS_LOCAL_URL", default=None)
 
@@ -672,6 +678,14 @@ CELERY_BEAT_SCHEDULE = {
     #     'task': 'apps.example.tasks.example_sync',
     #     'schedule': 60 * 60 * 4,  # Every 4 hours (in seconds)
     # },
+    'check-backup-schedules-every-hour': {
+        'task': 'apps.backup.tasks.check_and_trigger_backups',
+        'schedule': 60 * 60,  # Every hour (in seconds)
+    },
+    'cleanup-old-backups-daily': {
+        'task': 'apps.backup.tasks.cleanup_old_backups',
+        'schedule': 60 * 60 * 24,  # Every 24 hours (in seconds)
+    },
 }
 
 # Contentful CMS settings (optional)

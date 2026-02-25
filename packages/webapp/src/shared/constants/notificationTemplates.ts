@@ -1,6 +1,7 @@
 import { CrudItemCreated, CrudItemUpdated } from '@sb/webapp-crud-demo/notifications';
 
 import { NotificationTypes } from '@sb/webapp-notifications';
+import { backupNotificationTemplates } from '@sb/webapp-backup';
 import {
   ActionLogExportFailed,
   ActionLogExportReady,
@@ -18,5 +19,7 @@ const templates: Record<NotificationTypes, ElementType> = {
   [NotificationTypes.TENANT_INVITATION_DECLINED]: TenantInvitationDeclined,
   [NotificationTypes.ACTION_LOG_EXPORT_READY]: ActionLogExportReady,
   [NotificationTypes.ACTION_LOG_EXPORT_FAILED]: ActionLogExportFailed,
+  // Backup notifications
+  ...backupNotificationTemplates,
 };
 export default templates;

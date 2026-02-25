@@ -116,7 +116,7 @@ apps/sso/
 
 ## Security
 
-- All secrets stored in AWS Secrets Manager
+- SAML certificates and OIDC client secrets can be stored in the database (per connection) or referenced by AWS Secrets Manager ARN. See [docs/AUDIT_SECRETS_STORAGE.md](docs/AUDIT_SECRETS_STORAGE.md) for an audit and recommendations.
 - Comprehensive audit logging
 - CSRF protection on all endpoints
 - Rate limiting on authentication endpoints
@@ -124,4 +124,5 @@ apps/sso/
 
 ## Documentation
 
-See the full documentation at `/docs/features/enterprise-sso/`.
+- **Secrets storage audit:** [docs/AUDIT_SECRETS_STORAGE.md](docs/AUDIT_SECRETS_STORAGE.md) – how certs/secrets are stored (DB vs AWS ARN), where they can be configured, and suggested improvements.
+- Full documentation: `/docs/features/enterprise-sso/`.

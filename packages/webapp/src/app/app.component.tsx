@@ -17,6 +17,7 @@ import {
 } from '@sb/webapp-finances/routes';
 import { SaasIdeas } from '@sb/webapp-generative-ai/routes';
 import { PermissionAuthRoute } from '@sb/webapp-tenants/components/routes/permissionAuthRoute';
+import { TenantBackupSettings } from '@sb/webapp-backup';
 import {
   AccessDenied,
   AddTenantForm,
@@ -80,6 +81,10 @@ export const App = () => {
                 {/* Roles management - requires org.roles.view to see, org.roles.manage to edit */}
                 <Route element={<PermissionAuthRoute permissions="org.roles.view" />}>
                   <Route path={RoutesConfig.tenant.settings.roles} element={<TenantRoles />} />
+                </Route>
+                {/* Backup settings - requires backup.view */}
+                <Route element={<PermissionAuthRoute permissions="backup.view" />}>
+                  <Route path={RoutesConfig.tenant.settings.backup} element={<TenantBackupSettings />} />
                 </Route>
               </Route>
             </Route>

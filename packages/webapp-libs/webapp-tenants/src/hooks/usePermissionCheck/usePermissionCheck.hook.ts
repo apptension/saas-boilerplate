@@ -157,6 +157,9 @@ export type PermissionCode =
   | 'management.fxrates.edit'
   | 'management.roles.view'
   | 'management.roles.edit'
+  // Backup
+  | 'backup.view'
+  | 'backup.manage'
   // Wildcards
   | 'org.*'
   | 'members.*'
@@ -164,4 +167,5 @@ export type PermissionCode =
   | 'billing.*'
   | 'features.*'
   | 'dashboard.*'
-  | 'management.*';
+  | 'management.*'
+  | 'backup.*';

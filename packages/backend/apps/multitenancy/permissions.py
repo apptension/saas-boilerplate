@@ -1,14 +1,96 @@
+from __future__ import annotations
+
 """
 Permission Registry for RBAC System.
 
 This module defines all available permissions in the system, organized by category.
 Permissions are seeded into the database via data migration.
+App modules can register a category with optional description via register_permission_category();
+the tenant roles UI uses label + description from the API (generic Shield icon).
+App modules can add permission codes to system roles (e.g. ADMIN) via register_system_role_permissions().
+App modules can contribute permission definitions via register_app_permissions(); they are discovered
+by importing each installed app's permissions module (apps.<app_label>.permissions), so no central edit
+is needed when adding a new app.
 """
 
+import importlib
 from dataclasses import dataclass
-from typing import List
+from itertools import chain
+from typing import List, Optional, Tuple, Union
 
 from .constants import PermissionCategory, SystemRoleType
+
+# App-defined categories (value, label, description); modules register on import
+PERMISSION_CATEGORY_REGISTRY: List[Tuple[str, str, str]] = []
+
+# Plugin-style: apps register their permission list; discovered by loading app.permissions modules
+APP_PERMISSIONS_REGISTRY: List[List[PermissionDefinition]] = []
+
+_perm_modules_loaded = False
+_app_perm_modules_loaded = False
+
+
+def register_app_permissions(permissions: List[PermissionDefinition]) -> None:
+    """Register permission definitions from an app. Call from the app's permissions module on import."""
+    APP_PERMISSIONS_REGISTRY.append(list(permissions))
+
+
+def _load_app_permission_modules() -> None:
+    """Import each installed app's permissions module (except multitenancy) so they call register_app_permissions."""
+    global _app_perm_modules_loaded
+    if _app_perm_modules_loaded:
+        return
+    _app_perm_modules_loaded = True
+    try:
+        from django.apps import apps
+
+        for app_config in apps.get_app_configs():
+            if not app_config.name.startswith("apps.") or app_config.name == "apps.multitenancy":
+                continue
+            try:
+                importlib.import_module(f"{app_config.name}.permissions")
+            except ImportError:
+                pass
+    except Exception:
+        pass
+
+
+def _ensure_permission_modules_loaded() -> None:
+    """Load app permission modules once so they register categories."""
+    global _perm_modules_loaded
+    if not _perm_modules_loaded:
+        get_all_permissions()
+        _perm_modules_loaded = True
+
+
+def register_permission_category(value: str, label: str, description: str = '') -> None:
+    """Register an app-defined permission category with optional description."""
+    if not any(v == value for v, _, _ in PERMISSION_CATEGORY_REGISTRY):
+        PERMISSION_CATEGORY_REGISTRY.append((value, label, description or ''))
+
+
+def get_category_display(value: str) -> Tuple[str, str]:
+    """Return (label, description) for a category value. Used by GraphQL resolvers."""
+    if not value:
+        return ('', '')
+    # Ensure app permission modules are loaded so they can register categories
+    _ensure_permission_modules_loaded()
+    value_upper = value.upper()
+    for v, label, desc in PERMISSION_CATEGORY_REGISTRY:
+        if v.upper() == value_upper:
+            return (label, desc or '')
+    from .constants import PermissionCategory
+
+    value_lower = value.lower()
+    for v, label in PermissionCategory.choices:
+        if v == value_lower or v == value:
+            return (label, '')
+    return (value, '')
+
+
+def _category_value(category: Union[PermissionCategory, str]) -> str:
+    """Normalize category to DB string value."""
+    return category if isinstance(category, str) else category.value
 
 
 @dataclass
@@ -18,7 +100,7 @@ class PermissionDefinition:
     code: str
     name: str
     description: str
-    category: PermissionCategory
+    category: Union[PermissionCategory, str]  # str for app-defined categories
     sort_order: int = 0
 
 
@@ -195,9 +277,36 @@ PERMISSIONS: List[PermissionDefinition] = [
 ]
 
 
+def get_all_permissions() -> List[PermissionDefinition]:
+    """All permissions (multitenancy + app-registered permissions from plugin modules)."""
+    _load_app_permission_modules()
+    return PERMISSIONS + list(chain.from_iterable(APP_PERMISSIONS_REGISTRY))
+
+
 # ============ Role Templates ============
 
-# Define which permissions each system role template has by default
+# App modules can add permission codes to system roles via register_system_role_permissions()
+SYSTEM_ROLE_EXTRA_PERMISSIONS: List[Tuple[SystemRoleType, List[str]]] = []
+
+
+def register_system_role_permissions(role_type: SystemRoleType, permission_codes: List[str]) -> None:
+    """Register extra permission codes for a system role (e.g. backup app for ADMIN)."""
+    SYSTEM_ROLE_EXTRA_PERMISSIONS.append((role_type, list(permission_codes)))
+
+
+def get_effective_role_template_permissions(role_type: SystemRoleType) -> Optional[List[str]]:
+    """Permission codes for a system role: base template + any registered by apps."""
+    _ensure_permission_modules_loaded()
+    base = ROLE_TEMPLATE_PERMISSIONS.get(role_type)
+    extras = [codes for r, codes in SYSTEM_ROLE_EXTRA_PERMISSIONS if r == role_type]
+    if base is None:
+        return None
+    all_codes = list(base) + [c for codes in extras for c in codes]
+    seen: set = set()
+    return [c for c in all_codes if c not in seen and not seen.add(c)]
+
+
+# Define which permissions each system role template has by default (apps add via register_system_role_permissions)
 ROLE_TEMPLATE_PERMISSIONS = {
     SystemRoleType.OWNER: None,  # None means ALL permissions
     SystemRoleType.ADMIN: [
@@ -258,27 +367,28 @@ def seed_permissions(apps=None, schema_editor=None):
     else:
         from .models import Permission
 
-    for perm_def in PERMISSIONS:
+    for perm_def in get_all_permissions():
         Permission.objects.update_or_create(
             code=perm_def.code,
             defaults={
                 "name": perm_def.name,
                 "description": perm_def.description,
-                "category": perm_def.category,
+                'category': _category_value(perm_def.category),
                 "sort_order": perm_def.sort_order,
                 "is_system": True,
             },
         )
 
 
-def get_permission_codes_for_category(category: PermissionCategory) -> list:
+def get_permission_codes_for_category(category: Union[PermissionCategory, str]) -> list:
     """Get all permission codes for a specific category."""
-    return [p.code for p in PERMISSIONS if p.category == category]
+    want = _category_value(category)
+    return [p.code for p in get_all_permissions() if _category_value(p.category) == want]
 
 
 def get_all_permission_codes() -> list:
     """Get all permission codes."""
-    return [p.code for p in PERMISSIONS]
+    return [p.code for p in get_all_permissions()]
 
 
 def create_system_roles_for_tenant(tenant, apps=None):
@@ -329,8 +439,8 @@ def create_system_roles_for_tenant(tenant, apps=None):
         )
         created_roles.append(role)
 
-        # Assign permissions based on template
-        permission_codes = ROLE_TEMPLATE_PERMISSIONS.get(config["system_role_type"])
+        # Assign permissions based on template (base + app-registered extras)
+        permission_codes = get_effective_role_template_permissions(config['system_role_type'])
         if permission_codes is None:
             # OWNER gets all permissions
             permissions = Permission.objects.all()

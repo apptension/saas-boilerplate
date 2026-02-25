@@ -8,17 +8,18 @@ def refresh_permissions(apps, schema_editor):
     Re-seed all permissions from the registry to add any new permissions.
     This uses update_or_create to avoid duplicates while adding new ones.
     """
-    from apps.multitenancy.permissions import PERMISSIONS
-    
+    from apps.multitenancy.permissions import get_all_permissions
+
     Permission = apps.get_model('multitenancy', 'Permission')
-    
-    for perm_def in PERMISSIONS:
+
+    for perm_def in get_all_permissions():
+        category_value = getattr(perm_def.category, 'value', perm_def.category)
         Permission.objects.update_or_create(
             code=perm_def.code,
             defaults={
                 'name': perm_def.name,
                 'description': perm_def.description,
-                'category': perm_def.category,
+                'category': category_value,
                 'sort_order': perm_def.sort_order,
                 'is_system': True,
             }

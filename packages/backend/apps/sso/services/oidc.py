@@ -14,7 +14,7 @@ import requests
 from django.conf import settings
 from django.core.cache import cache
 
-from .secrets import get_secrets_service
+from common.secrets.service import get_secrets_service
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class OIDCService:
         """
         self.connection = sso_connection
         self.tenant = sso_connection.tenant
-        self.secrets_service = get_secrets_service()
+        self.secrets_service = get_secrets_service('sso')
 
     def get_callback_url(self) -> str:
         """Get the OAuth callback URL."""

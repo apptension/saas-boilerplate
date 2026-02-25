@@ -125,6 +125,8 @@ dependencies = [
     "beautifulsoup4~=4.12",
     # WebAuthn/Passkey support
     "cbor2>=5.4.0",
+    # SAML XML signature verification (proper C14N canonicalization)
+    "signxml>=4.3.1",
     # Multi-platform deployment support
     "django-sendgrid-v5>=1.2.3",
     "dj-database-url>=2.1.0",

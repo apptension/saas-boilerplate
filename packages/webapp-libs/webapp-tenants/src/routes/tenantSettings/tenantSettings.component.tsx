@@ -1,3 +1,4 @@
+import { TenantType } from '@sb/webapp-api-client/constants';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
 import { Paragraph } from '@sb/webapp-core/components/typography';
 import { Tabs, TabsList, TabsTrigger } from '@sb/webapp-core/components/ui/tabs';
@@ -10,12 +11,15 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../config/routes';
 import { useGenerateTenantPath, usePermissionCheck } from '../../hooks';
+import { useCurrentTenant } from '../../providers';
 
 export const TenantSettings = () => {
   const intl = useIntl();
   const location = useLocation();
   const navigate = useNavigate();
   const generateTenantPath = useGenerateTenantPath();
+  const { data: currentTenant } = useCurrentTenant();
+  const isPersonal = currentTenant?.type === TenantType.PERSONAL;
 
   // Permission-based tab visibility
   const { hasPermission: canViewMembers, loading: loadingMembers } = usePermissionCheck('members.view');
@@ -24,8 +28,12 @@ export const TenantSettings = () => {
   const { hasPermission: canViewBilling, loading: loadingBilling } = usePermissionCheck('billing.view');
   const { hasPermission: canViewSecurity, loading: loadingSecurity } = usePermissionCheck('security.view');
   const { hasPermission: canViewActivityLogs, loading: loadingLogs } = usePermissionCheck('security.logs.view');
+  const { hasPermission: canViewBackup, loading: loadingBackup } = usePermissionCheck('backup.view');
+  
+  // Personal tenants don't have RBAC, so allow access to backup settings
+  const canViewBackupSettings = canViewBackup || isPersonal;
 
-  const isLoading = loadingMembers || loadingRoles || loadingSettings || loadingBilling || loadingSecurity || loadingLogs;
+  const isLoading = loadingMembers || loadingRoles || loadingSettings || loadingBilling || loadingSecurity || loadingLogs || loadingBackup;
 
   // Determine the first available tab based on permissions
   const availableTabs = useMemo(() => {
@@ -36,8 +44,9 @@ export const TenantSettings = () => {
     if (canViewBilling) tabs.push({ path: FinancesRoutesConfig.subscriptions.index, permission: 'billing.view' });
     if (canViewSecurity) tabs.push({ path: RoutesConfig.tenant.settings.security, permission: 'security.view' });
     if (canViewActivityLogs) tabs.push({ path: RoutesConfig.tenant.settings.activityLogs, permission: 'security.logs.view' });
+    if (canViewBackupSettings) tabs.push({ path: RoutesConfig.tenant.settings.backup, permission: 'backup.view' });
     return tabs;
-  }, [canViewMembers, canViewRoles, canViewSettings, canViewBilling, canViewSecurity, canViewActivityLogs]);
+  }, [canViewMembers, canViewRoles, canViewSettings, canViewBilling, canViewSecurity, canViewActivityLogs, canViewBackupSettings]);
 
   // Redirect to first available tab if current path is not accessible
   useEffect(() => {
@@ -115,6 +124,13 @@ export const TenantSettings = () => {
               <Link to={generateTenantPath(RoutesConfig.tenant.settings.activityLogs)} replace>
                 <TabsTrigger value={generateTenantPath(RoutesConfig.tenant.settings.activityLogs)}>
                   <FormattedMessage defaultMessage="Activity Logs" id="Tenant settings / Activity Logs" />
+                </TabsTrigger>
+              </Link>
+            )}
+            {canViewBackupSettings && (
+              <Link to={generateTenantPath(RoutesConfig.tenant.settings.backup)} replace>
+                <TabsTrigger value={generateTenantPath(RoutesConfig.tenant.settings.backup)}>
+                  <FormattedMessage defaultMessage="Backups" id="Tenant settings / Backups" />
                 </TabsTrigger>
               </Link>
             )}

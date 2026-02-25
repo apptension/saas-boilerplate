@@ -277,6 +277,19 @@ This boilerplate includes plenty of ready to use features that you can adjust to
     </ul>
   </details>
 
+  <details open>
+    <summary>
+      Tenant backup and restore
+    </summary><br/>
+    <ul>
+      <li>Per-tenant XML backups of selected modules and models</li>
+      <li>Encryption of backup content (AWS Secrets Manager or DB fallback with <code>BACKUP_MASTER_KEY</code>); configurable schedule (interval and retention)</li>
+      <li>Restore into the same or another tenant with conflict handling (skip, update, or fail)</li>
+      <li>Email notifications when a backup is ready or fails, and when a restore completes or fails</li>
+      <li>Backup/restore notification templates defined in the backup (tenants) module</li>
+    </ul>
+  </details>
+
   <a href="https://docs.demo.saas.apptoku.com/introduction/features/cms">
     <img src="./.github/images/features/cms.png" alt="CMS integration (Contentful)" />
   </a>
