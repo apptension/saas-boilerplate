@@ -38,9 +38,7 @@ def _ensure_rbac_role_for_membership(membership):
     tenant = membership.tenant
     if not models.OrganizationRole.objects.filter(tenant=tenant).exists():
         create_system_roles_for_tenant(tenant)
-    org_role = models.OrganizationRole.objects.filter(
-        tenant=tenant, system_role_type=system_role_type
-    ).first()
+    org_role = models.OrganizationRole.objects.filter(tenant=tenant, system_role_type=system_role_type).first()
     if org_role:
         models.TenantMembershipRole.objects.get_or_create(
             membership=membership,

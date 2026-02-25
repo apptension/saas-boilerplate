@@ -81,7 +81,7 @@ class UpdateTenantSSOConnectionSerializer(TenantSSOConnectionSerializer):
         write_only=True,
         required=False,
         allow_blank=True,
-        help_text="OIDC client secret. Leave blank to keep existing. Only set when updating."
+        help_text="OIDC client secret. Leave blank to keep existing. Only set when updating.",
     )
 
     class Meta(TenantSSOConnectionSerializer.Meta):

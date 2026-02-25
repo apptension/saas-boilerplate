@@ -70,11 +70,13 @@ class PermissionType(DjangoObjectType):
 
     def resolve_category_label(self, info):
         from .permissions import get_category_display
+
         label, _ = get_category_display(self.category)
         return label
 
     def resolve_category_description(self, info):
         from .permissions import get_category_display
+
         _, description = get_category_display(self.category)
         return description
 

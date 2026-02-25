@@ -17,7 +17,6 @@ from apps.multitenancy.schema import TenantMembershipType
 
 from . import models
 from .modules import get_all_modules, get_module
-from .registry import BackupModelRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -413,7 +412,9 @@ class RestoreBackupMutation(graphene.Mutation):
                     # Last resort: convert to string and validate
                     conflict_strategy_value = str(conflict_strategy)
                     if conflict_strategy_value not in ["SKIP", "UPDATE", "FAIL"]:
-                        logger.warning(f"Invalid conflict_strategy: {conflict_strategy}, type: {type(conflict_strategy)}")
+                        logger.warning(
+                            f"Invalid conflict_strategy: {conflict_strategy}, type: {type(conflict_strategy)}"
+                        )
                         conflict_strategy_value = "SKIP"
 
             # Ensure it's a valid value
@@ -609,9 +610,11 @@ class BackupQuery(graphene.ObjectType):
         tenant = tenant_models.Tenant.objects.filter(pk=pk).first()
         if not tenant:
             return []
-        memberships = tenant_models.TenantMembership.objects.filter(
-            tenant=tenant, is_accepted=True
-        ).select_related('user').exclude(user__isnull=True)
+        memberships = (
+            tenant_models.TenantMembership.objects.filter(tenant=tenant, is_accepted=True)
+            .select_related('user')
+            .exclude(user__isnull=True)
+        )
         result = []
         for membership in memberships:
             if membership.user and 'backup.manage' in tenant_models.get_user_permissions_for_tenant(
@@ -681,7 +684,5 @@ class BackupMutation(graphene.ObjectType):
     update_backup_config = permission_classes(requires('backup.manage'))(UpdateBackupConfigMutation.Field())
     delete_backup = permission_classes(requires('backup.manage'))(DeleteBackupMutation.Field())
     trigger_backup = permission_classes(requires('backup.manage'))(TriggerBackupMutation.Field())
-    download_backup_decrypted = permission_classes(requires('backup.view'))(
-        DownloadBackupDecryptedMutation.Field()
-    )
+    download_backup_decrypted = permission_classes(requires('backup.view'))(DownloadBackupDecryptedMutation.Field())
     restore_backup = permission_classes(requires('backup.manage'))(RestoreBackupMutation.Field())

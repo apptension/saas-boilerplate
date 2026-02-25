@@ -41,7 +41,7 @@ class TestDownloadBackupDecryptedMutation:
 
         # Clear singleton
         apps.backup.encryption._encryption_service = None
-        
+
         # Create encryption service
         encryption_service = BackupEncryptionService()
         # Ensure it uses the mocked secrets service
@@ -49,12 +49,13 @@ class TestDownloadBackupDecryptedMutation:
 
         # Mock key - use TEST_KEY_32_BYTES from test_encryption
         from apps.backup.tests.test_encryption import TEST_KEY_32_BYTES
+
         mock_secrets_service.get_secret_by_name.return_value = base64.b64encode(TEST_KEY_32_BYTES).decode('utf-8')
 
         # Encrypt test content
         plaintext = b'<?xml version="1.0"?><backup><data>test content</data></backup>'
         encrypted = encryption_service.encrypt_backup(plaintext, "test_tenant")
-        
+
         # Ensure encryption succeeded
         assert encrypted is not None, "Encryption failed - check mock setup"
 
@@ -78,9 +79,11 @@ class TestDownloadBackupDecryptedMutation:
         )
 
         encrypted_content, expected_plaintext = encrypted_backup_content
-        
+
         # Ensure encrypted_content is not None
-        assert encrypted_content is not None, "encrypted_backup_content fixture returned None - check encryption service mock"
+        assert (
+            encrypted_content is not None
+        ), "encrypted_backup_content fixture returned None - check encryption service mock"
 
         # Mock storage
         mock_file = MagicMock()
@@ -94,11 +97,13 @@ class TestDownloadBackupDecryptedMutation:
 
         # Mock key retrieval - use TEST_KEY_32_BYTES from test_encryption
         from apps.backup.tests.test_encryption import TEST_KEY_32_BYTES
+
         mock_secrets_service.get_secret_by_name.return_value = base64.b64encode(TEST_KEY_32_BYTES).decode('utf-8')
 
         # Create GraphQL context
         # Ensure user is authenticated (mock the property)
         with patch.object(type(user), 'is_authenticated', new_callable=PropertyMock, return_value=True):
+
             class MockContext:
                 def __init__(self, user):
                     self.user = user
@@ -145,6 +150,7 @@ class TestDownloadBackupDecryptedMutation:
         # Create GraphQL context
         # Ensure user is authenticated (mock the property)
         with patch.object(type(user), 'is_authenticated', new_callable=PropertyMock, return_value=True):
+
             class MockContext:
                 def __init__(self, user):
                     self.user = user
@@ -179,6 +185,7 @@ class TestDownloadBackupDecryptedMutation:
         # Create GraphQL context
         # Ensure user is authenticated (mock the property)
         with patch.object(type(user), 'is_authenticated', new_callable=PropertyMock, return_value=True):
+
             class MockContext:
                 def __init__(self, user):
                     self.user = user
@@ -227,6 +234,7 @@ class TestDownloadBackupDecryptedMutation:
         # Create GraphQL context
         # Ensure user is authenticated (mock the property)
         with patch.object(type(user), 'is_authenticated', new_callable=PropertyMock, return_value=True):
+
             class MockContext:
                 def __init__(self, user):
                     self.user = user
@@ -265,11 +273,11 @@ class TestDownloadBackupDecryptedMutation:
         # Execute mutation - it catches GraphQLError and returns error result
         from apps.backup.schema import DownloadBackupDecryptedMutation
         from graphql_relay import to_global_id
-        
+
         backup_id = to_global_id('BackupRecordType', str(backup_record.id))
         # The mutation catches GraphQLError and returns it as an error result
         result = DownloadBackupDecryptedMutation.mutate(None, info, backup_id=backup_id)
-        
+
         # Verify error result
         assert result.ok is False
         assert "Authentication" in result.error or "required" in result.error.lower()
@@ -280,6 +288,7 @@ class TestDownloadBackupDecryptedMutation:
         # Create GraphQL context
         # Ensure user is authenticated (mock the property)
         with patch.object(type(user), 'is_authenticated', new_callable=PropertyMock, return_value=True):
+
             class MockContext:
                 def __init__(self, user):
                     self.user = user

@@ -33,9 +33,10 @@ class TestBackupTaskEncryption:
             mock_get_service.return_value = mock_service
             # Clear the encryption service singleton to ensure fresh instance
             import apps.backup.encryption
+
             apps.backup.encryption._encryption_service = None
             yield mock_service
-    
+
     @pytest.fixture
     def mock_encryption_service(self, mock_secrets_service):
         """Mock BackupEncryptionService to ensure it uses mocked secrets."""
@@ -66,7 +67,9 @@ class TestBackupTaskEncryption:
             mock_service_class.return_value = mock_service
             yield mock_service
 
-    def test_create_backup_encrypts_content(self, tenant, mock_secrets_service, mock_storage, mock_backup_service, mock_encryption_service):
+    def test_create_backup_encrypts_content(
+        self, tenant, mock_secrets_service, mock_storage, mock_backup_service, mock_encryption_service
+    ):
         """Test that backup task encrypts content before saving."""
         tenant_id = str(tenant.id)
 
@@ -74,10 +77,10 @@ class TestBackupTaskEncryption:
         test_key = TEST_KEY_32_BYTES
         mock_secrets_service.get_secret_by_name.return_value = None  # No existing key
         mock_secrets_service.store_secret.return_value = "arn:aws:secretsmanager:region:account:secret:name"
-        
+
         # Mock encryption service to return encrypted content (bytes)
         mock_encryption_service.encrypt_backup.return_value = b"encrypted_backup_content_12345"
-        
+
         # Mock storage.exists to return True (file was saved)
         mock_storage.exists.return_value = True
 
@@ -104,14 +107,16 @@ class TestBackupTaskEncryption:
         assert backup_record.status == BackupRecord.Status.COMPLETED
         assert backup_record.file_path is not None
 
-    def test_create_backup_encryption_failure(self, tenant, mock_secrets_service, mock_storage, mock_backup_service, mock_encryption_service):
+    def test_create_backup_encryption_failure(
+        self, tenant, mock_secrets_service, mock_storage, mock_backup_service, mock_encryption_service
+    ):
         """Test that backup task handles encryption failure."""
         tenant_id = str(tenant.id)
 
         # Mock encryption failure - key storage fails
         mock_secrets_service.get_secret_by_name.return_value = None
         mock_secrets_service.store_secret.return_value = None  # Storage fails
-        
+
         # Mock encryption service to return None (encryption fails)
         mock_encryption_service.encrypt_backup.return_value = None
 
@@ -120,7 +125,7 @@ class TestBackupTaskEncryption:
         # We verify the exception is raised and the backup record is marked as failed
         with pytest.raises(Exception) as exc_info:
             create_backup(tenant_id=tenant_id)
-        
+
         # Verify exception is raised (may be Retry if retry logic executes, or plain Exception)
         assert exc_info.value is not None
         assert "encrypt" in str(exc_info.value).lower()
@@ -132,17 +137,19 @@ class TestBackupTaskEncryption:
         assert backup_record.status == BackupRecord.Status.FAILED
         assert "encrypt" in backup_record.error_message.lower() or "key" in backup_record.error_message.lower()
 
-    def test_create_backup_uses_existing_encryption_key(self, tenant, mock_secrets_service, mock_storage, mock_backup_service, mock_encryption_service):
+    def test_create_backup_uses_existing_encryption_key(
+        self, tenant, mock_secrets_service, mock_storage, mock_backup_service, mock_encryption_service
+    ):
         """Test that backup task uses existing encryption key if available."""
         tenant_id = str(tenant.id)
 
         # Mock existing key
         test_key = TEST_KEY_32_BYTES
         mock_secrets_service.get_secret_by_name.return_value = base64.b64encode(test_key).decode('utf-8')
-        
+
         # Mock encryption service to return encrypted content
         mock_encryption_service.encrypt_backup.return_value = b"encrypted_backup_content"
-        
+
         # Mock storage.exists to return True (file was saved)
         mock_storage.exists.return_value = True
 
@@ -161,7 +168,9 @@ class TestBackupTaskEncryption:
         assert backup_record.is_encrypted is True
         assert backup_record.status == BackupRecord.Status.COMPLETED
 
-    def test_create_backup_verifies_file_saved(self, tenant, mock_secrets_service, mock_storage, mock_backup_service, mock_encryption_service):
+    def test_create_backup_verifies_file_saved(
+        self, tenant, mock_secrets_service, mock_storage, mock_backup_service, mock_encryption_service
+    ):
         """Test that backup task verifies file was saved."""
         tenant_id = str(tenant.id)
 
@@ -169,7 +178,7 @@ class TestBackupTaskEncryption:
         test_key = TEST_KEY_32_BYTES
         mock_secrets_service.get_secret_by_name.return_value = None
         mock_secrets_service.store_secret.return_value = "arn:aws:secretsmanager:region:account:secret:name"
-        
+
         # Mock encryption service to return encrypted content
         mock_encryption_service.encrypt_backup.return_value = b"encrypted_content"
 
@@ -181,7 +190,7 @@ class TestBackupTaskEncryption:
         # We verify the exception is raised and the backup record is marked as failed
         with pytest.raises(Exception) as exc_info:
             create_backup(tenant_id=tenant_id)
-        
+
         # Verify exception is raised (may be Retry if retry logic executes, or plain Exception)
         assert exc_info.value is not None
         assert "saved" in str(exc_info.value).lower() or "file" in str(exc_info.value).lower()
@@ -193,7 +202,9 @@ class TestBackupTaskEncryption:
         assert backup_record.status == BackupRecord.Status.FAILED
         assert "saved" in backup_record.error_message.lower() or "file" in backup_record.error_message.lower()
 
-    def test_create_backup_with_config(self, tenant, mock_secrets_service, mock_storage, mock_backup_service, mock_encryption_service):
+    def test_create_backup_with_config(
+        self, tenant, mock_secrets_service, mock_storage, mock_backup_service, mock_encryption_service
+    ):
         """Test backup creation with backup config."""
         tenant_id = str(tenant.id)
 
@@ -209,10 +220,10 @@ class TestBackupTaskEncryption:
         test_key = TEST_KEY_32_BYTES
         mock_secrets_service.get_secret_by_name.return_value = None
         mock_secrets_service.store_secret.return_value = "arn:aws:secretsmanager:region:account:secret:name"
-        
+
         # Mock encryption service to return encrypted content (bytes)
         mock_encryption_service.encrypt_backup.return_value = b"encrypted_backup_content_12345"
-        
+
         # Mock storage.exists to return True (file was saved)
         mock_storage.exists.return_value = True
 

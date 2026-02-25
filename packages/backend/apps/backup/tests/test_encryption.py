@@ -27,14 +27,16 @@ class TestBackupEncryptionService:
         """Mock SecretsService for testing."""
         # Clear the secrets service cache to ensure fresh mocks
         from common.secrets.service import _secrets_services
+
         _secrets_services.clear()
-        
+
         with patch('apps.backup.encryption.get_secrets_service') as mock_get_service:
             # Create a mock service - don't pre-create methods, let Mock handle them dynamically
             mock_service = Mock()
             mock_get_service.return_value = mock_service
             # Clear the encryption service singleton to ensure fresh instance
             import apps.backup.encryption
+
             apps.backup.encryption._encryption_service = None
             yield mock_service
             # Clean up: clear cache after test
@@ -45,23 +47,24 @@ class TestBackupEncryptionService:
         """Create BackupEncryptionService instance."""
         # Clear singleton first
         import apps.backup.encryption
+
         apps.backup.encryption._encryption_service = None
-        
+
         # Create service - it will use the mocked get_secrets_service from the fixture
         service = BackupEncryptionService()
-        
+
         # CRITICAL: The service's __init__ calls get_secrets_service('backup')
         # which should return our mock. But let's explicitly set it to be sure
         service.secrets_service = mock_secrets_service
-        
+
         # Force AWS path: if BACKUP_MASTER_KEY is set in env, the service would use DB
         # first and never hit Secrets Manager. These tests mock AWS, so ensure we use it.
         service._get_fernet = lambda: None
-        
+
         # Mock client so "if self.secrets_service.client" is truthy and we use AWS branch
         if not getattr(mock_secrets_service, 'client', None):
             mock_secrets_service.client = MagicMock()
-        
+
         return service
 
     def test_generate_key(self, encryption_service):
@@ -141,13 +144,15 @@ class TestBackupEncryptionService:
         test_key = TEST_KEY_32_BYTES
         key_base64 = base64.b64encode(test_key).decode('utf-8')
         mock_secrets_service.get_secret_by_name.return_value = key_base64
-        
+
         # Verify the service is using the mock
         assert encryption_service.secrets_service is mock_secrets_service
-        
+
         # Debug: Check what get_or_create_tenant_key returns
         key = encryption_service.get_or_create_tenant_key(tenant_id)
-        assert key is not None, f"get_or_create_tenant_key returned None. Mock return_value: {mock_secrets_service.get_secret_by_name.return_value}, Mock called: {mock_secrets_service.get_secret_by_name.called}"
+        assert (
+            key is not None
+        ), f"get_or_create_tenant_key returned None. Mock return_value: {mock_secrets_service.get_secret_by_name.return_value}, Mock called: {mock_secrets_service.get_secret_by_name.called}"
         assert key == test_key, f"Key mismatch: expected {test_key}, got {key}"
 
         encrypted = encryption_service.encrypt_backup(plaintext, tenant_id)
@@ -193,13 +198,15 @@ class TestBackupEncryptionService:
         # Mock key retrieval - return existing key
         test_key = TEST_KEY_32_BYTES
         mock_secrets_service.get_secret_by_name.return_value = base64.b64encode(test_key).decode('utf-8')
-        
+
         # Verify the service is using the mock
         assert encryption_service.secrets_service is mock_secrets_service
 
         # First encrypt
         encrypted = encryption_service.encrypt_backup(plaintext, tenant_id)
-        assert encrypted is not None, f"Encryption failed - key retrieval might have failed. Mock called: {mock_secrets_service.get_secret_by_name.called}"
+        assert (
+            encrypted is not None
+        ), f"Encryption failed - key retrieval might have failed. Mock called: {mock_secrets_service.get_secret_by_name.called}"
 
         # Then decrypt
         decrypted = encryption_service.decrypt_backup(encrypted, tenant_id)
@@ -283,7 +290,7 @@ class TestBackupEncryptionService:
             return None
 
         mock_secrets_service.get_secret_by_name.side_effect = get_secret_side_effect
-        
+
         # Verify the service is using the mock
         assert encryption_service.secrets_service is mock_secrets_service
 
@@ -318,7 +325,7 @@ class TestBackupEncryptionService:
         # Mock key retrieval - return existing key
         test_key = TEST_KEY_32_BYTES
         mock_secrets_service.get_secret_by_name.return_value = base64.b64encode(test_key).decode('utf-8')
-        
+
         # Verify the service is using the mock
         assert encryption_service.secrets_service is mock_secrets_service
 
@@ -353,4 +360,5 @@ class TestBackupEncryptionService:
         assert service1 is service2
         # Verify it's the same instance (singleton)
         import apps.backup.encryption as encryption_module
+
         assert service1 is encryption_module._encryption_service

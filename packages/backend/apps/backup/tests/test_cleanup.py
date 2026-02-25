@@ -67,7 +67,7 @@ class TestBackupCleanup:
         # Run cleanup using .run() - Celery automatically binds self for bound tasks
         # This is the standard way to test Celery tasks (see test_emails.py for example)
         result = cleanup_old_backups.run()
-        
+
         # Verify old backup was deleted
         assert result['deleted'] == 1
         assert result['errors'] == 0
@@ -99,7 +99,7 @@ class TestBackupCleanup:
 
         # Run cleanup using .run() - Celery automatically binds self for bound tasks
         result = cleanup_old_backups.run()
-        
+
         # Verify no backups were deleted
         assert result['deleted'] == 0
         assert result['errors'] == 0
@@ -374,12 +374,13 @@ class TestBackupCleanup:
         # Make storage raise exception
         with patch('apps.backup.tasks.get_exports_storage') as mock_get_storage:
             mock_get_storage.side_effect = Exception("Storage unavailable")
-            
+
             # Run cleanup (should handle exception)
             # The task will catch the exception and attempt to retry. When calling .run() directly,
             # the retry mechanism may raise either a Retry exception or the original exception.
             # We catch both to verify the exception was handled gracefully.
             from celery.exceptions import Retry
+
             try:
                 result = cleanup_old_backups.run()
                 # If no exception was raised, check for error in result (retries exhausted)

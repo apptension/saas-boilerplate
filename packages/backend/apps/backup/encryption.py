@@ -126,10 +126,8 @@ class BackupEncryptionService:
             if existing_key:
                 try:
                     return base64.b64decode(existing_key)
-                except Exception as e:
-                    logger.error(
-                        f"Corrupt encryption key for tenant"
-                    )
+                except Exception:
+                    logger.error("Corrupt encryption key for tenant")
                     return None
             else:
                 new_key = self._generate_key()

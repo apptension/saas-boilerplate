@@ -818,7 +818,7 @@ class CreateTenantDependentModelMutation(CreateModelMutation):
         - Verifies the user has access to the specified tenant via context
         """
         tenant_id_raw = input.get("tenant_id") or input.get("tenantId")
-        
+
         if not tenant_id_raw:
             raise exceptions.GraphQlValidationError("tenant_id is required")
 

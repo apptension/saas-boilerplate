@@ -160,7 +160,9 @@ class TestRestoreServiceSkipStrategy:
     <model name="BackupConfig" count="1" />
   </summary>
 </tenant_backup>
-""".format(tenant_id=str(tenant.id))
+""".format(
+            tenant_id=str(tenant.id)
+        )
 
         service = RestoreService(tenant_id=str(tenant.id), conflict_strategy="SKIP")
         result = service.restore_from_xml(xml)
@@ -248,7 +250,9 @@ class TestRestoreServiceFailStrategy:
     <model name="BackupConfig" count="1" />
   </summary>
 </tenant_backup>
-""".format(tenant_id=str(tenant.id))
+""".format(
+            tenant_id=str(tenant.id)
+        )
 
         service = RestoreService(tenant_id=str(tenant.id), conflict_strategy="FAIL")
         result = service.restore_from_xml(xml)
@@ -387,9 +391,7 @@ class TestRestoreBackupMutation:
             with patch('apps.backup.tasks.restore_backup') as mock_task:
                 mock_task.delay = MagicMock()
 
-                result = RestoreBackupMutation.mutate(
-                    None, info, backup_id=backup_global_id, conflict_strategy="SKIP"
-                )
+                result = RestoreBackupMutation.mutate(None, info, backup_id=backup_global_id, conflict_strategy="SKIP")
 
                 assert result.ok is True
                 assert result.restore_id is not None
@@ -425,9 +427,7 @@ class TestRestoreBackupMutation:
             from graphql_relay import to_global_id
 
             backup_global_id = to_global_id('BackupRecordType', str(backup_record.id))
-            result = RestoreBackupMutation.mutate(
-                None, info, backup_id=backup_global_id, conflict_strategy="SKIP"
-            )
+            result = RestoreBackupMutation.mutate(None, info, backup_id=backup_global_id, conflict_strategy="SKIP")
 
             assert result.ok is False
             assert "completed" in result.error.lower()
@@ -453,9 +453,7 @@ class TestRestoreBackupMutation:
             from graphql_relay import to_global_id
 
             backup_global_id = to_global_id('BackupRecordType', str(backup_record.id))
-            result = RestoreBackupMutation.mutate(
-                None, info, backup_id=backup_global_id, conflict_strategy="SKIP"
-            )
+            result = RestoreBackupMutation.mutate(None, info, backup_id=backup_global_id, conflict_strategy="SKIP")
 
             assert result.ok is False
             assert "file" in result.error.lower()
@@ -478,9 +476,7 @@ class TestRestoreBackupMutation:
         from graphql_relay import to_global_id
 
         backup_global_id = to_global_id('BackupRecordType', str(backup_record.id))
-        result = RestoreBackupMutation.mutate(
-            None, info, backup_id=backup_global_id, conflict_strategy="SKIP"
-        )
+        result = RestoreBackupMutation.mutate(None, info, backup_id=backup_global_id, conflict_strategy="SKIP")
 
         assert result.ok is False
         assert "Authentication" in result.error or "required" in result.error.lower()
@@ -499,9 +495,7 @@ class TestRestoreBackupMutation:
             from graphql_relay import to_global_id
 
             invalid_global_id = to_global_id('BackupRecordType', '999999')
-            result = RestoreBackupMutation.mutate(
-                None, info, backup_id=invalid_global_id, conflict_strategy="SKIP"
-            )
+            result = RestoreBackupMutation.mutate(None, info, backup_id=invalid_global_id, conflict_strategy="SKIP")
 
             assert result.ok is False
             assert "not found" in result.error.lower()

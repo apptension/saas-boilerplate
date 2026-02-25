@@ -779,11 +779,13 @@ class PasskeyAuthenticationVerifyView(APIView):
             tokens = create_jwt_tokens(user, auth_method='passkey')
 
             # Return tokens in body for localStorage (Safari/mobile fallback when cookies blocked)
-            response = Response({
-                'success': True,
-                'access': tokens['access'],
-                'refresh': tokens['refresh'],
-            })
+            response = Response(
+                {
+                    'success': True,
+                    'access': tokens['access'],
+                    'refresh': tokens['refresh'],
+                }
+            )
             auth_cookies = {
                 settings.ACCESS_TOKEN_COOKIE: tokens["access"],
                 settings.REFRESH_TOKEN_COOKIE: tokens["refresh"],
@@ -917,7 +919,6 @@ class AuditLogListView(APIView):
 
     def get(self, request, tenant_id):
         from datetime import datetime, timedelta
-        from apps.multitenancy.models import Tenant, TenantMembership
         from graphql_relay import from_global_id
 
         # Decode tenant ID if it's a GraphQL global ID
@@ -1044,15 +1045,12 @@ class AuditLogListView(APIView):
             # Return as array of {value, label} objects to avoid axios-case-converter
             # mangling the dict keys (it converts snake_case keys to camelCase)
             event_types = list(
-                SSOAuditLog.objects.filter(tenant=tenant)
-                .values_list('event_type', flat=True)
-                .distinct()
+                SSOAuditLog.objects.filter(tenant=tenant).values_list('event_type', flat=True).distinct()
             )
             labels_map = dict(SSOAuditEventType.choices)
             unique_event_types = list(dict.fromkeys(event_types))
             filter_options['eventTypeOptions'] = [
-                {'value': et, 'label': labels_map.get(et, et)}
-                for et in unique_event_types
+                {'value': et, 'label': labels_map.get(et, et)} for et in unique_event_types
             ]
 
             # Get unique user emails
@@ -1091,7 +1089,6 @@ class SCIMTokenListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, tenant_id):
-        from apps.multitenancy.models import Tenant, TenantMembership
         from graphql_relay import from_global_id
 
         # Decode tenant ID if it's a GraphQL global ID
@@ -1140,7 +1137,6 @@ class SCIMTokenListView(APIView):
     def post(self, request, tenant_id):
         import secrets
         import hashlib
-        from apps.multitenancy.models import Tenant, TenantMembership
         from graphql_relay import from_global_id
 
         # Decode tenant ID if it's a GraphQL global ID
@@ -1216,7 +1212,6 @@ class SCIMTokenDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, tenant_id, token_id):
-        from apps.multitenancy.models import Tenant, TenantMembership
         from graphql_relay import from_global_id
 
         # Decode tenant ID if it's a GraphQL global ID

@@ -104,9 +104,7 @@ def check_tenant_sso_enforcement(request, tenant, user) -> Optional[str]:
         if jti:
             _log_bypass_once(tenant, user, jti, _get_ip(request))
         else:
-            logger.warning(
-                f"Break-glass SSO enforcement bypass: user={user.email} tenant={tenant.id}"
-            )
+            logger.warning(f"Break-glass SSO enforcement bypass: user={user.email} tenant={tenant.id}")
             SSOAuditLog.log_event(
                 event_type=SSOAuditEventType.SSO_ENFORCE_BYPASS,
                 tenant=tenant,
@@ -123,8 +121,7 @@ def _log_bypass_once(tenant, user, jti: str, ip_address: str):
     """Log a break-glass bypass exactly once per login session (jti) per tenant."""
     with transaction.atomic():
         already_logged = (
-            SSOAuditLog.objects
-            .select_for_update(skip_locked=True)
+            SSOAuditLog.objects.select_for_update(skip_locked=True)
             .filter(
                 event_type=SSOAuditEventType.SSO_ENFORCE_BYPASS,
                 tenant=tenant,
@@ -134,9 +131,7 @@ def _log_bypass_once(tenant, user, jti: str, ip_address: str):
             .exists()
         )
         if not already_logged:
-            logger.warning(
-                f"Break-glass SSO enforcement bypass: user={user.email} tenant={tenant.id}"
-            )
+            logger.warning(f"Break-glass SSO enforcement bypass: user={user.email} tenant={tenant.id}")
             SSOAuditLog.log_event(
                 event_type=SSOAuditEventType.SSO_ENFORCE_BYPASS,
                 tenant=tenant,

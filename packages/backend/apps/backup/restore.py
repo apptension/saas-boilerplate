@@ -26,13 +26,9 @@ logger = logging.getLogger(__name__)
 class RestoreConflictError(Exception):
     """Raised when a conflict is detected and the strategy is FAIL."""
 
-    pass
-
 
 class RestoreValidationError(Exception):
     """Raised when XML content is invalid or cannot be parsed."""
-
-    pass
 
 
 class RestoreService:
@@ -118,9 +114,7 @@ class RestoreService:
 
         return self.model_counts
 
-    def _resolve_model_sections(
-        self, model_sections: List[ET.Element]
-    ) -> Dict[Type[models.Model], List[ET.Element]]:
+    def _resolve_model_sections(self, model_sections: List[ET.Element]) -> Dict[Type[models.Model], List[ET.Element]]:
         """
         Resolve model names from XML to Django model classes.
 
@@ -177,9 +171,7 @@ class RestoreService:
                     return model
         return None
 
-    def _topological_sort(
-        self, model_data: Dict[Type[models.Model], List[ET.Element]]
-    ) -> List[Type[models.Model]]:
+    def _topological_sort(self, model_data: Dict[Type[models.Model], List[ET.Element]]) -> List[Type[models.Model]]:
         """
         Sort model classes by FK dependencies so parents are restored before children.
 
@@ -293,9 +285,7 @@ class RestoreService:
                 logger.error(f"Failed to restore M2M for {model_class.__name__} pk={pk_value}: {e}")
                 self.errors.append(f"{model_class.__name__} M2M: {str(e)}")
 
-    def _get_safe_update_values(
-        self, model_class: Type[models.Model], field_values: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def _get_safe_update_values(self, model_class: Type[models.Model], field_values: Dict[str, Any]) -> Dict[str, Any]:
         """
         Return field_values safe for updating an existing instance.
         FK values from backup may reference IDs that no longer exist (e.g. after
@@ -326,9 +316,7 @@ class RestoreService:
             safe[attr] = value
         return safe
 
-    def _fill_required_defaults(
-        self, model_class: Type[models.Model], kwargs: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def _fill_required_defaults(self, model_class: Type[models.Model], kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """
         Fill default values for non-nullable (non-FK) fields that are missing or None
         so that create() does not violate NOT NULL constraints when backup omitted them.
@@ -348,9 +336,16 @@ class RestoreService:
                 continue
             if isinstance(field, models.DecimalField):
                 result[name] = Decimal('0')
-            elif isinstance(field, (models.IntegerField, models.BigIntegerField,
-                                    models.PositiveIntegerField, models.PositiveBigIntegerField,
-                                    models.SmallIntegerField)):
+            elif isinstance(
+                field,
+                (
+                    models.IntegerField,
+                    models.BigIntegerField,
+                    models.PositiveIntegerField,
+                    models.PositiveBigIntegerField,
+                    models.SmallIntegerField,
+                ),
+            ):
                 result[name] = 0
             elif isinstance(field, (models.CharField, models.TextField)):
                 result[name] = ''
@@ -364,9 +359,7 @@ class RestoreService:
                 result[name] = 0.0
         return result
 
-    def _import_item(
-        self, model_class: Type[models.Model], item_elem: ET.Element
-    ) -> Tuple[str, Dict[str, List[str]]]:
+    def _import_item(self, model_class: Type[models.Model], item_elem: ET.Element) -> Tuple[str, Dict[str, List[str]]]:
         """
         Import a single item from XML into the database.
 
@@ -438,8 +431,7 @@ class RestoreService:
                         existing_by_unique = None
                         if model_name == 'Invoice' and 'invoice_number' in field_values:
                             existing_by_unique = model_class.objects.filter(
-                                tenant_id=self.tenant_id,
-                                invoice_number=field_values['invoice_number']
+                                tenant_id=self.tenant_id, invoice_number=field_values['invoice_number']
                             ).first()
                         if existing_by_unique:
                             try:
@@ -467,9 +459,7 @@ class RestoreService:
                 return 'skipped', {}
 
             elif self.conflict_strategy == self.CONFLICT_FAIL:
-                raise RestoreConflictError(
-                    f"Conflict: {model_name} with pk={pk_value} already exists"
-                )
+                raise RestoreConflictError(f"Conflict: {model_name} with pk={pk_value} already exists")
 
             elif self.conflict_strategy == self.CONFLICT_UPDATE:
                 try:
@@ -501,10 +491,13 @@ class RestoreService:
                     if self.conflict_strategy == self.CONFLICT_UPDATE:
                         existing_by_unique = None
                         if model_name == 'Invoice' and 'invoice_number' in field_values:
-                            existing_by_unique = model_class.objects.filter(
-                                tenant_id=self.tenant_id,
-                                invoice_number=field_values['invoice_number']
-                            ).exclude(pk=pk_value).first()
+                            existing_by_unique = (
+                                model_class.objects.filter(
+                                    tenant_id=self.tenant_id, invoice_number=field_values['invoice_number']
+                                )
+                                .exclude(pk=pk_value)
+                                .first()
+                            )
                         if existing_by_unique:
                             try:
                                 safe_values = self._get_safe_update_values(model_class, field_values)
@@ -519,9 +512,7 @@ class RestoreService:
             except Exception:
                 return 'failed', {}
 
-    def _restore_m2m(
-        self, model_class: Type[models.Model], pk_value: Any, m2m_data: Dict[str, List[str]]
-    ) -> None:
+    def _restore_m2m(self, model_class: Type[models.Model], pk_value: Any, m2m_data: Dict[str, List[str]]) -> None:
         """
         Restore many-to-many relationships for a model instance.
 
@@ -548,9 +539,7 @@ class RestoreService:
                     f"{existing_related.count()}/{len(related_pks)} found"
                 )
             except Exception as e:
-                logger.error(
-                    f"Failed to restore M2M {model_class.__name__}.{field_name}: {e}"
-                )
+                logger.error(f"Failed to restore M2M {model_class.__name__}.{field_name}: {e}")
 
     def _deserialize_value(self, text: Optional[str], field: models.Field) -> Any:
         """
@@ -612,6 +601,7 @@ class RestoreService:
         if isinstance(field, models.DateField):
             try:
                 from django.utils.dateparse import parse_date
+
                 return parse_date(text)
             except ValueError:
                 logger.warning(f"Invalid date value: {text}")
@@ -626,6 +616,7 @@ class RestoreService:
 
         if isinstance(field, models.UUIDField):
             import uuid
+
             try:
                 return uuid.UUID(text)
             except ValueError:

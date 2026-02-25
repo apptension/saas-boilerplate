@@ -5,7 +5,6 @@ Modules are auto-discovered from Django apps that contain TenantDependentModelMi
 """
 
 import logging
-import re
 from typing import Dict, List, Type, Optional
 from django.apps import apps
 from django.db import models

@@ -60,9 +60,7 @@ def get_current_tenant_with_membership_check(tenant_id, user, request=None):
 
         block_reason = check_tenant_sso_enforcement(request, tenant, user)
         if block_reason:
-            logger.warning(
-                f"Blocked tenant access: user={user.email} tenant={tenant.id} reason={block_reason}"
-            )
+            logger.warning(f"Blocked tenant access: user={user.email} tenant={tenant.id} reason={block_reason}")
             return None
 
     return tenant

@@ -34,7 +34,7 @@ class TestBackupScheduler:
             enabled=True,
             backup_interval_hours=24,
         )
-        
+
         assert _should_run_backup(config) is True
 
     def test_should_run_backup_interval_elapsed(self, tenant):
@@ -44,7 +44,7 @@ class TestBackupScheduler:
             enabled=True,
             backup_interval_hours=24,
         )
-        
+
         # Create a backup from 25 hours ago
         _create_backup_with_created_at(
             tenant=tenant,
@@ -63,7 +63,7 @@ class TestBackupScheduler:
             enabled=True,
             backup_interval_hours=24,
         )
-        
+
         # Create a backup from 1 hour ago
         _create_backup_with_created_at(
             tenant=tenant,
@@ -138,7 +138,7 @@ class TestBackupScheduler:
             enabled=True,
             backup_interval_hours=24,
         )
-        
+
         # Create old completed backup
         _create_backup_with_created_at(
             tenant=tenant,
@@ -147,7 +147,7 @@ class TestBackupScheduler:
             file_size=1000,
             created_at=timezone.now() - timedelta(hours=30),
         )
-        
+
         # Create recent completed backup
         _create_backup_with_created_at(
             tenant=tenant,
@@ -156,7 +156,7 @@ class TestBackupScheduler:
             file_size=1000,
             created_at=timezone.now() - timedelta(hours=1),
         )
-        
+
         # Should not run because recent backup is within interval
         assert _should_run_backup(config) is False
 
@@ -168,10 +168,10 @@ class TestBackupScheduler:
             enabled=True,
             backup_interval_hours=24,
         )
-        
+
         # No existing backup, so should trigger
         result = check_and_trigger_backups()
-        
+
         assert result['triggered'] == 1
         assert result['skipped'] == 0
         assert result['errors'] == 0
@@ -189,7 +189,7 @@ class TestBackupScheduler:
             enabled=True,
             backup_interval_hours=24,
         )
-        
+
         # Create recent backup
         _create_backup_with_created_at(
             tenant=tenant,
@@ -198,9 +198,9 @@ class TestBackupScheduler:
             file_size=1000,
             created_at=timezone.now() - timedelta(hours=1),
         )
-        
+
         result = check_and_trigger_backups()
-        
+
         assert result['triggered'] == 0
         assert result['skipped'] == 1
         assert result['errors'] == 0
@@ -214,9 +214,9 @@ class TestBackupScheduler:
             enabled=False,  # Disabled
             backup_interval_hours=24,
         )
-        
+
         result = check_and_trigger_backups()
-        
+
         assert result['triggered'] == 0
         assert result['skipped'] == 0
         assert result['errors'] == 0
@@ -227,19 +227,19 @@ class TestBackupScheduler:
         """Test that scheduler handles multiple tenants correctly."""
         tenant1 = tenant_factory()
         tenant2 = tenant_factory()
-        
+
         config1 = BackupConfig.objects.create(
             tenant=tenant1,
             enabled=True,
             backup_interval_hours=24,
         )
-        
+
         config2 = BackupConfig.objects.create(
             tenant=tenant2,
             enabled=True,
             backup_interval_hours=12,
         )
-        
+
         # Tenant1: no backup, should trigger
         # Tenant2: create recent backup, should skip
         _create_backup_with_created_at(
@@ -249,9 +249,9 @@ class TestBackupScheduler:
             file_size=1000,
             created_at=timezone.now() - timedelta(hours=1),
         )
-        
+
         result = check_and_trigger_backups()
-        
+
         assert result['triggered'] == 1
         assert result['skipped'] == 1
         assert result['errors'] == 0
@@ -270,12 +270,12 @@ class TestBackupScheduler:
             enabled=True,
             backup_interval_hours=24,
         )
-        
+
         # Make create_backup.delay raise an exception
         mock_create_backup.delay.side_effect = Exception("Task queue error")
-        
+
         result = check_and_trigger_backups()
-        
+
         assert result['triggered'] == 0
         assert result['skipped'] == 0
         assert result['errors'] == 1
@@ -287,7 +287,7 @@ class TestBackupScheduler:
             enabled=True,
             backup_interval_hours=24,
         )
-        
+
         # Create backup exactly 24 hours ago
         _create_backup_with_created_at(
             tenant=tenant,
@@ -296,7 +296,7 @@ class TestBackupScheduler:
             file_size=1000,
             created_at=timezone.now() - timedelta(hours=24),
         )
-        
+
         # Should run because interval has elapsed (>=)
         assert _should_run_backup(config) is True
 
@@ -307,7 +307,7 @@ class TestBackupScheduler:
             enabled=True,
             backup_interval_hours=24,
         )
-        
+
         # Create backup 23 hours and 59 minutes ago
         _create_backup_with_created_at(
             tenant=tenant,
@@ -316,6 +316,6 @@ class TestBackupScheduler:
             file_size=1000,
             created_at=timezone.now() - timedelta(hours=23, minutes=59),
         )
-        
+
         # Should not run because interval has not elapsed
         assert _should_run_backup(config) is False

@@ -3,7 +3,6 @@ Celery tasks for backup operations.
 """
 
 import hashlib
-import io
 import logging
 
 from celery import shared_task
@@ -129,6 +128,7 @@ def create_backup(self, tenant_id: str, config_id: str = None, scheduled_at: str
 
         # Build link to the backup settings page in the web app (where the user can decrypt & download)
         import os
+
         web_app_url = os.environ.get('VITE_WEB_APP_URL', 'http://localhost:3000')
         backup_settings_url = f"{web_app_url}/en/tenant/{tenant_id}/settings/backup"
 

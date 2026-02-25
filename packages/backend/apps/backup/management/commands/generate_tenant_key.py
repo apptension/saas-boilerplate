@@ -45,6 +45,7 @@ class Command(BaseCommand):
             if encryption_service.secrets_service.client:
                 # AWS: overwrite by storing a new key (store_secret does put if exists)
                 import base64
+
                 new_key = encryption_service._generate_key()
                 key_base64 = base64.b64encode(new_key).decode('utf-8')
                 encryption_service.secrets_service.store_secret(

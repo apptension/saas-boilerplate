@@ -38,7 +38,7 @@ def _resolve_tenant(info, tenant_id=None):
     tenant = Tenant.objects.filter(pk=tenant_pk).first()
     if tenant is None:
         raise PermissionDenied("Tenant not found")
-    user = getattr(info.context, 'user', None)
+    user = getattr(info.context, "user", None)
     if user and not TenantMembership.objects.filter(user=user, tenant=tenant, is_accepted=True).exists():
         raise PermissionDenied("You don't have access to this tenant")
     return tenant
@@ -70,7 +70,7 @@ class SSOConnectionType(DjangoObjectType):
             "connection_type",
             "status",
             "allowed_domains",
-            'enforce_sso',
+            "enforce_sso",
             "jit_provisioning_enabled",
             "group_role_mapping",
             # SAML
@@ -108,15 +108,6 @@ class SSOConnectionType(DjangoObjectType):
             api_url = getattr(settings, "API_URL", "http://localhost:5001")
             return f"{api_url}/api/sso/saml/{self.id}/metadata"
         return None
-
-    def resolve_sp_acs_url(self, info):
-        return self.sp_acs_url if self.is_saml else None
-
-    def resolve_sp_entity_id(self, info):
-        return self.sp_entity_id if self.is_saml else None
-
-    def resolve_oidc_callback_url(self, info):
-        return self.oidc_callback_url if self.is_oidc else None
 
     def resolve_sp_acs_url(self, info):
         return self.sp_acs_url if self.is_saml else None
@@ -367,10 +358,10 @@ class CreateSSOConnectionMutation(mutations.SerializerMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        tenant = _resolve_tenant(info, input.get('tenant_id') or input.get('tenantId'))
+        tenant = _resolve_tenant(info, input.get("tenant_id") or input.get("tenantId"))
         if tenant is None:
             raise PermissionDenied("Tenant context is required for this operation")
-        input['tenant_id'] = str(tenant.id)
+        input["tenant_id"] = str(tenant.id)
         return super().mutate_and_get_payload(root, info, **input)
 
     @classmethod
@@ -390,15 +381,15 @@ class UpdateSSOConnectionMutation(mutations.SerializerMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        if 'id' in input and input['id']:
+        if "id" in input and input["id"]:
             try:
-                _, pk = from_global_id(input['id'])
-                input['id'] = pk
+                _, pk = from_global_id(input["id"])
+                input["id"] = pk
             except (TypeError, ValueError):
                 pass  # Already a hashid or invalid, pass through
-        tenant = _resolve_tenant(info, input.get('tenant_id') or input.get('tenantId'))
+        tenant = _resolve_tenant(info, input.get("tenant_id") or input.get("tenantId"))
         if tenant is not None:
-            input['tenant_id'] = str(tenant.id)
+            input["tenant_id"] = str(tenant.id)
         return super().mutate_and_get_payload(root, info, **input)
 
     @classmethod
@@ -419,7 +410,7 @@ class DeleteSSOConnectionMutation(mutations.DeleteModelMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, id, **kwargs):
-        tenant_id = kwargs.get('tenant_id') or kwargs.get('tenantId')
+        tenant_id = kwargs.get("tenant_id") or kwargs.get("tenantId")
         tenant = _resolve_tenant(info, tenant_id)
         if tenant is None:
             raise PermissionDenied("Tenant context is required for this operation")
@@ -453,12 +444,12 @@ class ActivateSSOConnectionMutation(mutations.SerializerMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        tenant = _resolve_tenant(info, input.get('tenant_id') or input.get('tenantId'))
+        tenant = _resolve_tenant(info, input.get("tenant_id") or input.get("tenantId"))
         if tenant is None:
             raise PermissionDenied("Tenant context is required for this operation")
         _, pk = from_global_id(input["id"])
         input["id"] = pk
-        input['tenant_id'] = str(tenant.id)
+        input["tenant_id"] = str(tenant.id)
 
         serializer = cls._meta.serializer_class(data=input)
         serializer.is_valid(raise_exception=True)
@@ -533,53 +524,6 @@ class TestSSOConnectionPayload(graphene.ObjectType):
 
 
 class TestSSOConnectionMutation(graphene.Mutation):
-    """Test an SSO connection configuration."""
-
-    class Arguments:
-        id = graphene.ID(required=True)
-
-    result = graphene.Field(TestSSOConnectionPayload)
-
-    @classmethod
-    def mutate(cls, root, info, id):
-        from .services.connection_test import test_sso_connection
-
-        _, pk = from_global_id(id)
-        connection = get_object_or_404(
-            models.TenantSSOConnection,
-            pk=pk,
-            tenant=info.context.tenant,
-        )
-        result = test_sso_connection(connection)
-        return cls(
-            result={
-                "connectionId": result["connectionId"],
-                "connectionName": result["connectionName"],
-                "connectionType": result["connectionType"],
-                "overallStatus": result["overallStatus"],
-                "checks": result["checks"],
-                "testedAt": result["testedAt"],
-            }
-        )
-
-
-class TestSSOConnectionCheckType(graphene.ObjectType):
-    name = graphene.String()
-    status = graphene.String()
-    message = graphene.String()
-    details = GenericScalar()
-
-
-class TestSSOConnectionPayload(graphene.ObjectType):
-    connectionId = graphene.String()
-    connectionName = graphene.String()
-    connectionType = graphene.String()
-    overallStatus = graphene.String()
-    checks = graphene.List(TestSSOConnectionCheckType)
-    testedAt = graphene.String()
-
-
-class TestSSOConnectionMutation(graphene.Mutation):
     """Test an SSO connection configuration. Requires tenantId for tenant context."""
 
     class Arguments:
@@ -626,10 +570,10 @@ class CreateSCIMTokenMutation(mutations.SerializerMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        tenant = _resolve_tenant(info, input.get('tenant_id') or input.get('tenantId'))
+        tenant = _resolve_tenant(info, input.get("tenant_id") or input.get("tenantId"))
         if tenant is None:
             raise PermissionDenied("Tenant context is required for this operation")
-        input['tenant_id'] = str(tenant.id)
+        input["tenant_id"] = str(tenant.id)
 
         if "sso_connection_id" in input and input["sso_connection_id"]:
             _, pk = from_global_id(input["sso_connection_id"])
@@ -861,45 +805,6 @@ class DeletePasskeyMutation(mutations.DeleteModelMutation):
 
 
 class DeleteTenantPasskeyMutation(graphene.Mutation):
-    """Delete a passkey as tenant admin (for any tenant member)."""
-
-    class Arguments:
-        id = graphene.ID(required=True)
-
-    ok = graphene.Boolean()
-
-    @classmethod
-    def mutate(cls, root, info, id):
-        from apps.multitenancy.models import TenantMembership
-
-        _, pk = from_global_id(id)
-        passkey = get_object_or_404(models.UserPasskey, pk=pk, is_active=True)
-        tenant = info.context.tenant
-
-        if not TenantMembership.objects.filter(tenant=tenant, user=passkey.user).exists():
-            raise ValueError("Passkey does not belong to a tenant member")
-
-        passkey.is_active = False
-        passkey.save(update_fields=["is_active"])
-
-        from .services import get_client_ip
-
-        request = info.context._request if hasattr(info.context, "_request") else info.context
-        ip_address = get_client_ip(request) if hasattr(request, "META") else None
-
-        models.SSOAuditLog.log_event(
-            event_type=constants.SSOAuditEventType.PASSKEY_REMOVED,
-            tenant=tenant,
-            user=passkey.user,
-            description=f'Passkey "{passkey.name}" removed by admin {info.context.user.email}',
-            ip_address=ip_address,
-            metadata={"removed_by": info.context.user.email, "passkey_owner": passkey.user.email},
-        )
-
-        return cls(ok=True)
-
-
-class DeleteTenantPasskeyMutation(graphene.Mutation):
     """Delete a passkey as tenant admin (for any tenant member). Requires tenantId for tenant context."""
 
     class Arguments:
@@ -1109,15 +1014,15 @@ class TenantSSOQuery(graphene.ObjectType):
     @staticmethod
     @permission_classes(requires("security.view"))
     def resolve_sso_audit_logs(
-            root,
-            info,
-            event_type=None,
-            user_email=None,
-            success=None,
-            start_date=None,
-            end_date=None,
-            search=None,
-            **kwargs,
+        root,
+        info,
+        event_type=None,
+        user_email=None,
+        success=None,
+        start_date=None,
+        end_date=None,
+        search=None,
+        **kwargs,
     ):
         from datetime import datetime, timedelta
         from django.utils import timezone

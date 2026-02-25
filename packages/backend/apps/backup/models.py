@@ -5,7 +5,6 @@ Models for backup configuration, records, and restore tracking.
 import hashid_field
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.utils import timezone
 
 from common.models import TimestampedMixin, TenantDependentModelMixin
 

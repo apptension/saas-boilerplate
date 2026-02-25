@@ -264,10 +264,14 @@ class SCIMService:
         external_id = scim_user.get("externalId", user_name)
 
         # Check if user already exists (e.g. was deactivated when removed from IdP)
-        existing_link = SSOUserLink.objects.filter(
-            sso_connection__tenant=self.tenant,
-            idp_user_id=external_id,
-        ).select_related('user', 'user__profile').first()
+        existing_link = (
+            SSOUserLink.objects.filter(
+                sso_connection__tenant=self.tenant,
+                idp_user_id=external_id,
+            )
+            .select_related('user', 'user__profile')
+            .first()
+        )
 
         if existing_link:
             return self._reactivate_user(existing_link, scim_user, external_id, ip_address)

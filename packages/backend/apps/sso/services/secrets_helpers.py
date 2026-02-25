@@ -20,12 +20,12 @@ def store_saml_certificate(
 ) -> Optional[str]:
     """
     Store a SAML IdP certificate.
-    
+
     Args:
         tenant_id: The tenant identifier
         connection_id: The SSO connection identifier
         certificate: The certificate value
-    
+
     Returns:
         The ARN of the stored secret, or None if unavailable
     """
@@ -46,13 +46,13 @@ def store_sp_signing_key(
 ) -> Optional[str]:
     """
     Store SP signing key pair (private key + certificate).
-    
+
     Args:
         tenant_id: The tenant identifier
         connection_id: The SSO connection identifier
         private_key: The private key value
         certificate: The certificate value
-    
+
     Returns:
         The ARN of the stored secret, or None if unavailable
     """
@@ -74,10 +74,10 @@ def store_sp_signing_key(
 def get_sp_signing_key(secret_arn: str) -> Optional[Dict[str, str]]:
     """
     Get SP signing key pair.
-    
+
     Args:
         secret_arn: The ARN of the secret
-    
+
     Returns:
         Dictionary with 'private_key' and 'certificate' keys, or None if not found
     """
@@ -95,12 +95,12 @@ def store_oidc_client_secret(
 ) -> Optional[str]:
     """
     Store an OIDC client secret.
-    
+
     Args:
         tenant_id: The tenant identifier
         connection_id: The SSO connection identifier
         client_secret: The client secret value
-    
+
     Returns:
         The ARN of the stored secret, or None if unavailable
     """
