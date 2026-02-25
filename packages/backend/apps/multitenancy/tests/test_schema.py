@@ -3,8 +3,9 @@ import os
 from graphql_relay import to_global_id
 
 from apps.notifications.models import Notification
-from ..constants import TenantType, TenantUserRole, Notification as NotificationConstant
-from ..models import TenantMembership
+from ..constants import TenantType, TenantUserRole, Notification as NotificationConstant, SystemRoleType
+from ..models import TenantMembership, TenantMembershipRole, OrganizationRole
+from ..permissions import create_system_roles_for_tenant
 
 
 pytestmark = pytest.mark.django_db
@@ -638,6 +639,7 @@ class TestUpdateTenantMembershipMutation:
                 "role": "MEMBER",
             },
         )
+        assert "errors" in executed, f"Admin cannot demote self, expected permission_denied: {executed}"
         assert executed["errors"][0]["message"] == "permission_denied"
 
     def test_update_tenant_membership_with_invalid_id(
@@ -670,6 +672,7 @@ class TestUpdateTenantMembershipMutation:
                 "role": "ADMIN",
             },
         )
+        assert "errors" in executed, f"Cannot change roles in DEFAULT tenant, expected error: {executed}"
         assert executed["errors"][0]["message"] == "GraphQlValidationError"
 
     def test_update_organization_tenant_membership_last_owner(
@@ -677,6 +680,10 @@ class TestUpdateTenantMembershipMutation:
     ):
         tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
         tenant_membership = tenant_membership_factory(tenant=tenant, user=user, role=TenantUserRole.OWNER)
+        TenantMembershipRole.objects.filter(membership=tenant_membership).delete()
+        create_system_roles_for_tenant(tenant)
+        admin_role = OrganizationRole.objects.get(tenant=tenant, system_role_type=SystemRoleType.ADMIN)
+        TenantMembershipRole.objects.create(membership=tenant_membership, role=admin_role, assigned_by=user)
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.OWNER)
         executed = self.mutate(
@@ -687,6 +694,7 @@ class TestUpdateTenantMembershipMutation:
                 "role": "ADMIN",
             },
         )
+        assert "errors" in executed, f"Expected last-owner demotion to fail: {executed}"
         assert executed["errors"][0]["message"] == "GraphQlValidationError"
 
     def test_update_tenant_membership_with_different_tenant_id(

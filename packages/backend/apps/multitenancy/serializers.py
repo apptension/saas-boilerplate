@@ -338,7 +338,23 @@ class UpdateTenantMembershipSerializer(serializers.ModelSerializer):
         if not membership:
             raise exceptions.NotFound("Membership not found.")
 
+        if tenant and tenant.type == TenantType.DEFAULT:
+            raise exceptions.ValidationError("Cannot change roles in a personal tenant.")
+
         new_role = attrs.get("role")
+
+        if acting_user and membership.user_id == acting_user.id:
+            acting_membership = models.TenantMembership.objects.filter(
+                user=acting_user, tenant=tenant, is_accepted=True
+            ).first()
+            is_acting_user_owner = acting_membership and (
+                acting_membership.role == TenantUserRole.OWNER
+                or models.TenantMembershipRole.objects.filter(
+                    membership=acting_membership, role__system_role_type=SystemRoleType.OWNER
+                ).exists()
+            )
+            if not is_acting_user_owner:
+                raise exceptions.PermissionDenied("permission_denied")
 
         # Check if target is currently an owner (legacy OR RBAC)
         is_currently_legacy_owner = membership.role == TenantUserRole.OWNER

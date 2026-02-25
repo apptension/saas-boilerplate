@@ -379,3 +379,22 @@ pnpm nx run webapp:build 2>&1 | tail -10
 5. **Not sure?** → Full preflight
 
 See `.cursor/rules/ci-preflight.mdc` for the full preflight contract.
+
+## 16. Backend: No Inline Imports
+
+**Place all Python imports at the top of the file.** Avoid inline imports inside functions or methods.
+
+```python
+# ❌ WRONG
+def test_something(self):
+    from ..models import TenantMembershipRole
+    ...
+
+# ✅ CORRECT
+from ..models import TenantMembership, TenantMembershipRole
+
+def test_something(self):
+    ...
+```
+
+See `.cursor/rules/backend.mdc` for full backend patterns.

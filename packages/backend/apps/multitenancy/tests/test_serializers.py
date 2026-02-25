@@ -206,6 +206,7 @@ class TestUpdateTenantMembershipSerializerSecurity:
         owner_membership = tenant_membership_factory(
             user=user, tenant=tenant, role=TenantUserRole.OWNER, is_accepted=True
         )
+        TenantMembershipRole.objects.filter(membership=owner_membership).delete()
 
         request = Mock(tenant=tenant, user=user)
         data = {'id': str(owner_membership.pk), 'role': TenantUserRole.MEMBER}

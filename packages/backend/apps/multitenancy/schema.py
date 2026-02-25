@@ -1363,7 +1363,10 @@ class TenantOwnerMutation(graphene.ObjectType):
     update_tenant = permission_classes(requires("org.settings.edit"))(UpdateTenantMutation.Field())
 
     # Delete organization - org.delete (owner-only)
-    delete_tenant = permission_classes(policies.IsTenantOwnerAccess)(DeleteTenantMutation.Field())
+    delete_tenant = permission_classes(
+        policies.IsTenantMemberAccess,
+        requires("org.delete"),
+    )(DeleteTenantMutation.Field())
 
     # Member invitations - members.invite
     create_tenant_invitation = permission_classes(requires("members.invite"))(CreateTenantInvitationMutation.Field())

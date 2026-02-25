@@ -7,16 +7,18 @@ from . import models
 
 def send_new_entry_created_notification(entry: models.CrudDemoItem):
     tenant = entry.tenant
+    creator = entry.created_by
     for owner in tenant.owners:
-        sender.send_notification(
-            user=owner,
-            type=constants.Notification.CRUD_ITEM_CREATED.value,
-            data={
-                "id": to_global_id("CrudDemoItemType", str(entry.id)),
-                "name": entry.name,
-            },
-            issuer=entry.created_by,
-        )
+        if owner and owner != creator:
+            sender.send_notification(
+                user=owner,
+                type=constants.Notification.CRUD_ITEM_CREATED.value,
+                data={
+                    "id": to_global_id("CrudDemoItemType", str(entry.id)),
+                    "name": entry.name,
+                },
+                issuer=entry.created_by,
+            )
 
 
 def send_entry_updated_notification(entry: models.CrudDemoItem):

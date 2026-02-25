@@ -434,12 +434,12 @@ class TestOwnerDemotionProtection:
         """
         from apps.multitenancy.serializers import UpdateTenantMembershipSerializer
 
-        tenant = tenant_factory()
+        tenant = tenant_factory(type=TenantType.ORGANIZATION)
         owner_membership = tenant_membership_factory(
             user=user, tenant=tenant, role=TenantUserRole.OWNER, is_accepted=True
         )
+        TenantMembershipRole.objects.filter(membership=owner_membership).delete()
 
-        # Create a mock request context
         request = MagicMock()
         request.tenant = tenant
         request.user = user
@@ -448,7 +448,6 @@ class TestOwnerDemotionProtection:
             data={'id': str(owner_membership.pk), 'role': TenantUserRole.MEMBER}, context={'request': request}
         )
 
-        # Should fail validation
         assert not serializer.is_valid()
         assert "at least one owner" in str(serializer.errors).lower()
 
@@ -461,7 +460,7 @@ class TestOwnerDemotionProtection:
         from apps.multitenancy.serializers import UpdateTenantMembershipSerializer
 
         owner2 = user_factory(email="owner2@test.com")
-        tenant = tenant_factory()
+        tenant = tenant_factory(type=TenantType.ORGANIZATION)
 
         tenant_membership_factory(user=user, tenant=tenant, role=TenantUserRole.OWNER, is_accepted=True)
         owner2_membership = tenant_membership_factory(
