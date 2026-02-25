@@ -50,7 +50,7 @@ class Command(BaseCommand):
                 key_base64 = base64.b64encode(new_key).decode('utf-8')
                 encryption_service.secrets_service.store_secret(
                     tenant_id=tenant_id,
-                    secret_type='encryption_key',
+                    secret_type='encryption_key',  # noqa: S106
                     secret_value=key_base64,
                     description=f"Backup encryption key for tenant {tenant_id}",
                 )

@@ -83,7 +83,7 @@ def get_category_display(value: str) -> Tuple[str, str]:
 
     value_lower = value.lower()
     for v, label in PermissionCategory.choices:
-        if v == value_lower or v == value:
+        if v in (value_lower, value):
             return (label, '')
     return (value, '')
 

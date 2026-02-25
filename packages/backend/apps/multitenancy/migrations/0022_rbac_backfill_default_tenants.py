@@ -101,7 +101,7 @@ def assign_rbac_roles_to_memberships_without_roles(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('multitenancy', '0021_add_management_roles_permissions'),
+        ('multitenancy', '0021_remove_organizationrole_unique_system_role_per_tenant_and_more'),
     ]
 
     operations = [

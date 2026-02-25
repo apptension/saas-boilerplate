@@ -338,7 +338,7 @@ class TriggerBackupMutation(graphene.Mutation):
                 config_id = None
 
             # Trigger backup task
-            task = create_backup.delay(
+            create_backup.delay(
                 tenant_id=decoded_tenant_id,
                 config_id=config_id,
             )
@@ -486,7 +486,10 @@ class DownloadBackupDecryptedMutation(graphene.Mutation):
                 logger.error(f"Backup file does not exist: {backup.file_path}")
                 return cls(
                     ok=False,
-                    error=f"Backup file not found at {backup.file_path}. The file may have been deleted or never saved.",
+                    error=(
+                        f"Backup file not found at {backup.file_path}. "
+                        "The file may have been deleted or never saved."
+                    ),
                 )
 
             try:

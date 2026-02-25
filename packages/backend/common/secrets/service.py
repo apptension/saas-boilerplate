@@ -5,8 +5,9 @@ This is a shared service that can be used by any module (SSO, backup, etc.)
 to store and retrieve secrets from AWS Secrets Manager.
 """
 
+import json
 import logging
-from typing import Optional
+from typing import Dict, Optional
 
 import boto3
 from botocore.exceptions import ClientError

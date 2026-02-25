@@ -46,7 +46,10 @@ class BackupConfig(TimestampedMixin, TenantDependentModelMixin):
 
     selected_models = models.JSONField(
         default=list,
-        help_text="Optional: Specific models to include (format: 'app_label.ModelName'). If empty, all models in selected_modules are included.",
+        help_text=(
+            "Optional: Specific models to include (format: 'app_label.ModelName'). "
+            "If empty, all models in selected_modules are included."
+        ),
     )
 
     excluded_models = models.JSONField(

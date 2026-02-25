@@ -153,6 +153,11 @@ class JITProvisioningService:
 
             # Create or update tenant membership
             role = self.connection.get_role_for_groups(groups)
+            membership = TenantMembership.objects.filter(
+                user=user,
+                tenant=self.tenant,
+            ).first()
+            old_role = membership.role if membership else None
             self._ensure_tenant_membership(user, role)
 
             event_type = SSOAuditEventType.USER_PROVISIONED if is_new else SSOAuditEventType.USER_UPDATED
@@ -242,7 +247,7 @@ class JITProvisioningService:
                     event_type=SSOAuditEventType.GROUP_MAPPING_APPLIED,
                     user=user,
                     description=f"Role updated to {role} based on group mapping",
-                    metadata={"groups": groups, "old_role": membership.role, "new_role": role},
+                    metadata={"groups": groups, "old_role": old_role, "new_role": role},
                 )
         else:
             # Even if legacy role matches, ensure RBAC role exists

@@ -8,7 +8,8 @@ field values, and applies the chosen conflict strategy.
 
 import json
 import logging
-import xml.etree.ElementTree as ET
+
+import defusedxml.ElementTree as ET
 from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
@@ -190,10 +191,12 @@ class RestoreService:
 
         for model_class in models_set:
             for field in model_class._meta.get_fields():
-                if isinstance(field, models.ForeignKey) and field.related_model in models_set:
-                    # This model depends on the related model (parent must come first)
-                    if field.related_model != model_class:  # Skip self-referential FKs
-                        dependencies[model_class].add(field.related_model)
+                if (
+                    isinstance(field, models.ForeignKey)
+                    and field.related_model in models_set
+                    and field.related_model != model_class
+                ):
+                    dependencies[model_class].add(field.related_model)
 
         # Kahn's algorithm
         # In-degree: how many dependencies each model has within our set
@@ -486,7 +489,8 @@ class RestoreService:
                         return 'skipped', {}
                     if self.conflict_strategy == self.CONFLICT_FAIL:
                         raise RestoreConflictError(
-                            f"Unique constraint violation: {model_name} with pk={pk_value} conflicts with existing record"
+                            f"Unique constraint violation: {model_name} with pk={pk_value} "
+                            "conflicts with existing record"
                         )
                     if self.conflict_strategy == self.CONFLICT_UPDATE:
                         existing_by_unique = None
@@ -572,10 +576,10 @@ class RestoreService:
         if isinstance(field, models.BooleanField):
             return text.lower() in ('true', '1', 'yes')
 
-        if isinstance(field, models.IntegerField) or isinstance(field, models.BigIntegerField):
+        if isinstance(field, (models.IntegerField, models.BigIntegerField)):
             return int(text)
 
-        if isinstance(field, models.PositiveIntegerField) or isinstance(field, models.PositiveBigIntegerField):
+        if isinstance(field, (models.PositiveIntegerField, models.PositiveBigIntegerField)):
             return int(text)
 
         if isinstance(field, models.FloatField):

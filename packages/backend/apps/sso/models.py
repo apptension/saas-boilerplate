@@ -43,7 +43,10 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
     # Enforce SSO - block password login for users from allowed domains
     enforce_sso = models.BooleanField(
         default=False,
-        help_text="When enabled, users from allowed domains must use SSO to access this tenant. Password login will not grant access.",
+        help_text=(
+            "When enabled, users from allowed domains must use SSO to access this tenant. "
+            "Password login will not grant access."
+        ),
     )
 
     # JIT Provisioning settings

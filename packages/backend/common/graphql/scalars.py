@@ -33,16 +33,7 @@ def _normalize_decimal_value(value):
         return None
 
     try:
-        # Convert to Decimal first if needed
-        if not isinstance(value, Decimal):
-            # Convert to string first to avoid floating-point precision loss
-            if isinstance(value, (int, float)):
-                # Use string conversion - this is critical to avoid precision issues
-                decimal_value = Decimal(str(value))
-            else:
-                decimal_value = Decimal(str(value))
-        else:
-            decimal_value = value
+        decimal_value = Decimal(str(value)) if not isinstance(value, Decimal) else value
 
         # Convert to string and back to Decimal to get a clean representation
         # This removes floating-point artifacts by re-parsing the string representation

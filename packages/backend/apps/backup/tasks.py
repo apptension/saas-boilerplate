@@ -136,7 +136,10 @@ def create_backup(self, tenant_id: str, config_id: str = None, scheduled_at: str
         # Filter out empty strings and None values
         valid_recipient_ids = [rid for rid in (backup_config.email_recipients or []) if rid] if backup_config else []
         logger.info(
-            f"Backup email check: config={backup_config is not None}, valid_recipient_ids={valid_recipient_ids}, count={len(valid_recipient_ids)}"
+            "Backup email check: config=%s, valid_recipient_ids=%s, count=%s",
+            backup_config is not None,
+            valid_recipient_ids,
+            len(valid_recipient_ids),
         )
 
         if backup_config and valid_recipient_ids:
@@ -164,7 +167,9 @@ def create_backup(self, tenant_id: str, config_id: str = None, scheduled_at: str
                     logger.error(f"Failed to send backup email to {recipient.email}: {e}", exc_info=True)
         else:
             logger.info(
-                f"Skipping email notifications: config={backup_config is not None}, valid_recipient_ids={valid_recipient_ids}"
+                "Skipping email notifications: config=%s, valid_recipient_ids=%s",
+                backup_config is not None,
+                valid_recipient_ids,
             )
 
         # Create in-app notification for all tenant members with backup view permission
