@@ -16,11 +16,9 @@ import {
 } from 'lucide-react';
 import React, { forwardRef, useCallback, useRef, useImperativeHandle, useState } from 'react';
 import { useIntl } from 'react-intl';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
-import { AtSign } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { renderMarkdownWithMentions } from '../../utils/mentions';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 export interface MarkdownEditorProps {
@@ -80,49 +78,6 @@ const insertAtCursor = (
     const newEnd = newStart + textToWrap.length;
     textarea.setSelectionRange(newStart, newEnd);
   });
-};
-
-/**
- * Render mentions in text (format: @[userId:userName])
- */
-const renderMentions = (text: string) => {
-  const mentionPattern = /@\[([^\]]+)\]/g;
-  const parts: (string | React.ReactElement)[] = [];
-  let lastIndex = 0;
-  let match;
-  let key = 0;
-
-  while ((match = mentionPattern.exec(text)) !== null) {
-    // Add text before mention
-    if (match.index > lastIndex) {
-      parts.push(text.substring(lastIndex, match.index));
-    }
-
-    // Extract userName from @[userId:userName]
-    const mentionContent = match[1];
-    const colonIndex = mentionContent.indexOf(':');
-    const userName = colonIndex > 0 ? mentionContent.substring(colonIndex + 1) : mentionContent;
-
-    // Add mention badge
-    parts.push(
-      <span
-        key={key++}
-        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium"
-      >
-        <AtSign className="h-3 w-3" />
-        {userName}
-      </span>
-    );
-
-    lastIndex = match.index + match[0].length;
-  }
-
-  // Add remaining text
-  if (lastIndex < text.length) {
-    parts.push(text.substring(lastIndex));
-  }
-
-  return parts.length > 0 ? <>{parts}</> : text;
 };
 
 export const MarkdownEditor = forwardRef<HTMLTextAreaElement, MarkdownEditorProps>(
@@ -381,40 +336,7 @@ export const MarkdownEditor = forwardRef<HTMLTextAreaElement, MarkdownEditorProp
                 )}
               >
                 {value ? (
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      p: ({ children }) => {
-                        // Convert children to string for mention processing
-                        const textContent = Array.isArray(children)
-                          ? children.map((child) => (typeof child === 'string' ? child : String(child))).join('')
-                          : String(children || '');
-                        return <p>{renderMentions(textContent)}</p>;
-                      },
-                      table: ({ children }) => (
-                        <div 
-                          className="overflow-x-auto my-3 rounded-lg border"
-                          style={{
-                            scrollbarWidth: 'thin',
-                            scrollbarColor: 'hsl(var(--muted-foreground) / 0.3) transparent',
-                          }}
-                        >
-                          <table className="min-w-full divide-y divide-border text-xs whitespace-nowrap">{children}</table>
-                        </div>
-                      ),
-                      thead: ({ children }) => <thead className="bg-muted/50">{children}</thead>,
-                      tbody: ({ children }) => <tbody className="divide-y divide-border">{children}</tbody>,
-                      tr: ({ children }) => <tr className="hover:bg-muted/30 transition-colors">{children}</tr>,
-                      th: ({ children }) => (
-                        <th className="px-2.5 py-1.5 text-left text-xs font-semibold text-foreground whitespace-nowrap">{children}</th>
-                      ),
-                      td: ({ children }) => (
-                        <td className="px-2.5 py-1.5 text-xs text-muted-foreground">{children}</td>
-                      ),
-                    }}
-                  >
-                    {value}
-                  </ReactMarkdown>
+                  renderMarkdownWithMentions(value)
                 ) : (
                   <p className="text-muted-foreground/60">{placeholder || 'Preview'}</p>
                 )}
