@@ -9,4 +9,5 @@ export const Profile = asyncComponent(() => import('../routes/profile'));
 export const ConfirmEmail = asyncComponent(() => import('../routes/auth/confirmEmail'));
 export const SSOCallback = asyncComponent(() => import('../routes/auth/ssoCallback'));
 export const SSOError = asyncComponent(() => import('../routes/auth/ssoError'));
+export const SSOLogin = asyncComponent(() => import('../routes/auth/ssoLogin'));
 //<-- IMPORT ROUTE -->

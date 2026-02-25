@@ -19,6 +19,8 @@ logger = logging.getLogger(__name__)
 @receiver(post_save, sender=TenantSSOConnection)
 def on_sso_connection_saved(sender, instance, created, **kwargs):
     """Handle SSO connection creation/updates."""
+    update_fields = kwargs.get('update_fields') or set()
+
     if created:
         SSOAuditLog.log_event(
             event_type=SSOAuditEventType.IDP_CONFIG_CREATED,
@@ -26,27 +28,32 @@ def on_sso_connection_saved(sender, instance, created, **kwargs):
             sso_connection=instance,
             description=f'SSO connection "{instance.name}" created',
         )
-    # Check for status changes
-    elif instance.status == SSOConnectionStatus.ACTIVE:
-        SSOAuditLog.log_event(
-            event_type=SSOAuditEventType.IDP_CONFIG_ACTIVATED,
-            tenant=instance.tenant,
-            sso_connection=instance,
-            description=f'SSO connection "{instance.name}" activated',
-        )
-
-        # Send notification to tenant owners
-        _notify_sso_status_change(instance, activated=True)
-
-    elif instance.status == SSOConnectionStatus.INACTIVE:
-        SSOAuditLog.log_event(
-            event_type=SSOAuditEventType.IDP_CONFIG_DEACTIVATED,
-            tenant=instance.tenant,
-            sso_connection=instance,
-            description=f'SSO connection "{instance.name}" deactivated',
-        )
-
-        _notify_sso_status_change(instance, activated=False)
+        if instance.status == SSOConnectionStatus.ACTIVE:
+            SSOAuditLog.log_event(
+                event_type=SSOAuditEventType.IDP_CONFIG_ACTIVATED,
+                tenant=instance.tenant,
+                sso_connection=instance,
+                description=f'SSO connection "{instance.name}" activated',
+            )
+            _notify_sso_status_change(instance, activated=True)
+    # Only log/notify on status change (skip when only updating last_login_at, login_count, etc.)
+    elif 'status' in update_fields:
+        if instance.status == SSOConnectionStatus.ACTIVE:
+            SSOAuditLog.log_event(
+                event_type=SSOAuditEventType.IDP_CONFIG_ACTIVATED,
+                tenant=instance.tenant,
+                sso_connection=instance,
+                description=f'SSO connection "{instance.name}" activated',
+            )
+            _notify_sso_status_change(instance, activated=True)
+        elif instance.status == SSOConnectionStatus.INACTIVE:
+            SSOAuditLog.log_event(
+                event_type=SSOAuditEventType.IDP_CONFIG_DEACTIVATED,
+                tenant=instance.tenant,
+                sso_connection=instance,
+                description=f'SSO connection "{instance.name}" deactivated',
+            )
+            _notify_sso_status_change(instance, activated=False)
 
 
 @receiver(pre_delete, sender=TenantSSOConnection)
@@ -71,7 +78,7 @@ def on_passkey_created(sender, instance, created, **kwargs):
 def _notify_sso_status_change(connection, activated: bool):
     """Send notification about SSO status change."""
     try:
-        from apps.notifications.sender import NotificationSender
+        from apps.notifications import sender
 
         notification_type = (
             Notification.SSO_CONNECTION_ACTIVATED.value if activated else Notification.SSO_CONNECTION_DEACTIVATED.value
@@ -79,7 +86,7 @@ def _notify_sso_status_change(connection, activated: bool):
 
         # Notify tenant owners
         for owner in connection.tenant.owners:
-            NotificationSender.send_notification(
+            sender.send_notification(
                 user=owner,
                 type=notification_type,
                 data={
@@ -96,9 +103,9 @@ def _notify_sso_status_change(connection, activated: bool):
 def _notify_passkey_registered(passkey):
     """Send notification about new passkey registration."""
     try:
-        from apps.notifications.sender import NotificationSender
+        from apps.notifications import sender
 
-        NotificationSender.send_notification(
+        sender.send_notification(
             user=passkey.user,
             type=Notification.PASSKEY_REGISTERED.value,
             data={

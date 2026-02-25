@@ -28,6 +28,7 @@ export const NO_NAVIGATION_ROUTES = [
   RoutesConfig.confirmEmail,
   RoutesConfig.passwordReset.index,
   RoutesConfig.passwordReset.confirm,
+  RoutesConfig.ssoLogin,
   RoutesConfig.ssoCallback,
   RoutesConfig.ssoError,
 ].map(getLocalePath);

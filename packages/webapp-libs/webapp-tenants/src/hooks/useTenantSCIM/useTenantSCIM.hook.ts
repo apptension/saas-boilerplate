@@ -2,8 +2,8 @@ import { useQuery, useMutation } from '@apollo/client/react';
 import { gql } from '@sb/webapp-api-client/graphql';
 
 const SCIM_TOKENS_QUERY = gql(`
-  query TenantSCIMTokensQuery {
-    scimTokens(first: 50) {
+  query TenantSCIMTokensQuery($tenantId: ID!) {
+    scimTokens(tenantId: $tenantId, first: 50) {
       edges {
         node {
           id
@@ -35,8 +35,8 @@ const CREATE_SCIM_TOKEN = gql(`
 `);
 
 const REVOKE_SCIM_TOKEN = gql(`
-  mutation TenantSecurityRevokeSCIMToken($id: ID!) {
-    revokeScimToken(id: $id) {
+  mutation TenantSecurityRevokeSCIMToken($id: ID!, $tenantId: ID!) {
+    revokeScimToken(id: $id, tenantId: $tenantId) {
       ok
     }
   }
@@ -44,6 +44,7 @@ const REVOKE_SCIM_TOKEN = gql(`
 
 export function useTenantSCIM(tenantId: string | undefined) {
   const { data, loading, error, refetch } = useQuery(SCIM_TOKENS_QUERY, {
+    variables: { tenantId: tenantId ?? '' },
     skip: !tenantId,
   });
 

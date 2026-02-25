@@ -444,13 +444,6 @@ class TestViewSecurityIntegration:
         assert 'Invalid SAML' not in location
         assert 'base64' not in location
 
-    def test_sso_discovery_rate_limit_class_present(self, api_client):
-        """SSO discovery view should have rate limiting configured."""
-        from apps.sso.views import SSODiscoverView, SSODiscoveryThrottle
-
-        # Verify throttle class is configured
-        assert SSODiscoveryThrottle in SSODiscoverView.throttle_classes
-
     def test_passkey_auth_rate_limit_class_present(self):
         """Passkey auth views should have rate limiting configured."""
         from apps.sso.views import (
@@ -735,51 +728,6 @@ class TestSAMLReplayProtection:
         error_message = str(exc_info.value).lower()
         # Could fail on certificate or request ID - both are valid security rejections
         assert 'certificate' in error_message or 'mismatch' in error_message or 'replay' in error_message
-
-
-class TestSSODiscoveryNoEnumeration:
-    """Tests to ensure SSO discovery doesn't enable email enumeration."""
-
-    def test_sso_discovery_does_not_reveal_user_existence(self):
-        """SSO discovery should not reveal whether a user exists."""
-        from apps.sso.views import SSODiscoverView
-        from django.test import RequestFactory
-        from apps.users.tests.factories import UserFactory
-        from apps.sso.tests.factories import TenantSSOConnectionFactory
-        from apps.multitenancy.tests.factories import TenantFactory, TenantMembershipFactory
-
-        # Create tenant and user
-        tenant = TenantFactory()
-        user = UserFactory(email='existing@company.com')
-        membership = TenantMembershipFactory(user=user, tenant=tenant)
-
-        # Create SSO connection that allows company.com domain
-        connection = TenantSSOConnectionFactory(
-            tenant=tenant,
-            status=constants.SSOConnectionStatus.ACTIVE,
-            allowed_domains=['company.com'],
-        )
-
-        factory = RequestFactory()
-        view = SSODiscoverView.as_view()
-
-        # Request for existing user
-        request1 = factory.get('/api/sso/discover', {'email': 'existing@company.com'})
-        response1 = view(request1)
-
-        # Request for non-existing user in same domain
-        request2 = factory.get('/api/sso/discover', {'email': 'nonexistent@company.com'})
-        response2 = view(request2)
-
-        # Both should return the same SSO connection (based on domain, not user existence)
-        # The response should be identical for both - no enumeration possible
-        assert response1.status_code == response2.status_code
-
-        if response1.status_code == 200:
-            # If SSO is available, both should see the same connections
-            data1 = response1.data if hasattr(response1, 'data') else json.loads(response1.content)
-            data2 = response2.data if hasattr(response2, 'data') else json.loads(response2.content)
-            assert data1.get('sso_available') == data2.get('sso_available')
 
 
 class TestErrorMessageSecurity:

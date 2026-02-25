@@ -22,6 +22,8 @@ from django_ratelimit.decorators import ratelimit
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework import status
 
@@ -32,6 +34,7 @@ from apps.multitenancy.models import Tenant, TenantMembership
 from apps.multitenancy.constants import TenantUserRole
 
 from .models import TenantSSOConnection, SCIMToken, SSOAuditLog
+from .renderers import SCIMRenderer, SCIMParser
 from .constants import SSOConnectionStatus, SSOAuditEventType
 from .services import SAMLService, OIDCService, SCIMService, WebAuthnService
 from .services.scim import SCIMError
@@ -230,7 +233,7 @@ class SAMLACSView(View):
             except Exception:
                 session_id = None
 
-            tokens = create_jwt_tokens(user)
+            tokens = create_jwt_tokens(user, auth_method='sso')
 
             # Build redirect URL with open redirect protection
             web_app_url = getattr(settings, "WEB_APP_URL", "http://localhost:3000")
@@ -423,7 +426,7 @@ class OIDCCallbackView(View):
             except Exception:
                 session_id = None
 
-            tokens = create_jwt_tokens(user)
+            tokens = create_jwt_tokens(user, auth_method='sso')
 
             # Build redirect URL with open redirect protection
             web_app_url = getattr(settings, "WEB_APP_URL", "http://localhost:3000")
@@ -514,8 +517,11 @@ def scim_auth_required(view_func):
 class SCIMUsersView(APIView):
     """SCIM /Users endpoint with secure input validation."""
 
+    authentication_classes = []  # SCIM uses Bearer token (SCIM token), not JWT
     permission_classes = [AllowAny]  # Auth handled by decorator
     throttle_classes = [SCIMApiThrottle]
+    renderer_classes = [SCIMRenderer, JSONRenderer]
+    parser_classes = [SCIMParser, JSONParser]
 
     @scim_auth_required
     def get(self, request):
@@ -561,7 +567,10 @@ class SCIMUsersView(APIView):
 class SCIMUserDetailView(APIView):
     """SCIM /Users/{id} endpoint."""
 
+    authentication_classes = []  # SCIM uses Bearer token (SCIM token), not JWT
     permission_classes = [AllowAny]
+    renderer_classes = [SCIMRenderer, JSONRenderer]
+    parser_classes = [SCIMParser, JSONParser]
 
     @scim_auth_required
     def get(self, request, user_id):
@@ -622,7 +631,10 @@ class SCIMUserDetailView(APIView):
 class SCIMGroupsView(APIView):
     """SCIM /Groups endpoint."""
 
+    authentication_classes = []  # SCIM uses Bearer token (SCIM token), not JWT
     permission_classes = [AllowAny]
+    renderer_classes = [SCIMRenderer, JSONRenderer]
+    parser_classes = [SCIMParser, JSONParser]
 
     @scim_auth_required
     def get(self, request):
@@ -636,7 +648,10 @@ class SCIMGroupsView(APIView):
 class SCIMGroupDetailView(APIView):
     """SCIM /Groups/{id} endpoint."""
 
+    authentication_classes = []  # SCIM uses Bearer token (SCIM token), not JWT
     permission_classes = [AllowAny]
+    renderer_classes = [SCIMRenderer, JSONRenderer]
+    parser_classes = [SCIMParser, JSONParser]
 
     @scim_auth_required
     def get(self, request, group_id):
@@ -761,9 +776,14 @@ class PasskeyAuthenticationVerifyView(APIView):
             except Exception:
                 session_id = None
 
-            tokens = create_jwt_tokens(user)
+            tokens = create_jwt_tokens(user, auth_method='passkey')
 
-            response = Response({"success": True})
+            # Return tokens in body for localStorage (Safari/mobile fallback when cookies blocked)
+            response = Response({
+                'success': True,
+                'access': tokens['access'],
+                'refresh': tokens['refresh'],
+            })
             auth_cookies = {
                 settings.ACCESS_TOKEN_COOKIE: tokens["access"],
                 settings.REFRESH_TOKEN_COOKIE: tokens["refresh"],
@@ -862,757 +882,14 @@ def is_owner_or_admin(membership):
     return has_admin_role
 
 
-def has_sso_permission(user, tenant, permission_code="security.sso.manage"):
-    """
-    Check if user has SSO management permission via the RBAC permission system.
-
-    This is a convenience wrapper around the multitenancy permission system.
-    Falls back to is_owner_or_admin for legacy compatibility.
-    """
-    from apps.multitenancy.models import user_has_permission, TenantMembership
-
-    # First check RBAC permissions
-    if user_has_permission(user, tenant, permission_code):
-        return True
-
-    # Fall back to legacy owner/admin check for backward compatibility
-    membership = TenantMembership.objects.filter(user=user, tenant=tenant, is_accepted=True).first()
-    return bool(membership and is_owner_or_admin(membership))
-
-
-def get_tenant_and_check_access(request, tenant_id, require_admin=False):
-    """
-    Helper to get tenant and check user access.
-    Returns (tenant, membership, error_response).
-    """
-    # Decode GraphQL global ID if needed
-    decoded_id = decode_tenant_id(tenant_id)
-
-    try:
-        tenant = Tenant.objects.get(pk=decoded_id)
-    except Tenant.DoesNotExist:
-        return None, None, Response({"error": "Tenant not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    membership = TenantMembership.objects.filter(
-        tenant=tenant,
-        user=request.user,
-    ).first()
-
-    if not membership:
-        return None, None, Response({"error": "Access denied"}, status=status.HTTP_403_FORBIDDEN)
-
-    if require_admin and not is_owner_or_admin(membership):
-        return (
-            None,
-            None,
-            Response({"error": "Only owners and admins can manage SSO connections"}, status=status.HTTP_403_FORBIDDEN),
-        )
-
-    return tenant, membership, None
-
-
-class SSOConnectionListView(APIView):
-    """List and create SSO connections for a tenant."""
-
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, tenant_id):
-        """List all SSO connections for the tenant."""
-        tenant, membership, error = get_tenant_and_check_access(request, tenant_id)
-        if error:
-            return error
-
-        connections = TenantSSOConnection.objects.filter(tenant=tenant).order_by("-created_at")
-
-        return Response(
-            [
-                {
-                    "id": str(conn.id),
-                    "name": conn.name,
-                    "connectionType": conn.connection_type,
-                    "status": conn.status,
-                    "isActive": conn.is_active,
-                    "isSaml": conn.is_saml,
-                    "isOidc": conn.is_oidc,
-                    "allowedDomains": conn.allowed_domains,
-                    "createdAt": conn.created_at.isoformat(),
-                    "lastLoginAt": conn.last_login_at.isoformat() if conn.last_login_at else None,
-                    "loginCount": conn.login_count,
-                    "spMetadataUrl": conn.sp_metadata_url,
-                    "spAcsUrl": conn.sp_acs_url,
-                    "spEntityId": conn.sp_entity_id,
-                    "oidcCallbackUrl": conn.oidc_callback_url,
-                    "loginUrl": conn.login_url,
-                }
-                for conn in connections
-            ]
-        )
-
-    def post(self, request, tenant_id):
-        """Create a new SSO connection."""
-        tenant, membership, error = get_tenant_and_check_access(request, tenant_id, require_admin=True)
-        if error:
-            return error
-
-        data = request.data
-        # SECURITY: Don't log raw POST data (may contain secrets)
-        logger.info(f"SSO connection creation requested for tenant {tenant_id}")
-        # Support both camelCase and snake_case (apiClient transforms to snake_case)
-        connection_type = data.get("connection_type") or data.get("connectionType", "saml")
-        logger.debug(f"SSO connection type: {connection_type}")
-
-        # Parse allowed_domains (support both camelCase and snake_case)
-        allowed_domains = data.get("allowed_domains") or data.get("allowedDomains", [])
-        if isinstance(allowed_domains, str):
-            # Handle comma-separated string input
-            allowed_domains = [d.strip().lower() for d in allowed_domains.split(",") if d.strip()]
-        elif isinstance(allowed_domains, list):
-            allowed_domains = [d.strip().lower() for d in allowed_domains if isinstance(d, str) and d.strip()]
-        else:
-            allowed_domains = []
-
-        try:
-            connection = TenantSSOConnection.objects.create(
-                tenant=tenant,
-                name=data.get("name", "SSO Connection"),
-                connection_type=connection_type,
-                status=SSOConnectionStatus.DRAFT,
-                allowed_domains=allowed_domains,
-                # SAML fields (support both camelCase and snake_case)
-                saml_entity_id=data.get("saml_entity_id") or data.get("samlEntityId", ""),
-                saml_sso_url=data.get("saml_sso_url") or data.get("samlSsoUrl", ""),
-                saml_certificate=data.get("saml_certificate") or data.get("samlCertificate", ""),
-                # OIDC fields (support both camelCase and snake_case)
-                oidc_issuer=data.get("oidc_issuer") or data.get("oidcIssuer", ""),
-                oidc_client_id=data.get("oidc_client_id") or data.get("oidcClientId", ""),
-                oidc_client_secret=data.get("oidc_client_secret") or data.get("oidcClientSecret", ""),
-            )
-
-            return Response(
-                {
-                    "id": str(connection.id),
-                    "name": connection.name,
-                    "connectionType": connection.connection_type,
-                    "status": connection.status,
-                    "allowedDomains": connection.allowed_domains,
-                    "spMetadataUrl": connection.sp_metadata_url,
-                    "spAcsUrl": connection.sp_acs_url,
-                    "spEntityId": connection.sp_entity_id,
-                    "oidcCallbackUrl": connection.oidc_callback_url,
-                    "loginUrl": connection.login_url,
-                    "createdAt": connection.created_at.isoformat(),
-                },
-                status=status.HTTP_201_CREATED,
-            )
-
-        except Exception as e:
-            # SECURITY: Log detailed error server-side, return generic message to client
-            logger.error(f"Failed to create SSO connection: {e}", exc_info=True)
-            return Response(
-                {"error": "Failed to create SSO connection. Please check your configuration."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-
-class SSOConnectionDetailView(APIView):
-    """Get, update, or delete an SSO connection."""
-
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, tenant_id, connection_id):
-        """Get SSO connection details."""
-        tenant, membership, error = get_tenant_and_check_access(request, tenant_id)
-        if error:
-            return error
-
-        try:
-            connection = TenantSSOConnection.objects.get(pk=connection_id, tenant=tenant)
-        except TenantSSOConnection.DoesNotExist:
-            return Response({"error": "Connection not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        return Response(
-            {
-                "id": str(connection.id),
-                "name": connection.name,
-                "connectionType": connection.connection_type,
-                "status": connection.status,
-                "isActive": connection.is_active,
-                "isSaml": connection.is_saml,
-                "isOidc": connection.is_oidc,
-                "allowedDomains": connection.allowed_domains,
-                "createdAt": connection.created_at.isoformat(),
-                "lastLoginAt": connection.last_login_at.isoformat() if connection.last_login_at else None,
-                "loginCount": connection.login_count,
-                "spMetadataUrl": connection.sp_metadata_url,
-                "spAcsUrl": connection.sp_acs_url,
-                "spEntityId": connection.sp_entity_id,
-                # SAML fields (only if SAML)
-                "samlEntityId": connection.saml_entity_id if connection.is_saml else None,
-                "samlSsoUrl": connection.saml_sso_url if connection.is_saml else None,
-                # OIDC fields (only if OIDC)
-                "oidcIssuer": connection.oidc_issuer if connection.is_oidc else None,
-                "oidcClientId": connection.oidc_client_id if connection.is_oidc else None,
-                "oidcCallbackUrl": connection.oidc_callback_url,
-            }
-        )
-
-    def delete(self, request, tenant_id, connection_id):
-        """Delete an SSO connection."""
-        tenant, membership, error = get_tenant_and_check_access(request, tenant_id, require_admin=True)
-        if error:
-            return error
-
-        try:
-            connection = TenantSSOConnection.objects.get(pk=connection_id, tenant=tenant)
-            connection.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except TenantSSOConnection.DoesNotExist:
-            return Response({"error": "Connection not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-class SSOConnectionActivateView(APIView):
-    """Activate an SSO connection."""
-
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, tenant_id, connection_id):
-        tenant, membership, error = get_tenant_and_check_access(request, tenant_id, require_admin=True)
-        if error:
-            return error
-
-        try:
-            connection = TenantSSOConnection.objects.get(pk=connection_id, tenant=tenant)
-            connection.activate()
-            return Response(
-                {
-                    "id": str(connection.id),
-                    "status": connection.status,
-                    "isActive": connection.is_active,
-                }
-            )
-        except TenantSSOConnection.DoesNotExist:
-            return Response({"error": "Connection not found"}, status=status.HTTP_404_NOT_FOUND)
-        except ValueError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class SSOConnectionDeactivateView(APIView):
-    """Deactivate an SSO connection."""
-
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, tenant_id, connection_id):
-        tenant, membership, error = get_tenant_and_check_access(request, tenant_id, require_admin=True)
-        if error:
-            return error
-
-        try:
-            connection = TenantSSOConnection.objects.get(pk=connection_id, tenant=tenant)
-            connection.deactivate()
-            return Response(
-                {
-                    "id": str(connection.id),
-                    "status": connection.status,
-                    "isActive": connection.is_active,
-                }
-            )
-        except TenantSSOConnection.DoesNotExist:
-            return Response({"error": "Connection not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-class SSOConnectionTestView(APIView):
-    """Test an SSO connection configuration."""
-
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, tenant_id, connection_id):
-        """
-        Test the SSO connection configuration.
-
-        Returns a detailed report of configuration checks:
-        - For SAML: entity ID, SSO URL reachability, certificate validity
-        - For OIDC: issuer, discovery endpoint, required endpoints
-        """
-        import requests
-        from datetime import datetime
-        from cryptography import x509
-        from cryptography.hazmat.backends import default_backend
-
-        tenant, membership, error = get_tenant_and_check_access(request, tenant_id, require_admin=True)
-        if error:
-            return error
-
-        try:
-            connection = TenantSSOConnection.objects.get(pk=connection_id, tenant=tenant)
-        except TenantSSOConnection.DoesNotExist:
-            return Response({"error": "Connection not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        checks = []
-        overall_status = "success"  # success, warning, error
-
-        def add_check(name, status, message, details=None):
-            nonlocal overall_status
-            check = {
-                "name": name,
-                "status": status,  # success, warning, error
-                "message": message,
-            }
-            if details:
-                check["details"] = details
-            checks.append(check)
-
-            # Update overall status
-            if status == "error":
-                overall_status = "error"
-            elif status == "warning" and overall_status != "error":
-                overall_status = "warning"
-
-        if connection.is_saml:
-            # SAML Configuration Checks
-
-            # 1. Check Entity ID
-            if connection.saml_entity_id:
-                add_check(
-                    "IdP Entity ID",
-                    "success",
-                    "Identity Provider Entity ID is configured",
-                    {
-                        "value": (
-                            connection.saml_entity_id[:100] + "..."
-                            if len(connection.saml_entity_id) > 100
-                            else connection.saml_entity_id
-                        )
-                    },
-                )
-            else:
-                add_check("IdP Entity ID", "error", "Identity Provider Entity ID is not configured")
-
-            # 2. Check SSO URL
-            if connection.saml_sso_url:
-                add_check(
-                    "SSO URL Format", "success", "Single Sign-On URL is configured", {"value": connection.saml_sso_url}
-                )
-
-                # Try to reach the SSO URL (HEAD request with timeout)
-                try:
-                    resp = requests.head(connection.saml_sso_url, timeout=10, allow_redirects=True)
-                    if resp.status_code < 400:
-                        add_check(
-                            "SSO URL Reachable", "success", f"SSO endpoint is reachable (HTTP {resp.status_code})"
-                        )
-                    elif resp.status_code == 405:
-                        # Method not allowed is OK - endpoint exists but doesn't accept HEAD
-                        add_check(
-                            "SSO URL Reachable",
-                            "success",
-                            "SSO endpoint exists (returned 405 - expected for SAML endpoints)",
-                        )
-                    else:
-                        add_check(
-                            "SSO URL Reachable",
-                            "warning",
-                            f"SSO endpoint returned HTTP {resp.status_code}",
-                            {"hint": "The endpoint might still work for SAML requests"},
-                        )
-                except requests.exceptions.Timeout:
-                    add_check(
-                        "SSO URL Reachable",
-                        "warning",
-                        "Connection timed out when reaching SSO endpoint",
-                        {"hint": "The IdP might be behind a firewall or slow to respond"},
-                    )
-                except requests.exceptions.SSLError as e:
-                    add_check(
-                        "SSO URL Reachable",
-                        "error",
-                        "SSL/TLS error when connecting to SSO endpoint",
-                        {"error": str(e)[:200]},
-                    )
-                except requests.exceptions.RequestException as e:
-                    add_check(
-                        "SSO URL Reachable", "error", "Failed to connect to SSO endpoint", {"error": str(e)[:200]}
-                    )
-            else:
-                add_check("SSO URL Format", "error", "Single Sign-On URL is not configured")
-
-            # 3. Check Certificate
-            cert_pem = connection.saml_certificate
-            if cert_pem:
-                try:
-                    # Parse certificate
-                    if "-----BEGIN CERTIFICATE-----" not in cert_pem:
-                        cert_pem = f"-----BEGIN CERTIFICATE-----\n{cert_pem}\n-----END CERTIFICATE-----"
-
-                    cert = x509.load_pem_x509_certificate(cert_pem.encode(), default_backend())
-
-                    # Check expiration
-                    now = datetime.utcnow()
-                    expires = (
-                        cert.not_valid_after_utc.replace(tzinfo=None)
-                        if hasattr(cert.not_valid_after_utc, "replace")
-                        else cert.not_valid_after
-                    )
-                    if hasattr(expires, "replace"):
-                        expires = expires.replace(tzinfo=None)
-
-                    days_until_expiry = (expires - now).days
-
-                    if days_until_expiry < 0:
-                        add_check(
-                            "IdP Certificate",
-                            "error",
-                            f"Certificate expired {abs(days_until_expiry)} days ago",
-                            {"expires": str(expires)},
-                        )
-                    elif days_until_expiry < 30:
-                        add_check(
-                            "IdP Certificate",
-                            "warning",
-                            f"Certificate expires in {days_until_expiry} days",
-                            {"expires": str(expires), "hint": "Consider renewing the certificate soon"},
-                        )
-                    else:
-                        add_check(
-                            "IdP Certificate",
-                            "success",
-                            f"Certificate is valid (expires in {days_until_expiry} days)",
-                            {"expires": str(expires)},
-                        )
-                except Exception as e:
-                    add_check(
-                        "IdP Certificate",
-                        "error",
-                        "Failed to parse certificate",
-                        {"error": str(e)[:200], "hint": "Ensure the certificate is in valid PEM or base64 format"},
-                    )
-            else:
-                add_check(
-                    "IdP Certificate",
-                    "warning",
-                    "IdP certificate is not configured",
-                    {"hint": "Certificate is recommended for signature validation"},
-                )
-
-            # 4. Check SP Configuration
-            sp_entity_id = connection.sp_entity_id
-            sp_acs_url = connection.sp_acs_url
-
-            if sp_entity_id and sp_acs_url:
-                # Check if using localhost (won't work with external IdPs)
-                is_localhost = "localhost" in sp_acs_url or "127.0.0.1" in sp_acs_url
-                if is_localhost:
-                    add_check(
-                        "SP Configuration",
-                        "error",
-                        "Service Provider URLs are using localhost - external IdPs cannot reach these URLs",
-                        {
-                            "entityId": sp_entity_id,
-                            "acsUrl": sp_acs_url,
-                            "hint": "Set the API_URL environment variable to your public API domain (e.g., https://api.yourapp.com)",
-                        },
-                    )
-                else:
-                    add_check(
-                        "SP Configuration",
-                        "success",
-                        "Service Provider URLs are configured",
-                        {"entityId": sp_entity_id, "acsUrl": sp_acs_url},
-                    )
-            else:
-                add_check("SP Configuration", "warning", "Service Provider configuration may be incomplete")
-
-            # 5. Verify SAML AuthnRequest can be generated
-            try:
-                from .services import SAMLService
-
-                saml_service = SAMLService(connection)
-                # Try generating a test request (won't actually redirect)
-                test_url, test_id = saml_service.create_authn_request(relay_state="/test")
-                if test_url and test_id:
-                    add_check(
-                        "SAML Request Generation",
-                        "success",
-                        "SAML AuthnRequest can be generated successfully",
-                        {"requestIdFormat": test_id[:10] + "..."},
-                    )
-            except Exception as e:
-                add_check(
-                    "SAML Request Generation", "error", "Failed to generate SAML AuthnRequest", {"error": str(e)[:200]}
-                )
-
-        elif connection.is_oidc:
-            # OIDC Configuration Checks
-
-            # 1. Check Issuer
-            if connection.oidc_issuer:
-                add_check("OIDC Issuer", "success", "Issuer URL is configured", {"value": connection.oidc_issuer})
-
-                # Try to fetch .well-known/openid-configuration
-                discovery_url = connection.oidc_issuer.rstrip("/") + "/.well-known/openid-configuration"
-                try:
-                    resp = requests.get(discovery_url, timeout=10)
-                    if resp.status_code == 200:
-                        try:
-                            config = resp.json()
-                            add_check(
-                                "OIDC Discovery",
-                                "success",
-                                "OpenID Connect discovery endpoint is accessible",
-                                {"discoveredEndpoints": len(config.keys())},
-                            )
-
-                            # Check required endpoints
-                            required = ["authorization_endpoint", "token_endpoint"]
-                            missing = [ep for ep in required if ep not in config]
-
-                            if missing:
-                                add_check(
-                                    "Required Endpoints",
-                                    "warning",
-                                    f"Missing endpoints in discovery: {', '.join(missing)}",
-                                )
-                            else:
-                                add_check(
-                                    "Required Endpoints",
-                                    "success",
-                                    "All required OIDC endpoints are present",
-                                    {
-                                        "authorization": config.get("authorization_endpoint", "")[:80],
-                                        "token": config.get("token_endpoint", "")[:80],
-                                    },
-                                )
-                        except ValueError:
-                            add_check("OIDC Discovery", "error", "Discovery endpoint returned invalid JSON")
-                    else:
-                        add_check(
-                            "OIDC Discovery",
-                            "warning",
-                            f"Discovery endpoint returned HTTP {resp.status_code}",
-                            {"hint": "Some IdPs may not support automatic discovery"},
-                        )
-                except requests.exceptions.Timeout:
-                    add_check("OIDC Discovery", "warning", "Connection timed out when fetching discovery document")
-                except requests.exceptions.SSLError as e:
-                    add_check(
-                        "OIDC Discovery", "error", "SSL/TLS error when connecting to issuer", {"error": str(e)[:200]}
-                    )
-                except requests.exceptions.RequestException as e:
-                    add_check(
-                        "OIDC Discovery",
-                        "warning",
-                        "Could not fetch discovery document",
-                        {"error": str(e)[:200], "hint": "Manual endpoint configuration may be required"},
-                    )
-            else:
-                add_check("OIDC Issuer", "error", "Issuer URL is not configured")
-
-            # 2. Check Client ID
-            if connection.oidc_client_id:
-                add_check(
-                    "Client ID",
-                    "success",
-                    "OAuth Client ID is configured",
-                    {
-                        "value": (
-                            connection.oidc_client_id[:20] + "..."
-                            if len(connection.oidc_client_id) > 20
-                            else connection.oidc_client_id
-                        )
-                    },
-                )
-            else:
-                add_check("Client ID", "error", "OAuth Client ID is not configured")
-
-            # 3. Check Client Secret
-            if connection.oidc_client_secret or connection.oidc_client_secret_arn:
-                add_check("Client Secret", "success", "OAuth Client Secret is configured")
-            else:
-                add_check("Client Secret", "error", "OAuth Client Secret is not configured")
-
-            # 4. Check Callback URL
-            callback_url = connection.oidc_callback_url
-            if callback_url:
-                # Check if using localhost (won't work with external IdPs)
-                is_localhost = "localhost" in callback_url or "127.0.0.1" in callback_url
-                if is_localhost:
-                    add_check(
-                        "Callback URL",
-                        "error",
-                        "Callback URL is using localhost - external IdPs cannot reach this URL",
-                        {
-                            "value": callback_url,
-                            "hint": "Set the API_URL environment variable to your public API domain (e.g., https://api.yourapp.com)",
-                        },
-                    )
-                else:
-                    add_check("Callback URL", "success", "OAuth callback URL is configured", {"value": callback_url})
-            else:
-                add_check("Callback URL", "warning", "Callback URL configuration may be incomplete")
-
-        # Check API_URL configuration (applies to both SAML and OIDC)
-        api_url = getattr(settings, "API_URL", None)
-        is_localhost_api = api_url and ("localhost" in api_url or "127.0.0.1" in api_url)
-
-        if api_url and not is_localhost_api:
-            add_check("API URL", "success", "API URL is configured for production", {"value": api_url})
-        elif is_localhost_api:
-            add_check(
-                "API URL",
-                "error",
-                "API URL is set to localhost - SSO will not work with external identity providers",
-                {
-                    "value": api_url,
-                    "hint": "Set API_URL environment variable to your public API domain (e.g., https://api.yourapp.com)",
-                },
-            )
-        else:
-            add_check(
-                "API URL",
-                "error",
-                "API_URL environment variable is not set",
-                {"hint": "This will cause SSO redirects to fail. Set API_URL to your public API domain."},
-            )
-
-        return Response(
-            {
-                "connectionId": str(connection.id),
-                "connectionName": connection.name,
-                "connectionType": connection.connection_type,
-                "overallStatus": overall_status,
-                "checks": checks,
-                "testedAt": timezone.now().isoformat(),
-            }
-        )
-
-
-# ==================
-# SSO Discovery (for login page)
-# ==================
-
-
-class SSODiscoverView(APIView):
-    """
-    Discover SSO options for a given email domain.
-    Used on the login page to show SSO options to users.
-
-    Rate limited to prevent email enumeration attacks.
-    """
-
-    permission_classes = [AllowAny]
-    throttle_classes = [SSODiscoveryThrottle]
-
-    def get(self, request):
-        """
-        Check if SSO is available for the given email domain.
-
-        Query params:
-            - email: User's email address
-
-        Returns:
-            - sso_available: Whether SSO is configured for this domain
-            - connections: List of available SSO connections (if any)
-            - require_sso: Whether SSO is required (no password login allowed)
-        """
-        email = request.GET.get("email", "").strip().lower()
-
-        if not email or "@" not in email:
-            return Response(
-                {
-                    "sso_available": False,
-                    "connections": [],
-                    "require_sso": False,
-                }
-            )
-
-        domain = email.split("@")[1]
-
-        # Find active SSO connections that allow this domain
-        connections = (
-            TenantSSOConnection.objects.filter(
-                status=SSOConnectionStatus.ACTIVE,
-            )
-            .filter(
-                # Check if domain is allowed
-                # Empty allowed_domains means all domains allowed for that tenant
-                models.Q(allowed_domains__contains=[domain])
-                | models.Q(allowed_domains=[])
-                | models.Q(allowed_domains__isnull=True)
-            )
-            .select_related("tenant")
-        )
-
-        # SECURITY: Filter by domain configuration ONLY to prevent email enumeration
-        # Do NOT check for existing users - this would leak account existence information
-        matching_connections = []
-        for conn in connections:
-            # Check if tenant has this domain configured
-            tenant_domains = getattr(conn.tenant, "domains", None)
-            domain_matches = tenant_domains and domain in tenant_domains
-            allowed_matches = conn.allowed_domains and domain in conn.allowed_domains
-            if domain_matches or allowed_matches:
-                matching_connections.append(conn)
-
-        # Remove duplicates while preserving order
-        seen_ids = set()
-        unique_connections = []
-        for conn in matching_connections:
-            if conn.id not in seen_ids:
-                seen_ids.add(conn.id)
-                unique_connections.append(conn)
-
-        if not unique_connections:
-            return Response(
-                {
-                    "sso_available": False,
-                    "connections": [],
-                    "require_sso": False,
-                }
-            )
-
-        # Check if any connection requires SSO (no password fallback)
-        require_sso = any(getattr(conn, "enforce_sso", False) for conn in unique_connections)
-
-        return Response(
-            {
-                "sso_available": True,
-                "require_sso": require_sso,
-                "connections": [
-                    {
-                        "id": str(conn.id),
-                        "name": conn.name,
-                        "type": conn.connection_type,
-                        "tenant_id": str(conn.tenant.id),
-                        "tenant_name": conn.tenant.name,
-                        "login_url": f"/api/sso/{conn.connection_type}/{conn.id}/login",
-                    }
-                    for conn in unique_connections
-                ],
-            }
-        )
-
-
-class SSOLoginOptionsView(APIView):
-    """
-    Get available SSO login options without requiring email.
-    Used for "Sign in with SSO" button flow.
-    """
-
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        """
-        Get list of all public SSO connections.
-        Only returns connections that have been marked as publicly visible.
-        """
-        # In most cases, users will enter their email first
-        # This endpoint is for cases where SSO discovery by email isn't used
-        return Response(
-            {
-                "message": "Please enter your work email to discover SSO options.",
-                "flow": "email_discovery",
-            }
-        )
-
+# SSO Connection REST views and SSO Discovery REST views removed.
+# All SSO connection management and discovery is handled through GraphQL mutations/queries.
+# See apps.sso.schema for the GraphQL API.
+
+# NOTE: has_sso_permission, get_tenant_and_check_access, SSOConnectionListView,
+# SSOConnectionDetailView, SSOConnectionActivateView, SSOConnectionDeactivateView,
+# SSOConnectionTestView, SSODiscoverView, and SSOLoginOptionsView were removed
+# as dead code - the frontend exclusively uses GraphQL for these operations.
 
 # ==================
 # Audit Log Views
@@ -1744,6 +1021,7 @@ class AuditLogListView(APIView):
                 {
                     "id": str(log.id),
                     "eventType": log.event_type,
+                    "eventTypeLabel": log.get_event_type_display(),
                     "eventDescription": log.event_description,
                     "userEmail": log.user.email if log.user else None,
                     "connectionName": log.sso_connection.name if log.sso_connection else None,
@@ -1762,9 +1040,20 @@ class AuditLogListView(APIView):
         filter_options = {}
 
         if include_filter_options:
-            # Get unique event types
-            event_types = SSOAuditLog.objects.filter(tenant=tenant).values_list("event_type", flat=True).distinct()
-            filter_options["eventTypes"] = list(event_types)
+            # Get unique event types with labels from constants
+            # Return as array of {value, label} objects to avoid axios-case-converter
+            # mangling the dict keys (it converts snake_case keys to camelCase)
+            event_types = list(
+                SSOAuditLog.objects.filter(tenant=tenant)
+                .values_list('event_type', flat=True)
+                .distinct()
+            )
+            labels_map = dict(SSOAuditEventType.choices)
+            unique_event_types = list(dict.fromkeys(event_types))
+            filter_options['eventTypeOptions'] = [
+                {'value': et, 'label': labels_map.get(et, et)}
+                for et in unique_event_types
+            ]
 
             # Get unique user emails
             user_emails = (

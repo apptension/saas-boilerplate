@@ -339,7 +339,7 @@
     "defaultMessage": "Redirect URI (update in your IdP):"
   },
   "Add SSO Modal / Redirect URI Label OIDC": {
-    "defaultMessage": "After creating the connection, you'll receive the exact redirect URI to configure in your IdP."
+    "defaultMessage": "After creating the connection, you'll receive the Redirect URI (callback URL) and Initiate login URI (login link) to configure in your IdP."
   },
   "Add SSO Modal / Redirect URI Title": {
     "defaultMessage": "Redirect URI"

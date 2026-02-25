@@ -2,8 +2,8 @@ import { useQuery, useMutation } from '@apollo/client/react';
 import { gql } from '@sb/webapp-api-client/graphql';
 
 const SSO_CONNECTIONS_QUERY = gql(`
-  query TenantSecuritySSOConnectionsQuery {
-    ssoConnections(first: 50) {
+  query TenantSecuritySSOConnectionsQuery($tenantId: ID!) {
+    ssoConnections(tenantId: $tenantId, first: 50) {
       edges {
         node {
           id
@@ -11,6 +11,7 @@ const SSO_CONNECTIONS_QUERY = gql(`
           connectionType
           status
           allowedDomains
+          enforceSso
           jitProvisioningEnabled
           samlEntityId
           samlSsoUrl
@@ -20,6 +21,10 @@ const SSO_CONNECTIONS_QUERY = gql(`
           loginCount
           createdAt
           spMetadataUrl
+          spAcsUrl
+          spEntityId
+          oidcCallbackUrl
+          oidcLoginUrl
         }
       }
     }
@@ -38,6 +43,7 @@ const CREATE_SSO_CONNECTION = gql(`
         spAcsUrl
         spEntityId
         oidcCallbackUrl
+        oidcLoginUrl
       }
     }
   }
@@ -63,8 +69,8 @@ const ACTIVATE_SSO_CONNECTION = gql(`
 `);
 
 const DEACTIVATE_SSO_CONNECTION = gql(`
-  mutation TenantSecurityDeactivateSSOConnection($id: ID!) {
-    deactivateSsoConnection(id: $id) {
+  mutation TenantSecurityDeactivateSSOConnection($id: ID!, $tenantId: ID!) {
+    deactivateSsoConnection(id: $id, tenantId: $tenantId) {
       ssoConnection {
         id
         status
@@ -73,9 +79,27 @@ const DEACTIVATE_SSO_CONNECTION = gql(`
   }
 `);
 
+const UPDATE_SSO_CONNECTION = gql(`
+  mutation TenantSecurityUpdateSSOConnection($input: UpdateSSOConnectionMutationInput!) {
+    updateSsoConnection(input: $input) {
+      ssoConnection {
+        id
+        name
+        connectionType
+        status
+        enforceSso
+        spMetadataUrl
+        spAcsUrl
+        spEntityId
+        oidcCallbackUrl
+      }
+    }
+  }
+`);
+
 const TEST_SSO_CONNECTION = gql(`
-  mutation TenantSecurityTestSSOConnection($id: ID!) {
-    testSsoConnection(id: $id) {
+  mutation TenantSecurityTestSSOConnection($id: ID!, $tenantId: ID!) {
+    testSsoConnection(id: $id, tenantId: $tenantId) {
       result {
         connectionId
         connectionName
@@ -95,10 +119,15 @@ const TEST_SSO_CONNECTION = gql(`
 
 export function useTenantSSO(tenantId: string | undefined) {
   const { data, loading, error, refetch } = useQuery(SSO_CONNECTIONS_QUERY, {
+    variables: { tenantId: tenantId ?? '' },
     skip: !tenantId,
   });
 
   const [createConnection, { loading: creating }] = useMutation(CREATE_SSO_CONNECTION, {
+    onCompleted: () => refetch(),
+  });
+
+  const [updateConnection, { loading: updating }] = useMutation(UPDATE_SSO_CONNECTION, {
     onCompleted: () => refetch(),
   });
 
@@ -145,6 +174,8 @@ export function useTenantSSO(tenantId: string | undefined) {
     refetch,
     createConnection,
     creating,
+    updateConnection,
+    updating,
     deleteConnection,
     activateConnection,
     deactivateConnection,

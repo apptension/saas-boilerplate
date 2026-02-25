@@ -3,7 +3,7 @@ import { gql } from '@sb/webapp-api-client/graphql';
 
 export const SCIM_TOKENS_QUERY = gql(`
   query SCIMTokensQuery($tenantId: ID!) {
-    scimTokens(first: 50) {
+    scimTokens(tenantId: $tenantId, first: 50) {
       edges {
         node {
           id
@@ -35,8 +35,8 @@ export const CREATE_SCIM_TOKEN = gql(`
 `);
 
 export const REVOKE_SCIM_TOKEN = gql(`
-  mutation RevokeSCIMTokenOp($id: ID!) {
-    revokeScimToken(id: $id) {
+  mutation RevokeSCIMTokenOp($id: ID!, $tenantId: ID!) {
+    revokeScimToken(id: $id, tenantId: $tenantId) {
       ok
     }
   }
@@ -51,9 +51,16 @@ export function useSCIMTokens(tenantId: string) {
     onCompleted: () => refetch(),
   });
 
-  const [revokeToken] = useMutation(REVOKE_SCIM_TOKEN, {
+  const [revokeTokenMutation] = useMutation(REVOKE_SCIM_TOKEN, {
     onCompleted: () => refetch(),
   });
+
+  const revokeToken = (options: { variables: { id: string } }) => {
+    return revokeTokenMutation({
+      ...options,
+      variables: { ...options.variables, tenantId },
+    });
+  };
 
   return {
     tokens: data?.scimTokens?.edges?.map((edge: any) => edge.node) || [],

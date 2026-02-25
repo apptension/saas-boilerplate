@@ -192,8 +192,8 @@ def get_safe_error_code(exception: Exception) -> str:
     if "expired" in error_msg or "timeout" in error_msg:
         return "session_expired"
 
-    if "config" in error_msg or "not configured" in error_msg:
-        return "config_error"
+    if 'config' in error_msg or 'not configured' in error_msg or ('issuer' in error_msg and ('invalid' in error_msg or 'mismatch' in error_msg)):
+        return 'config_error'
 
     if "rate" in error_msg or "throttle" in error_msg or "too many" in error_msg:
         return "rate_limited"

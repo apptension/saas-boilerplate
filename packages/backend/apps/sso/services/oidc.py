@@ -243,6 +243,12 @@ class OIDCService:
             # Return generic error message to prevent information disclosure
             raise ValueError("Failed to exchange authorization code for tokens")
 
+    def _normalize_issuer(self, issuer: str) -> str:
+        """Normalize issuer URL for comparison (strip trailing slash)."""
+        if not issuer:
+            return issuer
+        return issuer.rstrip('/')
+
     def validate_id_token(
         self,
         id_token: str,
@@ -273,14 +279,28 @@ class OIDCService:
             jwks_client = PyJWKClient(jwks_uri)
             signing_key = jwks_client.get_signing_key_from_jwt(id_token)
 
-            # Decode and validate
+            # Decode with issuer check disabled - we'll validate issuer ourselves
+            # to handle trailing slash differences (e.g. Okta, Auth0)
+            expected_issuer = self._normalize_issuer(self.connection.oidc_issuer)
             claims = jwt.decode(
                 id_token,
                 signing_key.key,
                 algorithms=["RS256", "ES256"],
                 audience=self.connection.oidc_client_id,
-                issuer=self.connection.oidc_issuer,
+                options={'verify_iss': False},
             )
+
+            # Validate issuer with flexible matching (trailing slash, etc.)
+            token_issuer = claims.get('iss', '')
+            if expected_issuer and self._normalize_issuer(token_issuer) != expected_issuer:
+                logger.error(
+                    f"Issuer mismatch: expected {expected_issuer!r}, got {token_issuer!r} "
+                    f"(connection {self.connection.id})"
+                )
+                raise ValueError(
+                    f"Invalid issuer: ID token has iss={token_issuer!r} but connection expects {expected_issuer!r}. "
+                    "Update the Issuer URL in your SSO connection to match your IdP app settings exactly."
+                )
 
             # Validate nonce if provided
             if nonce and claims.get("nonce") != nonce:

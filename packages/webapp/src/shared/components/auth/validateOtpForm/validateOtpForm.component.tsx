@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client/react';
-import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
+import { extractGraphQLErrors, storeAuthTokens } from '@sb/webapp-api-client/api';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@sb/webapp-core/components/forms';
@@ -56,17 +56,7 @@ export const ValidateOtpForm = () => {
     try {
       const { data } = await commitValidateOtpMutation({ variables: { input: { otpToken: values.token } } });
       if (data?.validateOtp?.access) {
-        // Store tokens in localStorage for Safari/mobile fallback
-        // Safari and iOS block third-party cookies, so we need to use
-        // Authorization header as backup (tokens sent via Apollo authLink)
-        try {
-          localStorage.setItem('token', data.validateOtp.access);
-          if (data.validateOtp.refresh) {
-            localStorage.setItem('refresh_token', data.validateOtp.refresh);
-          }
-        } catch {
-          // Ignore storage errors (e.g., private browsing mode)
-        }
+        storeAuthTokens(data.validateOtp.access, data.validateOtp.refresh ?? undefined);
 
         // Reload the common query to get fresh user data
         await reloadCommonQuery();

@@ -3,6 +3,7 @@ import { gql } from '@sb/webapp-api-client/graphql';
 
 const AUDIT_LOGS_QUERY = gql(`
   query TenantAuditLogsQuery(
+    $tenantId: ID!
     $eventType: String
     $userEmail: String
     $success: Boolean
@@ -12,6 +13,7 @@ const AUDIT_LOGS_QUERY = gql(`
     $first: Int
   ) {
     ssoAuditLogs(
+      tenantId: $tenantId
       eventType: $eventType
       userEmail: $userEmail
       success: $success
@@ -44,17 +46,21 @@ const AUDIT_LOGS_QUERY = gql(`
   }
 `);
 
-export function useTenantAuditLogs(filters: {
-  eventType?: string;
-  userEmail?: string;
-  success?: boolean;
-  startDate?: string;
-  endDate?: string;
-  search?: string;
-  first?: number;
-}) {
+export function useTenantAuditLogs(
+  tenantId: string | undefined,
+  filters: {
+    eventType?: string;
+    userEmail?: string;
+    success?: boolean;
+    startDate?: string;
+    endDate?: string;
+    search?: string;
+    first?: number;
+  } = {}
+) {
   const { data, loading, error, refetch } = useQuery(AUDIT_LOGS_QUERY, {
     variables: {
+      tenantId: tenantId ?? '',
       eventType: filters.eventType || undefined,
       userEmail: filters.userEmail || undefined,
       success: filters.success,
@@ -63,6 +69,7 @@ export function useTenantAuditLogs(filters: {
       search: filters.search || undefined,
       first: filters.first ?? 50,
     },
+    skip: !tenantId,
   });
 
   const edges = data?.ssoAuditLogs?.edges ?? [];

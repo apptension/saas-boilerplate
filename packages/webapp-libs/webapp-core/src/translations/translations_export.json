@@ -169,7 +169,7 @@
       "Add SSO Modal / OIDC Step 1 Title": "Connection Details",
       "Add SSO Modal / OIDC Step 2 Title": "OAuth 2.0 / OIDC Settings",
       "Add SSO Modal / Redirect Label": "Redirect URI (update in your IdP):",
-      "Add SSO Modal / Redirect URI Label OIDC": "After creating the connection, you'll receive the exact redirect URI to configure in your IdP.",
+      "Add SSO Modal / Redirect URI Label OIDC": "After creating the connection, you'll receive the Redirect URI (callback URL) and Initiate login URI (login link) to configure in your IdP.",
       "Add SSO Modal / Redirect URI Title": "Redirect URI",
       "Add SSO Modal / Redirect Warning": "Important: Update the callback URL in your identity provider settings with this exact URL, then activate the connection.",
       "Add SSO Modal / SAML Description": "Enterprise standard protocol",

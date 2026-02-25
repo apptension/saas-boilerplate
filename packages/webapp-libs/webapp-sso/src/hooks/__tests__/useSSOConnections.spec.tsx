@@ -217,7 +217,7 @@ describe('useSSOConnections', () => {
   it('should delete SSO connection', async () => {
     const deleteMock = composeMockedQueryResult(DELETE_SSO_CONNECTION, {
       variables: {
-        input: { id: 'sso-conn-1' },
+        input: { id: 'sso-conn-1', tenantId: mockTenantId },
       },
       data: {
         deleteSsoConnection: {

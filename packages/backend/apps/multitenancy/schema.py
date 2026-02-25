@@ -16,6 +16,7 @@ from common.action_logging.decorators import action_logged
 from common.action_logging.service import log_action, log_delete
 from apps.finances.services import subscriptions
 from apps.finances.serializers import CancelTenantActiveSubscriptionSerializer
+from apps.sso.enforcement import filter_tenants_for_password_session
 from . import models
 from . import serializers
 from .tokens import tenant_invitation_token
@@ -1247,7 +1248,8 @@ class Query(graphene.ObjectType):
     @permission_classes(policies.AnyoneFullAccess)
     def resolve_all_tenants(root, info, **kwargs):
         if info.context.user.is_authenticated:
-            return models.Tenant.objects.filter(user_memberships__user=info.context.user).all()
+            qs = models.Tenant.objects.filter(user_memberships__user=info.context.user).all()
+            return filter_tenants_for_password_session(info.context, qs)
         return []
 
     @staticmethod

@@ -39,6 +39,16 @@ const createSSOConnectionsMock = (connections: ReturnType<typeof createMockConne
     },
   });
 
+const createSSOConnectionsMock = (connections: ReturnType<typeof createMockConnection>[]) =>
+  composeMockedQueryResult(TenantSecuritySsoConnectionsQueryDocument, {
+    variables: { tenantId: 'tenant-1' },
+    data: {
+      ssoConnections: {
+        edges: connections.map((node) => ({ node })),
+      },
+    },
+  });
+
 describe('SSOConnectionCard: Component', () => {
   const renderComponent = (canManageSSO = true, connections: ReturnType<typeof createMockConnection>[] = []) => {
     const tenant = tenantFactory({
@@ -89,6 +99,16 @@ describe('SSOConnectionCard: Component', () => {
         expect(screen.getByText('Okta')).toBeInTheDocument();
         expect(screen.getByText('Azure AD')).toBeInTheDocument();
         expect(screen.getByText('Auth0')).toBeInTheDocument();
+      });
+
+      it('should display automatic user provisioning info', async () => {
+        renderComponent(true);
+
+        await screen.findByText(/No SSO connections configured/i);
+        expect(screen.getByText(/Automatic user provisioning/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/automatically created and added to your organization when they sign in via SSO/i)
+        ).toBeInTheDocument();
       });
     });
 

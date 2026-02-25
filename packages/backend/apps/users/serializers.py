@@ -84,6 +84,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
         )
 
         refresh = jwt_tokens.RefreshToken.for_user(user)
+        refresh['auth_method'] = 'password'
 
         if jwt_api_settings.UPDATE_LAST_LOGIN:
             update_last_login(None, user)
@@ -151,6 +152,7 @@ class UserAccountChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         refresh = jwt_tokens.RefreshToken.for_user(user)
+        refresh['auth_method'] = 'password'
 
         return {
             "access": str(refresh.access_token),
@@ -223,6 +225,12 @@ class CookieTokenObtainPairSerializer(jwt_serializers.TokenObtainPairSerializer)
 
     default_error_messages = {"no_active_account": _("No active account found with the given credentials")}
 
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['auth_method'] = 'password'
+        return token
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -276,7 +284,10 @@ class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
                     pass
 
             user = get_user_model().objects.get(id=refresh[jwt_api_settings.USER_ID_CLAIM])
+            auth_method = refresh.get('auth_method', 'password')
             new_refresh = jwt_tokens.RefreshToken.for_user(user)
+            new_refresh['auth_method'] = auth_method
+            new_refresh.access_token['auth_method'] = auth_method
 
             return {"access": str(new_refresh.access_token), "refresh": str(new_refresh)}
 
@@ -377,6 +388,8 @@ class ValidateOTPSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         refresh = RefreshToken.for_user(self.user)
+        refresh['auth_method'] = 'password'
+        refresh.access_token['auth_method'] = 'password'
         return {"refresh": str(refresh), "access": str(refresh.access_token)}
 
 

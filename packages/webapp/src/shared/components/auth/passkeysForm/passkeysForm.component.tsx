@@ -87,7 +87,7 @@ export const PasskeysForm = () => {
   const isSupported =
     ENV.ENABLE_PASSKEYS && typeof window !== 'undefined' && !!window.PublicKeyCredential;
 
-  const { passkeys, loading, refetch, deletePasskey } = useTenantPasskeys(false);
+  const { passkeys, loading, refetch, deletePasskey } = useTenantPasskeys(undefined, false);
 
   const handleDeletePasskey = async (passkeyId: string) => {
     setDeleting(passkeyId);

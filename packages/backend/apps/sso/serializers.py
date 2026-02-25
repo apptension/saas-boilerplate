@@ -11,6 +11,7 @@ class TenantSSOConnectionSerializer(serializers.ModelSerializer):
 
     id = HashidSerializerCharField(source_field="sso.TenantSSOConnection.id", read_only=True)
     tenant_id = serializers.CharField(write_only=True)
+    oidc_client_secret = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
     class Meta:
         model = models.TenantSSOConnection
@@ -21,6 +22,7 @@ class TenantSSOConnectionSerializer(serializers.ModelSerializer):
             "connection_type",
             "status",
             "allowed_domains",
+            'enforce_sso',
             "jit_provisioning_enabled",
             "group_role_mapping",
             # SAML fields
@@ -35,6 +37,7 @@ class TenantSSOConnectionSerializer(serializers.ModelSerializer):
             # OIDC fields
             "oidc_issuer",
             "oidc_client_id",
+            'oidc_client_secret',
             "oidc_authorization_endpoint",
             "oidc_token_endpoint",
             "oidc_userinfo_endpoint",
@@ -68,6 +71,25 @@ class TenantSSOConnectionSerializer(serializers.ModelSerializer):
                 f"Invalid connection type. Must be one of: {list(dict(constants.IdentityProviderType.choices).keys())}"
             )
         return value
+
+
+class UpdateTenantSSOConnectionSerializer(TenantSSOConnectionSerializer):
+    """Serializer for partial updates -- all fields are optional."""
+
+    tenant_id = serializers.CharField(write_only=True, required=False)
+    oidc_client_secret = serializers.CharField(
+        write_only=True,
+        required=False,
+        allow_blank=True,
+        help_text="OIDC client secret. Leave blank to keep existing. Only set when updating."
+    )
+
+    class Meta(TenantSSOConnectionSerializer.Meta):
+        fields = TenantSSOConnectionSerializer.Meta.fields + ['oidc_client_secret']
+        extra_kwargs = {
+            'name': {'required': False},
+            'connection_type': {'required': False},
+        }
 
     def validate_group_role_mapping(self, value):
         """Validate group-to-role mapping."""
@@ -124,6 +146,13 @@ class TenantSSOConnectionSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError({field: f"{field} is required for OIDC connections."})
 
         return attrs
+
+    def update(self, instance, validated_data):
+        """Update instance, only setting oidc_client_secret when a non-empty value is provided."""
+        oidc_client_secret = validated_data.pop('oidc_client_secret', None)
+        if oidc_client_secret is not None and oidc_client_secret.strip():
+            validated_data['oidc_client_secret'] = oidc_client_secret
+        return super().update(instance, validated_data)
 
     def create(self, validated_data):
         from apps.multitenancy.models import Tenant

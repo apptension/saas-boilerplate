@@ -11,12 +11,14 @@ import {
   DropdownMenuTrigger,
 } from '@sb/webapp-core/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@sb/webapp-core/components/ui/tooltip';
+import { Switch } from '@sb/webapp-core/components/ui/switch';
 import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import { useOpenState } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { cn } from '@sb/webapp-core/lib/utils';
 import {
   Shield,
+  ShieldAlert,
   Link2,
   Plus,
   Trash2,
@@ -35,12 +37,14 @@ import {
   AlertTriangle,
   Info,
   Globe,
+  Pencil,
 } from 'lucide-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useCurrentTenant } from '../../../../providers';
 import { useTenantSSO } from '../../../../hooks/useTenantSSO';
 import { AddSSOConnectionModal } from './addSSOConnectionModal';
+import { EditSSOConnectionModal } from './editSSOConnectionModal';
 
 type SSOConnection = {
   id: string;
@@ -51,10 +55,19 @@ type SSOConnection = {
   isSaml: boolean;
   isOidc: boolean;
   allowedDomains: string[];
+  enforceSso: boolean;
   createdAt: string;
   lastLoginAt?: string | null;
   loginCount: number;
   spMetadataUrl?: string | null;
+  spAcsUrl?: string | null;
+  spEntityId?: string | null;
+  oidcCallbackUrl?: string | null;
+  oidcLoginUrl?: string | null;
+  samlEntityId?: string | null;
+  samlSsoUrl?: string | null;
+  oidcIssuer?: string | null;
+  oidcClientId?: string | null;
 };
 
 type TestCheck = {
@@ -79,6 +92,8 @@ export type SSOConnectionCardProps = {
 
 export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
   const { isOpen: isModalOpen, setIsOpen: setIsModalOpen } = useOpenState(false);
+  const { isOpen: isEditModalOpen, setIsOpen: setIsEditModalOpen } = useOpenState(false);
+  const [editingConnection, setEditingConnection] = useState<SSOConnection | null>(null);
   const { isOpen: isTestDialogOpen, setIsOpen: setIsTestDialogOpen } = useOpenState(false);
   const { toast } = useToast();
   const intl = useIntl();
@@ -92,11 +107,14 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
     deleteConnection,
     activateConnection,
     deactivateConnection,
+    updateConnection,
     testConnection,
   } = useTenantSSO(tenantId);
 
+
   const [deleting, setDeleting] = useState<string | null>(null);
   const [toggling, setToggling] = useState<string | null>(null);
+  const [togglingEnforceSSO, setTogglingEnforceSSO] = useState<string | null>(null);
   const [testingConnectionId, setTestingConnectionId] = useState<string | null>(null);
   const [testResult, setTestResult] = useState<TestResult | null>(null);
 
@@ -104,7 +122,7 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
     if (!tenantId) return;
     setDeleting(connectionId);
     try {
-      await deleteConnection({ variables: { input: { id: connectionId } } });
+      await deleteConnection({ variables: { input: { id: connectionId, tenantId } } });
       toast({
         description: intl.formatMessage({
           defaultMessage: 'SSO connection deleted.',
@@ -131,7 +149,7 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
     setToggling(connection.id);
     try {
       if (connection.isActive) {
-        await deactivateConnection({ variables: { id: connection.id } });
+        await deactivateConnection({ variables: { id: connection.id, tenantId } });
         toast({
           description: intl.formatMessage({
             defaultMessage: 'SSO connection deactivated.',
@@ -165,11 +183,52 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
     }
   };
 
+  const handleToggleEnforceSSO = async (connection: SSOConnection) => {
+    if (!tenantId) return;
+    setTogglingEnforceSSO(connection.id);
+    try {
+      await updateConnection({
+        variables: {
+          input: {
+            id: connection.id,
+            tenantId,
+            name: connection.name,
+            enforceSso: !connection.enforceSso,
+          },
+        },
+      });
+      toast({
+        description: intl.formatMessage(
+          connection.enforceSso
+            ? {
+                defaultMessage: 'SSO enforcement disabled. Users can now log in with password.',
+                id: 'SSO Card / Enforce SSO Disabled',
+              }
+            : {
+                defaultMessage: 'SSO enforcement enabled. Users from allowed domains must use SSO.',
+                id: 'SSO Card / Enforce SSO Enabled',
+              }
+        ),
+        variant: 'success',
+      });
+    } catch {
+      toast({
+        description: intl.formatMessage({
+          defaultMessage: 'Failed to update SSO enforcement setting.',
+          id: 'SSO Card / Enforce SSO Error',
+        }),
+        variant: 'destructive',
+      });
+    } finally {
+      setTogglingEnforceSSO(null);
+    }
+  };
+
   const handleTestConnection = async (connection: SSOConnection) => {
     setTestResult(null);
     setTestingConnectionId(connection.id);
     try {
-      const result = await testConnection({ variables: { id: connection.id } });
+      const result = await testConnection({ variables: { id: connection.id, tenantId } });
       const data = result.data?.testSsoConnection?.result;
       if (data) {
         const checks = (data.checks ?? [])
@@ -291,7 +350,7 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
                 </CardTitle>
                 <CardDescription className="mt-0.5">
                   <FormattedMessage
-                    defaultMessage="Configure SAML 2.0 or OIDC identity providers for your organization"
+                    defaultMessage="Configure SAML 2.0 or OIDC identity providers for your organization. Users from allowed domains are automatically provisioned on first sign-in."
                     id="Tenant Security Settings / SSO Description"
                   />
                 </CardDescription>
@@ -353,6 +412,27 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
                 </Button>
               </div>
 
+              {/* Automatic provisioning info */}
+              <div className="rounded-lg border bg-blue-50 dark:bg-blue-950/20 p-4">
+                <div className="flex gap-3">
+                  <Users className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-medium text-blue-800 dark:text-blue-200 mb-1">
+                      <FormattedMessage
+                        defaultMessage="Automatic user provisioning"
+                        id="Tenant Security Settings / JIT Provisioning Title"
+                      />
+                    </p>
+                    <p className="text-blue-700 dark:text-blue-300">
+                      <FormattedMessage
+                        defaultMessage="When enabled, users with email addresses from your allowed domains are automatically created and added to your organization when they sign in via SSO for the first time. No manual invitation required."
+                        id="Tenant Security Settings / JIT Provisioning Description"
+                      />
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               {/* Supported Providers */}
               <div className="rounded-lg border bg-muted/10 p-4">
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
@@ -377,7 +457,18 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
               </div>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
+              {/* Automatic provisioning info - shown when connections exist */}
+              <div className="rounded-lg border bg-muted/30 p-3 flex gap-3">
+                <Info className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                <p className="text-sm text-muted-foreground">
+                  <FormattedMessage
+                    defaultMessage="Users from allowed domains are automatically created when they sign in via SSO for the first time."
+                    id="Tenant Security Settings / JIT Provisioning Hint"
+                  />
+                </p>
+              </div>
+
               {connections.map((connection) => {
                 const isSaml = connection.isSaml || connection.connectionType.toLowerCase() === 'saml';
 
@@ -496,6 +587,36 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
                             </span>
                           </div>
                         )}
+
+                        {/* Enforce SSO Toggle */}
+                        {canManageSSO && connection.isActive && (
+                          <div className="flex items-center gap-2 mt-2">
+                            <Switch
+                              checked={connection.enforceSso}
+                              onCheckedChange={() => handleToggleEnforceSSO(connection)}
+                              disabled={togglingEnforceSSO === connection.id}
+                              aria-label={intl.formatMessage({
+                                defaultMessage: 'Enforce SSO login',
+                                id: 'SSO Card / Enforce SSO Toggle Label',
+                              })}
+                            />
+                            <span className="text-xs font-medium">
+                              <FormattedMessage
+                                defaultMessage="Enforce SSO login"
+                                id="SSO Card / Enforce SSO Label"
+                              />
+                            </span>
+                            {connection.enforceSso && (
+                              <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/20 text-xs">
+                                <ShieldAlert className="mr-1 h-3 w-3" />
+                                <FormattedMessage
+                                  defaultMessage="Enforced"
+                                  id="SSO Card / Enforce SSO Badge"
+                                />
+                              </Badge>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -514,6 +635,15 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setEditingConnection(connection);
+                            setIsEditModalOpen(true);
+                          }}
+                        >
+                          <Pencil className="mr-2 h-4 w-4" />
+                          <FormattedMessage defaultMessage="Edit connection" id="SSO Card / Edit Connection" />
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleTestConnection(connection)}
                           disabled={testingConnectionId === connection.id}
@@ -581,6 +711,43 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
                 );
               })}
 
+              {/* Enforce SSO Info Box - shown when any connection has enforce_sso enabled */}
+              {connections.some((c) => c.enforceSso) && (
+                <div className="rounded-lg border bg-amber-50 dark:bg-amber-950/20 p-4">
+                  <div className="flex gap-3">
+                    <ShieldAlert className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                    <div className="text-sm space-y-2">
+                      <p className="font-medium text-amber-800 dark:text-amber-200">
+                        <FormattedMessage
+                          defaultMessage="SSO enforcement is active"
+                          id="SSO Card / Enforce Info Title"
+                        />
+                      </p>
+                      <p className="text-amber-700 dark:text-amber-300">
+                        <FormattedMessage
+                          defaultMessage="Users from allowed domains must sign in via SSO to access this organization. Password login will not grant access to this tenant."
+                          id="SSO Card / Enforce Info Description"
+                        />
+                      </p>
+                      <div className="border-t border-amber-200 dark:border-amber-800 pt-2 mt-2">
+                        <p className="font-medium text-amber-800 dark:text-amber-200">
+                          <FormattedMessage
+                            defaultMessage="Break-glass access"
+                            id="SSO Card / Breakglass Title"
+                          />
+                        </p>
+                        <p className="text-amber-700 dark:text-amber-300">
+                          <FormattedMessage
+                            defaultMessage="Administrators with the 'Manage SSO' permission can still access this organization via password login as a break-glass mechanism. Each bypass is recorded in the security audit log for compliance review."
+                            id="SSO Card / Breakglass Description"
+                          />
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Add Another Button */}
               <button
                 onClick={() => setIsModalOpen(true)}
@@ -598,8 +765,39 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
         </CardContent>
       </Card>
 
+      <Dialog
+        open={isEditModalOpen}
+        onOpenChange={(open) => {
+          setIsEditModalOpen(open);
+          if (!open) setEditingConnection(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-hidden flex flex-col" aria-describedby="edit-sso-dialog-description">
+          <DialogTitle className="sr-only">
+            <FormattedMessage defaultMessage="Edit SSO Connection" id="SSO Card / Edit Dialog Title" />
+          </DialogTitle>
+          <DialogDescription id="edit-sso-dialog-description" className="sr-only">
+            <FormattedMessage
+              defaultMessage="View and edit SSO connection configuration"
+              id="SSO Card / Edit Dialog Description"
+            />
+          </DialogDescription>
+          {tenantId && editingConnection && (
+            <EditSSOConnectionModal
+              connection={editingConnection}
+              closeModal={() => {
+                setIsEditModalOpen(false);
+                setEditingConnection(null);
+              }}
+              onSuccess={refetch}
+              tenantId={tenantId}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[550px]" aria-describedby="sso-connection-dialog-description">
+        <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-hidden flex flex-col" aria-describedby="sso-connection-dialog-description">
           <DialogTitle className="sr-only">
             <FormattedMessage
               defaultMessage="Add SSO Connection"
