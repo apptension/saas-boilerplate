@@ -11,6 +11,7 @@ import logging
 
 import defusedxml.ElementTree as ET
 from collections import defaultdict
+from xml.etree.ElementTree import Element
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from typing import Any, Dict, List, Optional, Set, Tuple, Type
@@ -115,7 +116,7 @@ class RestoreService:
 
         return self.model_counts
 
-    def _resolve_model_sections(self, model_sections: List[ET.Element]) -> Dict[Type[models.Model], List[ET.Element]]:
+    def _resolve_model_sections(self, model_sections: List[Element]) -> Dict[Type[models.Model], List[Element]]:
         """
         Resolve model names from XML to Django model classes.
 
@@ -125,7 +126,7 @@ class RestoreService:
         Returns:
             Dictionary mapping model classes to their item elements
         """
-        model_data: Dict[Type[models.Model], List[ET.Element]] = {}
+        model_data: Dict[Type[models.Model], List[Element]] = {}
 
         for model_section in model_sections:
             model_name = model_section.get('name')
@@ -172,7 +173,7 @@ class RestoreService:
                     return model
         return None
 
-    def _topological_sort(self, model_data: Dict[Type[models.Model], List[ET.Element]]) -> List[Type[models.Model]]:
+    def _topological_sort(self, model_data: Dict[Type[models.Model], List[Element]]) -> List[Type[models.Model]]:
         """
         Sort model classes by FK dependencies so parents are restored before children.
 
@@ -235,7 +236,7 @@ class RestoreService:
     def _import_all_models(
         self,
         sorted_models: List[Type[models.Model]],
-        model_data: Dict[Type[models.Model], List[ET.Element]],
+        model_data: Dict[Type[models.Model], List[Element]],
     ) -> None:
         """
         Import all models in dependency order.
@@ -362,7 +363,7 @@ class RestoreService:
                 result[name] = 0.0
         return result
 
-    def _import_item(self, model_class: Type[models.Model], item_elem: ET.Element) -> Tuple[str, Dict[str, List[str]]]:
+    def _import_item(self, model_class: Type[models.Model], item_elem: Element) -> Tuple[str, Dict[str, List[str]]]:
         """
         Import a single item from XML into the database.
 
