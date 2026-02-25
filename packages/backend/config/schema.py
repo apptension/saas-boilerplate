@@ -1,5 +1,8 @@
 import graphene
 
+# The patch normalizes floating-point precision issues at the GraphQL parsing level
+from common.graphql import scalars  # noqa: F401
+
 from apps.demo import schema as demo_schema
 from apps.finances import schema as finances_schema
 from apps.notifications import schema as notifications_schema
