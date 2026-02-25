@@ -138,15 +138,27 @@ class TenantUserRoleMiddleware(object):
             tenant_id = args.get("tenant_id") or args.get("tenantId")
 
         if tenant_id:
-            id_type, pk = from_global_id(tenant_id)
-            if id_type == "TenantType":
-                return pk
+            try:
+                id_type, pk = from_global_id(tenant_id)
+                if id_type == "TenantType":
+                    return pk
+                # Accept raw hashid when client sends tenant id without Relay global ID prefix
+                if pk:
+                    return pk
+            except (TypeError, ValueError):
+                # Invalid global ID; try using as raw tenant pk (hashid)
+                return tenant_id
 
         return None
 
     def resolve(self, next, root, info, **args):
-        if not hasattr(info.context, "tenant_id"):
-            info.context.tenant_id = self._get_tenant_id_from_arguments(args)
+        # Always refresh tenant_id from current resolver args when present (e.g. createDocument
+        # has input.tenantId; root "mutation" has no tenant_id so we must not stick with None)
+        tenant_id_from_args = self._get_tenant_id_from_arguments(args)
+        if tenant_id_from_args is not None:
+            info.context.tenant_id = tenant_id_from_args
+        elif not hasattr(info.context, "tenant_id"):
+            info.context.tenant_id = None
 
         # SECURITY: Use membership-verified tenant retrieval
         # This ensures info.context.tenant is only set if the user has access
