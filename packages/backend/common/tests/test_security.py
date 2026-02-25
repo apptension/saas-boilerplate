@@ -200,9 +200,8 @@ class TestRBACPermissionChecks:
             code='test.permission.code', name='Test Permission', description='Test permission for security tests'
         )
 
-        # Create and assign RBAC owner role
         owner_role = owner_role_factory(tenant)
-        TenantMembershipRole.objects.create(membership=membership, role=owner_role)
+        TenantMembershipRole.objects.get_or_create(membership=membership, role=owner_role)
 
         # Invalidate cache to pick up new permissions
         from apps.multitenancy.models import invalidate_user_permissions_cache
@@ -494,8 +493,7 @@ class TestOwnerDemotionProtection:
         membership = tenant_membership_factory(user=user, tenant=tenant, role=TenantUserRole.MEMBER, is_accepted=True)
         owner_role = owner_role_factory(tenant)
 
-        # Assign owner role
-        TenantMembershipRole.objects.create(membership=membership, role=owner_role)
+        TenantMembershipRole.objects.get_or_create(membership=membership, role=owner_role)
 
         # Verify the owner count logic
         owner_count = TenantMembershipRole.objects.filter(
@@ -543,8 +541,7 @@ class TestSecurityIntegration:
         # Before role assignment, user shouldn't have owner permissions
         initial_permissions = user_has_permission(user, tenant, 'members.roles.edit')
 
-        # Assign owner role
-        TenantMembershipRole.objects.create(membership=membership, role=owner_role)
+        TenantMembershipRole.objects.get_or_create(membership=membership, role=owner_role)
 
         # Invalidate cache if caching is used
         from apps.multitenancy.models import invalidate_user_permissions_cache

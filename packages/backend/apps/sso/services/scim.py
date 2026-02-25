@@ -274,6 +274,12 @@ class SCIMService:
         )
 
         if existing_link:
+            if existing_link.user.email.lower() != user_name.lower():
+                raise SCIMError(
+                    f"externalId '{external_id}' is already assigned to another user",
+                    status=409,
+                    scim_type="uniqueness",
+                )
             return self._reactivate_user(existing_link, scim_user, external_id, ip_address)
 
         # Extract name

@@ -98,6 +98,7 @@ class TestUpdateTenantMutation:
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, None)
         executed = self.mutate(graphene_client, {"id": to_global_id("TenantType", tenant.id), "name": "Tenant 2"})
+        assert "errors" in executed, f"Expected permission_denied, got: {executed}"
         assert executed["errors"][0]["message"] == "permission_denied"
 
     def test_user_with_admin_membership(self, graphene_client, user, tenant_factory, tenant_membership_factory):
@@ -106,7 +107,9 @@ class TestUpdateTenantMutation:
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
         executed = self.mutate(graphene_client, {"id": to_global_id("TenantType", tenant.id), "name": "Tenant 2"})
-        assert executed["errors"][0]["message"] == "permission_denied"
+        assert "errors" not in executed, f"Admin has org.settings.edit, expected success: {executed.get('errors')}"
+        response_data = executed["data"]["updateTenant"]["tenant"]
+        assert response_data["name"] == "Tenant 2"
 
     def test_user_with_member_membership(self, graphene_client, user, tenant_factory, tenant_membership_factory):
         tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
@@ -195,6 +198,7 @@ class TestDeleteTenantMutation:
         graphene_client.force_authenticate(user)
         graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
         executed = self.mutate(graphene_client, {"id": to_global_id("TenantType", tenant.id)})
+        assert "errors" in executed, f"Admin cannot delete tenant (owner-only), got: {executed}"
         assert executed["errors"][0]["message"] == "permission_denied"
 
     def test_user_with_member_membership(self, graphene_client, user, tenant_factory, tenant_membership_factory):
@@ -283,7 +287,8 @@ class TestCreateTenantInvitationMutation:
                 "role": TenantUserRole.ADMIN.upper(),
             },
         )
-        assert executed["errors"][0]["message"] == "permission_denied"
+        assert "errors" not in executed, f"Admin has members.invite, expected success: {executed.get('errors')}"
+        assert executed["data"]["createTenantInvitation"]["ok"] is True
 
     def test_create_tenant_invitation_by_member(self, graphene_client, user, tenant_factory, tenant_membership_factory):
         tenant = tenant_factory(name="Tenant 1", type=TenantType.ORGANIZATION)
@@ -510,7 +515,10 @@ class TestDeleteTenantMembershipMutation:
                 "id": to_global_id("TenantMembershipType", tenant_membership.id),
             },
         )
-        assert executed["errors"][0]["message"] == "You don't have permission to remove members."
+        assert "errors" not in executed, f"Admin has members.remove, expected success: {executed.get('errors')}"
+        assert executed["data"]["deleteTenantMembership"]["deletedIds"][0] == to_global_id(
+            "TenantMembershipType", str(tenant_membership.id)
+        )
 
     def test_delete_tenant_membership_by_not_a_member(
         self, graphene_client, user, tenant_factory, tenant_membership_factory
@@ -575,7 +583,7 @@ class TestUpdateTenantMembershipMutation:
             },
         )
         data = executed["data"]["updateTenantMembership"]["tenantMembership"]
-        assert data["id"] == to_global_id("TenantMembershipType", tenant_membership.id)
+        assert data["id"] == to_global_id("TenantMembershipType", str(tenant_membership.id))
         assert data["role"] == TenantUserRole.ADMIN
 
     def test_update_tenant_membership_not_accepted(
@@ -594,9 +602,8 @@ class TestUpdateTenantMembershipMutation:
                 "role": "ADMIN",
             },
         )
-        print(executed)
         data = executed["data"]["updateTenantMembership"]["tenantMembership"]
-        assert data["id"] == to_global_id("TenantMembershipType", tenant_membership.id)
+        assert data["id"] == to_global_id("TenantMembershipType", str(tenant_membership.id))
         assert data["role"] == TenantUserRole.ADMIN
 
     def test_update_own_tenant_membership_by_member(
@@ -961,7 +968,7 @@ class TestAllTenantsQuery:
         executed = graphene_client.query(query)
         executed_tenants = executed["data"]["allTenants"]["edges"]
         for idx, executed_tenant in enumerate(executed_tenants):
-            assert executed_tenant["node"]["id"] == to_global_id("TenantType", tenants[idx].id)
+            assert executed_tenant["node"]["id"] == to_global_id("TenantType", str(tenants[idx].id))
             assert executed_tenant["node"]["name"] == tenants[idx].name
             assert executed_tenant["node"]["slug"] == tenants[idx].slug
             assert executed_tenant["node"]["type"] == tenants[idx].type
@@ -970,11 +977,11 @@ class TestAllTenantsQuery:
                 executed_tenant["node"]["userMemberships"], list
             )
             assert executed_tenant["node"]["membership"]["id"] == to_global_id(
-                "TenantMembershipType", memberships[idx].id
+                "TenantMembershipType", str(memberships[idx].id)
             )
             assert executed_tenant["node"]["membership"]["role"] == memberships[idx].role
             assert executed_tenant["node"]["membership"]["invitationAccepted"] == memberships[idx].is_accepted
-            assert executed_tenant["node"]["membership"]["userId"] == user.id
+            assert executed_tenant["node"]["membership"]["userId"] == to_global_id("User", str(user.id))
             assert executed_tenant["node"]["membership"]["firstName"] == user.profile.first_name
             assert executed_tenant["node"]["membership"]["lastName"] == user.profile.last_name
             assert executed_tenant["node"]["membership"]["userEmail"] == user.email
@@ -1071,17 +1078,17 @@ class TestTenantQuery:
         graphene_client.set_tenant_dependent_context(tenant=tenant, role=TenantUserRole.OWNER)
         executed = graphene_client.query(query, variable_values={"id": to_global_id("TenantType", tenant.pk)})
         executed_tenant = executed["data"]["tenant"]
-        assert executed_tenant["id"] == to_global_id("TenantType", tenant.id)
+        assert executed_tenant["id"] == to_global_id("TenantType", str(tenant.id))
         assert executed_tenant["name"] == tenant.name
         assert executed_tenant["slug"] == tenant.slug
         assert executed_tenant["type"] == tenant.type
         assert len(executed_tenant["userMemberships"]) == 11
         for user_membership in executed_tenant["userMemberships"]:
             assert user_membership["invitationToken"] is None
-        assert executed_tenant["membership"]["id"] == to_global_id("TenantMembershipType", membership.id)
+        assert executed_tenant["membership"]["id"] == to_global_id("TenantMembershipType", str(membership.id))
         assert executed_tenant["membership"]["role"] == membership.role
         assert executed_tenant["membership"]["invitationAccepted"] == membership.is_accepted
-        assert executed_tenant["membership"]["userId"] == user.id
+        assert executed_tenant["membership"]["userId"] == to_global_id("User", str(user.id))
         assert executed_tenant["membership"]["firstName"] == user.profile.first_name
         assert executed_tenant["membership"]["lastName"] == user.profile.last_name
         assert executed_tenant["membership"]["userEmail"] == user.email
@@ -1142,16 +1149,16 @@ class TestTenantQuery:
         graphene_client.set_tenant_dependent_context(tenant=tenant, role=None)
         executed = graphene_client.query(query, variable_values={"id": to_global_id("TenantType", tenant.pk)})
         executed_tenant = executed["data"]["tenant"]
-        assert executed_tenant["id"] == to_global_id("TenantType", tenant.id)
+        assert executed_tenant["id"] == to_global_id("TenantType", str(tenant.id))
         assert executed_tenant["name"] == tenant.name
         assert executed_tenant["slug"] == tenant.slug
         assert executed_tenant["type"] == tenant.type
         # userMemberships may return empty list or None for unaccepted invitation
         assert executed_tenant["userMemberships"] is None or executed_tenant["userMemberships"] == []
-        assert executed_tenant["membership"]["id"] == to_global_id("TenantMembershipType", membership.id)
+        assert executed_tenant["membership"]["id"] == to_global_id("TenantMembershipType", str(membership.id))
         assert executed_tenant["membership"]["role"] == membership.role
         assert executed_tenant["membership"]["invitationAccepted"] == membership.is_accepted
-        assert executed_tenant["membership"]["userId"] == user.id
+        assert executed_tenant["membership"]["userId"] == to_global_id("User", str(user.id))
         assert executed_tenant["membership"]["firstName"] == user.profile.first_name
         assert executed_tenant["membership"]["lastName"] == user.profile.last_name
         assert executed_tenant["membership"]["userEmail"] == user.email

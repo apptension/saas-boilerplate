@@ -248,9 +248,11 @@ class TestUpdateTenantMembershipSerializerSecurity:
         # Create a member (not legacy owner) who is also an RBAC owner
         membership = tenant_membership_factory(user=user, tenant=tenant, role=TenantUserRole.MEMBER, is_accepted=True)
 
-        # Create RBAC owner role and assign it
-        owner_role = OrganizationRole.objects.create(tenant=tenant, name="Owner", system_role_type=SystemRoleType.OWNER)
-        TenantMembershipRole.objects.create(membership=membership, role=owner_role)
+        from ..permissions import create_system_roles_for_tenant
+
+        create_system_roles_for_tenant(tenant)
+        owner_role = OrganizationRole.objects.get(tenant=tenant, system_role_type=SystemRoleType.OWNER)
+        TenantMembershipRole.objects.get_or_create(membership=membership, role=owner_role)
 
         request = Mock(tenant=tenant, user=user)
         # Changing from MEMBER to ADMIN legacy role should be allowed
@@ -280,12 +282,14 @@ class TestUpdateTenantMembershipSerializerSecurity:
             user=user, tenant=tenant, role=TenantUserRole.OWNER, is_accepted=True
         )
 
-        # Another user with RBAC owner role
+        from ..permissions import create_system_roles_for_tenant
+
+        create_system_roles_for_tenant(tenant)
+        owner_role = OrganizationRole.objects.get(tenant=tenant, system_role_type=SystemRoleType.OWNER)
         other_user = user_factory(email="rbac_owner@test.com")
         other_membership = tenant_membership_factory(
             user=other_user, tenant=tenant, role=TenantUserRole.MEMBER, is_accepted=True
         )
-        owner_role = OrganizationRole.objects.create(tenant=tenant, name="Owner", system_role_type=SystemRoleType.OWNER)
         TenantMembershipRole.objects.create(membership=other_membership, role=owner_role)
 
         request = Mock(tenant=tenant, user=other_user)
