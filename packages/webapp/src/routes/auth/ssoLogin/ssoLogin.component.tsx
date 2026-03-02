@@ -168,7 +168,7 @@ export const SSOLogin = () => {
                   type="submit"
                   className="w-full"
                   size="lg"
-                  disabled={loading || (hasResults && connections.length === 1)}
+                  disabled={!!(loading || (hasResults && connections.length === 1))}
                 >
                   {loading || (hasResults && connections.length === 1) ? (
                     <>

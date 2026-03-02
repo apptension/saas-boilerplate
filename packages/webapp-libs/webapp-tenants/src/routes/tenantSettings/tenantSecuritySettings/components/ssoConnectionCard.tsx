@@ -225,6 +225,7 @@ export const SSOConnectionCard = ({ canManageSSO }: SSOConnectionCardProps) => {
   };
 
   const handleTestConnection = async (connection: SSOConnection) => {
+    if (!tenantId) return;
     setTestResult(null);
     setTestingConnectionId(connection.id);
     try {

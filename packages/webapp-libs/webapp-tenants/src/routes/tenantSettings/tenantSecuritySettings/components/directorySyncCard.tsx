@@ -117,6 +117,7 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
   };
 
   const handleRevokeToken = async (tokenId: string) => {
+    if (!tenantId) return;
     setRevokingId(tokenId);
     try {
       await revokeToken({ variables: { id: tokenId, tenantId } });
