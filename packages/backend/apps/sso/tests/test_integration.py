@@ -64,11 +64,10 @@ class TestSAMLSSOFlow:
             idp_user_id='existing_idp_user',
         )
 
-        # Create membership
-        TenantMembership.objects.create(
+        TenantMembership.objects.get_or_create(
             user=user,
             tenant=connection.tenant,
-            role=TenantUserRole.MEMBER,
+            defaults={"role": TenantUserRole.MEMBER, "is_accepted": True},
         )
 
         provisioning_service = JITProvisioningService(connection)

@@ -101,7 +101,7 @@ export const Notification = ({
             )}
           </Button>
         </div>
-        <p className={cn('text-sm line-clamp-2', isRead ? 'text-muted-foreground' : 'text-foreground')}>{content}</p>
+        <p className={cn('text-sm line-clamp-3', isRead ? 'text-muted-foreground' : 'text-foreground')}>{content}</p>
         <div className="flex items-center gap-2">
           <Small className="text-xs text-muted-foreground">
             <RelativeDate date={new Date(createdAt as string)} />

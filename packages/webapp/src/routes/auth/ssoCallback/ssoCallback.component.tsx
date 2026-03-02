@@ -1,3 +1,4 @@
+import { storeAuthTokens } from '@sb/webapp-api-client/api';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useEffect, useState } from 'react';
@@ -8,7 +9,7 @@ import { RoutesConfig } from '../../../app/config/routes';
 
 /**
  * SSO Callback Handler
- * 
+ *
  * This component handles the callback after successful SSO authentication.
  * It receives JWT tokens from the backend and stores them, then redirects
  * the user to their intended destination.
@@ -31,9 +32,7 @@ export const SSOCallback = () => {
       }
 
       try {
-        // Store tokens in localStorage (same pattern as regular login)
-        localStorage.setItem('token', accessToken);
-        localStorage.setItem('refresh_token', refreshToken);
+        storeAuthTokens(accessToken, refreshToken);
 
         // Track the SSO login event
         trackEvent('auth', 'sso-login');

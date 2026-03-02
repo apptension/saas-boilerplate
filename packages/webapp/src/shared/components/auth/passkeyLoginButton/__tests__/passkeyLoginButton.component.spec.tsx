@@ -1,6 +1,6 @@
 import { ENV } from '@sb/webapp-core/config/env';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 
 import { render } from '../../../../../tests/utils/rendering';
@@ -197,14 +197,16 @@ describe('PasskeyLoginButton: Component', () => {
               rpId: 'localhost',
             }),
         })
-        .mockResolvedValueOnce({ ok: true });
+        .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({}) });
       mockCredentialsGet.mockResolvedValue(mockPublicKeyCredential());
 
       render(<PasskeyLoginButton />);
 
       await userEvent.click(await screen.findByRole('button', { name: /sign in with passkey/i }));
 
-      expect(trackEvent).toHaveBeenCalledWith('auth', 'passkey-login');
+      await waitFor(() => {
+        expect(trackEvent).toHaveBeenCalledWith('auth', 'passkey-login');
+      });
       expect(window.location.href).toBe('/en/');
     });
 
@@ -221,14 +223,16 @@ describe('PasskeyLoginButton: Component', () => {
               rpId: 'localhost',
             }),
         })
-        .mockResolvedValueOnce({ ok: true });
+        .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({}) });
       mockCredentialsGet.mockResolvedValue(mockPublicKeyCredential());
 
       render(<PasskeyLoginButton />);
 
       await userEvent.click(await screen.findByRole('button', { name: /sign in with passkey/i }));
 
-      expect(window.location.href).toBe('/en/profile');
+      await waitFor(() => {
+        expect(window.location.href).toBe('/en/profile');
+      });
     });
   });
 });

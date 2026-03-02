@@ -1,3 +1,4 @@
+import { TenantType } from '@sb/webapp-api-client/constants';
 import { Navigate, Outlet } from 'react-router-dom';
 
 import { usePermissionCheck, PermissionCode } from '../../../hooks/usePermissionCheck';

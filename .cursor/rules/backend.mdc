@@ -6,6 +6,25 @@ alwaysApply: false
 
 # Backend Development Patterns
 
+## Imports
+
+**Avoid inline imports.** Place all imports at the top of the file.
+
+```python
+# ❌ WRONG - Inline import inside function/method
+def test_something(self):
+    from ..models import TenantMembershipRole
+    ...
+
+# ✅ CORRECT - Import at module top
+from ..models import TenantMembership, TenantMembershipRole
+
+def test_something(self):
+    ...
+```
+
+Exceptions: circular import workarounds (e.g. in migrations using `apps.get_model`) or lazy imports inside `TYPE_CHECKING` blocks.
+
 ## GraphQL Mutation with Serializer
 
 Create a serializer-based mutation in three steps:

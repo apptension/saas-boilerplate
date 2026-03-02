@@ -1,6 +1,10 @@
+import logging
+
 from graphql_relay import from_global_id
 from django.utils.functional import SimpleLazyObject
 from .models import Tenant, TenantMembership
+
+logger = logging.getLogger(__name__)
 
 
 def get_current_tenant(tenant_id):
@@ -19,7 +23,7 @@ def get_current_tenant(tenant_id):
         return None
 
 
-def get_current_tenant_with_membership_check(tenant_id, user):
+def get_current_tenant_with_membership_check(tenant_id, user, request=None):
     """
     Retrieve the current tenant with membership verification.
 
@@ -27,9 +31,13 @@ def get_current_tenant_with_membership_check(tenant_id, user):
     in the tenant before returning it. This prevents unauthorized
     access to tenant data by manipulating tenant_id in requests.
 
+    When the request was authenticated via password, tenants that enforce SSO
+    for the user's domain are blocked (unless the user has break-glass permission).
+
     Args:
         tenant_id (str): The tenant ID (hashid).
         user: The authenticated user.
+        request: The HTTP request (used for auth_method checks).
 
     Returns:
         Tenant or None: The tenant if found AND user has membership, else None.
@@ -43,14 +51,20 @@ def get_current_tenant_with_membership_check(tenant_id, user):
         return None
 
     # SECURITY: Verify user has accepted membership in this tenant
-    if (
-        user
-        and user.is_authenticated
-        and TenantMembership.objects.filter(user=user, tenant=tenant, is_accepted=True).exists()
-    ):
-        return tenant
+    if not TenantMembership.objects.filter(user=user, tenant=tenant, is_accepted=True).exists():
+        return None
 
-    # User is not authenticated or not a member - don't set tenant
+    # SECURITY: Block password sessions from accessing SSO-enforced tenants
+    if request is not None:
+        from apps.sso.enforcement import check_tenant_sso_enforcement
+
+        block_reason = check_tenant_sso_enforcement(request, tenant, user)
+        if block_reason:
+            logger.warning(f"Blocked tenant access: user={user.email} tenant={tenant.id} reason={block_reason}")
+            return None
+
+    return tenant
+
     return None
 
 
@@ -138,21 +152,34 @@ class TenantUserRoleMiddleware(object):
             tenant_id = args.get("tenant_id") or args.get("tenantId")
 
         if tenant_id:
-            id_type, pk = from_global_id(tenant_id)
-            if id_type == "TenantType":
-                return pk
+            try:
+                id_type, pk = from_global_id(tenant_id)
+                if id_type == "TenantType":
+                    return pk
+                # Accept raw hashid when client sends tenant id without Relay global ID prefix
+                if pk:
+                    return pk
+            except (TypeError, ValueError):
+                # Invalid global ID; try using as raw tenant pk (hashid)
+                return tenant_id
 
         return None
 
     def resolve(self, next, root, info, **args):
-        if not hasattr(info.context, "tenant_id"):
-            info.context.tenant_id = self._get_tenant_id_from_arguments(args)
+        # Always refresh tenant_id from current resolver args when present (e.g. createDocument
+        # has input.tenantId; root "mutation" has no tenant_id so we must not stick with None)
+        tenant_id_from_args = self._get_tenant_id_from_arguments(args)
+        if tenant_id_from_args is not None:
+            info.context.tenant_id = tenant_id_from_args
+        elif not hasattr(info.context, "tenant_id"):
+            info.context.tenant_id = None
 
         # SECURITY: Use membership-verified tenant retrieval
         # This ensures info.context.tenant is only set if the user has access
         user = getattr(info.context, "user", None)
+        request = info.context
         info.context.tenant = SimpleLazyObject(
-            lambda: get_current_tenant_with_membership_check(info.context.tenant_id, user)
+            lambda: get_current_tenant_with_membership_check(info.context.tenant_id, user, request)
         )
         info.context.user_role = SimpleLazyObject(lambda: get_current_user_role(info.context.tenant, info.context.user))
 

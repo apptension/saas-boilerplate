@@ -41,6 +41,7 @@
     "@sb/tools": "workspace:*",
     "@sb/webapp-ai-assistant": "workspace:*",
     "@sb/webapp-api-client": "workspace:*",
+    "@sb/webapp-backup": "workspace:*",
     "@sb/webapp-contentful": "workspace:*",
     "@sb/webapp-core": "workspace:*",
     "@sb/webapp-crud-demo": "workspace:*",

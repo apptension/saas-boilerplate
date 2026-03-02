@@ -1,3 +1,4 @@
+import { storeAuthTokens } from '@sb/webapp-api-client/api';
 import { Button } from '@sb/webapp-core/components/ui/button';
 import { ENV } from '@sb/webapp-core/config/env';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -118,7 +119,13 @@ export const PasskeyLoginButton = () => {
         throw new Error(errorData.error || 'Authentication failed');
       }
 
-      // Backend sets cookies directly, we just need to redirect
+      const verifyData = await verifyResponse.json();
+
+      // Store tokens in localStorage (same as user/pass login) for Safari/mobile fallback
+      if (verifyData?.access) {
+        storeAuthTokens(verifyData.access, verifyData.refresh);
+      }
+
       trackEvent('auth', 'passkey-login');
 
       // Parse the 'redirect' param from search if available (consistent with regular login)

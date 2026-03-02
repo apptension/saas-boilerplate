@@ -40,14 +40,15 @@ export const CurrentTenantProvider = ({ children }: CurrentTenantProviderProps) 
 
   useEffect(() => {
     if (currentTenant && userId) {
-      parsedStoredState[userId] = currentTenant.id;
-      setCurrentTenantStorageState(parsedStoredState);
+      const { parsedStoredState: state } = parseStoredState(storedState, userId);
+      state[userId] = currentTenant.id;
+      setCurrentTenantStorageState(state);
     }
-  }, [currentTenant?.id, userId]);
+  }, [currentTenant, storedState, userId]);
 
   const value = useMemo(
     () => ({ data: currentTenant || null }),
-    [currentTenant?.id, currentMembership?.role, currentTenant?.name, currentTenant?.actionLoggingEnabled]
+    [currentTenant]
   );
 
   return <currentTenantContext.Provider value={value}>{children}</currentTenantContext.Provider>;

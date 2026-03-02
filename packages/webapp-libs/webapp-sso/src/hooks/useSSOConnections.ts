@@ -3,7 +3,7 @@ import { gql } from '@sb/webapp-api-client/graphql';
 
 export const SSO_CONNECTIONS_QUERY = gql(`
   query SSOConnectionsQuery($tenantId: ID!) {
-    ssoConnections(first: 50) {
+    ssoConnections(tenantId: $tenantId, first: 50) {
       edges {
         node {
           id
@@ -64,8 +64,8 @@ export const ACTIVATE_SSO_CONNECTION = gql(`
 `);
 
 export const DEACTIVATE_SSO_CONNECTION = gql(`
-  mutation DeactivateSSOConnectionOp($id: ID!) {
-    deactivateSsoConnection(id: $id) {
+  mutation DeactivateSSOConnectionOp($id: ID!, $tenantId: ID!) {
+    deactivateSsoConnection(id: $id, tenantId: $tenantId) {
       ssoConnection {
         id
         status

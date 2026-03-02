@@ -13,6 +13,8 @@ export const allPermissionsQuery = gql(/* GraphQL */ `
           name
           description
           category
+          categoryLabel
+          categoryDescription
           sortOrder
         }
       }

@@ -11,6 +11,7 @@ from common.graphql import ratelimit
 from common.graphql.acl.decorators import permission_classes
 from apps.multitenancy.models import Tenant
 from apps.multitenancy.schema import TenantType
+from apps.sso.enforcement import filter_tenants_for_password_session
 from . import models
 from . import serializers
 from .services.users import get_user_from_resolver, get_role_names, get_user_avatar_url
@@ -276,7 +277,7 @@ class CurrentUserType(DjangoObjectType):
         tenants = user.tenants.all()
         if not len(tenants):
             Tenant.objects.get_or_create_user_default_tenant(user)
-        return tenants
+        return filter_tenants_for_password_session(info.context, tenants)
 
 
 class UserProfileType(DjangoObjectType):

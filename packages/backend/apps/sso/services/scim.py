@@ -12,10 +12,11 @@ import logging
 from typing import Optional, Dict, Any, List
 
 from django.db import transaction
+from django.utils import timezone
 
 from apps.users.models import User
-from apps.multitenancy.models import TenantMembership
-from apps.multitenancy.constants import TenantUserRole
+from apps.multitenancy.models import TenantMembership, OrganizationRole, TenantMembershipRole
+from apps.multitenancy.constants import TenantUserRole, SystemRoleType
 from apps.sso.models import SCIMToken, SSOUserLink, SSOAuditLog, TenantSSOConnection
 from apps.sso.constants import SSOAuditEventType
 from apps.sso.security import sanitize_scim_filter
@@ -88,6 +89,89 @@ class SCIMService:
             ip_address=ip_address,
         )
 
+    def _ensure_rbac_member_role(self, membership: TenantMembership) -> None:
+        """
+        Assign the RBAC Member role to a membership if it has no roles.
+        Ensures SCIM-provisioned users appear in the members list and have proper permissions.
+        """
+        if TenantMembershipRole.objects.filter(membership=membership).exists():
+            return
+
+        from apps.multitenancy.permissions import create_system_roles_for_tenant
+
+        create_system_roles_for_tenant(self.tenant)
+        member_role = OrganizationRole.objects.filter(
+            tenant=self.tenant,
+            system_role_type=SystemRoleType.MEMBER,
+        ).first()
+        if member_role:
+            TenantMembershipRole.objects.get_or_create(
+                membership=membership,
+                role=member_role,
+                defaults={'assigned_by': membership.user},
+            )
+
+    def _reactivate_user(
+        self,
+        link: SSOUserLink,
+        scim_user: Dict[str, Any],
+        external_id: str,
+        ip_address: str = None,
+    ) -> Dict[str, Any]:
+        """
+        Reactivate a user who was previously deactivated (removed from IdP).
+        Called when IdP sends create for a user that already has an SSOUserLink.
+        """
+        user = link.user
+        email = user.email
+
+        # Reactivate user
+        user.is_active = True
+        user.save(update_fields=['is_active'])
+
+        # Update profile from payload
+        name = scim_user.get('name', {})
+        if name and hasattr(user, 'profile'):
+            if name.get('givenName') is not None:
+                user.profile.first_name = name.get('givenName', '')
+            if name.get('familyName') is not None:
+                user.profile.last_name = name.get('familyName', '')
+            user.profile.save()
+
+        # Ensure tenant membership exists (may have been removed by deactivation)
+        membership, created = TenantMembership.objects.get_or_create(
+            user=user,
+            tenant=self.tenant,
+            defaults={
+                'role': TenantUserRole.MEMBER,
+                'is_accepted': True,
+                'invitation_accepted_at': timezone.now(),
+            },
+        )
+        if not created and not membership.is_accepted:
+            membership.is_accepted = True
+            membership.invitation_accepted_at = timezone.now()
+            membership.save(update_fields=['is_accepted', 'invitation_accepted_at'])
+        self._ensure_rbac_member_role(membership)
+
+        # Update link
+        link.provisioned_via_scim = True
+        link.idp_email = email
+        if name:
+            link.idp_first_name = name.get('givenName', '')
+            link.idp_last_name = name.get('familyName', '')
+        link.save()
+
+        self._log_event(
+            event_type=SSOAuditEventType.SCIM_USER_CREATED,
+            user=user,
+            description=f'User {email} reactivated via SCIM',
+            metadata={'external_id': external_id},
+            ip_address=ip_address,
+        )
+
+        return self._user_to_scim(user, link)
+
     # ==================
     # User Operations
     # ==================
@@ -109,10 +193,12 @@ class SCIMService:
         Returns:
             SCIM ListResponse
         """
-        # Get all users that are members of this tenant via SSO
+        # Get all active users that are members of this tenant via SSO.
+        # Exclude deactivated users (active=false) so removed users don't appear in the list.
         queryset = SSOUserLink.objects.filter(
             sso_connection__tenant=self.tenant,
             provisioned_via_scim=True,
+            user__is_active=True,
         ).select_related("user", "user__profile")
 
         # Apply filter if provided
@@ -177,14 +263,24 @@ class SCIMService:
 
         external_id = scim_user.get("externalId", user_name)
 
-        # Check if user already exists
-        existing_link = SSOUserLink.objects.filter(
-            sso_connection__tenant=self.tenant,
-            idp_user_id=external_id,
-        ).first()
+        # Check if user already exists (e.g. was deactivated when removed from IdP)
+        existing_link = (
+            SSOUserLink.objects.filter(
+                sso_connection__tenant=self.tenant,
+                idp_user_id=external_id,
+            )
+            .select_related('user', 'user__profile')
+            .first()
+        )
 
         if existing_link:
-            raise SCIMError("User already exists", status=409, scim_type="uniqueness")
+            if existing_link.user.email.lower() != user_name.lower():
+                raise SCIMError(
+                    f"externalId '{external_id}' is already assigned to another user",
+                    status=409,
+                    scim_type="uniqueness",
+                )
+            return self._reactivate_user(existing_link, scim_user, external_id, ip_address)
 
         # Extract name
         name = scim_user.get("name", {})
@@ -206,6 +302,9 @@ class SCIMService:
 
         # Link existing user or create new one
         user = existing_user or User.objects.create_user(email=email)
+        if not user.is_active:
+            user.is_active = True
+            user.save(update_fields=['is_active'])
 
         # Update profile
         if hasattr(user, "profile"):
@@ -213,20 +312,29 @@ class SCIMService:
             user.profile.last_name = last_name
             user.profile.save()
 
-        # Create tenant membership if not exists
-        membership, _ = TenantMembership.objects.get_or_create(
+        # Create tenant membership if not exists (consistent with JIT provisioning)
+        membership, membership_created = TenantMembership.objects.get_or_create(
             user=user,
             tenant=self.tenant,
             defaults={
                 "role": TenantUserRole.MEMBER,
                 "is_accepted": True,
+                'invitation_accepted_at': timezone.now(),
             },
         )
+        if not membership_created and not membership.is_accepted:
+            membership.is_accepted = True
+            membership.invitation_accepted_at = timezone.now()
+            membership.save(update_fields=['is_accepted', 'invitation_accepted_at'])
+
+        # Assign RBAC Member role so user appears in members list and has proper permissions
+        self._ensure_rbac_member_role(membership)
 
         # Create SSO link
+        sso_connection = self.sso_connection or self._get_default_connection()
         link = SSOUserLink.objects.create(
             user=user,
-            sso_connection=self.sso_connection or self._get_default_connection(),
+            sso_connection=sso_connection,
             idp_user_id=external_id,
             idp_email=email,
             idp_first_name=first_name,
@@ -287,9 +395,24 @@ class SCIMService:
         active = scim_user.get("active")
         if active is not None:
             user.is_active = active
-            user.save()
+            user.save(update_fields=['is_active'])
+            if not active:
+                # Remove from org when deactivated (user removed from IdP SCIM app)
+                TenantMembership.objects.filter(
+                    user=user,
+                    tenant=self.tenant,
+                ).delete()
 
         link.save()
+
+        # Ensure RBAC Member role for users who may have been created before we added role assignment
+        membership = TenantMembership.objects.filter(
+            user=user,
+            tenant=self.tenant,
+            is_accepted=True,
+        ).first()
+        if membership:
+            self._ensure_rbac_member_role(membership)
 
         self._log_event(
             event_type=SSOAuditEventType.SCIM_USER_UPDATED,
@@ -364,7 +487,13 @@ class SCIMService:
                 if path == "active" or path == "" and "active" in value:
                     active_value = value if path == "active" else value.get("active")
                     user.is_active = active_value
-                    user.save()
+                    user.save(update_fields=['is_active'])
+                    if not active_value:
+                        # Remove from org when deactivated (user removed from IdP SCIM app)
+                        TenantMembership.objects.filter(
+                            user=user,
+                            tenant=self.tenant,
+                        ).delete()
 
                 elif path.startswith("name.") or (path == "" and "name" in value):
                     name_data = value if path.startswith("name.") else value.get("name", {})

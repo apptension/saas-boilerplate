@@ -40,6 +40,15 @@ class TenantSSOConnection(TimestampedMixin, models.Model):
         default=list, blank=True, help_text="List of email domains allowed to use this SSO connection"
     )
 
+    # Enforce SSO - block password login for users from allowed domains
+    enforce_sso = models.BooleanField(
+        default=False,
+        help_text=(
+            "When enabled, users from allowed domains must use SSO to access this tenant. "
+            "Password login will not grant access."
+        ),
+    )
+
     # JIT Provisioning settings
     jit_provisioning_enabled = models.BooleanField(
         default=True, help_text="Automatically create users on first SSO login"

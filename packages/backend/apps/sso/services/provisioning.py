@@ -10,8 +10,9 @@ from django.db import transaction
 from django.utils import timezone
 
 from apps.users.models import User
-from apps.multitenancy.models import TenantMembership
-from apps.multitenancy.constants import TenantUserRole
+from apps.multitenancy.models import TenantMembership, TenantMembershipRole, OrganizationRole
+from apps.multitenancy.constants import TenantUserRole, SystemRoleType
+from apps.multitenancy.permissions import create_system_roles_for_tenant
 from apps.sso.models import (
     TenantSSOConnection,
     SSOUserLink,
@@ -100,7 +101,11 @@ class JITProvisioningService:
             # Update user profile if attributes changed
             self._update_user_profile(user, first_name, last_name)
 
-            # Update role based on groups
+            # Ensure tenant membership exists (handles case where user was removed or never added)
+            role = self.connection.get_role_for_groups(groups)
+            self._ensure_tenant_membership(user, role)
+
+            # Update role based on groups (may upgrade/downgrade if group mapping changed)
             self._update_user_role(user, groups)
 
             self._log_event(
@@ -148,6 +153,11 @@ class JITProvisioningService:
 
             # Create or update tenant membership
             role = self.connection.get_role_for_groups(groups)
+            membership = TenantMembership.objects.filter(
+                user=user,
+                tenant=self.tenant,
+            ).first()
+            old_role = membership.role if membership else None
             self._ensure_tenant_membership(user, role)
 
             event_type = SSOAuditEventType.USER_PROVISIONED if is_new else SSOAuditEventType.USER_UPDATED
@@ -155,7 +165,7 @@ class JITProvisioningService:
                 event_type=event_type,
                 user=user,
                 description=f"User {email} {'provisioned' if is_new else 'linked'} via JIT",
-                metadata={"groups": groups, "role": role},
+                metadata={'groups': groups, 'old_role': old_role, 'new_role': role},
                 ip_address=ip_address,
                 user_agent=user_agent,
             )
@@ -212,9 +222,10 @@ class JITProvisioningService:
             tenant=self.tenant,
         ).first()
 
-        if membership and membership.role != role:
-            # Only update if role is different
-            # Don't downgrade owners unless explicitly configured
+        if not membership:
+            return
+
+        if membership.role != role:
             role_priority = {
                 TenantUserRole.OWNER: 3,
                 TenantUserRole.ADMIN: 2,
@@ -224,20 +235,58 @@ class JITProvisioningService:
             current_priority = role_priority.get(membership.role, 0)
             new_priority = role_priority.get(role, 0)
 
-            # Only update if new role is higher priority or if configured to allow downgrades
             if new_priority >= current_priority:
+                old_role = membership.role
                 membership.role = role
                 membership.save(update_fields=["role", "updated_at"])
+
+                # Update RBAC role to match
+                self._sync_rbac_role(membership, role, user)
 
                 self._log_event(
                     event_type=SSOAuditEventType.GROUP_MAPPING_APPLIED,
                     user=user,
                     description=f"Role updated to {role} based on group mapping",
-                    metadata={"groups": groups, "old_role": membership.role, "new_role": role},
+                    metadata={"groups": groups, "old_role": old_role, "new_role": role},
                 )
+        else:
+            # Even if legacy role matches, ensure RBAC role exists
+            self._ensure_rbac_role(membership, role, user)
+
+    def _sync_rbac_role(self, membership: TenantMembership, legacy_role: str, user: User):
+        """Replace existing RBAC system roles with the one matching the new legacy role."""
+        system_role_type = self.LEGACY_TO_SYSTEM_ROLE.get(legacy_role, SystemRoleType.MEMBER)
+
+        if not OrganizationRole.objects.filter(tenant=self.tenant, system_role_type__isnull=False).exists():
+            create_system_roles_for_tenant(self.tenant)
+
+        # Remove existing system role assignments (keep custom roles untouched)
+        TenantMembershipRole.objects.filter(
+            membership=membership,
+            role__system_role_type__isnull=False,
+        ).delete()
+
+        org_role = OrganizationRole.objects.filter(
+            tenant=self.tenant,
+            system_role_type=system_role_type,
+        ).first()
+
+        if org_role:
+            TenantMembershipRole.objects.create(
+                membership=membership,
+                role=org_role,
+                assigned_by=user,
+            )
+
+    # Maps legacy TenantUserRole values to SystemRoleType values
+    LEGACY_TO_SYSTEM_ROLE = {
+        TenantUserRole.OWNER: SystemRoleType.OWNER,
+        TenantUserRole.ADMIN: SystemRoleType.ADMIN,
+        TenantUserRole.MEMBER: SystemRoleType.MEMBER,
+    }
 
     def _ensure_tenant_membership(self, user: User, role: str):
-        """Ensure user has a membership in the tenant."""
+        """Ensure user has a membership in the tenant with proper RBAC role."""
         membership, created = TenantMembership.objects.get_or_create(
             user=user,
             tenant=self.tenant,
@@ -253,7 +302,29 @@ class JITProvisioningService:
             membership.invitation_accepted_at = timezone.now()
             membership.save(update_fields=["is_accepted", "invitation_accepted_at"])
 
+        self._ensure_rbac_role(membership, role, user)
+
         return membership
+
+    def _ensure_rbac_role(self, membership: TenantMembership, legacy_role: str, user: User):
+        """Assign the corresponding RBAC system role to the membership."""
+        system_role_type = self.LEGACY_TO_SYSTEM_ROLE.get(legacy_role, SystemRoleType.MEMBER)
+
+        # Ensure system roles exist for this tenant
+        if not OrganizationRole.objects.filter(tenant=self.tenant, system_role_type__isnull=False).exists():
+            create_system_roles_for_tenant(self.tenant)
+
+        org_role = OrganizationRole.objects.filter(
+            tenant=self.tenant,
+            system_role_type=system_role_type,
+        ).first()
+
+        if org_role:
+            TenantMembershipRole.objects.get_or_create(
+                membership=membership,
+                role=org_role,
+                defaults={'assigned_by': user},
+            )
 
     def _is_domain_allowed(self, email: str) -> bool:
         """Check if the email domain is allowed for this SSO connection."""

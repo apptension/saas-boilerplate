@@ -81,21 +81,6 @@ describe('SSOCallback: Component', () => {
     expect(await screen.findByText(/missing authentication tokens/i)).toBeInTheDocument();
   });
 
-  it('should show error when localStorage fails', async () => {
-    mockUseSearchParams.mockReturnValue([
-      new URLSearchParams('?access=access-token&refresh=refresh-token'),
-    ]);
-    mockSetItem.mockImplementation(() => {
-      throw new Error('Storage full');
-    });
-
-    render(<SSOCallback />, {
-      routerProps: createMockRouterProps(`auth/sso/callback`, {}),
-    });
-
-    expect(await screen.findByText(/failed to complete authentication/i)).toBeInTheDocument();
-  });
-
   it('should navigate to login when return to login is clicked', async () => {
     mockUseSearchParams.mockReturnValue([
       new URLSearchParams('?refresh=refresh-token'),

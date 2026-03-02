@@ -2,8 +2,8 @@ import { useQuery, useMutation } from '@apollo/client/react';
 import { gql } from '@sb/webapp-api-client/graphql';
 
 const TENANT_PASSKEYS_QUERY = gql(`
-  query TenantPasskeysQuery($search: String) {
-    tenantPasskeys(search: $search) {
+  query TenantPasskeysQuery($tenantId: ID!, $search: String) {
+    tenantPasskeys(tenantId: $tenantId, search: $search) {
       id
       name
       authenticatorType
@@ -42,17 +42,17 @@ const DELETE_PASSKEY = gql(`
 `);
 
 const DELETE_TENANT_PASSKEY = gql(`
-  mutation TenantSecurityDeleteTenantPasskey($id: ID!) {
-    deleteTenantPasskey(id: $id) {
+  mutation TenantSecurityDeleteTenantPasskey($id: ID!, $tenantId: ID!) {
+    deleteTenantPasskey(id: $id, tenantId: $tenantId) {
       ok
     }
   }
 `);
 
-export function useTenantPasskeys(canManagePasskeys: boolean, searchQuery?: string) {
+export function useTenantPasskeys(tenantId: string | undefined, canManagePasskeys: boolean, searchQuery?: string) {
   const tenantQuery = useQuery(TENANT_PASSKEYS_QUERY, {
-    variables: { search: searchQuery || undefined },
-    skip: !canManagePasskeys,
+    variables: { tenantId: tenantId ?? '', search: searchQuery || undefined },
+    skip: !canManagePasskeys || !tenantId,
   });
 
   const myQuery = useQuery(MY_PASSKEYS_QUERY, {

@@ -134,6 +134,7 @@ describe('useSCIMTokens', () => {
     const revokeMock = composeMockedQueryResult(REVOKE_SCIM_TOKEN, {
       variables: {
         id: 'token-1',
+        tenantId: mockTenantId,
       },
       data: {
         revokeScimToken: {
@@ -162,6 +163,7 @@ describe('useSCIMTokens', () => {
     const revokeMock = composeMockedQueryResult(REVOKE_SCIM_TOKEN, {
       variables: {
         id: 'token-1',
+        tenantId: mockTenantId,
       },
       data: {
         revokeScimToken: {

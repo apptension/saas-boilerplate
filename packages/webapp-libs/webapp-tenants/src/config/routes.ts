@@ -9,6 +9,7 @@ export const RoutesConfig = {
       security: 'security',
       activityLogs: 'activity-logs',
       roles: 'roles',
+      backup: 'backup',
     }),
     accessDenied: 'access-denied',
   }),

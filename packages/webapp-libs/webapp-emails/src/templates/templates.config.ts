@@ -12,6 +12,7 @@ import * as InvoiceRequestMention from './invoiceRequestMention';
 import * as InvoiceCreated from './invoiceCreated';
 import * as InvoiceFileAdded from './invoiceFileAdded';
 import * as ProjectNoteMention from './projectNoteMention';
+import * as BackupReady from './backupReady';
 
 //<-- INJECT EMAIL TEMPLATE IMPORT -->
 
@@ -29,5 +30,6 @@ export const templates: Record<EmailTemplateType, EmailTemplateDefinition> = {
   [EmailTemplateType.INVOICE_CREATED]: InvoiceCreated,
   [EmailTemplateType.INVOICE_FILE_ADDED]: InvoiceFileAdded,
   [EmailTemplateType.PROJECT_NOTE_MENTION]: ProjectNoteMention,
+  [EmailTemplateType.BACKUP_READY]: BackupReady,
   //<-- INJECT EMAIL TEMPLATE -->
 };

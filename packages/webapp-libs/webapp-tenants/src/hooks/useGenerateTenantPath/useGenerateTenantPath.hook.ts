@@ -35,7 +35,7 @@ export const useGenerateTenantPath = () => {
   return useCallback(
     (path: string, params: Record<string, string | number> = {}) =>
       generatePath(generateLocalePath('') + getTenantPath(path), { tenantId, ...params }),
-    [tenantId]
+    [tenantId, generateLocalePath]
   );
 };
 

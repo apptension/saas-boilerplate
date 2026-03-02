@@ -65,7 +65,7 @@ export function SSOConnectionsList() {
     try {
       await activateConnection({
         variables: {
-          input: { id: connectionId },
+          input: { id: connectionId, tenantId },
         },
       });
       toast({
@@ -89,7 +89,7 @@ export function SSOConnectionsList() {
   const handleDeactivate = async (connectionId: string) => {
     try {
       await deactivateConnection({
-        variables: { id: connectionId },
+        variables: { id: connectionId, tenantId },
       });
       toast({
         description: intl.formatMessage({
@@ -113,7 +113,7 @@ export function SSOConnectionsList() {
     try {
       await deleteConnection({
         variables: {
-          input: { id: connectionId },
+          input: { id: connectionId, tenantId },
         },
       });
       toast({

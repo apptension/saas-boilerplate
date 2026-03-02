@@ -54,6 +54,9 @@ import {
   Users,
 } from 'lucide-react';
 
+/** Normalize API category (lowercase e.g. 'backup') to display key (UPPERCASE) for ordering and labels */
+const toCategoryKey = (category: string) => category?.toUpperCase() ?? category;
+
 // Simple checkbox using Radix primitives with proper styling
 const SimpleCheckbox = ({
   checked,
@@ -118,7 +121,7 @@ const ROLE_COLORS = [
   { value: 'GRAY', label: 'Gray', className: 'bg-slate-500', ring: 'ring-slate-500/30' },
 ] as const;
 
-// Permission category configuration
+// Permission category configuration (UPPERCASE keys; API returns lowercase, normalized via toCategoryKey)
 const CATEGORY_CONFIG: Record<string, { label: string; icon: React.ReactNode; description: string }> = {
   ORGANIZATION: {
     label: 'Organization',
@@ -155,6 +158,7 @@ const CATEGORY_CONFIG: Record<string, { label: string; icon: React.ReactNode; de
     icon: <BarChart3 className="h-4 w-4" />,
     description: 'Finance and management tools',
   },
+  // App-defined categories (e.g. BACKUP from backup/permissions.py) use the fallback below: label from key, Shield icon
 };
 
 interface Permission {
@@ -163,6 +167,8 @@ interface Permission {
   name: string;
   description?: string;
   category: string;
+  categoryLabel?: string | null;
+  categoryDescription?: string | null;
 }
 
 interface OrganizationRole {
@@ -321,22 +327,33 @@ const PermissionPicker = ({
     new Set(['ORGANIZATION', 'MEMBERS', 'FEATURES'])
   );
 
-  // Group permissions by category
+  // Group permissions by category (API returns lowercase; normalize to UPPERCASE for display)
   const permissionsByCategory = useMemo(() => {
     const grouped: Record<string, Permission[]> = {};
     allPermissions.forEach((perm) => {
-      if (!grouped[perm.category]) {
-        grouped[perm.category] = [];
+      const key = toCategoryKey(perm.category);
+      if (!grouped[key]) {
+        grouped[key] = [];
       }
-      grouped[perm.category].push(perm);
+      grouped[key].push(perm);
     });
     return grouped;
   }, [allPermissions]);
 
-  // Order categories
+  // Order categories (core first; app-defined from modules appear at end via rest)
   const orderedCategories = useMemo(() => {
-    const order = ['ORGANIZATION', 'MEMBERS', 'SECURITY', 'BILLING', 'FEATURES', 'DASHBOARD', 'MANAGEMENT'];
-    return order.filter((cat) => permissionsByCategory[cat]);
+    const order = [
+      'ORGANIZATION',
+      'MEMBERS',
+      'SECURITY',
+      'BILLING',
+      'FEATURES',
+      'DASHBOARD',
+      'MANAGEMENT',
+    ];
+    const knownFirst = order.filter((cat) => permissionsByCategory[cat]);
+    const rest = Object.keys(permissionsByCategory).filter((cat) => !order.includes(cat));
+    return [...knownFirst, ...rest];
   }, [permissionsByCategory]);
 
   const toggleCategory = (category: string) => {
@@ -378,10 +395,11 @@ const PermissionPicker = ({
         <div className="p-1">
           {orderedCategories.map((category, index) => {
             const permissions = permissionsByCategory[category];
-            const config = CATEGORY_CONFIG[category] || { 
-              label: category, 
+            const firstPerm = permissions?.[0];
+            const config = CATEGORY_CONFIG[category] || {
+              label: firstPerm?.categoryLabel ?? category.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()),
               icon: <Shield className="h-4 w-4" />,
-              description: ''
+              description: firstPerm?.categoryDescription ?? '',
             };
             const isExpanded = expandedCategories.has(category);
             const categoryIds = permissions.map((p) => p.id);
@@ -391,54 +409,59 @@ const PermissionPicker = ({
 
             return (
               <div key={category} className="mb-1 last:mb-0">
-                <button
-                  type="button"
-                  className={cn(
-                    'flex items-center justify-between w-full px-3 py-2.5 rounded-md',
-                    'text-left transition-colors',
-                    'hover:bg-accent/50',
-                    isExpanded && 'bg-accent/30'
-                  )}
-                  onClick={() => toggleCategory(category)}
-                >
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <div className={cn(
-                      'flex items-center justify-center rounded-md p-1.5',
-                      'bg-primary/10 text-primary'
-                    )}>
-                      {config.icon}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-sm">{config.label}</span>
-                        <Badge 
-                          variant={allSelected ? 'default' : someSelected ? 'secondary' : 'outline'} 
-                          className="text-[10px] h-5 px-1.5"
-                        >
-                          {selectedCount}/{categoryIds.length}
-                        </Badge>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    className={cn(
+                      'flex items-center justify-between flex-1 px-3 py-2.5 rounded-md',
+                      'text-left transition-colors',
+                      'hover:bg-accent/50',
+                      isExpanded && 'bg-accent/30'
+                    )}
+                    onClick={() => toggleCategory(category)}
+                  >
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <div className={cn(
+                        'flex items-center justify-center rounded-md p-1.5',
+                        'bg-primary/10 text-primary'
+                      )}>
+                        {config.icon}
                       </div>
-                      {config.description && (
-                        <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block">
-                          {config.description}
-                        </p>
-                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-sm">{config.label}</span>
+                          <Badge 
+                            variant={allSelected ? 'default' : someSelected ? 'secondary' : 'outline'} 
+                            className="text-[10px] h-5 px-1.5"
+                          >
+                            {selectedCount}/{categoryIds.length}
+                          </Badge>
+                        </div>
+                        {config.description && (
+                          <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block">
+                            {config.description}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                    {isExpanded ? (
+                      <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                    )}
+                  </button>
+                  <div
+                    className="shrink-0"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <SimpleCheckbox
                       checked={allSelected}
                       indeterminate={someSelected}
                       onCheckedChange={() => toggleCategoryAll(category, permissions)}
                       disabled={disabled}
                     />
-                    {isExpanded ? (
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                    )}
                   </div>
-                </button>
+                </div>
                 
                 {isExpanded && (
                   <div className="ml-3 pl-3 border-l-2 border-border/50 space-y-0.5 py-1">

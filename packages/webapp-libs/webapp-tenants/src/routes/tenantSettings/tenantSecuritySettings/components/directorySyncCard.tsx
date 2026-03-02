@@ -117,9 +117,10 @@ export const DirectorySyncCard = ({ canManageSSO }: DirectorySyncCardProps) => {
   };
 
   const handleRevokeToken = async (tokenId: string) => {
+    if (!tenantId) return;
     setRevokingId(tokenId);
     try {
-      await revokeToken({ variables: { id: tokenId } });
+      await revokeToken({ variables: { id: tokenId, tenantId } });
       toast({
         description: intl.formatMessage({
           defaultMessage: 'SCIM token revoked. It can no longer be used.',

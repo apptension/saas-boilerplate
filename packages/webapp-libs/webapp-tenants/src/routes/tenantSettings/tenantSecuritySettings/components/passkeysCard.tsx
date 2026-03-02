@@ -44,6 +44,7 @@ export const PasskeysCard = ({ canManagePasskeys = false }: PasskeysCardProps) =
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const { passkeys, loading: isLoading, refetch, deletePasskey, deleteTenantPasskey } = useTenantPasskeys(
+    tenantId,
     canManagePasskeys,
     canManagePasskeys ? searchQuery : undefined
   );
@@ -54,7 +55,17 @@ export const PasskeysCard = ({ canManagePasskeys = false }: PasskeysCardProps) =
     setDeletingId(passkeyId);
     try {
       if (canManagePasskeys) {
-        await deleteTenantPasskey({ variables: { id: passkeyId } });
+        if (!tenantId) {
+          toast({
+            description: intl.formatMessage({
+              defaultMessage: 'Tenant context is required to delete passkeys.',
+              id: 'Passkeys Card / Tenant Required',
+            }),
+            variant: 'destructive',
+          });
+          return;
+        }
+        await deleteTenantPasskey({ variables: { id: passkeyId, tenantId } });
       } else {
         await deletePasskey({ variables: { input: { id: passkeyId } } });
       }

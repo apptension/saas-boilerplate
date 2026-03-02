@@ -23,7 +23,8 @@ from cryptography.exceptions import InvalidSignature
 
 from django.conf import settings
 
-from .secrets import get_secrets_service
+from common.secrets.service import get_secrets_service
+from apps.sso.services.secrets_helpers import get_sp_signing_key
 from apps.sso.security import safe_log_user_identifier, validate_saml_response_basic
 
 logger = logging.getLogger(__name__)
@@ -63,7 +64,7 @@ class SAMLService:
         """
         self.connection = sso_connection
         self.tenant = sso_connection.tenant
-        self.secrets_service = get_secrets_service()
+        self.secrets_service = get_secrets_service('sso')
 
     def get_sp_entity_id(self) -> str:
         """Get the Service Provider Entity ID.
@@ -250,7 +251,7 @@ class SAMLService:
         """Retrieve the SP signing key pair from Secrets Manager."""
         if not self.connection.saml_signing_certificate_arn:
             return None
-        return self.secrets_service.get_sp_signing_key(self.connection.saml_signing_certificate_arn)
+        return get_sp_signing_key(self.connection.saml_signing_certificate_arn)
 
     def generate_sp_metadata(self) -> str:
         """

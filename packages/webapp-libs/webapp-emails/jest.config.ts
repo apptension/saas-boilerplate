@@ -5,7 +5,11 @@ export default {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/react/babel'] }],
   },
-  transformIgnorePatterns: ['/node_modules/(?!(@iconify-icons)/)'],
+  transformIgnorePatterns: ['/node_modules/(?!(@iconify-icons|react-markdown)/)'],
+  moduleNameMapper: {
+    'react-markdown': '<rootDir>/../webapp-core/src/tests/mocks/reactMarkdown.tsx',
+    'remark-gfm': '<rootDir>/../webapp-core/src/tests/mocks/remarkGfm.ts',
+  },
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.spec.json',

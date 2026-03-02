@@ -36,6 +36,7 @@ export default defineConfig(({ mode }): UserConfig => {
     server: {
       port: 3000,
       host: 'localhost',
+      allowedHosts: ['zechariah-untainting-unvolubly.ngrok-free.dev'],
       open: true,
       headers: {
         // Disable caching in development to prevent stale JavaScript

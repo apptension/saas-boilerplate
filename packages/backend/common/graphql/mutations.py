@@ -681,22 +681,33 @@ class DeleteTenantDependentModelMutation(DeleteModelMutation):
         - Verifies the user has access to the specified tenant via context
         - Only deletes objects that belong to the specified tenant
         """
-        if "tenant_id" not in input:
+        tenant_id_raw = input.get("tenant_id") or input.get("tenantId")
+        if not tenant_id_raw:
             raise exceptions.GraphQlValidationError("tenant_id is required")
 
-        _, tenant_id = from_global_id(input["tenant_id"])
+        try:
+            id_type, tenant_id = from_global_id(tenant_id_raw)
+            # If from_global_id returns empty/None, use the raw value (it's already a hashid)
+            if not tenant_id:
+                tenant_id = tenant_id_raw
+        except (TypeError, ValueError):
+            tenant_id = tenant_id_raw
 
         # SECURITY: Verify user has access to this tenant
         context_tenant = getattr(info.context, "tenant", None)
         if context_tenant is None or str(context_tenant.pk) != str(tenant_id):
-            # If context tenant doesn't match, verify membership directly
-            from apps.multitenancy.models import TenantMembership
+            from apps.multitenancy.models import Tenant, TenantMembership
 
             user = info.context.user
             if not user or not user.is_authenticated:
                 raise PermissionDenied("Authentication required")
 
-            if not TenantMembership.objects.filter(user=user, tenant_id=tenant_id, is_accepted=True).exists():
+            try:
+                tenant = Tenant.objects.get(pk=tenant_id)
+            except Tenant.DoesNotExist:
+                raise PermissionDenied("You don't have access to this tenant")
+
+            if not TenantMembership.objects.filter(user=user, tenant=tenant, is_accepted=True).exists():
                 raise PermissionDenied("You don't have access to this tenant")
 
         # Get the object with tenant scoping
@@ -745,23 +756,35 @@ class UpdateTenantDependentModelMutation(UpdateModelMutation):
         - Decodes and validates tenant_id from input
         - Verifies the user has access to the specified tenant via context
         """
-        if "tenant_id" not in input:
+        tenant_id_raw = input.get("tenant_id") or input.get("tenantId")
+        if not tenant_id_raw:
             raise exceptions.GraphQlValidationError("tenant_id is required")
 
-        _, tenant_id = from_global_id(input["tenant_id"])
+        try:
+            id_type, tenant_id = from_global_id(tenant_id_raw)
+            # If from_global_id returns empty/None, use the raw value (it's already a hashid)
+            if not tenant_id:
+                tenant_id = tenant_id_raw
+        except (TypeError, ValueError):
+            tenant_id = tenant_id_raw
+
         input["tenant_id"] = tenant_id
 
         # SECURITY: Verify user has access to this tenant
         context_tenant = getattr(info.context, "tenant", None)
         if context_tenant is None or str(context_tenant.pk) != str(tenant_id):
-            # If context tenant doesn't match, verify membership directly
-            from apps.multitenancy.models import TenantMembership
+            from apps.multitenancy.models import Tenant, TenantMembership
 
             user = info.context.user
             if not user or not user.is_authenticated:
                 raise PermissionDenied("Authentication required")
 
-            if not TenantMembership.objects.filter(user=user, tenant_id=tenant_id, is_accepted=True).exists():
+            try:
+                tenant = Tenant.objects.get(pk=tenant_id)
+            except Tenant.DoesNotExist:
+                raise PermissionDenied("You don't have access to this tenant")
+
+            if not TenantMembership.objects.filter(user=user, tenant=tenant, is_accepted=True).exists():
                 raise PermissionDenied("You don't have access to this tenant")
 
         return super().mutate_and_get_payload(root, info, **input)
@@ -794,23 +817,36 @@ class CreateTenantDependentModelMutation(CreateModelMutation):
         - Decodes and validates tenant_id from input
         - Verifies the user has access to the specified tenant via context
         """
-        if "tenant_id" not in input:
+        tenant_id_raw = input.get("tenant_id") or input.get("tenantId")
+
+        if not tenant_id_raw:
             raise exceptions.GraphQlValidationError("tenant_id is required")
 
-        _, tenant_id = from_global_id(input["tenant_id"])
+        try:
+            id_type, tenant_id = from_global_id(tenant_id_raw)
+            # If from_global_id returns empty/None, use the raw value (it's already a hashid)
+            if not tenant_id:
+                tenant_id = tenant_id_raw
+        except (TypeError, ValueError):
+            tenant_id = tenant_id_raw
+
         input["tenant_id"] = tenant_id
 
         # SECURITY: Verify user has access to this tenant
         context_tenant = getattr(info.context, "tenant", None)
         if context_tenant is None or str(context_tenant.pk) != str(tenant_id):
-            # If context tenant doesn't match, verify membership directly
-            from apps.multitenancy.models import TenantMembership
+            from apps.multitenancy.models import Tenant, TenantMembership
 
             user = info.context.user
             if not user or not user.is_authenticated:
                 raise PermissionDenied("Authentication required")
 
-            if not TenantMembership.objects.filter(user=user, tenant_id=tenant_id, is_accepted=True).exists():
+            try:
+                tenant = Tenant.objects.get(pk=tenant_id)
+            except Tenant.DoesNotExist:
+                raise PermissionDenied("You don't have access to this tenant")
+
+            if not TenantMembership.objects.filter(user=user, tenant=tenant, is_accepted=True).exists():
                 raise PermissionDenied("You don't have access to this tenant")
 
         return super().mutate_and_get_payload(root, info, **input)

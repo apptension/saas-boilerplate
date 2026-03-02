@@ -47,6 +47,7 @@ import { useCurrentTenant } from '../../../../providers';
 interface AuditLog {
   id: string;
   eventType: string;
+  eventTypeLabel?: string;
   eventDescription: string;
   userEmail: string | null;
   connectionName: string | null;
@@ -58,6 +59,11 @@ interface AuditLog {
   createdAt: string;
 }
 
+interface EventTypeOption {
+  value: string;
+  label: string;
+}
+
 interface AuditLogResponse {
   logs: AuditLog[];
   totalCount: number;
@@ -66,7 +72,7 @@ interface AuditLogResponse {
   pageSize: number;
   hasMore: boolean;
   hasPrevious: boolean;
-  eventTypes?: string[];
+  eventTypeOptions?: EventTypeOption[];
   userEmails?: string[];
 }
 
@@ -119,43 +125,17 @@ const EVENT_ICONS: Record<string, React.ReactNode> = {
   passkey_removed: <Fingerprint className="h-4 w-4" />,
   passkey_auth_success: <Fingerprint className="h-4 w-4" />,
   passkey_auth_failed: <Fingerprint className="h-4 w-4" />,
+
+  // Enforcement events
+  sso_enforce_bypass: <Shield className="h-4 w-4" />,
 };
 
 const getEventIcon = (eventType: string) => {
   return EVENT_ICONS[eventType] || <Shield className="h-4 w-4" />;
 };
 
-const EVENT_TYPE_LABELS: Record<string, string> = {
-  sso_login_initiated: 'SSO Login Initiated',
-  sso_login_success: 'SSO Login Success',
-  sso_login_failed: 'SSO Login Failed',
-  sso_logout: 'SSO Logout',
-  idp_config_created: 'SSO Connection Created',
-  idp_config_updated: 'SSO Connection Updated',
-  idp_config_deleted: 'SSO Connection Deleted',
-  idp_config_activated: 'SSO Connection Activated',
-  idp_config_deactivated: 'SSO Connection Deactivated',
-  user_provisioned: 'User Provisioned (JIT)',
-  user_updated: 'User Updated (SSO)',
-  group_mapping_applied: 'Group Mapping Applied',
-  scim_user_created: 'SCIM User Created',
-  scim_user_updated: 'SCIM User Updated',
-  scim_user_deleted: 'SCIM User Deleted',
-  scim_group_created: 'SCIM Group Created',
-  scim_group_updated: 'SCIM Group Updated',
-  scim_group_deleted: 'SCIM Group Deleted',
-  session_created: 'Session Created',
-  session_revoked: 'Session Revoked',
-  device_registered: 'Device Registered',
-  device_removed: 'Device Removed',
-  passkey_registered: 'Passkey Registered',
-  passkey_removed: 'Passkey Removed',
-  passkey_auth_success: 'Passkey Auth Success',
-  passkey_auth_failed: 'Passkey Auth Failed',
-};
-
-const getEventLabel = (eventType: string): string => {
-  return EVENT_TYPE_LABELS[eventType] || eventType;
+const getLogEventLabel = (log: AuditLog): string => {
+  return log.eventTypeLabel || log.eventType;
 };
 
 const DEFAULT_PAGE_SIZE = 20;
@@ -189,9 +169,11 @@ export const AuditLogCard = () => {
   // Available filter options
   const [filterOptions, setFilterOptions] = useState<{
     eventTypes: string[];
+    eventTypeLabels: Record<string, string>;
     userEmails: string[];
   }>({
-    eventTypes: Object.keys(EVENT_TYPE_LABELS),
+    eventTypes: [],
+    eventTypeLabels: {},
     userEmails: [],
   });
 
@@ -243,10 +225,19 @@ export const AuditLogCard = () => {
         setCurrentPage(response.data.currentPage || 1);
         hasLoadedOnce.current = true;
 
-        if (fetchFilterOptions && response.data.userEmails) {
+        if (fetchFilterOptions) {
+          const options = response.data.eventTypeOptions || [];
+          const eventTypes = options.map((opt: EventTypeOption) => opt.value);
+          const eventTypeLabels: Record<string, string> = {};
+          options.forEach((opt: EventTypeOption) => {
+            eventTypeLabels[opt.value] = opt.label;
+          });
+
           setFilterOptions((prev) => ({
             ...prev,
-            userEmails: response.data.userEmails || [],
+            eventTypes: eventTypes.length > 0 ? eventTypes : prev.eventTypes,
+            eventTypeLabels: Object.keys(eventTypeLabels).length > 0 ? eventTypeLabels : prev.eventTypeLabels,
+            userEmails: response.data.userEmails || prev.userEmails,
           }));
         }
       } catch (error) {
@@ -471,7 +462,7 @@ export const AuditLogCard = () => {
                       </SelectItem>
                       {filterOptions.eventTypes.map((type) => (
                         <SelectItem key={type} value={type}>
-                          {getEventLabel(type)}
+                          {filterOptions.eventTypeLabels[type] || type}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -677,7 +668,7 @@ export const AuditLogCard = () => {
                         </div>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <span className="font-medium text-sm">{getEventLabel(log.eventType)}</span>
+                            <span className="font-medium text-sm">{getLogEventLabel(log)}</span>
                             {!log.success && (
                               <Badge variant="destructive" className="text-xs">
                                 <FormattedMessage defaultMessage="Failed" id="Audit / Failed badge" />

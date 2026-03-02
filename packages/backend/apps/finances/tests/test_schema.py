@@ -130,7 +130,7 @@ class TestActiveSubscriptionQuery:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_return_error_for_admin_user(
+    def test_return_error_for_member_user(
         self,
         graphene_client,
         subscription_schedule_factory,
@@ -144,15 +144,15 @@ class TestActiveSubscriptionQuery:
         customer = subscription_schedule.customer
         tenant = customer.subscriber
         user = self._get_user_from_customer_tenant(
-            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.MEMBER
         )
         graphene_client.force_authenticate(user)
-        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
         executed = graphene_client.query(
             self.ACTIVE_SUBSCRIPTION_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
         )
 
-        assert executed["errors"]
+        assert "errors" in executed, f"MEMBER lacks billing.view, expected permission_denied: {executed}"
         assert executed["errors"][0]["message"] == "permission_denied"
 
     def test_trial_fields_in_response_when_customer_already_activated_trial(
@@ -473,23 +473,23 @@ class TestAllPaymentMethodsQuery:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_return_only_customer_payment_methods_by_admin(
+    def test_return_only_customer_payment_methods_by_member(
         self, graphene_client, customer, payment_method_factory, user_factory, tenant_membership_factory
     ):
         payment_method_factory(customer=customer)
         payment_method_factory()
         tenant = customer.subscriber
         user = self._get_user_from_customer_tenant(
-            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.MEMBER
         )
 
         graphene_client.force_authenticate(user)
-        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
         executed = graphene_client.query(
             self.ALL_PAYMENT_METHODS_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
         )
 
-        assert executed["errors"]
+        assert "errors" in executed, f"MEMBER lacks billing.view, expected permission_denied: {executed}"
         assert executed["errors"][0]["message"] == "permission_denied"
 
     def test_return_only_customer_payment_methods(
@@ -759,21 +759,21 @@ class TestAllChargesQuery:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_return_only_customer_charges_by_admin(
+    def test_return_only_customer_charges_by_member(
         self, graphene_client, customer, user_factory, tenant_membership_factory
     ):
         tenant = customer.subscriber
         user = self._get_user_from_customer_tenant(
-            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.MEMBER
         )
 
         graphene_client.force_authenticate(user)
-        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
         executed = graphene_client.query(
             self.ALL_CHARGES_QUERY, variable_values={"tenantId": to_global_id("TenantType", tenant.id)}
         )
 
-        assert executed["errors"]
+        assert "errors" in executed, f"MEMBER lacks billing.view, expected permission_denied: {executed}"
         assert executed["errors"][0]["message"] == "permission_denied"
 
     def test_return_only_customer_charges(
@@ -861,7 +861,7 @@ class TestChargeQuery:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_return_charge_by_admin(
+    def test_return_charge_by_member(
         self, graphene_client, customer, charge_factory, user_factory, tenant_membership_factory
     ):
         charge = charge_factory(customer=customer)
@@ -869,14 +869,14 @@ class TestChargeQuery:
         tenant = customer.subscriber
         variable_values = {"id": charge_global_id, "tenantId": to_global_id("TenantType", tenant.id)}
         user = self._get_user_from_customer_tenant(
-            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.MEMBER
         )
 
         graphene_client.force_authenticate(user)
-        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
         executed = graphene_client.query(self.CHARGE_QUERY, variable_values=variable_values)
 
-        assert executed["errors"]
+        assert "errors" in executed, f"MEMBER lacks billing.view, expected permission_denied: {executed}"
         assert executed["errors"][0]["message"] == "permission_denied"
 
     def test_return_charge(self, graphene_client, customer, charge_factory, user_factory, tenant_membership_factory):
@@ -964,7 +964,7 @@ class TestPaymentIntentQuery:
         assert executed["errors"]
         assert executed["errors"][0]["message"] == "PaymentIntent matching query does not exist."
 
-    def test_return_payment_intent_by_admin(
+    def test_return_payment_intent_by_member(
         self, graphene_client, customer, payment_intent_factory, user_factory, tenant_membership_factory
     ):
         payment_intent = payment_intent_factory(customer=customer)
@@ -972,14 +972,14 @@ class TestPaymentIntentQuery:
         tenant = customer.subscriber
         variable_values = {"id": payment_intent_global_id, "tenantId": to_global_id("TenantType", tenant.id)}
         user = self._get_user_from_customer_tenant(
-            tenant, user_factory, tenant_membership_factory, TenantUserRole.ADMIN
+            tenant, user_factory, tenant_membership_factory, TenantUserRole.MEMBER
         )
 
         graphene_client.force_authenticate(user)
-        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.ADMIN)
+        graphene_client.set_tenant_dependent_context(tenant, TenantUserRole.MEMBER)
         executed = graphene_client.query(self.PAYMENT_INTENT_QUERY, variable_values=variable_values)
 
-        assert executed["errors"]
+        assert "errors" in executed, f"MEMBER lacks billing.view, expected permission_denied: {executed}"
         assert executed["errors"][0]["message"] == "permission_denied"
 
     def test_return_payment_intent(

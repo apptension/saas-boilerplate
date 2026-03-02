@@ -1,6 +1,7 @@
 import { client } from '../client';
 import { apiURLs } from '../helpers';
 import { LogoutApiResponseData } from './auth.types';
+import { storeAuthTokens } from './auth.utils';
 
 export const AUTH_URL = apiURLs('/auth/', {
   REFRESH_TOKEN: '/token-refresh/',
@@ -31,17 +32,8 @@ export const refreshToken = async () => {
     refreshTokenValue ? { refresh: refreshTokenValue } : undefined
   );
   
-  // Store new tokens in localStorage for Safari/mobile fallback
-  // When cookies are blocked, this ensures the Authorization header has fresh tokens
   if (res.data?.access) {
-    try {
-      localStorage.setItem('token', res.data.access);
-      if (res.data.refresh) {
-        localStorage.setItem('refresh_token', res.data.refresh);
-      }
-    } catch {
-      // Ignore storage errors (e.g., private browsing mode)
-    }
+    storeAuthTokens(res.data.access, res.data.refresh);
   }
   
   return res.data;

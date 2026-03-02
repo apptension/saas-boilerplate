@@ -64,6 +64,9 @@ class SSOAuditEventType(models.TextChoices):
     SCIM_GROUP_UPDATED = "scim_group_updated", "SCIM Group Updated"
     SCIM_GROUP_DELETED = "scim_group_deleted", "SCIM Group Deleted"
 
+    # Enforcement events
+    SSO_ENFORCE_BYPASS = "sso_enforce_bypass", "SSO Enforce Bypass Login"
+
     # Session events
     SESSION_CREATED = "session_created", "Session Created"
     SESSION_REVOKED = "session_revoked", "Session Revoked"

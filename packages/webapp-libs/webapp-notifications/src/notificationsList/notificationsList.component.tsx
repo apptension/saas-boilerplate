@@ -2,22 +2,21 @@ import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { EmptyState } from '@sb/webapp-core/components/emptyState';
 import { H4 } from '@sb/webapp-core/components/typography';
-import { Separator } from '@sb/webapp-core/components/ui/separator';
 import { Skeleton } from '@sb/webapp-core/components/ui/skeleton';
 import { CheckCheck } from 'lucide-react';
 import { isEmpty } from 'ramda';
-import { ElementType } from 'react';
+import { ElementType, useEffect, useRef, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { NotificationTypes } from '../notifications.types';
 import { NotificationErrorBoundary } from './notificationErrorBoundary';
 import { NOTIFICATIONS_PER_PAGE } from './notificationsList.constants';
 import { notificationsListContentFragment, notificationsListItemFragment } from './notificationsList.graphql';
 import { useMarkAllAsRead, useNotificationsListContent } from './notificationsList.hooks';
 
 export type NotificationsListProps = {
-  templates: Record<NotificationTypes, ElementType>;
+  /** Templates keyed by notification type (NotificationTypes + module-specific types e.g. BackupNotificationTypes). */
+  templates: Record<string, ElementType>;
   queryResult?: FragmentType<typeof notificationsListContentFragment>;
   loading: boolean;
   onLoadMore: (cursor: string, count: number) => void;
@@ -51,17 +50,58 @@ export const NotificationsList = (props: NotificationsListProps) => {
           />
         </Button>
       </div>
-      <div className="max-h-[400px] overflow-y-auto">
-        {props.loading ? (
-          <div className="flex flex-col gap-0 p-2">
-            <Skeleton className="h-20 rounded-none" data-testid="Skeleton" />
-            <Skeleton className="h-20 rounded-none" data-testid="Skeleton" />
-            <Skeleton className="h-20 rounded-none" data-testid="Skeleton" />
-          </div>
-        ) : (
-          <Content {...props} />
-        )}
-      </div>
+      <ScrollableContainer {...props} />
+    </div>
+  );
+};
+
+type ScrollableContainerProps = Pick<NotificationsListProps, 'templates' | 'queryResult' | 'loading' | 'onLoadMore'>;
+
+const ScrollableContainer = ({ templates, queryResult, loading, onLoadMore }: ScrollableContainerProps) => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const previousScrollTopRef = useRef<number>(0);
+  const { hasNext, endCursor } = useNotificationsListContent(queryResult);
+
+  const handleLoadMore = (cursor: string, count: number) => {
+    if (scrollContainerRef.current) {
+      // Save current scroll position before loading
+      previousScrollTopRef.current = scrollContainerRef.current.scrollTop;
+      setIsLoadingMore(true);
+      
+      onLoadMore(cursor, count);
+    }
+  };
+
+  // Restore scroll position after loading completes
+  useEffect(() => {
+    if (!loading && isLoadingMore && scrollContainerRef.current) {
+      // Use double requestAnimationFrame to ensure DOM has fully updated
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (scrollContainerRef.current) {
+            // Restore the previous scroll position
+            // Since new items are appended at the bottom, we maintain the same scrollTop
+            scrollContainerRef.current.scrollTop = previousScrollTopRef.current;
+            
+            setIsLoadingMore(false);
+          }
+        });
+      });
+    }
+  }, [loading, isLoadingMore]);
+
+  return (
+    <div ref={scrollContainerRef} className="max-h-[400px] overflow-y-auto">
+      {loading && !isLoadingMore ? (
+        <div className="flex flex-col gap-0 p-2">
+          <Skeleton className="h-20 rounded-none" data-testid="Skeleton" />
+          <Skeleton className="h-20 rounded-none" data-testid="Skeleton" />
+          <Skeleton className="h-20 rounded-none" data-testid="Skeleton" />
+        </div>
+      ) : (
+        <Content templates={templates} queryResult={queryResult} loading={loading} onLoadMore={handleLoadMore} />
+      )}
     </div>
   );
 };
@@ -96,7 +136,7 @@ const Content = ({ templates, queryResult, loading, onLoadMore }: ContentProps) 
     <div className="flex flex-col">
       {allNotifications.map((notification) => {
         const notificationData = getFragmentData(notificationsListItemFragment, notification);
-        const NotificationComponent = templates[notificationData.type as NotificationTypes] as ElementType | undefined;
+        const NotificationComponent = templates[notificationData.type] as ElementType | undefined;
         if (!notificationData || !NotificationComponent) {
           return null;
         }

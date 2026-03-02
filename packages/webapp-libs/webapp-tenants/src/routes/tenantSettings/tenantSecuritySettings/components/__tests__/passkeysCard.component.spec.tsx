@@ -39,7 +39,7 @@ const createMockPasskey = (overrides = {}) => ({
 
 const createTenantPasskeysMock = (passkeys: ReturnType<typeof createMockPasskey>[]) =>
   composeMockedQueryResult(TenantPasskeysQueryDocument, {
-    variables: { search: undefined },
+    variables: { tenantId: TENANT_ID, search: undefined },
     data: { tenantPasskeys: passkeys },
   });
 
@@ -106,30 +106,34 @@ describe('PasskeysCard: Component', () => {
     });
 
     it('should render search input when passkeys exist', async () => {
-      renderComponent(true, [createMockPasskey()]);
+      const { waitForApolloMocks } = renderComponent(true, [createMockPasskey()]);
+      await waitForApolloMocks();
 
       expect(await screen.findByPlaceholderText(/search by user name or email/i)).toBeInTheDocument();
     });
 
     it('should show user info for admin view', async () => {
-      renderComponent(true, [
+      const { waitForApolloMocks } = renderComponent(true, [
         createMockPasskey({ userName: 'Admin User', userEmail: 'admin@company.com' }),
       ]);
+      await waitForApolloMocks();
 
       expect(await screen.findByText('Admin User')).toBeInTheDocument();
     });
 
     it('should show Device badge for platform authenticator', async () => {
-      renderComponent(true, [createMockPasskey({ authenticatorType: 'platform' })]);
+      const { waitForApolloMocks } = renderComponent(true, [createMockPasskey({ authenticatorType: 'platform' })]);
+      await waitForApolloMocks();
 
       expect(await screen.findByText('Device')).toBeInTheDocument();
     });
 
     it('should show search input when passkeys exist', async () => {
-      renderComponent(true, [
+      const { waitForApolloMocks } = renderComponent(true, [
         createMockPasskey({ name: 'MacBook', id: '1' }),
         createMockPasskey({ name: 'iPhone', id: '2' }),
       ]);
+      await waitForApolloMocks();
 
       const searchInput = await screen.findByPlaceholderText(/search by user name or email/i);
       expect(searchInput).toBeInTheDocument();

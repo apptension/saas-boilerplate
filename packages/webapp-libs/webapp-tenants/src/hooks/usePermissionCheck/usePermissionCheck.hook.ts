@@ -29,7 +29,10 @@ export const usePermissionCheck = (
 ) => {
   const { data: currentTenant } = useCurrentTenant();
   const tenantId = currentTenant?.id ?? '';
-  const permissionsArray = Array.isArray(permissions) ? permissions : [permissions];
+  const permissionsArray = useMemo(
+    () => (Array.isArray(permissions) ? permissions : [permissions]),
+    [permissions]
+  );
 
   const { data, loading, error, refetch } = useQuery(currentUserPermissionsQuery, {
     variables: { tenantId },
@@ -157,6 +160,9 @@ export type PermissionCode =
   | 'management.fxrates.edit'
   | 'management.roles.view'
   | 'management.roles.edit'
+  // Backup
+  | 'backup.view'
+  | 'backup.manage'
   // Wildcards
   | 'org.*'
   | 'members.*'
@@ -164,4 +170,5 @@ export type PermissionCode =
   | 'billing.*'
   | 'features.*'
   | 'dashboard.*'
-  | 'management.*';
+  | 'management.*'
+  | 'backup.*';
