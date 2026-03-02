@@ -29,7 +29,10 @@ export const usePermissionCheck = (
 ) => {
   const { data: currentTenant } = useCurrentTenant();
   const tenantId = currentTenant?.id ?? '';
-  const permissionsArray = Array.isArray(permissions) ? permissions : [permissions];
+  const permissionsArray = useMemo(
+    () => (Array.isArray(permissions) ? permissions : [permissions]),
+    [permissions]
+  );
 
   const { data, loading, error, refetch } = useQuery(currentUserPermissionsQuery, {
     variables: { tenantId },

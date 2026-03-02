@@ -24,6 +24,7 @@ const TENANT_ID = 'tenant-audit-1';
 const createMockAuditLog = (overrides = {}) => ({
   id: 'log-1',
   eventType: 'sso_login_success',
+  eventTypeLabel: 'SSO login success',
   eventDescription: 'User signed in via SSO',
   userEmail: 'user@example.com',
   connectionName: 'Okta',
@@ -131,7 +132,7 @@ describe('AuditLogCard: Component', () => {
   it('should show failed event with failed styling', async () => {
     mockedApiClient.get.mockResolvedValue({
       data: {
-        logs: [createMockAuditLog({ success: false, eventType: 'sso_login_failed' })],
+        logs: [createMockAuditLog({ success: false, eventType: 'sso_login_failed', eventTypeLabel: 'SSO login failed' })],
         totalCount: 1,
         totalPages: 1,
         currentPage: 1,

@@ -17,6 +17,7 @@ const TENANT_ID = 'tenant-scim-1';
 
 const createSSOConnectionsMock = (connections: { id: string; name: string; connectionType: string; status: string }[]) =>
   composeMockedQueryResult(TenantSecuritySsoConnectionsQueryDocument, {
+    variables: { tenantId: TENANT_ID },
     data: {
       ssoConnections: {
         edges: connections.map((node) => ({ node })),
@@ -28,6 +29,7 @@ const createSCIMTokensMock = (
   tokens: { id: string; name: string; tokenPrefix: string; isActive: boolean; createdAt: string; lastUsedAt: string | null; requestCount: number }[]
 ) =>
   composeMockedQueryResult(TenantScimTokensQueryDocument, {
+    variables: { tenantId: TENANT_ID },
     data: {
       scimTokens: {
         edges: tokens.map((node) => ({ node })),
@@ -79,18 +81,20 @@ describe('DirectorySyncCard: Component', () => {
     });
 
     it('should show ready to configure when SSO active but no tokens', async () => {
-      renderComponent(true, {
+      const { waitForApolloMocks } = renderComponent(true, {
         connections: [{ id: '1', name: 'Okta', connectionType: 'saml', status: 'active' }],
       });
+      await waitForApolloMocks();
 
       expect(await screen.findByText(/ready to configure directory sync/i)).toBeInTheDocument();
       expect(await screen.findByRole('button', { name: /generate SCIM token/i })).toBeInTheDocument();
     });
 
     it('should show compatible identity providers', async () => {
-      renderComponent(true, {
+      const { waitForApolloMocks } = renderComponent(true, {
         connections: [{ id: '1', name: 'Okta', connectionType: 'saml', status: 'active' }],
       });
+      await waitForApolloMocks();
 
       expect(await screen.findByText(/compatible identity providers/i)).toBeInTheDocument();
       expect(screen.getByText('Okta')).toBeInTheDocument();
@@ -98,9 +102,10 @@ describe('DirectorySyncCard: Component', () => {
     });
 
     it('should open generate token modal when button clicked', async () => {
-      renderComponent(true, {
+      const { waitForApolloMocks } = renderComponent(true, {
         connections: [{ id: '1', name: 'Okta', connectionType: 'saml', status: 'active' }],
       });
+      await waitForApolloMocks();
 
       await userEvent.click(await screen.findByRole('button', { name: /generate SCIM token/i }));
 
@@ -108,7 +113,7 @@ describe('DirectorySyncCard: Component', () => {
     });
 
     it('should display SCIM endpoint and token list when tokens exist', async () => {
-      renderComponent(true, {
+      const { waitForApolloMocks } = renderComponent(true, {
         connections: [{ id: '1', name: 'Okta', connectionType: 'saml', status: 'active' }],
         tokens: [
           {
@@ -122,6 +127,7 @@ describe('DirectorySyncCard: Component', () => {
           },
         ],
       });
+      await waitForApolloMocks();
 
       expect(await screen.findByText(/SCIM endpoint URL/i)).toBeInTheDocument();
       expect(await screen.findByText('Okta SCIM')).toBeInTheDocument();

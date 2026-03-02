@@ -32,15 +32,6 @@ const createMockConnection = (overrides = {}) => ({
 
 const createSSOConnectionsMock = (connections: ReturnType<typeof createMockConnection>[]) =>
   composeMockedQueryResult(TenantSecuritySsoConnectionsQueryDocument, {
-    data: {
-      ssoConnections: {
-        edges: connections.map((node) => ({ node })),
-      },
-    },
-  });
-
-const createSSOConnectionsMock = (connections: ReturnType<typeof createMockConnection>[]) =>
-  composeMockedQueryResult(TenantSecuritySsoConnectionsQueryDocument, {
     variables: { tenantId: 'tenant-1' },
     data: {
       ssoConnections: {

@@ -12,7 +12,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { cn } from '@sb/webapp-core/lib/utils';
 import { Check, ChevronDown, UserPlus } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useCurrentTenant } from '../../providers';
@@ -91,7 +91,8 @@ export const TenantInvitationForm = ({ initialData, onSubmit, error, loading }: 
     handleFormSubmit,
   } = useTenantInvitationForm({ initialData, onSubmit, error });
 
-  const selectedRoleIds = watch('organizationRoleIds') || [];
+  const watchedRoleIds = watch('organizationRoleIds');
+  const selectedRoleIds = useMemo(() => watchedRoleIds || [], [watchedRoleIds]);
 
   // Close dropdown when clicking outside
   useEffect(() => {

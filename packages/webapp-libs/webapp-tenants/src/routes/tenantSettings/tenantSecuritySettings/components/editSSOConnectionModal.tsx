@@ -1,15 +1,15 @@
-import { useState } from 'react';
 import { apiURL, extractGraphQLErrors } from '@sb/webapp-api-client/api';
+import { Connection_Type } from '@sb/webapp-api-client/graphql';
 import { Button } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
 import { Label } from '@sb/webapp-core/components/ui/label';
 import { useToast } from '@sb/webapp-core/toast/useToast';
-import { Shield, CheckCircle2, Loader2, Copy, Check, Globe, X } from 'lucide-react';
+import { camelCaseKeys } from '@sb/webapp-core/utils';
+import { Check, Copy, Globe, Loader2, Shield, X } from 'lucide-react';
+import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { Connection_Type } from '@sb/webapp-api-client/graphql';
 import { useTenantSSO } from '../../../../hooks/useTenantSSO';
-import { camelCaseKeys } from '@sb/webapp-core/utils';
 
 export type EditSSOConnectionModalProps = {
   connection: {
@@ -221,7 +221,10 @@ export const EditSSOConnectionModal = ({
               {connection.spAcsUrl && (
                 <div className="rounded-lg border bg-muted/30 p-4">
                   <p className="text-sm font-medium mb-2">
-                    <FormattedMessage defaultMessage="ACS URL (Assertion Consumer Service):" id="Edit SSO Modal / ACS URL Label" />
+                    <FormattedMessage
+                      defaultMessage="ACS URL (Assertion Consumer Service):"
+                      id="Edit SSO Modal / ACS URL Label"
+                    />
                   </p>
                   <div className="flex items-center gap-2">
                     <code className="flex-1 bg-background px-3 py-2 rounded text-xs break-all border">
@@ -234,7 +237,11 @@ export const EditSSOConnectionModal = ({
                       className="h-9 w-9 shrink-0"
                       onClick={() => handleCopyUrl(connection.spAcsUrl!, 'acs')}
                     >
-                      {copiedField === 'acs' ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
+                      {copiedField === 'acs' ? (
+                        <Check className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -242,7 +249,10 @@ export const EditSSOConnectionModal = ({
               {connection.spEntityId && (
                 <div className="rounded-lg border bg-muted/30 p-4">
                   <p className="text-sm font-medium mb-2">
-                    <FormattedMessage defaultMessage="Entity ID (SP Identifier):" id="Edit SSO Modal / Entity ID Label" />
+                    <FormattedMessage
+                      defaultMessage="Entity ID (SP Identifier):"
+                      id="Edit SSO Modal / Entity ID Label"
+                    />
                   </p>
                   <div className="flex items-center gap-2">
                     <code className="flex-1 bg-background px-3 py-2 rounded text-xs break-all border">
@@ -302,7 +312,10 @@ export const EditSSOConnectionModal = ({
             <>
               <div className="rounded-lg border bg-muted/30 p-4">
                 <p className="text-sm font-medium mb-2">
-                  <FormattedMessage defaultMessage="Redirect URI (update in your IdP):" id="Edit SSO Modal / Redirect Label" />
+                  <FormattedMessage
+                    defaultMessage="Redirect URI (update in your IdP):"
+                    id="Edit SSO Modal / Redirect Label"
+                  />
                 </p>
                 <div className="flex items-center gap-2">
                   <code className="flex-1 bg-background px-3 py-2 rounded text-xs break-all border">{redirectUri}</code>
@@ -313,7 +326,11 @@ export const EditSSOConnectionModal = ({
                     className="h-9 w-9 shrink-0"
                     onClick={() => handleCopyUrl(redirectUri, 'oidc')}
                   >
-                    {copiedField === 'oidc' ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
+                    {copiedField === 'oidc' ? (
+                      <Check className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-2">
@@ -462,7 +479,10 @@ export const EditSSOConnectionModal = ({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-certificate">
-                  <FormattedMessage defaultMessage="X.509 Certificate (leave blank to keep current)" id="Edit SSO Modal / Certificate" />
+                  <FormattedMessage
+                    defaultMessage="X.509 Certificate (leave blank to keep current)"
+                    id="Edit SSO Modal / Certificate"
+                  />
                 </Label>
                 <textarea
                   id="edit-certificate"
@@ -471,9 +491,7 @@ export const EditSSOConnectionModal = ({
                   value={formData.certificate}
                   onChange={(e) => updateFormData('certificate', e.target.value)}
                 />
-                {fieldErrors['certificate'] && (
-                  <p className="text-destructive text-sm">{fieldErrors['certificate']}</p>
-                )}
+                {fieldErrors['certificate'] && <p className="text-destructive text-sm">{fieldErrors['certificate']}</p>}
               </div>
             </>
           )}
