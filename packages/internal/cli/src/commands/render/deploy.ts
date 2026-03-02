@@ -5,7 +5,11 @@ import { execSync } from 'child_process';
 import { BaseCommand } from '../../baseCommand';
 import { checkbox, confirm, select } from '../../lib/prompts';
 import { getPlatformConfig } from '../../config/platform';
-import { RenderApiClient, RenderService, getDeployStatusEmoji } from '../../lib/renderApi';
+import {
+  RenderApiClient,
+  RenderService,
+  getDeployStatusEmoji,
+} from '../../lib/renderApi';
 import { getRootPath } from '../../config/env';
 
 interface ImageBuild {
@@ -29,14 +33,38 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
     local: Flags.boolean({
       char: 'l',
       default: false,
-      description: 'Build and deploy local code (requires Docker registry setup)',
+      description:
+        'Build and deploy local code (requires Docker registry setup)',
     }),
-    all: Flags.boolean({ char: 'a', default: false, description: 'Deploy all services' }),
-    service: Flags.string({ char: 's', description: 'Service name or ID', multiple: true }),
-    'clear-cache': Flags.boolean({ default: false, description: 'Clear build cache' }),
-    yes: Flags.boolean({ char: 'y', default: false, description: 'Skip confirmation' }),
-    wait: Flags.boolean({ char: 'w', default: true, description: 'Wait for completion' }),
-    tag: Flags.string({ char: 't', description: 'Image tag (default: latest)', default: 'latest' }),
+    all: Flags.boolean({
+      char: 'a',
+      default: false,
+      description: 'Deploy all services',
+    }),
+    service: Flags.string({
+      char: 's',
+      description: 'Service name or ID',
+      multiple: true,
+    }),
+    'clear-cache': Flags.boolean({
+      default: false,
+      description: 'Clear build cache',
+    }),
+    yes: Flags.boolean({
+      char: 'y',
+      default: false,
+      description: 'Skip confirmation',
+    }),
+    wait: Flags.boolean({
+      char: 'w',
+      default: true,
+      description: 'Wait for completion',
+    }),
+    tag: Flags.string({
+      char: 't',
+      description: 'Image tag (default: latest)',
+      default: 'latest',
+    }),
   };
 
   async run(): Promise<void> {
@@ -44,7 +72,9 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
     const config = await getPlatformConfig();
 
     if (!config.render?.apiKey) {
-      this.error(`Render.com is not configured. Run ${color.cyan('saas render setup')} first.`);
+      this.error(
+        `Render.com is not configured. Run ${color.cyan('saas render setup')} first.`,
+      );
     }
 
     if (flags.local) {
@@ -63,7 +93,9 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
 
     if (!config.dockerRegistry) {
       this.log(color.yellow('\n⚠️  Docker registry not configured.\n'));
-      this.log(`Run ${color.cyan('saas render setup')} and configure a Docker registry.\n`);
+      this.log(
+        `Run ${color.cyan('saas render setup')} and configure a Docker registry.\n`,
+      );
       return;
     }
 
@@ -79,7 +111,10 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
     }
 
     const tag = flags.tag;
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const timestamp = new Date()
+      .toISOString()
+      .replace(/[:.]/g, '-')
+      .slice(0, 19);
     const fullTag = tag === 'latest' ? `${tag}-${timestamp}` : tag;
 
     const images: ImageBuild[] = [
@@ -97,7 +132,7 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
       },
       {
         name: 'mcp-server',
-        dockerfile: 'packages/infra/mcp-server/Dockerfile',
+        dockerfile: 'packages/mcp-server/Dockerfile',
         context: '.', // Root context - MCP server needs schema from webapp-libs
         tag: `${registryPrefix}${namespace}-mcp-server:${fullTag}`,
       },
@@ -131,7 +166,7 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
       try {
         execSync(
           `docker build --platform linux/amd64 -f ${img.dockerfile} -t ${img.tag} ${img.context}`,
-          { cwd: rootPath, stdio: 'inherit' }
+          { cwd: rootPath, stdio: 'inherit' },
         );
         this.log(color.green(`✓ Built ${img.name}`));
 
@@ -145,13 +180,17 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
     }
 
     // Now create or update Render services
-    await this.createOrUpdateRenderServices(images, config.render!.apiKey, config.render!.ownerId);
+    await this.createOrUpdateRenderServices(
+      images,
+      config.render!.apiKey,
+      config.render!.ownerId,
+    );
   }
 
   private async createOrUpdateRenderServices(
     images: ImageBuild[],
     apiKey: string,
-    ownerId?: string
+    ownerId?: string,
   ): Promise<void> {
     const client = new RenderApiClient(apiKey);
     const services = await client.getServices(ownerId);
@@ -160,24 +199,31 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
 
     if (services.length === 0) {
       this.log(color.yellow('No existing services found on Render.'));
-      this.log('\nTo deploy image-backed services, you need to create them first in the Render dashboard:');
+      this.log(
+        '\nTo deploy image-backed services, you need to create them first in the Render dashboard:',
+      );
       this.log('  1. Go to https://dashboard.render.com/new/web-service');
       this.log('  2. Select "Existing Image" as the source');
       this.log('  3. Enter your image URL:');
       images.forEach((img) => this.log(`     ${color.cyan(img.tag)}`));
-      this.log('\nAfter creating the services, run this command again to trigger deployments.\n');
+      this.log(
+        '\nAfter creating the services, run this command again to trigger deployments.\n',
+      );
       return;
     }
 
     // Find matching services and trigger deploys
     for (const img of images) {
       const matchingService = services.find(
-        (s) => s.name.includes(img.name) || s.name.toLowerCase().includes(img.name)
+        (s) =>
+          s.name.includes(img.name) || s.name.toLowerCase().includes(img.name),
       );
 
       if (matchingService) {
         try {
-          this.log(`⏳ Triggering deploy for ${color.cyan(matchingService.name)}...`);
+          this.log(
+            `⏳ Triggering deploy for ${color.cyan(matchingService.name)}...`,
+          );
           await client.triggerDeploy(matchingService.id, true);
           this.log(`   ${color.green('✓')} Deploy triggered`);
         } catch (error) {
@@ -185,7 +231,9 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
           this.log(`   ${color.red('✗')} Failed: ${msg}`);
         }
       } else {
-        this.log(`   ${color.yellow('⚠')} No matching service found for ${img.name}`);
+        this.log(
+          `   ${color.yellow('⚠')} No matching service found for ${img.name}`,
+        );
       }
     }
 
@@ -210,7 +258,9 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
     if (services.length === 0) {
       this.log(color.yellow('No services found.'));
       this.log('\nOptions:');
-      this.log(`  • ${color.cyan('saas render deploy --local')} - Deploy local code via Docker`);
+      this.log(
+        `  • ${color.cyan('saas render deploy --local')} - Deploy local code via Docker`,
+      );
       this.log('  • Connect your repo in Render Dashboard');
       this.log('  • Use the render.yaml blueprint\n');
       return;
@@ -229,7 +279,11 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
     } else {
       const selectedIds = await checkbox({
         message: 'Select services to deploy:',
-        choices: services.map((s) => ({ value: s.id, name: `${s.name} (${s.type})`, checked: true })),
+        choices: services.map((s) => ({
+          value: s.id,
+          name: `${s.name} (${s.type})`,
+          checked: true,
+        })),
       });
       servicesToDeploy = services.filter((s) => selectedIds.includes(s.id));
     }
@@ -260,7 +314,10 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
     for (const service of servicesToDeploy) {
       try {
         this.log(`⏳ Deploying ${color.cyan(service.name)}...`);
-        const deploy = await client.triggerDeploy(service.id, flags['clear-cache']);
+        const deploy = await client.triggerDeploy(
+          service.id,
+          flags['clear-cache'],
+        );
         results.push({ service, deployId: deploy.id });
         this.log(`   ${color.green('✓')} Triggered (ID: ${deploy.id})`);
       } catch (error) {
@@ -285,10 +342,16 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
             const emoji = getDeployStatusEmoji(deploy.status);
             this.log(`${emoji} ${r.service.name}: ${deploy.status}`);
 
-            if (['live', 'build_failed', 'update_failed', 'canceled'].includes(deploy.status)) {
+            if (
+              ['live', 'build_failed', 'update_failed', 'canceled'].includes(
+                deploy.status,
+              )
+            ) {
               pending.delete(r.service.id);
             }
-          } catch { /* ignore */ }
+          } catch {
+            /* ignore */
+          }
         }
 
         if (pending.size > 0) {
@@ -297,9 +360,11 @@ export default class RenderDeploy extends BaseCommand<typeof RenderDeploy> {
         }
       }
 
-      this.log(pending.size > 0
-        ? color.yellow('\n⚠️  Some deployments still in progress.')
-        : color.green('\n✅ All deployments completed!'));
+      this.log(
+        pending.size > 0
+          ? color.yellow('\n⚠️  Some deployments still in progress.')
+          : color.green('\n✅ All deployments completed!'),
+      );
     } else {
       this.log(color.blue('\n✓ Deployments triggered!\n'));
     }

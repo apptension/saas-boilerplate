@@ -110,8 +110,8 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - ./packages/infra/mcp-server/config.yaml:/app/config.yaml:ro
-      - ./packages/infra/mcp-server/operations:/app/operations:ro
+      - ./packages/mcp-server/config.yaml:/app/config.yaml:ro
+      - ./packages/mcp-server/operations:/app/operations:ro
       - ./packages/webapp-libs/webapp-api-client/graphql/schema:/app/schema:ro
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}

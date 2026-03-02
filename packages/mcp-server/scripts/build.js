@@ -26,7 +26,9 @@ function runCommand(command, args, options = {}) {
 
     cmd.on('close', (code) => {
       if (code !== 0) {
-        reject(new Error(`"${command} ${args.join(' ')}" failed with code ${code}`));
+        reject(
+          new Error(`"${command} ${args.join(' ')}" failed with code ${code}`),
+        );
       } else {
         resolve();
       }
@@ -46,11 +48,15 @@ const stsClient = new STSClient();
     }
 
     const getCallerIdentityCommand = new GetCallerIdentityCommand();
-    const { Account: AWS_ACCOUNT_ID } = await stsClient.send(getCallerIdentityCommand);
+    const { Account: AWS_ACCOUNT_ID } = await stsClient.send(
+      getCallerIdentityCommand,
+    );
     const region = AWS_REGION || AWS_DEFAULT_REGION;
 
     if (!region) {
-      throw new Error('AWS_REGION or AWS_DEFAULT_REGION environment variable is required');
+      throw new Error(
+        'AWS_REGION or AWS_DEFAULT_REGION environment variable is required',
+      );
     }
 
     const MCP_SERVER_REPO_URI = `${AWS_ACCOUNT_ID}.dkr.ecr.${region}.amazonaws.com/${PROJECT_NAME}-mcp-server`;
@@ -64,29 +70,45 @@ const stsClient = new STSClient();
       console.log('📥 Pulling existing image for cache...');
       await runCommand('docker', ['pull', `${MCP_SERVER_REPO_URI}:latest`]);
     } catch (error) {
-      console.warn(`   Warning: Could not pull existing image (this is normal for first build)`);
+      console.warn(
+        `   Warning: Could not pull existing image (this is normal for first build)`,
+      );
     }
 
     // Build the image
     console.log('\n📦 Building Docker image...');
-    await runCommand('docker', [
-      'build',
-      '--platform', 'linux/amd64',
-      '-f', 'packages/infra/mcp-server/Dockerfile',
-      '-t', `${MCP_SERVER_REPO_URI}:${VERSION}`,
-      '--cache-from', `${MCP_SERVER_REPO_URI}:latest`,
-      '.',
-    ], { cwd: ROOT_DIR });
+    await runCommand(
+      'docker',
+      [
+        'build',
+        '--platform',
+        'linux/amd64',
+        '-f',
+        'packages/mcp-server/Dockerfile',
+        '-t',
+        `${MCP_SERVER_REPO_URI}:${VERSION}`,
+        '--cache-from',
+        `${MCP_SERVER_REPO_URI}:latest`,
+        '.',
+      ],
+      { cwd: ROOT_DIR },
+    );
 
     // Push the versioned image
     console.log('\n📤 Pushing Docker image...');
     await runCommand('docker', ['push', `${MCP_SERVER_REPO_URI}:${VERSION}`]);
 
     // Tag and push as latest
-    await runCommand('docker', ['tag', `${MCP_SERVER_REPO_URI}:${VERSION}`, `${MCP_SERVER_REPO_URI}:latest`]);
+    await runCommand('docker', [
+      'tag',
+      `${MCP_SERVER_REPO_URI}:${VERSION}`,
+      `${MCP_SERVER_REPO_URI}:latest`,
+    ]);
     await runCommand('docker', ['push', `${MCP_SERVER_REPO_URI}:latest`]);
 
-    console.log(`\n✅ Successfully built and pushed: ${MCP_SERVER_REPO_URI}:${VERSION}\n`);
+    console.log(
+      `\n✅ Successfully built and pushed: ${MCP_SERVER_REPO_URI}:${VERSION}\n`,
+    );
   } catch (error) {
     console.error(`\n❌ Build failed: ${error.message}\n`);
     process.exit(1);

@@ -868,13 +868,7 @@ export function gql(source: "\n  mutation validateOtp($input: ValidateOTPMutatio
 export function gql(source: "\n  mutation disableOtp($input: DisableOTPMutationInput!) {\n    disableOtp(input: $input) {\n      ok\n    }\n  }\n"): (typeof documents)["\n  mutation disableOtp($input: DisableOTPMutationInput!) {\n    disableOtp(input: $input) {\n      ok\n    }\n  }\n"];
 
 export function gql(source: string) {
-  const document = (documents as any)[source];
-  if (!document) {
-    throw new Error(
-      `GraphQL query not found in documents map. Please run: pnpm nx run webapp-api-client:graphql:generate-types\n\nQuery:\n${source.substring(0, 200)}...`
-    );
-  }
-  return document;
+  return (documents as any)[source] ?? {};
 }
 
 export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;

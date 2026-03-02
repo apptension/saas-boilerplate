@@ -217,7 +217,7 @@ of experience in IT services industry.
 The MCP server is a containerized service that exposes GraphQL operations as MCP tools:
 
 ```yaml
-# packages/infra/mcp-server/config.yaml
+# packages/mcp-server/config.yaml
 endpoint: http://backend:5001/api/graphql/
 
 forward_headers:
@@ -237,7 +237,7 @@ overrides:
 
 ### Adding New MCP Tools
 
-Create a `.graphql` file in `packages/infra/mcp-server/operations/`:
+Create a `.graphql` file in `packages/mcp-server/operations/`:
 
 ```graphql
 # @tool(name: "get_custom_data", description: "Fetches custom data for analysis")
@@ -281,7 +281,7 @@ docker compose up mcp-server
 # docker-compose.prod.yml
 mcp-server:
   build:
-    context: ./packages/infra/mcp-server
+    context: ./packages/mcp-server
   environment:
     - GRAPHQL_ENDPOINT=http://backend:5001/api/graphql/
     - OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -296,7 +296,7 @@ mcp-server:
 - type: web
   name: mcp-server
   runtime: docker
-  dockerfilePath: ./packages/infra/mcp-server/Dockerfile
+  dockerfilePath: ./packages/mcp-server/Dockerfile
   envVars:
     - key: GRAPHQL_ENDPOINT
       fromService:

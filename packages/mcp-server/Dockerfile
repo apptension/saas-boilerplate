@@ -23,11 +23,11 @@ COPY --from=mcp-source /bin/apollo-mcp-server /usr/local/bin/apollo-mcp-server
 COPY --from=mcp-source /nix /nix
 
 # Copy operations and schema files
-COPY packages/infra/mcp-server/operations /app/operations
+COPY packages/mcp-server/operations /app/operations
 COPY packages/webapp-libs/webapp-api-client/graphql/schema /app/schema
 
 # Copy entrypoint script
-COPY packages/infra/mcp-server/docker-entrypoint.sh /app/docker-entrypoint.sh
+COPY packages/mcp-server/docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
 
 # Set environment variables (can be overridden at runtime)

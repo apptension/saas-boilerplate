@@ -410,7 +410,7 @@ services:
   - type: web
     name: mcp-server
     runtime: docker
-    dockerfilePath: ./packages/infra/mcp-server/Dockerfile
+    dockerfilePath: ./packages/mcp-server/Dockerfile
     dockerContext: .
     plan: starter  # Options: free, starter, standard, pro
     region: oregon

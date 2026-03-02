@@ -1,14 +1,14 @@
 {
   "name": "mcp-server",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "root": "packages/infra/mcp-server",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/mcp-server",
   "projectType": "application",
-  "sourceRoot": "packages/infra/mcp-server",
+  "sourceRoot": "packages/mcp-server",
   "targets": {
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "cwd": "packages/infra/mcp-server",
+        "cwd": "packages/mcp-server",
         "color": true,
         "commands": ["node scripts/build.js"],
         "parallel": false

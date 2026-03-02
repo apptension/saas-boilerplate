@@ -25,9 +25,21 @@ export default class VPSDeploy extends BaseCommand<typeof VPSDeploy> {
       default: false,
       description: 'Build and push images locally before deploying',
     }),
-    migrate: Flags.boolean({ char: 'm', default: false, description: 'Run migrations' }),
-    yes: Flags.boolean({ char: 'y', default: false, description: 'Skip confirmation' }),
-    tag: Flags.string({ char: 't', description: 'Image tag', default: 'latest' }),
+    migrate: Flags.boolean({
+      char: 'm',
+      default: false,
+      description: 'Run migrations',
+    }),
+    yes: Flags.boolean({
+      char: 'y',
+      default: false,
+      description: 'Skip confirmation',
+    }),
+    tag: Flags.string({
+      char: 't',
+      description: 'Image tag',
+      default: 'latest',
+    }),
   };
 
   async run(): Promise<void> {
@@ -35,7 +47,9 @@ export default class VPSDeploy extends BaseCommand<typeof VPSDeploy> {
     const config = await getPlatformConfig();
 
     if (!config.vps?.host) {
-      this.error(`VPS not configured. Run ${color.cyan('saas vps setup')} first.`);
+      this.error(
+        `VPS not configured. Run ${color.cyan('saas vps setup')} first.`,
+      );
     }
 
     const { host, user, port, privateKeyPath, deployPath } = config.vps;
@@ -47,7 +61,9 @@ export default class VPSDeploy extends BaseCommand<typeof VPSDeploy> {
     const composePath = resolve(rootPath, 'docker-compose.prod.yml');
 
     if (!existsSync(composePath)) {
-      this.error(`docker-compose.prod.yml not found. Run ${color.cyan('saas vps setup')} first.`);
+      this.error(
+        `docker-compose.prod.yml not found. Run ${color.cyan('saas vps setup')} first.`,
+      );
     }
 
     // Build and push images locally if requested
@@ -80,7 +96,10 @@ export default class VPSDeploy extends BaseCommand<typeof VPSDeploy> {
         host,
         username: user,
         port: port || 22,
-        privateKey: keyPath && existsSync(keyPath) ? readFileSync(keyPath, 'utf8') : undefined,
+        privateKey:
+          keyPath && existsSync(keyPath)
+            ? readFileSync(keyPath, 'utf8')
+            : undefined,
       });
 
       this.log(color.green('✓ Connected\n'));
@@ -103,7 +122,9 @@ export default class VPSDeploy extends BaseCommand<typeof VPSDeploy> {
 
       // Pull images
       this.log('⏳ Pulling Docker images...');
-      const pullResult = await ssh.execCommand('docker compose pull', { cwd: deployPath });
+      const pullResult = await ssh.execCommand('docker compose pull', {
+        cwd: deployPath,
+      });
       if (pullResult.code !== 0) {
         this.log(color.yellow(`⚠ Pull warning: ${pullResult.stderr}`));
       } else {
@@ -112,7 +133,10 @@ export default class VPSDeploy extends BaseCommand<typeof VPSDeploy> {
 
       // Deploy
       this.log('⏳ Starting services...');
-      const upResult = await ssh.execCommand('docker compose up -d --remove-orphans', { cwd: deployPath });
+      const upResult = await ssh.execCommand(
+        'docker compose up -d --remove-orphans',
+        { cwd: deployPath },
+      );
       if (upResult.code !== 0) {
         throw new Error(`Deploy failed: ${upResult.stderr}`);
       }
@@ -123,10 +147,12 @@ export default class VPSDeploy extends BaseCommand<typeof VPSDeploy> {
         this.log('⏳ Running migrations...');
         const migrateResult = await ssh.execCommand(
           'docker compose exec -T backend python manage.py migrate --noinput',
-          { cwd: deployPath }
+          { cwd: deployPath },
         );
         if (migrateResult.code !== 0) {
-          this.log(color.yellow(`⚠ Migration warning: ${migrateResult.stderr}`));
+          this.log(
+            color.yellow(`⚠ Migration warning: ${migrateResult.stderr}`),
+          );
         } else {
           this.log(color.green('✓ Migrations complete\n'));
         }
@@ -137,7 +163,6 @@ export default class VPSDeploy extends BaseCommand<typeof VPSDeploy> {
 
       this.log(color.green('✅ Deployment complete!\n'));
       this.log(`Check status: ${color.cyan('saas vps status')}\n`);
-
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Unknown error';
       this.error(`Deployment failed: ${msg}`);
@@ -146,7 +171,10 @@ export default class VPSDeploy extends BaseCommand<typeof VPSDeploy> {
     }
   }
 
-  private async buildAndPushImages(rootPath: string, tag: string): Promise<void> {
+  private async buildAndPushImages(
+    rootPath: string,
+    tag: string,
+  ): Promise<void> {
     const config = await getPlatformConfig();
 
     if (!config.dockerRegistry) {
@@ -155,23 +183,39 @@ export default class VPSDeploy extends BaseCommand<typeof VPSDeploy> {
 
       // Build images without push - they'll need to be on VPS registry or built there
       const images = [
-        { name: 'backend', dockerfile: 'packages/backend/Dockerfile', context: 'packages/backend' },
-        { name: 'webapp', dockerfile: 'packages/webapp/Dockerfile.prod', context: '.' },
-        { name: 'mcp-server', dockerfile: 'packages/infra/mcp-server/Dockerfile', context: '.' },
+        {
+          name: 'backend',
+          dockerfile: 'packages/backend/Dockerfile',
+          context: 'packages/backend',
+        },
+        {
+          name: 'webapp',
+          dockerfile: 'packages/webapp/Dockerfile.prod',
+          context: '.',
+        },
+        {
+          name: 'mcp-server',
+          dockerfile: 'packages/mcp-server/Dockerfile',
+          context: '.',
+        },
       ];
 
       for (const img of images) {
         this.log(`${color.blue(`📦 Building ${img.name}...`)}`);
         execSync(
           `docker build --platform linux/amd64 -f ${img.dockerfile} -t ${img.name}:${tag} ${img.context}`,
-          { cwd: rootPath, stdio: 'inherit' }
+          { cwd: rootPath, stdio: 'inherit' },
         );
         this.log(color.green(`✓ Built ${img.name}\n`));
       }
 
       this.log(color.yellow('⚠️  Images built locally. To push to VPS:'));
-      this.log('  1. Set up a Docker registry (docker.io, ghcr.io, or self-hosted)');
-      this.log(`  2. Run ${color.cyan('saas render setup')} to configure the registry`);
+      this.log(
+        '  1. Set up a Docker registry (docker.io, ghcr.io, or self-hosted)',
+      );
+      this.log(
+        `  2. Run ${color.cyan('saas render setup')} to configure the registry`,
+      );
       this.log('  3. Or use docker save/load to transfer images manually\n');
       return;
     }
@@ -200,7 +244,7 @@ export default class VPSDeploy extends BaseCommand<typeof VPSDeploy> {
       },
       {
         name: 'mcp-server',
-        dockerfile: 'packages/infra/mcp-server/Dockerfile',
+        dockerfile: 'packages/mcp-server/Dockerfile',
         context: '.', // Root context - MCP server needs schema from webapp-libs
         tag: `${registryPrefix}${namespace}-mcp-server:${tag}`,
       },
@@ -210,7 +254,7 @@ export default class VPSDeploy extends BaseCommand<typeof VPSDeploy> {
       this.log(`${color.blue(`📦 Building ${img.name}...`)}`);
       execSync(
         `docker build --platform linux/amd64 -f ${img.dockerfile} -t ${img.tag} ${img.context}`,
-        { cwd: rootPath, stdio: 'inherit' }
+        { cwd: rootPath, stdio: 'inherit' },
       );
       this.log(color.green(`✓ Built ${img.name}`));
 

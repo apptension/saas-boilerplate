@@ -128,7 +128,7 @@ jobs:
               - 'packages/workers/**'
               - 'packages/backend/**'
             mcp_server:
-              - 'packages/infra/mcp-server/**'
+              - 'packages/mcp-server/**'
 
       - name: Set any_changes output
         id: any
