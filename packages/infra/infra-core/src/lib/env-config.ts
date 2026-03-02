@@ -8,6 +8,7 @@ declare const process: {
     SB_DOMAIN_WWW: string;
     SB_DOMAIN_ADMIN_PANEL: string;
     SB_DOMAIN_FLOWER: string;
+    SB_DOMAIN_MCP: string;
     SB_CLOUDFRONT_CERTIFICATE_ARN: string;
     SB_CERTIFICATE_DOMAIN: string;
     SB_LOAD_BALANCER_CERTIFICATE_ARN: string;
@@ -22,6 +23,9 @@ declare const process: {
     SB_TOOLS_HOSTED_ZONE_ID: string;
     SB_TOOLS_DOMAIN_VERSION_MATRIX: string;
     SB_CI_MODE: string;
+    // AI Assistant configuration
+    SB_AI_ENABLED: string;
+    SB_MCP_SERVER_URL: string;
   };
 };
 
@@ -38,6 +42,7 @@ interface EnvConfigFileDomains {
   www: string;
   cdn: string;
   flower: string;
+  mcp: string;
 }
 
 interface ToolsDomains {
@@ -55,6 +60,18 @@ interface CertificatesConfig {
   cloudfrontCertificateArn: string;
   loadBalancerCertificateArn: string;
   domain: string;
+}
+
+/**
+ * AI Assistant configuration.
+ * To enable the AI Assistant feature:
+ * 1. Set SB_AI_ENABLED=true
+ * 2. Set SB_MCP_SERVER_URL to your MCP server URL
+ * 3. Create AWS Secrets Manager secret with OPENAI_API_KEY
+ */
+export interface AiConfig {
+  enabled: boolean;
+  mcpServerUrl: string | undefined;
 }
 
 interface EnvironmentVariables {
@@ -86,6 +103,7 @@ export interface EnvironmentSettings {
   webAppEnvVariables: EnvironmentVariables;
   certificates: CertificatesConfig;
   CIConfig: CIConfig;
+  aiConfig: AiConfig;
 }
 
 interface ConfigFileContent {
@@ -149,6 +167,7 @@ async function readEnvConfig(envStage: string): Promise<EnvConfigFileContent> {
       www: process.env.SB_DOMAIN_WWW ?? `www.${defaultDomain}`,
       adminPanel: process.env.SB_DOMAIN_ADMIN_PANEL ?? `admin.${defaultDomain}`,
       flower: process.env.SB_DOMAIN_FLOWER ?? `flower.${defaultDomain}`,
+      mcp: process.env.SB_DOMAIN_MCP ?? `mcp.${defaultDomain}`,
     },
     certificates: {
       cloudfrontCertificateArn: process.env.SB_CLOUDFRONT_CERTIFICATE_ARN ?? '',
@@ -194,5 +213,9 @@ export async function loadEnvSettings(): Promise<EnvironmentSettings> {
     },
     certificates: envConfig.certificates,
     CIConfig: config.CIConfig,
+    aiConfig: {
+      enabled: process.env.SB_AI_ENABLED === 'true',
+      mcpServerUrl: process.env.SB_MCP_SERVER_URL,
+    },
   };
 }

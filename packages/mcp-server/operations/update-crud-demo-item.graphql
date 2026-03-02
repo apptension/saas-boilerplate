@@ -1,0 +1,9 @@
+# @tool(name: "update_crud_demo_item", description: "Update an existing CRUD demo item. Requires id, tenantId, and name. Use when the user wants to rename or modify an item.")
+mutation UpdateCrudDemoItem($input: UpdateCrudDemoItemMutationInput!) {
+  updateCrudDemoItem(input: $input) {
+    crudDemoItem {
+      id
+      name
+    }
+  }
+}

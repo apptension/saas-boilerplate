@@ -1,0 +1,174 @@
+import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
+import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
+{{#if withCard}}
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+{{/if}}
+import { FormattedMessage, useIntl } from 'react-intl';
+
+import { use{{ pascalCase name }}Form } from './{{ camelCase name }}Form.hook';
+import { {{ pascalCase name }}FormProps } from './{{ camelCase name }}Form.types';
+
+export const {{ pascalCase name }}Form = ({
+  onSubmit,
+  loading = false,
+  initialData,
+  error,
+}: {{ pascalCase name }}FormProps) => {
+  const intl = useIntl();
+
+  const {
+    form: {
+      register,
+      formState: { errors },
+    },
+    form,
+    genericError,
+    hasGenericErrorOnly,
+    handleFormSubmit,
+  } = use{{ pascalCase name }}Form({ onSubmit, initialData, error });
+
+{{#if withCard}}
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          <FormattedMessage defaultMessage="{{ pascalCase name }}" id="{{ pascalCase name }}Form / Title" />
+        </CardTitle>
+        <CardDescription>
+          <FormattedMessage
+            defaultMessage="Fill in the form below"
+            id="{{ pascalCase name }}Form / Description"
+          />
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+{{/if}}
+        <Form {...form}>
+          <form className="flex flex-col gap-6" onSubmit={handleFormSubmit}>
+{{#if hasFields}}
+{{#each fields}}
+            <FormField
+              control={form.control}
+              name="{{ name }}"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      {...register('{{ name }}'{{#if required}}, {
+                        required: {
+                          value: true,
+                          message: intl.formatMessage({
+                            defaultMessage: '{{ label }} is required',
+                            id: '{{ ../pascalCase ../name }}Form / {{ name }} required',
+                          }),
+                        },
+                      }{{/if}})}
+                      type="{{#if_eq type "email"}}email{{else}}{{#if_eq type "number"}}number{{else}}{{#if_eq type "url"}}url{{else}}text{{/if_eq}}{{/if_eq}}{{/if_eq}}"
+                      label={intl.formatMessage({
+                        defaultMessage: '{{ label }}:',
+                        id: '{{ ../pascalCase ../name }}Form / {{ name }} label',
+                      })}
+                      placeholder={intl.formatMessage({
+                        defaultMessage: '{{ label }}',
+                        id: '{{ ../pascalCase ../name }}Form / {{ name }} placeholder',
+                      })}
+                      error={errors.{{ name }}?.message}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+{{/each}}
+{{else}}
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      {...register('name', {
+                        required: {
+                          value: true,
+                          message: intl.formatMessage({
+                            defaultMessage: 'Name is required',
+                            id: '{{ pascalCase name }}Form / name required',
+                          }),
+                        },
+                      })}
+                      label={intl.formatMessage({
+                        defaultMessage: 'Name:',
+                        id: '{{ pascalCase name }}Form / name label',
+                      })}
+                      placeholder={intl.formatMessage({
+                        defaultMessage: 'Your name',
+                        id: '{{ pascalCase name }}Form / name placeholder',
+                      })}
+                      error={errors.name?.message}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      {...register('email', {
+                        required: {
+                          value: true,
+                          message: intl.formatMessage({
+                            defaultMessage: 'Email is required',
+                            id: '{{ pascalCase name }}Form / email required',
+                          }),
+                        },
+                      })}
+                      type="email"
+                      label={intl.formatMessage({
+                        defaultMessage: 'Email:',
+                        id: '{{ pascalCase name }}Form / email label',
+                      })}
+                      placeholder={intl.formatMessage({
+                        defaultMessage: 'your@email.com',
+                        id: '{{ pascalCase name }}Form / email placeholder',
+                      })}
+                      error={errors.email?.message}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+{{/if}}
+
+            {hasGenericErrorOnly && (
+              <div className="text-sm text-destructive">
+                <span>{genericError}</span>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end mt-4">
+              <Button type="submit" disabled={loading} className="w-full sm:w-fit">
+                {loading ? (
+                  <FormattedMessage defaultMessage="Saving..." id="{{ pascalCase name }}Form / Loading" />
+                ) : (
+                  <FormattedMessage defaultMessage="Save" id="{{ pascalCase name }}Form / Submit" />
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
+{{#if withCard}}
+      </CardContent>
+    </Card>
+  );
+{{else}}
+  );
+{{/if}}
+};

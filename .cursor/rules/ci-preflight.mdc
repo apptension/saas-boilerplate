@@ -1,0 +1,372 @@
+---
+description: CI-First Preflight Checks and Quality Gates for SaaS Boilerplate
+globs: []
+alwaysApply: true
+---
+
+# CI-First Preflight Checks
+
+**Green CI is the definition of quality.** Before finalizing any changes, run the appropriate preflight checks to ensure CI will pass.
+
+## Quick Reference: Preflight Commands
+
+### Frontend Changes (webapp or webapp-libs)
+
+```bash
+# 1. Install dependencies (if needed)
+pnpm install --frozen-lockfile
+
+# 2. Run checks for affected package(s)
+pnpm nx run <package-name>:lint
+pnpm nx run <package-name>:type-check
+pnpm nx run <package-name>:test --watchAll=false
+
+# 3. Build verification (for webapp only)
+pnpm nx run webapp:build
+```
+
+### Backend Changes (Python/Django)
+
+```bash
+# Backend tests run via Docker
+pnpm nx run backend:test
+
+# JS/infra linting for backend
+pnpm nx run backend:lint:js
+```
+
+### Documentation Changes
+
+```bash
+pnpm nx run docs:lint
+pnpm nx run docs:build
+```
+
+---
+
+## Monorepo Scope Discipline
+
+**CRITICAL**: Always identify which package(s) are affected and run checks in the correct scope.
+
+### Webapp Libraries (packages/webapp-libs/)
+
+| Package | Lint | Type-check | Test |
+|---------|------|------------|------|
+| `webapp-core` | ✓ | ✓ | ✓ |
+| `webapp-api-client` | ✓ | ✓ | ✓ |
+| `webapp-contentful` | ✓ | ✓ | ✓ |
+| `webapp-crud-demo` | ✓ | ✓ | ✓ |
+| `webapp-documents` | ✓ | ✓ | ✓ |
+| `webapp-notifications` | ✓ | ✓ | ✓ |
+| `webapp-emails` | ✓ | ✓ | ✓ |
+| `webapp-finances` | ✓ | ✓ | ✓ |
+| `webapp-generative-ai` | ✓ | ✓ | ✓ |
+| `webapp-tenants` | ✓ | ✓ | ✓ |
+
+### Running Multiple Package Checks
+
+```bash
+# Run checks on multiple affected packages
+pnpm nx run-many --target=lint --projects=webapp,webapp-core,webapp-tenants
+pnpm nx run-many --target=type-check --projects=webapp,webapp-core,webapp-tenants
+pnpm nx run-many --target=test --projects=webapp,webapp-core,webapp-tenants -- --watchAll=false
+```
+
+---
+
+## Change-Specific Preflight Requirements
+
+### When Changing UI Components
+
+1. **Run lint + type-check + test** on the affected library
+2. **Update tests** if component text/structure changed
+3. **Update snapshots** if intentional: `--updateSnapshot`
+
+```bash
+pnpm nx run webapp-tenants:lint
+pnpm nx run webapp-tenants:type-check
+pnpm nx run webapp-tenants:test --watchAll=false
+```
+
+### When Changing GraphQL Operations
+
+1. **Backend must be running** for schema download
+2. **Download updated schema**: `pnpm nx run webapp-api-client:graphql:download-schema`
+3. **Generate types**: `pnpm nx run webapp-api-client:graphql:generate-types`
+4. **Run type-check** to verify no breakage
+
+```bash
+# After backend changes to GraphQL schema:
+pnpm nx run webapp-api-client:graphql:download-schema
+pnpm nx run webapp-api-client:graphql:generate-types
+pnpm nx run webapp-api-client:type-check
+```
+
+### When Changing Documentation
+
+```bash
+pnpm nx run docs:lint
+pnpm nx run docs:build
+```
+
+### When Changing Backend (Python)
+
+```bash
+# Runs pytest inside Docker container
+pnpm nx run backend:test
+```
+
+---
+
+## Lockfile Policy
+
+### Rules
+
+1. **Do NOT modify `pnpm-lock.yaml` unless dependencies changed**
+2. **Use `--frozen-lockfile`** for CI-like behavior locally
+3. **If lockfile changes**, commit them explicitly with dependency changes
+
+### Adding Dependencies
+
+```bash
+# Add to specific package
+pnpm add <package> --filter=webapp
+
+# Add to workspace root (dev dependency)
+pnpm add -D <package> -w
+```
+
+---
+
+## Case-Sensitivity and Path Safety
+
+**CRITICAL**: CI runs on Linux (case-sensitive filesystem). macOS is case-insensitive by default.
+
+### Rules
+
+1. **Match import casing exactly** with file names
+2. **Avoid ambiguous paths** that differ only by case
+3. **Test builds** - type-check catches most import issues
+
+### Common Mistakes
+
+```tsx
+// ❌ Wrong casing (may work on macOS, fail on Linux)
+import { Button } from '@sb/webapp-core/components/UI/Button';
+
+// ✅ Correct casing
+import { Button } from '@sb/webapp-core/components/ui/button';
+```
+
+---
+
+## Pre-Commit Checklist
+
+Before committing changes, verify:
+
+- [ ] **Lint passes**: `pnpm nx run <package>:lint`
+- [ ] **Types pass**: `pnpm nx run <package>:type-check`
+- [ ] **Tests pass**: `pnpm nx run <package>:test --watchAll=false`
+- [ ] **Build works** (if webapp changed): `pnpm nx run webapp:build`
+- [ ] **Docs build** (if docs changed): `pnpm nx run docs:build`
+- [ ] **GraphQL codegen** (if schema changed): types regenerated
+- [ ] **Tests updated** (if UI text/structure changed)
+- [ ] **No unintended lockfile changes**
+
+---
+
+## Common CI Failure Patterns to Avoid
+
+### 1. Forgetting to Update Tests After UI Changes
+
+When changing component text or structure, **always update corresponding tests**:
+
+```bash
+# Find tests for a component
+ls packages/webapp-libs/webapp-tenants/src/components/myComponent/__tests__/
+```
+
+### 2. Apollo Client Import Error
+
+```tsx
+// ❌ WRONG - Will fail at runtime
+import { useMutation } from '@apollo/client';
+
+// ✅ CORRECT - Always use /react subpath
+import { useMutation } from '@apollo/client/react';
+```
+
+### 3. Missing GraphQL Codegen
+
+After adding/modifying `.graphql.ts` files, regenerate types:
+
+```bash
+pnpm nx run webapp-api-client:graphql:generate-types
+```
+
+### 4. Type-Only Errors Not Caught by Tests
+
+Tests may pass while type-check fails. **Always run both**:
+
+```bash
+pnpm nx run webapp:type-check
+pnpm nx run webapp:test --watchAll=false
+```
+
+### 5. Snapshot Drift
+
+If snapshots need updating due to intentional changes:
+
+```bash
+pnpm nx run webapp:test --watchAll=false --updateSnapshot
+```
+
+### 6. Permission-Protected UI Not Rendering in Tests
+
+**CRITICAL**: Components using `PermissionGate` or `usePermissionCheck` will not render protected buttons/forms without proper mocking.
+
+```tsx
+// Add to test file to mock permissions
+jest.mock('@sb/webapp-tenants/hooks', () => ({
+  ...jest.requireActual('@sb/webapp-tenants/hooks'),
+  PermissionGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  usePermissionCheck: () => ({ hasPermission: true, loading: false }),
+}));
+```
+
+### 7. GraphQL Mutation Response Key Mismatch
+
+The mock data key MUST match the mutation name:
+
+```tsx
+// ❌ WRONG
+const data = { createTenant: { tenant: {...} } };  // Using wrong mutation name
+const mock = composeMockedQueryResult(updateTenantMutation, { data });
+
+// ✅ CORRECT
+const data = { updateTenant: { tenant: {...} } };  // Matches mutation name
+const mock = composeMockedQueryResult(updateTenantMutation, { data });
+```
+
+### 8. Table Row Components Missing Wrapper
+
+Components rendering `<tr>` need table wrapper:
+
+```tsx
+const Component = (props) => (
+  <Table><TableBody><MyRowComponent {...props} /></TableBody></Table>
+);
+```
+
+---
+
+## Efficient CI Verification (Token-Optimized)
+
+**Strategy: Run targeted checks first, expand scope only if needed.**
+
+### Quick Single-Package Check
+
+```bash
+# Check a single package quickly (< 30 seconds)
+pnpm nx run webapp-tenants:lint && pnpm nx run webapp-tenants:type-check && pnpm nx run webapp-tenants:test --watchAll=false
+```
+
+### Quick Full Frontend Check
+
+```bash
+# Fast verification (uses Nx cache)
+pnpm nx run webapp:lint && pnpm nx run webapp:type-check && pnpm nx run webapp:test --watchAll=false
+```
+
+### Efficient Multi-Package Check
+
+```bash
+# Run checks in parallel with summary output
+pnpm nx run-many --target=lint,type-check --projects=webapp,webapp-tenants,webapp-core --parallel=3
+```
+
+### Backend Quick Check
+
+```bash
+# Backend tests with concise output
+pnpm nx run backend:test 2>&1 | tail -15
+```
+
+---
+
+## CI Check Decision Tree
+
+Use this to minimize unnecessary checks:
+
+1. **Did you change Python code?** → Run `pnpm nx run backend:test`
+2. **Did you change a specific webapp-lib?** → Run checks only on that package
+3. **Did you change webapp?** → Run `webapp:lint`, `webapp:type-check`, `webapp:test`
+4. **Did you change UI components?** → Also check for test file updates
+5. **Did you change GraphQL?** → Run codegen + type-check
+6. **Not sure what changed?** → Run full preflight
+
+### Output Analysis
+
+**Focus on these signals:**
+- `X passed, Y failed` - Fix the failures first
+- `FAIL` prefix - These files need attention
+- `●` symbols - Individual failing tests
+- Type errors with file paths - Check those specific files
+
+**Ignore these:**
+- Console warnings (unless they indicate an issue)
+- Cache messages ("read from cache")
+- Deprecation warnings (unless they cause failures)
+
+---
+
+## Full Preflight Script (All Frontend)
+
+For comprehensive validation before major PRs:
+
+```bash
+#!/bin/bash
+set -e
+
+echo "=== Installing dependencies ==="
+pnpm install --frozen-lockfile
+
+echo "=== Linting webapp ==="
+pnpm nx run webapp:lint
+
+echo "=== Type-checking webapp ==="
+pnpm nx run webapp:type-check
+
+echo "=== Testing webapp ==="
+pnpm nx run webapp:test --watchAll=false
+
+echo "=== Building webapp ==="
+pnpm nx run webapp:build
+
+echo "=== All checks passed! ==="
+```
+
+---
+
+## When to Skip Checks (Exceptions)
+
+You may skip certain checks **only** if:
+
+1. **Documentation-only changes**: Skip webapp checks, run `docs:lint` and `docs:build`
+2. **Backend-only changes**: Skip webapp checks, run `backend:test`
+3. **Infra-only changes**: Skip webapp/backend, run `infra-*:lint` and `infra-*:build`
+
+**Never skip checks for changes that touch multiple packages.**
+
+---
+
+## Quick Verification Commands Reference
+
+| Scenario | Command |
+|----------|---------|
+| Backend only | `pnpm nx run backend:test 2>&1 \| tail -15` |
+| Single package | `pnpm nx run <pkg>:lint && pnpm nx run <pkg>:type-check && pnpm nx run <pkg>:test --watchAll=false` |
+| Full webapp | `pnpm nx run webapp:lint && pnpm nx run webapp:type-check && pnpm nx run webapp:test --watchAll=false` |
+| All webapp-libs | `pnpm nx run-many --target=test --all -- --watchAll=false` |
+| GraphQL changes | `pnpm nx run webapp-api-client:graphql:download-schema && pnpm nx run webapp-api-client:graphql:generate-types` |
+| Build check | `pnpm nx run webapp:build 2>&1 \| tail -10` |

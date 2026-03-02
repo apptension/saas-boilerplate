@@ -1,4 +1,5 @@
 import { ApiClientEvents, apiEmitter } from '@sb/webapp-api-client';
+import { setupStoreInterceptors } from '@sb/webapp-api-client/api';
 import { CommonQuery } from '@sb/webapp-api-client/providers';
 import { useLocales } from '@sb/webapp-core/hooks';
 import { getLocalePath } from '@sb/webapp-core/utils';
@@ -7,6 +8,9 @@ import { generatePath, useNavigate } from 'react-router';
 
 import { RoutesConfig } from '../config/routes';
 import { ApolloProvider } from './apollo';
+
+// Set up the axios interceptors for token refresh on 401 errors
+setupStoreInterceptors();
 
 export const ApiProvider: FC<PropsWithChildren> = ({ children }) => {
   const {

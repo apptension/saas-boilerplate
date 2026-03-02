@@ -15,7 +15,9 @@ export const useCrudDemoItemForm = ({ error, onSubmit, initialData }: UseCrudDem
   const { handleSubmit, setApolloGraphQLResponseErrors } = form;
 
   useEffect(() => {
-    if (error) setApolloGraphQLResponseErrors(error.graphQLErrors);
+    if (error && 'graphQLErrors' in error) {
+      setApolloGraphQLResponseErrors((error as any).graphQLErrors);
+    }
   }, [error, setApolloGraphQLResponseErrors]);
 
   const handleFormSubmit = handleSubmit((formData: CrudDemoItemFormFields) => onSubmit(formData));

@@ -10,15 +10,16 @@ const Template: StoryFn<PasswordResetConfirmFormProps> = (args: PasswordResetCon
 export default {
   title: 'Shared/Auth/PasswordResetConfirmForm',
   component: PasswordResetConfirmForm,
+  parameters: {
+    layout: 'centered',
+  },
 };
 
 export const Default = {
   render: Template,
-
   args: {
-    token: 'token',
-    user: 'user',
+    token: 'sample-reset-token-12345',
+    user: 'sample-user-id',
   },
-
   decorators: [withProviders({})],
 };

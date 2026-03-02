@@ -14,7 +14,7 @@ You can use `plop` to generate all necessary files and types of an empty email t
 Just run the following command in `packages/webapp` directory:
 
 ```shell
-plop email MyEmailName
+pnpm plop email MyEmailName
 ```
 
 :::info
@@ -159,3 +159,24 @@ You can modify the contents of those components as much as you want:
 - They can use `react-intl` for i18n support; `lang` parameter is passed by backend to define which language the email
 should be rendered in.
 - To be fair, they can use any type of logic you'd normally use in React.
+
+---
+
+## Testing Emails Locally
+
+Use Mailcatcher to preview emails during development:
+
+1. Emails are automatically caught at `http://localhost:1080`
+2. Use Storybook to preview and send test emails via the browser
+
+See [Mailcatcher guide](/working-with-sb/dev-tools/mailcatcher) for more details.
+
+---
+
+## Related Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Send Email](/working-with-sb/emails/send-email) | Trigger your email template from backend |
+| [Mailcatcher](/working-with-sb/dev-tools/mailcatcher) | Preview emails locally |
+| [Plop Generator](/working-with-sb/dev-tools/plop) | Generate email boilerplate |

@@ -1,0 +1,385 @@
+---
+title: Translations & i18n
+description: Dynamic internationalization with cloud publishing and AI-powered translation
+---
+
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Translations & Internationalization
+
+<ProjectName /> includes a comprehensive i18n system that goes beyond static translation files. Translations can be managed through Django Admin, published to cloud storage (S3/R2/B2), and automatically generated using OpenAI.
+
+## Key Features
+
+| Feature | Description |
+|---------|-------------|
+| **Dynamic Translations** | Update translations via admin without redeploying |
+| **Cloud Publishing** | Translations served from S3/CloudFront/R2 for optimal performance |
+| **AI Translation** | Automatically translate using OpenAI with context awareness |
+| **Build-Time Sync** | Extract keys from source code and sync to database |
+| **Version Control** | Rollback to previous translation versions |
+| **RTL Support** | Full right-to-left language support (Arabic, Hebrew) |
+
+## Architecture
+
+```
+┌────────────────────────────────────────────────────────────────────────────┐
+│                      TRANSLATION SYSTEM                                    │
+├────────────────────────────────────────────────────────────────────────────┤
+│                                                                            │
+│  BUILD TIME                          RUNTIME                               │
+│  ══════════                          ═══════                               │
+│                                                                            │
+│  ┌─────────────┐   formatjs     ┌─────────────┐                           │
+│  │ Source Code │───extract────►│ master.json │                           │
+│  │ (.tsx)      │                └──────┬──────┘                           │
+│  └─────────────┘                       │                                   │
+│                                        │ sync                              │
+│                                        ▼                                   │
+│  ┌─────────────┐               ┌─────────────┐      ┌──────────────┐      │
+│  │ Django      │◄──translate──►│  PostgreSQL │      │   Frontend   │      │
+│  │ Admin       │   via AI      │  (Keys,     │      │   (React)    │      │
+│  └──────┬──────┘               │  Translations│      └──────┬───────┘      │
+│         │                      └──────┬──────┘             │               │
+│         │ publish                     │                    │ fetch         │
+│         ▼                             ▼                    ▼               │
+│  ┌─────────────────────────────────────────────────────────────────┐      │
+│  │                    Cloud Storage (S3/R2/B2)                     │      │
+│  │  translations/en.json  translations/pl.json  translations/de.json│      │
+│  └─────────────────────────────────────────────────────────────────┘      │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Build-Time Key Extraction
+
+Translation keys are extracted from source code using `formatjs`:
+
+```tsx
+// Source code with FormattedMessage
+<FormattedMessage 
+  defaultMessage="Welcome back, {name}!" 
+  id="Dashboard / Welcome message"
+/>
+```
+
+```bash
+# Extract all keys to master.json
+cd packages/webapp
+pnpm extract-intl:master
+
+# Sync keys to database (uses docker exec)
+pnpm translations:sync
+
+# Or combine both steps
+pnpm translations:extract-and-sync
+```
+
+The extraction covers all webapp packages:
+- `webapp/src/**/*.tsx`
+- `webapp-libs/webapp-core/src/**/*.tsx`
+- `webapp-libs/webapp-tenants/src/**/*.tsx`
+- `webapp-libs/webapp-management-dashboard/src/**/*.tsx`
+- ... and all other webapp-libs
+
+### Deployment Bundle
+
+For deployments, a `translations_export.json` bundle is generated:
+
+```javascript
+// packages/webapp/scripts/exportTranslations.js
+const exportData = {
+  locales: data.locales,      // All active locales with metadata
+  translations: data.translations,  // All translations per locale
+};
+fs.writeFileSync('translations_export.json', JSON.stringify(exportData));
+```
+
+This bundle enables:
+- Pre-populating databases in new environments
+- CI/CD pipelines without database access
+- Backup/restore of translation data
+
+## Cloud Storage Publishing
+
+Translations are published to cloud storage for optimal frontend loading:
+
+```python
+# packages/backend/apps/translations/services.py
+class TranslationPublisher:
+    def publish(self, locale: Locale, user) -> TranslationVersion:
+        # Generate translation JSON
+        translations = self.generate_translation_bundle(locale)
+        version_hash = self.generate_version_hash(translations)
+        
+        # Upload to storage (S3, R2, B2, or local)
+        versioned_path = f"{locale.code}/{version_string}.json"
+        current_path = f"{locale.code}.json"
+        
+        self._upload_json(versioned_path, translations)  # For history
+        self._upload_json(current_path, translations)    # Current version
+        
+        # Create version record for rollback
+        version = TranslationVersion.objects.create(
+            locale=locale,
+            version=version_string,
+            s3_key=versioned_path,
+            content_hash=version_hash,
+        )
+        return version
+```
+
+### Storage Backend Support
+
+Uses the same storage backend as the rest of the application:
+
+| Backend | Configuration | Use Case |
+|---------|--------------|----------|
+| **AWS S3** | `STORAGE_BACKEND=s3` | Production with CloudFront CDN |
+| **Cloudflare R2** | `STORAGE_BACKEND=r2` | Cost-effective with global CDN |
+| **Backblaze B2** | `STORAGE_BACKEND=b2` | Budget-friendly option |
+| **Local** | `STORAGE_BACKEND=local` | Development only |
+
+### Version History & Rollback
+
+Every publish creates a versioned snapshot:
+
+```
+translations/
+├── en.json                    # Current version
+├── pl.json                    # Current version
+├── en/
+│   ├── v20260113120000-a1b2c3.json
+│   └── v20260112100000-d4e5f6.json
+└── pl/
+    ├── v20260113120000-x7y8z9.json
+    └── v20260112100000-m1n2o3.json
+```
+
+Rollback via admin:
+1. Go to **Admin → Translations → Translation Versions**
+2. Select the version to restore
+3. Click **Activate this version**
+
+## AI-Powered Translation
+
+Automatically translate your app using OpenAI:
+
+```python
+# packages/backend/apps/translations/ai_service.py
+class AITranslationService:
+    def translate_batch(
+        self,
+        keys_with_text: List[Dict[str, str]],
+        source_locale: str,
+        target_locale: str,
+        app_context: str = "a modern SaaS web application",
+    ) -> List[TranslationResult]:
+        # Build context-aware prompt
+        prompt = self._build_translation_prompt(keys_with_text, ...)
+        
+        response = self.client.chat.completions.create(
+            model=self.model,  # gpt-4 default
+            messages=[
+                {"role": "system", "content": self._get_system_prompt(...)},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.3,  # Low for consistent translations
+            response_format={"type": "json_object"},
+        )
+        # ...
+```
+
+### AI Translation Features
+
+- **Context Awareness**: Message ID and description passed to AI
+- **Placeholder Preservation**: `{name}`, `{count}` kept intact
+- **Batch Processing**: Efficient API usage with configurable batch sizes
+- **Progress Tracking**: Real-time progress via admin UI
+- **Browser Polling**: No Celery required - works with any deployment
+- **Error Recovery**: Failed keys tracked for retry
+
+### Supported Languages
+
+```python
+LANGUAGE_NAMES = {
+    'en': 'English', 'pl': 'Polish', 'de': 'German', 'fr': 'French',
+    'es': 'Spanish', 'it': 'Italian', 'pt': 'Portuguese', 'nl': 'Dutch',
+    'ru': 'Russian', 'ja': 'Japanese', 'ko': 'Korean', 'zh': 'Chinese',
+    'ar': 'Arabic', 'he': 'Hebrew', 'tr': 'Turkish', 'hi': 'Hindi',
+    # ... and more
+}
+```
+
+## Data Models
+
+### TranslationKey
+
+Represents a unique translation key extracted from source code:
+
+```python
+class TranslationKey(models.Model):
+    key = models.CharField(max_length=512, unique=True)  # Message ID
+    default_message = models.TextField()  # English default
+    description = models.TextField(blank=True)  # Context for translators
+    is_deprecated = models.BooleanField(default=False)  # Key removed from code
+    first_seen_at = models.DateTimeField(auto_now_add=True)
+    last_seen_at = models.DateTimeField(auto_now=True)
+```
+
+### Locale
+
+Supported language/locale configuration:
+
+```python
+class Locale(models.Model):
+    code = models.CharField(max_length=10)  # 'en', 'pl', 'en-US'
+    name = models.CharField(max_length=100)  # 'English', 'Polish'
+    native_name = models.CharField(max_length=100)  # 'English', 'Polski'
+    is_default = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    rtl = models.BooleanField(default=False)  # Right-to-left
+    sort_order = models.PositiveIntegerField(default=0)
+```
+
+### Translation
+
+Individual translation for a key in a locale:
+
+```python
+class Translation(models.Model):
+    class Status(models.TextChoices):
+        DRAFT = 'draft'
+        REVIEW = 'review'
+        APPROVED = 'approved'
+        PUBLISHED = 'published'
+
+    key = models.ForeignKey(TranslationKey, on_delete=models.CASCADE)
+    locale = models.ForeignKey(Locale, on_delete=models.CASCADE)
+    value = models.TextField()
+    status = models.CharField(choices=Status.choices, default=Status.DRAFT)
+    translated_by = models.ForeignKey(User, null=True)
+```
+
+## API Endpoints
+
+### Public Endpoints
+
+```bash
+# Get translations for a locale (cached)
+GET /api/translations/{locale_code}.json
+
+# List available locales
+GET /api/translations/locales/
+```
+
+### Admin Endpoints
+
+```bash
+# Sync translation keys from master.json
+POST /api/translations/sync/
+Content-Type: application/json
+{"translations": {...}}
+
+# Publish translations to CDN
+POST /api/translations/publish/
+{"locale_code": "pl"}
+
+# Get translation status
+GET /api/translations/status/
+
+# AI Translation Jobs
+POST /api/translations/ai-jobs/
+GET /api/translations/ai-jobs/{job_id}/
+POST /api/translations/ai-jobs/{job_id}/process-batch/
+```
+
+## Frontend Integration
+
+### Loading Translations
+
+```typescript
+// Translations loaded at app startup from CDN
+const messages = await fetch(`${TRANSLATIONS_URL}/${locale}.json`).then(r => r.json());
+
+// Provided to react-intl
+<IntlProvider locale={locale} messages={messages}>
+  <App />
+</IntlProvider>
+```
+
+### Using Translations
+
+```tsx
+import { FormattedMessage, useIntl } from 'react-intl';
+
+// In JSX
+<FormattedMessage 
+  defaultMessage="Hello, {name}!" 
+  id="Greeting / Hello message"
+  values={{ name: user.name }}
+/>
+
+// In code
+const intl = useIntl();
+const label = intl.formatMessage({
+  defaultMessage: 'Submit',
+  id: 'Form / Submit button',
+});
+```
+
+## Environment Variables
+
+```bash
+# Backend
+OPENAI_API_KEY=sk-...              # For AI translation
+OPENAI_MODEL=gpt-4                 # AI model (default: gpt-4)
+STORAGE_BACKEND=s3                 # Storage for published translations
+
+# Frontend
+VITE_TRANSLATIONS_URL=https://cdn.example.com/translations
+VITE_TRANSLATIONS_POLLING=true     # Enable polling in development
+```
+
+## Best Practices
+
+### Message ID Convention
+
+```
+"Section / Description"
+```
+
+Examples:
+- `"Dashboard / Welcome message"`
+- `"Profile / Save button"`
+- `"Auth / Login error"`
+
+### Placeholders
+
+```tsx
+// ✅ Good - uses named placeholders
+<FormattedMessage 
+  defaultMessage="You have {count} notifications" 
+  values={{ count: 5 }}
+/>
+
+// ❌ Bad - no placeholder support
+<span>You have {count} notifications</span>
+```
+
+### Don't Include Emojis
+
+```tsx
+// ❌ Bad - emojis in translations
+<FormattedMessage defaultMessage="🎉 Success!" />
+
+// ✅ Good - use toast variants for visual feedback
+toast({ description: 'Success!', variant: 'success' });
+```
+
+## Related Documentation
+
+- [Manage Translations Guide](/working-with-sb/translations/manage-translations)
+- [Add a Language](/working-with-sb/translations/add-language)
+- [AI Translation Guide](/working-with-sb/translations/ai-translate)
+- [Storage Backends](/introduction/features/storage-backends)

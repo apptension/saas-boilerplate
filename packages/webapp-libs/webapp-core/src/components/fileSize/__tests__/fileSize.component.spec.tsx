@@ -27,4 +27,16 @@ describe('FileSize: Component', () => {
 
     expect(await screen.findByText('1 KB')).toBeInTheDocument();
   });
+
+  it('should render zero bytes', async () => {
+    render(<Component size={0} />);
+
+    expect(await screen.findByText('0 bytes')).toBeInTheDocument();
+  });
+
+  it('should render megabytes', async () => {
+    render(<Component size={1024 * 1024} />);
+
+    expect(await screen.findByText('1 MB')).toBeInTheDocument();
+  });
 });

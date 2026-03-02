@@ -1,18 +1,58 @@
 ---
-title: User module / Authentication and authorization
+title: Users & Authentication
 slug: /working-with-sb/users
 ---
 
 import DocCardList from '@theme/DocCardList';
 import ProjectName from '../../shared/components/ProjectName.component';
 
-In this section, you can find the technical details of the authentication and authorization feature of the SaaS
-Boilerplate.
+# Users & Authentication Guides
 
-:::info
-This is a comprehensive technical section of the documentation for the in-app notifications feature in <ProjectName/>.
-If you are looking for a high-level description of this feature, please refer to
-[this article](../../introduction/features/auth).
+Learn how to customize and extend the authentication system in <ProjectName />.
+
+:::tip Feature Overview
+Looking for a high-level description of auth capabilities? See [Authentication Feature](/introduction/features/auth).
 :::
+
+---
+
+## What's Included
+
+The built-in authentication system provides:
+
+- ✅ Email/password authentication
+- ✅ Social login (Google, Facebook)
+- ✅ Two-factor authentication (2FA)
+- ✅ Email verification
+- ✅ Password reset
+- ✅ Role-based access control (Owner, Admin, Member)
+- ✅ User profile management
+
+---
+
+## Available Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Add Profile Field](/working-with-sb/users/create-profile-field) | Add custom fields to user profiles (e.g., phone, company) |
+| [Create Custom Role](/working-with-sb/users/create-role) | Define new permission levels beyond Owner/Admin/Member |
+| [Add OAuth Provider](/working-with-sb/users/create-oauth-method) | Integrate additional social login options |
+| [Admin User Management](/working-with-sb/users/admin-page) | Manage users from Django admin |
+
+---
+
+## Key Files
+
+When customizing authentication, you'll work with:
+
+| Location | Purpose |
+|----------|---------|
+| `packages/backend/apps/users/` | Backend user models, serializers, views |
+| `packages/webapp/src/modules/auth/` | Frontend auth components and hooks |
+| `packages/webapp-libs/webapp-tenants/` | Multi-tenant role management |
+
+---
+
+## All Guides
 
 <DocCardList />

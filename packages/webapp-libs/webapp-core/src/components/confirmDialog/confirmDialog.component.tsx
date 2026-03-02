@@ -24,6 +24,10 @@ export interface ConfirmDialogProps extends PropsWithChildren {
   continueLabel?: ReactNode;
   cancelLabel?: ReactNode;
   variant?: VariantProps<typeof buttonVariants>['variant'];
+  /** Controlled open state */
+  open?: boolean;
+  /** Controlled open change handler */
+  onOpenChange?: (open: boolean) => void;
 }
 
 export const ConfirmDialog = ({
@@ -35,8 +39,16 @@ export const ConfirmDialog = ({
   onCancel,
   onContinue,
   variant = 'default',
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: ConfirmDialogProps) => {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  
+  // Support both controlled and uncontrolled modes
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+  const setOpen = isControlled ? (controlledOnOpenChange || (() => {})) : setInternalOpen;
+
   const onClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     e.preventDefault();
@@ -59,9 +71,12 @@ export const ConfirmDialog = ({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild onClick={onClick}>
-        {children}
-      </AlertDialogTrigger>
+      {/* Only render trigger when in uncontrolled mode with children */}
+      {!isControlled && children && (
+        <AlertDialogTrigger asChild onClick={onClick}>
+          {children}
+        </AlertDialogTrigger>
+      )}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>

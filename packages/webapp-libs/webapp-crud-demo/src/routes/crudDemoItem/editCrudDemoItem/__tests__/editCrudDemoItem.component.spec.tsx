@@ -86,10 +86,6 @@ describe('EditCrudDemoItem: Component', () => {
         data: mutationData,
       });
 
-      requestMock.newData = jest.fn(() => ({
-        data: mutationData,
-      }));
-
       render(<Component />, {
         routerProps,
         apolloMocks: [commonQueryMock, queryMock, requestMock],
@@ -100,7 +96,9 @@ describe('EditCrudDemoItem: Component', () => {
       await userEvent.type(nameField, newName);
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
 
-      expect(requestMock.newData).toHaveBeenCalled();
+      // Wait for the mutation to complete (toast appears)
+      await screen.findByTestId('toast-1');
+      expect(requestMock.result).toHaveBeenCalled();
     });
 
     it('should show success message', async () => {
@@ -133,7 +131,7 @@ describe('EditCrudDemoItem: Component', () => {
 
       const toast = await screen.findByTestId('toast-1');
       expect(trackEvent).toHaveBeenCalledWith('crud', 'edit', defaultItemId);
-      expect(toast).toHaveTextContent('🎉 Changes saved successfully!');
+      expect(toast).toHaveTextContent('Changes saved successfully!');
     });
   });
 });

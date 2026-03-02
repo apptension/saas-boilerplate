@@ -1,4 +1,4 @@
-import { GraphQLError } from 'graphql/error/GraphQLError';
+import { GraphQLFormattedError } from 'graphql';
 import { DeepMap, FieldValues, UseFormHandleSubmit, UseFormProps, UseFormReturn } from 'react-hook-form';
 
 import { FormSubmitError } from '../../api/types';
@@ -46,7 +46,7 @@ export type ApiFormReturnType<FormData extends FieldValues = FieldValues> = {
    * in `react-hook-form` context.
    * @param errors
    */
-  setApolloGraphQLResponseErrors: (errors: ReadonlyArray<GraphQLError>) => void;
+  setApolloGraphQLResponseErrors: (errors: ReadonlyArray<GraphQLFormattedError>) => void;
   setGenericError: (genericError: string | undefined) => void;
   hasGenericErrorOnly: boolean;
   formState: {

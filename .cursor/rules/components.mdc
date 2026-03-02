@@ -1,0 +1,360 @@
+---
+description: React component patterns and best practices
+globs: ["**/*.tsx"]
+alwaysApply: false
+---
+
+# Component Patterns
+
+## Functional Components with Types
+
+Always define and export prop types:
+
+```tsx
+export type ComponentNameProps = {
+  requiredProp: string;
+  optionalProp?: boolean;
+  onAction?: () => void;
+};
+
+export const ComponentName = ({ requiredProp, optionalProp = false, onAction }: ComponentNameProps) => {
+  // Component implementation
+};
+```
+
+## UI Components
+
+Use shadcn/ui components from `@sb/webapp-core/components/ui/`:
+
+```tsx
+import { Button } from '@sb/webapp-core/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+import { Dialog, DialogContent, DialogTrigger } from '@sb/webapp-core/components/ui/dialog';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@sb/webapp-core/components/ui/tooltip';
+import { Avatar, AvatarImage, AvatarFallback } from '@sb/webapp-core/components/ui/avatar';
+```
+
+## Tooltip Pattern for Collapsed States
+
+Wrap interactive elements with tooltips when in collapsed state:
+
+```tsx
+{isCollapsed ? (
+  <Tooltip delayDuration={200}>
+    <TooltipTrigger asChild>{content}</TooltipTrigger>
+    <TooltipContent side="right">{label}</TooltipContent>
+  </Tooltip>
+) : (
+  content
+)}
+```
+
+## Context Usage
+
+Use React Context for shared state:
+
+```tsx
+import { useContext } from 'react';
+import { LayoutContext } from '../layout.context';
+
+const { isSidebarCollapsed, toggleSidebar } = useContext(LayoutContext);
+```
+
+## Responsive Behavior
+
+Use the `useMediaQuery` hook:
+
+```tsx
+import { useMediaQuery } from '@sb/webapp-core/hooks';
+import { media } from '@sb/webapp-core/theme';
+
+const { matches: isDesktop } = useMediaQuery({
+  above: media.Breakpoint.TABLET,
+});
+
+// Combine with collapsed state
+const isCollapsedDesktop = isSidebarCollapsed && isDesktop;
+```
+
+## Inline Action Buttons
+
+For small inline action buttons (like resend, refresh, retry):
+
+```tsx
+import { RefreshCw } from 'lucide-react';
+
+<Button
+  variant="outline"
+  size="sm"
+  className="h-6 px-2 text-xs"
+  onClick={handleAction}
+  disabled={loading}
+>
+  <RefreshCw className={`h-3 w-3 mr-1 ${loading ? 'animate-spin' : ''}`} />
+  <FormattedMessage id="Feature / Action" defaultMessage="Resend" />
+</Button>
+```
+
+Key points:
+- Use `variant="outline"` for visibility with border
+- Use `size="sm"` with custom `className="h-6 px-2 text-xs"` for compact size
+- Add spinning animation on loading: `${loading ? 'animate-spin' : ''}`
+- Disable button during loading: `disabled={loading}`
+
+## Conditional Rendering with Actions
+
+Show different UI based on state with optional actions:
+
+```tsx
+{condition ? (
+  <div className="flex items-center">
+    <CheckIcon className="mr-2 w-4 h-4" />
+    <FormattedMessage id="Feature / Yes" defaultMessage="Yes" />
+  </div>
+) : (
+  <div className="flex items-center gap-2">
+    <PendingIcon className="mr-2 w-4 h-4" />
+    <FormattedMessage id="Feature / No" defaultMessage="No" />
+    <ActionButton onClick={handleAction} loading={loading} />
+  </div>
+)}
+```
+
+## Multiple Mutations in One Component
+
+When a component needs multiple mutations:
+
+```tsx
+const [commitUpdateMutation, { loading: updateLoading }] = useMutation(updateMutation, {
+  onCompleted: () => toast({ description: updateSuccessMessage, variant: 'success' }),
+  onError: () => toast({ description: updateFailMessage, variant: 'destructive' }),
+});
+
+const [commitDeleteMutation] = useMutation(deleteMutation, {
+  onCompleted: () => {
+    toast({ description: deleteSuccessMessage, variant: 'success' });
+    onAfterUpdate?.();
+  },
+  onError: () => toast({ description: deleteFailMessage, variant: 'destructive' }),
+});
+
+const [commitResendMutation, { loading: resendLoading }] = useMutation(resendMutation, {
+  onCompleted: () => toast({ description: resendSuccessMessage, variant: 'success' }),
+  onError: () => toast({ description: resendFailMessage, variant: 'destructive' }),
+});
+```
+
+Define all i18n messages at the top of the component:
+
+```tsx
+const updateSuccessMessage = intl.formatMessage({
+  id: 'Feature / Update / Success',
+  defaultMessage: 'Updated successfully!',
+});
+
+const resendSuccessMessage = intl.formatMessage({
+  id: 'Feature / Resend / Success',
+  defaultMessage: 'Resent successfully!',
+});
+```
+
+## Common TypeScript Pitfalls to Avoid
+
+### 1. String Storage vs Union Types
+
+When storing values like `sortBy` as a generic `string` (e.g., in localStorage/sessionStorage or generic hooks), but the consuming component expects a specific union type, **cast when passing to the component**:
+
+```tsx
+// ❌ WRONG - Will cause type error
+<FilterBar sortBy={filters.sortBy} />
+
+// ✅ CORRECT - Cast to the expected union type
+<FilterBar sortBy={filters.sortBy as ProjectSortOption} />
+```
+
+### 2. useState Callback vs Direct Value Setters
+
+When replacing `useState` setters with custom hook setters, be aware that custom setters may only accept **direct values**, not callbacks:
+
+```tsx
+// useState supports callback syntax:
+const [items, setItems] = useState<string[]>([]);
+setItems((prev) => prev.filter((i) => i !== id)); // ✅ Works
+
+// Custom hooks may only support direct values:
+const { filters, setFilter } = useListFilters();
+setFilter('items', (prev) => prev.filter(...)); // ❌ May not work
+
+// Use the current value directly instead:
+setFilter('items', filters.items.filter((i) => i !== id)); // ✅ Works
+```
+
+When updating `activeFilters` callbacks that remove items:
+
+```tsx
+// ❌ WRONG - Callback won't work with direct-value setters
+(status) => setSelectedStatuses((prev) => prev.filter((s) => s !== status))
+
+// ✅ CORRECT - Use current value and add explicit type
+(status: string) => setSelectedStatuses(selectedStatuses.filter((s) => s !== status))
+```
+
+### 3. ESLint Disable Comments
+
+**Never use `eslint-disable-next-line react-hooks/exhaustive-deps`** - this rule is not configured in the project and will cause lint errors. Instead:
+
+```tsx
+// ❌ WRONG - Rule doesn't exist, causes lint error
+useEffect(() => {
+  doSomething();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [partialDeps]);
+
+// ✅ CORRECT - Add all dependencies properly
+useEffect(() => {
+  doSomething();
+}, [partialDeps, initializeState, otherDep]);
+```
+
+### 4. Callback Type Annotations in useMemo
+
+When creating callbacks inside `useMemo` that will be passed to child components, add explicit parameter types:
+
+```tsx
+// ❌ WRONG - Implicit 'any' type errors
+const callbacks = useMemo(() => [
+  (item) => removeItem(items.filter((i) => i !== item)),
+], [items]);
+
+// ✅ CORRECT - Explicit type annotation
+const callbacks = useMemo(() => [
+  (item: string) => removeItem(items.filter((i) => i !== item)),
+], [items, removeItem]);
+```
+
+## Preventing Infinite Loops in Custom Hooks
+
+### 1. Array/Object Props Create New References
+
+When passing arrays or objects as hook options, they get recreated on every render, causing infinite loops if used in dependency arrays:
+
+```tsx
+// ❌ WRONG - Creates new array on every render, causes infinite loop
+export const useMyHook = () => {
+  return useBaseHook({
+    excludeKeys: ['a', 'b'], // New array every render!
+    defaultValues: { x: 1 }, // New object every render!
+  });
+};
+
+// ✅ CORRECT - Define stable constants outside the hook
+const EXCLUDE_KEYS = ['a', 'b'];
+const DEFAULT_VALUES = { x: 1 };
+
+export const useMyHook = () => {
+  return useBaseHook({
+    excludeKeys: EXCLUDE_KEYS,
+    defaultValues: DEFAULT_VALUES,
+  });
+};
+```
+
+### 2. Use Refs for Config Props in Custom Hooks
+
+When building custom hooks that accept configuration props, use refs to prevent re-renders:
+
+```tsx
+// ❌ WRONG - Using config props in dependencies causes loops
+export const useListFilters = ({ defaultFilters, excludeKeys }) => {
+  const persistToStorage = useCallback((filters) => {
+    for (const key of excludeKeys) { /* ... */ }
+  }, [excludeKeys]); // excludeKeys changes every render!
+};
+
+// ✅ CORRECT - Store config in refs
+export const useListFilters = ({ defaultFilters, excludeKeys }) => {
+  const defaultFiltersRef = useRef(defaultFilters);
+  const excludeKeysRef = useRef(excludeKeys);
+  
+  // Update refs without triggering re-renders
+  defaultFiltersRef.current = defaultFilters;
+  excludeKeysRef.current = excludeKeys;
+
+  const persistToStorage = useCallback((filters) => {
+    for (const key of excludeKeysRef.current) { /* ... */ }
+  }, []); // No dependencies needed!
+};
+```
+
+### 3. Avoid useEffect for Prop-Derived State
+
+Using `useEffect` to sync state with prop changes can cause cascading updates. Use synchronous render-time checks instead:
+
+```tsx
+// ❌ WRONG - useEffect causes extra render cycle and potential loops
+const [filters, setFilters] = useState(defaultFilters);
+
+useEffect(() => {
+  if (tenantId !== prevTenantId) {
+    setFilters(loadFromStorage(tenantId));
+  }
+}, [tenantId, prevTenantId]);
+
+// ✅ CORRECT - Synchronous check during render
+const initializedTenantRef = useRef<string | undefined>(undefined);
+const [filters, setFilters] = useState(() => {
+  initializedTenantRef.current = tenantId;
+  return loadFromStorage(tenantId);
+});
+
+// Check during render (before return)
+if (tenantId !== initializedTenantRef.current) {
+  initializedTenantRef.current = tenantId;
+  setFilters(loadFromStorage(tenantId));
+}
+```
+
+### 4. useSearchParams Can Cause Instability
+
+`useSearchParams` from react-router returns a new object on every URL change. Avoid using it in dependency arrays:
+
+```tsx
+// ❌ WRONG - searchParams changes frequently
+const [searchParams] = useSearchParams();
+
+const initState = useCallback(() => {
+  return parseFromUrl(searchParams);
+}, [searchParams]); // Triggers on every URL change!
+
+useEffect(() => {
+  setState(initState());
+}, [initState]); // Infinite loop risk!
+
+// ✅ CORRECT - Read searchParams directly without dependencies
+const [searchParams] = useSearchParams();
+
+const [state] = useState(() => {
+  // Read once during initialization
+  return parseFromUrl(searchParams);
+});
+```
+
+### 5. Callback Dependencies with useCallback
+
+When a `useCallback` depends on frequently-changing values, and that callback is used in a `useEffect`, infinite loops can occur:
+
+```tsx
+// ❌ WRONG - initializeState changes when searchParams changes
+const initializeState = useCallback(() => {
+  return readFromUrl(searchParams);
+}, [searchParams]);
+
+useEffect(() => {
+  setState(initializeState());
+}, [initializeState]); // Runs every time searchParams changes!
+
+// ✅ CORRECT - Don't include callback in useEffect deps
+useEffect(() => {
+  setState(initializeState());
+}, [tenantId]); // Only run when tenantId actually changes
+```

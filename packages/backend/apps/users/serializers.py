@@ -27,15 +27,19 @@ class UserProfileSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source="user.email", read_only=True)
     roles = serializers.SerializerMethodField()
     avatar = serializers.FileField(required=False)
+    language = serializers.ChoiceField(
+        choices=models.LanguageChoices.choices,
+        required=False,
+    )
 
     class Meta:
         model = models.UserProfile
-        fields = ("id", "first_name", "last_name", "email", "roles", "avatar")
+        fields = ("id", "first_name", "last_name", "email", "roles", "avatar", "language")
 
     @staticmethod
     def validate_avatar(avatar):
         if avatar and avatar.size > UPLOADED_AVATAR_SIZE_LIMIT:
-            raise exceptions.ValidationError({"avatar": _("Too large file")}, 'too_large')
+            raise exceptions.ValidationError({"avatar": _("Too large file")}, "too_large")
 
         return avatar
 
@@ -80,18 +84,19 @@ class UserSignupSerializer(serializers.ModelSerializer):
         )
 
         refresh = jwt_tokens.RefreshToken.for_user(user)
+        refresh['auth_method'] = 'password'
 
         if jwt_api_settings.UPDATE_LAST_LOGIN:
             update_last_login(None, user)
 
         notifications.AccountActivationEmail(
-            user=user, data={'user_id': user.id.hashid, 'token': tokens.account_activation_token.make_token(user)}
+            user=user, data={"user_id": user.id.hashid, "token": tokens.account_activation_token.make_token(user)}
         ).send()
 
         # Create user signup tenant
         Tenant.objects.get_or_create_user_default_tenant(user)
 
-        return {'id': user.id, 'email': user.email, 'access': str(refresh.access_token), 'refresh': str(refresh)}
+        return {"id": user.id, "email": user.email, "access": str(refresh.access_token), "refresh": str(refresh)}
 
 
 class UserAccountConfirmationSerializer(serializers.Serializer):
@@ -136,7 +141,7 @@ class UserAccountChangePasswordSerializer(serializers.Serializer):
 
         user = attrs["user"]
         if not user.check_password(old_password):
-            raise exceptions.ValidationError({"old_password": _("Wrong old password")}, 'wrong_password')
+            raise exceptions.ValidationError({"old_password": _("Wrong old password")}, "wrong_password")
 
         return attrs
 
@@ -147,10 +152,11 @@ class UserAccountChangePasswordSerializer(serializers.Serializer):
         user.save()
 
         refresh = jwt_tokens.RefreshToken.for_user(user)
+        refresh['auth_method'] = 'password'
 
         return {
-            'access': str(refresh.access_token),
-            'refresh': str(refresh),
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
         }
 
 
@@ -165,14 +171,14 @@ class PasswordResetSerializer(serializers.Serializer):
         except dj_auth.get_user_model().DoesNotExist:
             pass
 
-        return {**attrs, 'user': user}
+        return {**attrs, "user": user}
 
     def create(self, validated_data):
-        user = validated_data.pop('user')
+        user = validated_data.pop("user")
 
         if user:
             notifications.PasswordResetEmail(
-                user=user, data={'user_id': user.id.hashid, 'token': tokens.password_reset_token.make_token(user)}
+                user=user, data={"user_id": user.id.hashid, "token": tokens.password_reset_token.make_token(user)}
             ).send()
 
         return {"ok": True}
@@ -198,12 +204,12 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
         try:
             user = models.User.objects.get(pk=user_id)
         except models.User.DoesNotExist:
-            raise exceptions.ValidationError(_("Malformed password reset token"), 'invalid_token')
+            raise exceptions.ValidationError(_("Malformed password reset token"), "invalid_token")
 
         if not tokens.password_reset_token.check_token(user, token):
-            raise exceptions.ValidationError(_("Malformed password reset token"), 'invalid_token')
+            raise exceptions.ValidationError(_("Malformed password reset token"), "invalid_token")
 
-        return {**attrs, 'user': user}
+        return {**attrs, "user": user}
 
     def create(self, validated_data):
         user = validated_data.pop("user")
@@ -211,20 +217,26 @@ class PasswordResetConfirmationSerializer(serializers.Serializer):
         user.set_password(new_password)
         jwt.blacklist_user_tokens(user)
         user.save()
-        return {'ok': True}
+        return {"ok": True}
 
 
 class CookieTokenObtainPairSerializer(jwt_serializers.TokenObtainPairSerializer):
     username_field = get_user_model().USERNAME_FIELD
 
-    default_error_messages = {'no_active_account': _('No active account found with the given credentials')}
+    default_error_messages = {"no_active_account": _("No active account found with the given credentials")}
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['auth_method'] = 'password'
+        return token
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields[self.username_field] = serializers.CharField(write_only=True)
-        self.fields['password'] = PasswordField(write_only=True)
-        self.fields['otp_auth_token'] = serializers.CharField(read_only=True, default=None)
+        self.fields["password"] = PasswordField(write_only=True)
+        self.fields["otp_auth_token"] = serializers.CharField(read_only=True, default=None)
 
     access = serializers.CharField(read_only=True, default=None)
     refresh = serializers.CharField(read_only=True, default=None)
@@ -249,20 +261,20 @@ class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
     access = serializers.CharField(read_only=True)
 
     default_error_messages = {
-        'invalid_token': _('No valid token found in cookie \'refresh_token\' or field \'refresh\''),
+        "invalid_token": _("No valid token found in cookie 'refresh_token' or field 'refresh'"),
     }
 
     def validate(self, attrs):
-        request = self.context['request']
-        raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_COOKIE) or attrs.get('refresh')
+        request = self.context["request"]
+        raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_COOKIE) or attrs.get("refresh")
 
         if not raw_token:
-            self.fail('invalid_token')
+            self.fail("invalid_token")
 
         try:
             refresh = jwt_tokens.RefreshToken(raw_token)
         except (jwt_exceptions.InvalidToken, jwt_exceptions.TokenError):
-            self.fail('invalid_token')
+            self.fail("invalid_token")
 
         if jwt_api_settings.ROTATE_REFRESH_TOKENS:
             if jwt_api_settings.BLACKLIST_AFTER_ROTATION:
@@ -272,39 +284,49 @@ class CookieTokenRefreshSerializer(jwt_serializers.TokenRefreshSerializer):
                     pass
 
             user = get_user_model().objects.get(id=refresh[jwt_api_settings.USER_ID_CLAIM])
+            auth_method = refresh.get('auth_method', 'password')
             new_refresh = jwt_tokens.RefreshToken.for_user(user)
+            new_refresh['auth_method'] = auth_method
+            new_refresh.access_token['auth_method'] = auth_method
 
-            return {'access': str(new_refresh.access_token), 'refresh': str(new_refresh)}
+            return {"access": str(new_refresh.access_token), "refresh": str(new_refresh)}
 
-        return {'access': str(refresh.access_token)}
+        return {"access": str(refresh.access_token)}
 
 
 class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField(required=False)
     ok = serializers.BooleanField(read_only=True)
 
-    default_error_messages = {
-        'invalid_token': _('No valid token found in cookie \'refresh_token\' or field \'refresh\''),
-    }
-
     def validate(self, attrs):
-        request = self.context['request']
-        raw_token = request.COOKIES.get(settings.REFRESH_TOKEN_LOGOUT_COOKIE) or attrs.get('refresh')
+        request = self.context["request"]
+        # Try multiple sources for the refresh token (bulletproof for different proxy configs)
+        raw_token = (
+            request.COOKIES.get(settings.REFRESH_TOKEN_LOGOUT_COOKIE)
+            or request.COOKIES.get(settings.REFRESH_TOKEN_COOKIE)
+            or attrs.get("refresh")
+        )
 
         if not raw_token:
-            self.fail('invalid_token')
+            # No token found - still allow logout (just won't blacklist)
+            return {"refresh": None}
 
         try:
             refresh = jwt_tokens.RefreshToken(raw_token)
+            return {"refresh": refresh}
         except (jwt_exceptions.InvalidToken, jwt_exceptions.TokenError):
-            self.fail('invalid_token')
-
-        return {'refresh': refresh}
+            # Token is invalid/expired - still allow logout
+            return {"refresh": None}
 
     def create(self, validated_data):
-        refresh = validated_data.pop('refresh')
-        refresh.blacklist()
-        return {'ok': True}
+        refresh = validated_data.get("refresh")
+        if refresh:
+            try:
+                refresh.blacklist()
+            except Exception:
+                # Blacklisting failed - token might already be blacklisted
+                pass
+        return {"ok": True}
 
 
 @context_user_required
@@ -314,7 +336,7 @@ class GenerateOTPSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         otp_base32, otp_auth_url = otp_services.generate_otp(self.context_user)
-        return {'base32': otp_base32, 'otpauth_url': otp_auth_url}
+        return {"base32": otp_base32, "otpauth_url": otp_auth_url}
 
 
 @context_user_required
@@ -324,7 +346,7 @@ class VerifyOTPSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         otp_services.verify_otp(self.context_user, validated_data.get("otp_token", ""))
-        return {'otp_verified': True}
+        return {"otp_verified": True}
 
 
 class ValidateOTPSerializer(serializers.Serializer):
@@ -336,29 +358,29 @@ class ValidateOTPSerializer(serializers.Serializer):
     refresh = serializers.CharField(read_only=True)
 
     default_error_messages = {
-        'invalid_token': _(f'No valid token found in cookie \'{settings.OTP_AUTH_TOKEN_COOKIE}\''),
+        "invalid_token": _(f"No valid token found in cookie '{settings.OTP_AUTH_TOKEN_COOKIE}'"),
     }
 
     def validate(self, attrs):
-        request = self.context['request']
+        request = self.context["request"]
 
         if not (
-            raw_otp_auth_token := request.COOKIES.get(settings.OTP_AUTH_TOKEN_COOKIE) or attrs.get('otp_auth_token')
+            raw_otp_auth_token := request.COOKIES.get(settings.OTP_AUTH_TOKEN_COOKIE) or attrs.get("otp_auth_token")
         ):
-            self.fail('invalid_token')
+            self.fail("invalid_token")
 
         try:
             otp_auth_token = jwt_tokens.AccessToken(raw_otp_auth_token)
         except (jwt_exceptions.InvalidToken, jwt_exceptions.TokenError):
-            self.fail('invalid_token')
+            self.fail("invalid_token")
 
         if not (user_id := otp_auth_token.get("user_id")):
-            self.fail('invalid_token')
+            self.fail("invalid_token")
 
         try:
             self.user = models.User.objects.get(id=user_id)
         except models.User.DoesNotExist:
-            self.fail('invalid_token')
+            self.fail("invalid_token")
 
         otp_services.validate_otp(self.user, attrs.get("otp_token", ""))
 
@@ -366,6 +388,8 @@ class ValidateOTPSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         refresh = RefreshToken.for_user(self.user)
+        refresh['auth_method'] = 'password'
+        refresh.access_token['auth_method'] = 'password'
         return {"refresh": str(refresh), "access": str(refresh.access_token)}
 
 
@@ -375,4 +399,4 @@ class DisableOTPSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         otp_services.disable_otp(self.context_user)
-        return {'ok': True}
+        return {"ok": True}

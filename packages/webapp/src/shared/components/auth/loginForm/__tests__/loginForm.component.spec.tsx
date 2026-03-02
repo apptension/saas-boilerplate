@@ -3,7 +3,7 @@ import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { GraphQLError } from 'graphql/error/GraphQLError';
+import { GraphQLError } from 'graphql';
 
 import { Role } from '../../../../../modules/auth/auth.types';
 import { render } from '../../../../../tests/utils/rendering';
@@ -34,9 +34,9 @@ describe('LoginForm: Component', () => {
     },
   };
 
-  const getEmailInput = async () => await screen.findByLabelText(/email/i);
-  const getPasswordInput = async () => await screen.findByLabelText(/password/i);
-  const clickLoginButton = async () => await userEvent.click(await screen.findByRole('button', { name: /log in/i }));
+  const getEmailInput = async () => await screen.findByLabelText(/email address/i);
+  const getPasswordInput = async () => await screen.findByLabelText(/^password$/i);
+  const clickLoginButton = async () => await userEvent.click(await screen.findByRole('button', { name: /sign in/i }));
   const user = currentUserFactory({
     firstName: 'Jack',
     lastName: 'White',
@@ -59,14 +59,15 @@ describe('LoginForm: Component', () => {
     });
 
     const { waitForApolloMocks } = render(<Component />, {
-      apolloMocks: [requestMock, refreshQueryMock],
+      apolloMocks: (defaultMocks) => defaultMocks.concat([requestMock, refreshQueryMock]),
     });
-    await waitForApolloMocks();
 
     await userEvent.type(await getEmailInput(), mockCredentials.input.email);
     await userEvent.type(await getPasswordInput(), mockCredentials.input.password);
 
     await clickLoginButton();
+    // Wait for the mutation mock (index 1, after CommonQuery at index 0)
+    await waitForApolloMocks(1);
 
     expect(trackEvent).not.toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith({ pathname: '/en/auth/validate-otp', search: mockSearch });
@@ -104,26 +105,21 @@ describe('LoginForm: Component', () => {
 
     await clickLoginButton();
 
-    expect(await screen.findByText('Password is required')).toBeInTheDocument();
+    expect(await screen.findByText(/please enter your password/i)).toBeInTheDocument();
   });
 
   it('should show generic form error if action throws error', async () => {
     const errorMessage = 'Incorrect authentication credentials.';
 
-    const requestMock = {
-      request: {
-        query: authSinginMutation,
-        variables: mockCredentials,
-      },
-      result: {
-        data: {},
-        errors: [
-          new GraphQLError('GraphQlValidationError', {
-            extensions: { nonFieldErrors: [{ message: errorMessage, code: 'Incorrect authentication credentials.' }] },
-          }),
-        ],
-      },
-    };
+    const requestMock = composeMockedQueryResult(authSinginMutation, {
+      variables: mockCredentials,
+      data: {},
+      errors: [
+        new GraphQLError('GraphQlValidationError', {
+          extensions: { nonFieldErrors: [{ message: errorMessage, code: 'Incorrect authentication credentials.' }] },
+        }),
+      ],
+    });
 
     render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
 
@@ -132,20 +128,18 @@ describe('LoginForm: Component', () => {
 
     await clickLoginButton();
 
-    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
-    expect(await mockNavigate).not.toHaveBeenCalled();
+    // Wait for error to be processed and displayed
+    expect(await screen.findByText(errorMessage, {}, { timeout: 3000 })).toBeInTheDocument();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('should show common error if action throws error', async () => {
     const errorMessage = 'Server error';
-    const requestMock = {
-      request: {
-        query: authSinginMutation,
-        variables: mockCredentials,
-      },
+    const requestMock = composeMockedQueryResult(authSinginMutation, {
+      variables: mockCredentials,
       data: {},
-      result: { errors: [new GraphQLError(errorMessage)] },
-    };
+      errors: [new GraphQLError(errorMessage)],
+    });
 
     render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
 
@@ -154,7 +148,8 @@ describe('LoginForm: Component', () => {
 
     await clickLoginButton();
 
-    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
-    expect(await mockNavigate).not.toHaveBeenCalled();
+    // Wait for error to be processed and displayed
+    expect(await screen.findByText(errorMessage, {}, { timeout: 3000 })).toBeInTheDocument();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

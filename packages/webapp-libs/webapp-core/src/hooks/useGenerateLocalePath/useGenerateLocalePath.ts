@@ -4,7 +4,6 @@ import { generatePath } from 'react-router-dom';
 import { getLocalePath } from '../../utils/path';
 import { useLocale } from '../useLocale';
 
-
 /**
  * A hook that returns a function you can use to generate a path that includes proper locale code. Underneath, it uses
  * [`generatePath`](https://reactrouter.com/en/main/utils/generate-path#generatepath) function exported by

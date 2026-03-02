@@ -1,5 +1,6 @@
 import makeThrottled from 'lodash.throttle';
 import { useEffect } from 'react';
+
 import { UnknownObject } from '../../utils/types';
 
 export const useWindowListener = (

@@ -1,0 +1,365 @@
+---
+title: Activity Logs
+description: Comprehensive audit logging for tracking all actions in your SaaS application
+---
+
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Activity Logs
+
+<ProjectName /> includes a comprehensive **Activity Logging** system that tracks all significant actions performed by users, AI agents, and system processes.
+
+## Overview
+
+The Activity Logs feature provides:
+
+- **Full Audit Trail**: Every create, update, and delete action is logged
+- **Field-Level Changes**: Track exactly what changed (old value → new value)
+- **Multiple Actor Types**: Distinguish between user, AI, and system actions
+- **Export Capability**: Download logs as CSV for compliance
+- **Tenant Isolation**: Logs are scoped to each organization
+
+## Key Features
+
+### Action Types
+
+| Action Type | Description |
+|-------------|-------------|
+| `CREATE` | New entity created |
+| `UPDATE` | Entity modified |
+| `DELETE` | Entity deleted |
+| `SETTINGS_CHANGE` | Organization settings modified |
+| `IMPORT` | Bulk data import |
+| `SYNC` | Data synchronization |
+| `BULK_DELETE` | Multiple entities deleted |
+| `BULK_UPDATE` | Multiple entities updated |
+| `ACTIVATE` | Entity activated |
+| `DEACTIVATE` | Entity deactivated |
+| `REVOKE` | Access/session revoked |
+
+### Entity Types
+
+Actions are logged for all major entities:
+
+- **Organization**: Tenant settings, memberships
+- **Financial**: Revenue lines, cost lines, invoices
+- **Projects**: Projects, iterations, time entries
+- **Master Data**: Clients, persons, roles
+- **Security**: SSO connections, sessions, passkeys
+- **Billing**: Subscriptions, payment methods
+
+### Actor Types
+
+| Actor | Description |
+|-------|-------------|
+| `USER` | Human user action via UI |
+| `AI_AGENT` | AI assistant action |
+| `SYSTEM:sync` | Automated sync process |
+| `SYSTEM:import` | Data import process |
+| `SYSTEM:scheduled_task` | Scheduled job (Celery) |
+| `SYSTEM:migration` | Database migration |
+
+## Usage
+
+### Viewing Activity Logs
+
+Navigate to **Organization Settings → Activity Log** to view all actions:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                       Activity Log                               │
+├─────────────────────────────────────────────────────────────────┤
+│ Filters: [All Actions ▼] [All Entities ▼] [Date Range]          │
+├─────────────────────────────────────────────────────────────────┤
+│ ● John Smith created Revenue Line                   2 hours ago │
+│   Amount: $50,000 for Project ACM-WEB-001                       │
+│                                                                  │
+│ ● AI Agent updated Project status                   3 hours ago │
+│   Status: In Progress → Completed                               │
+│                                                                  │
+│ ● System:sync synced FX Rates                       4 hours ago │
+│   Updated 5 currency rates for January 2026                     │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Exporting Logs
+
+Export activity logs as CSV for compliance or analysis:
+
+```graphql
+mutation ExportActivityLogs($input: ExportActivityLogsMutationInput!) {
+  exportActivityLogs(input: $input) {
+    exportUrl
+  }
+}
+```
+
+### Filtering Options
+
+- **By Action Type**: CREATE, UPDATE, DELETE, etc.
+- **By Entity Type**: Projects, Revenue, Users, etc.
+- **By Actor**: Specific user, AI agent, or system
+- **By Date Range**: Custom date range filter
+- **By Search**: Text search in action descriptions
+
+## Implementation
+
+### Decorator-Based Logging
+
+Use decorators for automatic logging:
+
+```python
+from common.action_logging import log_action, log_create, log_update, log_delete
+
+class CreateRevenueLineMutation(graphene.Mutation):
+    @log_create(entity_type='revenue_line', name_field='description')
+    def mutate(self, info, input):
+        line = RevenueLine.objects.create(**input)
+        return CreateRevenueLineMutation(revenue_line=line)
+```
+
+### Manual Logging
+
+For complex scenarios, log manually:
+
+```python
+from common.action_logging import ActionLogService
+
+# Log with field-level changes
+ActionLogService.log_action(
+    tenant_id=tenant.id,
+    action_type=ActionType.UPDATE,
+    entity_type=ActionEntityType.PROJECT,
+    entity_id=str(project.id),
+    entity_name=project.name,
+    actor_user=request.user,
+    actor_type=ActionActorType.USER,
+    changes={
+        'status': {
+            'old': 'in_progress',
+            'new': 'completed'
+        },
+        'budget': {
+            'old': '50000.00',
+            'new': '55000.00'
+        }
+    }
+)
+```
+
+### Automatic Change Detection
+
+The service can auto-detect changes:
+
+```python
+from common.action_logging import compute_changes
+
+# Before update
+old_instance = Project.objects.get(id=project_id)
+
+# After update
+new_instance = project
+new_instance.status = 'completed'
+new_instance.save()
+
+# Compute what changed
+changes = compute_changes(
+    old_instance=old_instance,
+    new_instance=new_instance,
+    fields_to_track=['status', 'budget', 'name'],
+    exclude_fields=['updated_at']
+)
+# Returns: {'status': {'old': 'in_progress', 'new': 'completed'}}
+```
+
+## Data Model
+
+### ActionLog Model
+
+```python
+class ActionLog(models.Model):
+    tenant = models.ForeignKey(Tenant)
+    
+    # Action details
+    action_type = models.CharField(choices=ActionType.choices)
+    entity_type = models.CharField(choices=ActionEntityType.choices)
+    entity_id = models.CharField(max_length=255)
+    entity_name = models.CharField(max_length=500, blank=True)
+    
+    # Actor info
+    actor_type = models.CharField(choices=ActionActorType.choices)
+    actor_user = models.ForeignKey(User, null=True)
+    
+    # Changes (JSON)
+    changes = models.JSONField(default=dict)
+    
+    # Metadata
+    created_at = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField(null=True)
+```
+
+### Example Log Entry
+
+```json
+{
+  "id": "abc123",
+  "action_type": "UPDATE",
+  "entity_type": "project",
+  "entity_id": "proj_456",
+  "entity_name": "Website Redesign",
+  "actor_type": "USER",
+  "actor_user": "john@example.com",
+  "changes": {
+    "status": { "old": "in_progress", "new": "completed" },
+    "actual_revenue": { "old": "45000.00", "new": "52000.00" }
+  },
+  "created_at": "2026-01-13T10:30:00Z",
+  "ip_address": "192.168.1.1"
+}
+```
+
+## GraphQL API
+
+### Query Activity Logs
+
+```graphql
+query ActivityLogs($tenantId: ID!, $first: Int) {
+  activityLogs(tenantId: $tenantId, first: $first) {
+    edges {
+      node {
+        id
+        actionType
+        entityType
+        entityId
+        entityName
+        actorType
+        actorUser {
+          email
+          firstName
+          lastName
+        }
+        changes
+        createdAt
+      }
+    }
+    pageInfo {
+      hasNextPage
+    }
+  }
+}
+```
+
+### Filter by Entity
+
+```graphql
+query ProjectActivityLogs($tenantId: ID!, $entityType: String!) {
+  activityLogs(
+    tenantId: $tenantId
+    entityType: $entityType
+  ) {
+    edges {
+      node {
+        id
+        actionType
+        entityName
+        changes
+        createdAt
+      }
+    }
+  }
+}
+```
+
+## Configuration
+
+### Enable/Disable Logging
+
+Per-tenant logging control:
+
+```python
+# Check if logging is enabled
+from common.action_logging import is_logging_enabled
+
+if is_logging_enabled(tenant_id):
+    # Perform logging
+    ...
+```
+
+### Retention Policy
+
+Configure log retention:
+
+```python
+# settings.py
+ACTION_LOG_RETENTION_DAYS = 365  # Keep logs for 1 year
+```
+
+### Excluded Fields
+
+Fields to never log (sensitive data):
+
+```python
+# Never log these fields
+EXCLUDED_LOGGING_FIELDS = [
+    'password',
+    'secret_key',
+    'api_key',
+    'token',
+]
+```
+
+## Frontend Component
+
+### Activity Log List
+
+```tsx
+import { ActivityLogList } from '@sb/webapp-tenants/components/activityLog';
+
+function SettingsPage() {
+  return (
+    <ActivityLogList
+      tenantId={currentTenant.id}
+      filters={{
+        entityTypes: ['project', 'revenue_line'],
+        actorTypes: ['USER', 'AI_AGENT'],
+      }}
+    />
+  );
+}
+```
+
+### Activity Log Item
+
+```tsx
+<ActivityLogItem
+  log={log}
+  renderEntityLink={(type, id, name) => (
+    <Link to={`/management/${type}/${id}`}>{name}</Link>
+  )}
+/>
+```
+
+## Compliance & Security
+
+### GDPR Considerations
+
+- Logs are tenant-scoped (data isolation)
+- Export capability for data portability
+- Configurable retention periods
+- No sensitive field logging
+
+### SOC 2 / ISO 27001
+
+Activity logs support compliance requirements:
+
+- **Access Logging**: Track who accessed what
+- **Change Management**: Full audit trail of changes
+- **Separation of Duties**: Distinguish user vs system actions
+- **Evidence Collection**: Export for audits
+
+## Related Documentation
+
+- [RBAC Permissions](/introduction/features/rbac) - Permission-based access
+- [AI Agent](/introduction/features/ai-agent) - AI action tracking
+- [Enterprise SSO](/features/enterprise-sso/audit-logging) - SSO-specific logs
+- [Multi-tenancy](/introduction/features/multi-tenancy) - Tenant isolation

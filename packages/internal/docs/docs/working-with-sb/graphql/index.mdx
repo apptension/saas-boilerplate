@@ -1,0 +1,77 @@
+---
+title: Data & GraphQL API
+slug: /working-with-sb/graphql
+---
+
+import DocCardList from '@theme/DocCardList';
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Data & GraphQL API
+
+<ProjectName /> uses GraphQL for all API communication between the frontend and backend. This section covers how to fetch, save, and manage data.
+
+---
+
+## How It Works
+
+```
+Frontend (React)                    Backend (Django)
+     │                                    │
+     │  ┌─────────────────────┐          │
+     │  │   Apollo Client     │          │
+     │  │   + Generated Types │          │
+     │  └─────────────────────┘          │
+     │           │                        │
+     │           ▼                        │
+     │  GraphQL Query/Mutation  ────────►│  Graphene + DRF Serializers
+     │                                    │
+     │  ◄──────────────────────  JSON ◄──│
+     │                                    │
+     └────────────────────────────────────┘
+```
+
+---
+
+## Common Tasks
+
+| Task | Guide |
+|------|-------|
+| Display data from backend | [Fetch Data (Query)](/working-with-sb/graphql/web-app/component-with-query) |
+| Submit form to backend | [Save Data (Mutation)](/working-with-sb/graphql/web-app/form-with-mutation) |
+| Create new API endpoint | [Add Backend Mutation](/working-with-sb/graphql/backend/adding-new-mutation) |
+| After changing schema | [Update TypeScript Types](/working-with-sb/graphql/web-app/update-schema) |
+| Reuse query parts | [Use GraphQL Fragments](/working-with-sb/graphql/web-app/use-fragments) |
+
+---
+
+## Quick Commands
+
+```bash
+# Download schema from running backend
+pnpm nx run webapp:graphql:download-schema
+
+# Generate TypeScript types
+pnpm nx run webapp-api-client:graphql:generate-types
+```
+
+:::tip
+Always run both commands after modifying backend queries/mutations.
+:::
+
+---
+
+## Key Files
+
+| Location | Purpose |
+|----------|---------|
+| `webapp-libs/webapp-api-client/graphql/` | GraphQL client configuration |
+| `webapp-libs/webapp-api-client/src/graphql/__generated/` | Auto-generated TypeScript types |
+| `packages/backend/config/schema.py` | Root GraphQL schema |
+| `packages/backend/apps/*/schema.py` | App-specific GraphQL types and mutations |
+
+---
+
+## All Guides
+
+<DocCardList />
+

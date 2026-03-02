@@ -13,6 +13,13 @@ export const tenantMembersListQuery = gql(/* GraphQL */ `
         lastName
         userEmail
         avatar
+        organizationRoles {
+          id
+          name
+          color
+          isSystemRole
+          isOwnerRole
+        }
       }
     }
   }

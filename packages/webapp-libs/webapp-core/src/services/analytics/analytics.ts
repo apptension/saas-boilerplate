@@ -6,6 +6,8 @@ type ActionMap = {
     | 'log-in-oauth'
     | 'log-out'
     | 'sign-up'
+    | 'sso-login'
+    | 'passkey-login'
     | 'reset-password'
     | 'reset-password-confirm'
     | 'user-email-confirm'

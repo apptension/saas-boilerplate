@@ -1,0 +1,255 @@
+---
+title: Passkeys Setup
+description: Enable passwordless authentication with WebAuthn passkeys
+---
+
+# Passkeys / WebAuthn Setup
+
+Passkeys provide a more secure and convenient authentication method using biometrics or hardware security keys.
+
+## What are Passkeys?
+
+Passkeys are a passwordless authentication method based on the WebAuthn standard. They use:
+
+- **Biometrics**: Touch ID, Face ID, Windows Hello
+- **Hardware keys**: YubiKey, Titan Security Key
+- **Device PIN**: As a fallback
+
+:::info
+Passkeys are resistant to phishing attacks because they're bound to specific domains and can't be stolen or reused.
+:::
+
+## Prerequisites
+
+- Modern browser with WebAuthn support (Chrome, Firefox, Safari, Edge)
+- Device with biometric capability or security key
+- HTTPS enabled (required for WebAuthn)
+
+## Configuration
+
+### Backend Configuration
+
+The passkey endpoints are automatically enabled when you add the SSO app:
+
+```python
+# packages/backend/config/settings.py
+LOCAL_APPS = [
+    # ...
+    "apps.sso",
+]
+```
+
+### Frontend Setup
+
+Import the WebAuthn hook and components:
+
+```tsx
+import { useWebAuthn } from '@sb/webapp-sso/hooks';
+import { PasskeysManager } from '@sb/webapp-sso/components/passkeysManager';
+```
+
+## Where to Manage Passkeys
+
+Passkeys are **personal authentication credentials** - they authenticate a user, not a membership in a specific organization. Because of this:
+
+- **Passkeys are managed only in the user's Profile**
+- **Organization admins cannot manage other users' passkeys**
+
+This is by design:
+1. A user may be a member of multiple organizations
+2. A passkey authenticates the user across ALL their organizations
+3. It would be a security issue for Org A's admin to delete a credential that also grants access to Org B
+
+| User Role | Location | Actions |
+|-----------|----------|---------|
+| **Any user** | Profile → Passkeys | Add, view, delete their own passkeys |
+
+:::info Why not in Organization Settings?
+Passkeys are user-level authentication, not organization-level. Unlike SSO (which is configured per-organization), a passkey belongs to the user and works everywhere they have access.
+:::
+
+## User Flow
+
+### 1. User Registers a Passkey
+
+1. User navigates to **Profile → Passkeys**
+2. Clicks "Add Passkey"
+3. Names their passkey (e.g., "MacBook Pro")
+4. Browser prompts for biometric/PIN
+5. Passkey is registered and stored
+
+### 2. User Signs In with Passkey
+
+1. User clicks "Sign in with Passkey" on the login page
+2. Browser prompts for passkey
+3. User authenticates with biometric/PIN
+4. User is signed in
+
+## Implementation Details
+
+### Registration Flow
+
+```tsx
+import { useWebAuthn } from '@sb/webapp-sso/hooks';
+
+function RegisterPasskey() {
+  const { isSupported, isRegistering, registerPasskey, error } = useWebAuthn();
+
+  const handleRegister = async () => {
+    const success = await registerPasskey('My MacBook');
+    if (success) {
+      // Passkey registered successfully
+    }
+  };
+
+  if (!isSupported) {
+    return <p>Passkeys not supported in this browser</p>;
+  }
+
+  return (
+    <button onClick={handleRegister} disabled={isRegistering}>
+      {isRegistering ? 'Registering...' : 'Register Passkey'}
+    </button>
+  );
+}
+```
+
+### Authentication Flow
+
+```tsx
+import { useWebAuthn } from '@sb/webapp-sso/hooks';
+
+function PasskeyLogin() {
+  const { authenticateWithPasskey, isAuthenticating, error } = useWebAuthn();
+
+  const handleLogin = async () => {
+    const tokens = await authenticateWithPasskey();
+    if (tokens) {
+      // Store tokens and redirect
+      localStorage.setItem('access_token', tokens.access);
+      window.location.href = '/dashboard';
+    }
+  };
+
+  return (
+    <button onClick={handleLogin} disabled={isAuthenticating}>
+      Sign in with Passkey
+    </button>
+  );
+}
+```
+
+## Security Considerations
+
+### Credential Storage
+
+- Private keys never leave the device
+- Only public keys are stored on the server
+- Credentials are bound to your domain
+
+### Sign Count Verification
+
+Each passkey tracks a sign count. If the count doesn't increase:
+
+```python
+if new_sign_count <= passkey.sign_count:
+    # Potential cloned authenticator
+    logger.warning("Sign count anomaly detected")
+```
+
+### Backup Eligibility
+
+Some authenticators support cloud backup (e.g., iCloud Keychain). Consider your security requirements when allowing these.
+
+## Managing Passkeys
+
+### GraphQL Queries
+
+```graphql
+# List user's passkeys
+query MyPasskeys {
+  myPasskeys(first: 20) {
+    edges {
+      node {
+        id
+        name
+        authenticatorType
+        lastUsedAt
+        useCount
+        createdAt
+      }
+    }
+  }
+}
+
+# Rename passkey
+mutation RenamePasskey($id: ID!, $name: String!) {
+  renamePasskey(id: $id, name: $name) {
+    passkey {
+      id
+      name
+    }
+  }
+}
+
+# Delete passkey
+mutation DeletePasskey($input: DeletePasskeyMutationInput!) {
+  deletePasskey(input: $input) {
+    deletedIds
+  }
+}
+```
+
+### REST Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/sso/passkeys/register/options` | POST | Get registration options |
+| `/api/sso/passkeys/register/verify` | POST | Verify registration |
+| `/api/sso/passkeys/authenticate/options` | POST | Get auth options |
+| `/api/sso/passkeys/authenticate/verify` | POST | Verify auth |
+| `/api/sso/passkeys/` | GET | List user's passkeys |
+| `/api/sso/passkeys/{id}` | DELETE | Delete user's passkey |
+
+## Browser Support
+
+| Browser | Version | Platform Authenticator | Cross-Platform |
+|---------|---------|----------------------|----------------|
+| Chrome | 67+ | ✅ | ✅ |
+| Firefox | 60+ | ✅ | ✅ |
+| Safari | 14+ | ✅ | ✅ |
+| Edge | 18+ | ✅ | ✅ |
+
+## Troubleshooting
+
+### "NotAllowedError: The operation either timed out or was not allowed"
+
+Common causes:
+1. User cancelled the operation
+2. Operation timed out
+3. No available authenticator
+
+### "SecurityError: The operation is insecure"
+
+WebAuthn requires HTTPS. In development, use:
+- `localhost` (allowed without HTTPS)
+- Or configure HTTPS with a self-signed certificate
+
+### "Sign count did not increase"
+
+This warning indicates a potential cloned authenticator. Investigate if:
+- User is using a cloud-synced passkey
+- User has a backup of the authenticator
+
+## Best Practices
+
+1. **Always offer backup authentication methods** - Don't lock users out if they lose their passkey
+2. **Encourage multiple passkeys** - Users should register passkeys on multiple devices
+3. **Show last-used time** - Helps users identify unused passkeys to remove
+4. **Require re-authentication for passkey removal** - Prevents unauthorized removal
+
+## Next Steps
+
+- [Configure SSO connections](./)
+- [Set up SCIM provisioning](./scim-setup)
+

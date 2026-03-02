@@ -1,7 +1,96 @@
 ---
-title: Guides
+title: Operations
+description: Day-to-day operations and management of your AWS deployment
 ---
 
 import DocCardList from '@theme/DocCardList';
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Operations
+
+This section covers day-to-day operations for managing your <ProjectName /> deployment on AWS.
+
+---
+
+## Common Operations
+
+### Deploying Updates
+
+After making code changes:
+
+```bash
+# Set environment
+pnpm saas aws set-env qa
+
+# Build and deploy all services
+pnpm saas build
+pnpm saas deploy
+```
+
+Or deploy individual services:
+
+```bash
+# Backend only
+pnpm saas backend build && pnpm saas backend deploy api
+
+# Frontend only
+pnpm saas webapp build && pnpm saas webapp deploy
+
+# Workers only
+pnpm saas workers build && pnpm saas workers deploy
+```
+
+### Updating Secrets
+
+```bash
+pnpm saas aws set-env qa
+
+# Edit backend secrets
+pnpm saas backend secrets
+
+# Edit worker secrets
+pnpm saas workers secrets
+
+# Redeploy to pick up changes
+pnpm saas backend deploy api
+```
+
+### Running Database Migrations
+
+Migrations run automatically during deployment. To run manually:
+
+```bash
+pnpm saas backend deploy migrations
+```
+
+### Viewing Logs
+
+**Option 1: CloudWatch Console**
+```bash
+pnpm saas aws login
+# Navigate to CloudWatch → Log groups
+```
+
+**Option 2: SSH into container**
+```bash
+pnpm saas backend remote-shell
+```
+
+### Scaling Services
+
+Modify task counts in CDK and redeploy:
+
+```bash
+pnpm saas infra deploy components
+```
+
+For immediate scaling, use AWS Console:
+1. Go to ECS → Clusters → Your cluster
+2. Select service → Update service
+3. Adjust desired count
+
+---
+
+## Operational Guides
 
 <DocCardList />

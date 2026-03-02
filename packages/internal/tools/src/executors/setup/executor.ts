@@ -29,6 +29,12 @@ const parseEnvFile = (contents: Buffer | null) => {
 
   const lines = contents.toString().split('\n');
   return lines.reduce((result, line) => {
+    // Skip empty lines and comments
+    const trimmedLine = line.trim();
+    if (!trimmedLine || trimmedLine.startsWith('#')) {
+      return result;
+    }
+
     const pattern = new RegExp(/(.+)=(.+)/);
     const groups = line.match(pattern);
     if (!groups) {

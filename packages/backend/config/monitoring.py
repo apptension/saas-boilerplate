@@ -4,7 +4,7 @@ from sentry_sdk.integrations.logging import ignore_logger
 from sentry_sdk.scope import add_global_event_processor
 from rest_framework_simplejwt.exceptions import InvalidToken
 
-ignore_logger('graphql.execution.utils')
+ignore_logger("graphql.execution.utils")
 
 
 @add_global_event_processor

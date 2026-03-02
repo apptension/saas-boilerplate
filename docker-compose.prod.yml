@@ -1,0 +1,368 @@
+# Production Docker Compose for VPS/Self-Hosted Deployments
+#
+# This configuration is designed for deploying to a VPS (Hetzner, DigitalOcean, Linode, etc.)
+# with automatic SSL via Traefik and Let's Encrypt.
+#
+# Prerequisites:
+# 1. Docker and Docker Compose installed on your VPS
+# 2. Domain pointed to your VPS IP address
+# 3. Ports 80 and 443 open
+#
+# Quick Start:
+# 1. Copy .env.prod.example to .env.prod and configure
+# 2. Run: docker compose -f docker-compose.prod.yml up -d
+#
+# Environment Variables (create .env.prod file):
+# - DOMAIN: Your domain (e.g., example.com)
+# - ACME_EMAIL: Email for Let's Encrypt certificates
+# - DJANGO_SECRET_KEY: Django secret key
+# - HASHID_FIELD_SALT: Salt for hashid fields
+# - POSTGRES_PASSWORD: Database password
+# - See docs/deployment/VPS.md for full list
+
+services:
+  # =============================================================================
+  # Traefik Reverse Proxy
+  # Handles SSL termination, routing, and automatic certificate renewal
+  # =============================================================================
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      # API and Dashboard
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+      
+      # Docker provider
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=web"
+      
+      # Entrypoints
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      
+      # HTTP to HTTPS redirect
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      
+      # Let's Encrypt
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      
+      # Logging
+      - "--log.level=INFO"
+      - "--accesslog=true"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt:/letsencrypt
+    networks:
+      - web
+    labels:
+      # Dashboard (optional, remove in production if not needed)
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_DASHBOARD_AUTH:-}"
+
+  # =============================================================================
+  # PostgreSQL Database
+  # =============================================================================
+  db:
+    image: postgres:16-alpine
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=backend
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=backend
+      - PGUSER=backend
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U backend -d backend"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # =============================================================================
+  # Redis
+  # =============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # =============================================================================
+  # Database Migrations (runs once at startup, then exits)
+  # =============================================================================
+  backend-migrations:
+    build:
+      context: ./packages/backend
+      target: backend
+    container_name: backend-migrations
+    restart: "no"
+    command: ["./scripts/runtime/run_migrations.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DJANGO_DEBUG=False
+      - ENVIRONMENT_NAME=production
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - HASHID_FIELD_SALT=${HASHID_FIELD_SALT}
+      - DATABASE_URL=postgresql://backend:${POSTGRES_PASSWORD}@db:5432/backend
+      - STRIPE_LIVE_SECRET_KEY=${STRIPE_LIVE_SECRET_KEY:-sk_<CHANGE_ME>}
+      - STRIPE_TEST_SECRET_KEY=${STRIPE_TEST_SECRET_KEY:-sk_test_<CHANGE_ME>}
+      - STRIPE_CHECKS_ENABLED=False
+    networks:
+      - internal
+
+  # =============================================================================
+  # Django Backend API
+  # =============================================================================
+  backend:
+    build:
+      context: ./packages/backend
+      target: backend
+    container_name: backend
+    restart: unless-stopped
+    command: ["./scripts/runtime/run.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend-migrations:
+        condition: service_completed_successfully
+    environment:
+      # Platform configuration
+      - STORAGE_BACKEND=${STORAGE_BACKEND:-local}
+      - EMAIL_BACKEND=${EMAIL_BACKEND:-django.core.mail.backends.smtp.EmailBackend}
+      - TASK_BACKEND=celery
+      - TRACING_BACKEND=none
+      
+      # Django settings
+      - DJANGO_DEBUG=False
+      - ENVIRONMENT_NAME=production
+      - DJANGO_ALLOWED_HOSTS=${DOMAIN},api.${DOMAIN}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - HASHID_FIELD_SALT=${HASHID_FIELD_SALT}
+      
+      # Database
+      - DATABASE_URL=postgresql://backend:${POSTGRES_PASSWORD}@db:5432/backend
+      
+      # Redis
+      - REDIS_CONNECTION=redis://redis:6379
+      
+      # Storage (local filesystem for VPS)
+      - MEDIA_ROOT=/app/media
+      - MEDIA_URL=/media/
+      
+      # Email (SMTP)
+      - EMAIL_HOST=${EMAIL_HOST:-}
+      - EMAIL_PORT=${EMAIL_PORT:-587}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER:-}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD:-}
+      - EMAIL_FROM_ADDRESS=${EMAIL_FROM_ADDRESS:-}
+      - EMAIL_USE_TLS=True
+      
+      # SendGrid (if using)
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY:-}
+      
+      # URLs
+      - WEB_APP_URL=https://${DOMAIN}
+      - API_URL=https://api.${DOMAIN}
+      - CSRF_TRUSTED_ORIGINS=https://${DOMAIN},https://api.${DOMAIN}
+      - PARENT_HOST=${DOMAIN}
+      
+      # Stripe (optional)
+      - STRIPE_LIVE_SECRET_KEY=${STRIPE_LIVE_SECRET_KEY:-sk_<CHANGE_ME>}
+      - STRIPE_TEST_SECRET_KEY=${STRIPE_TEST_SECRET_KEY:-sk_test_<CHANGE_ME>}
+      - STRIPE_LIVE_MODE=${STRIPE_LIVE_MODE:-False}
+      - DJSTRIPE_WEBHOOK_SECRET=${DJSTRIPE_WEBHOOK_SECRET:-}
+      - STRIPE_CHECKS_ENABLED=False
+      
+      # OAuth (optional)
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=${SOCIAL_AUTH_GOOGLE_OAUTH2_KEY:-}
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=${SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET:-}
+      - SOCIAL_AUTH_FACEBOOK_KEY=${SOCIAL_AUTH_FACEBOOK_KEY:-}
+      - SOCIAL_AUTH_FACEBOOK_SECRET=${SOCIAL_AUTH_FACEBOOK_SECRET:-}
+      - SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS=${DOMAIN}
+      
+      # Sentry (optional)
+      - SENTRY_DSN=${SENTRY_DSN:-}
+      
+      # MCP Server for AI Assistant (optional)
+      - MCP_SERVER_URL=http://mcp-server:4000
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    volumes:
+      - media_data:/app/media
+    networks:
+      - web
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.${DOMAIN}`)"
+      - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.backend.loadbalancer.server.port=5001"
+      # Security headers
+      - "traefik.http.middlewares.backend-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.backend-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.routers.backend.middlewares=backend-headers"
+
+  # =============================================================================
+  # Frontend Web Application
+  # =============================================================================
+  webapp:
+    build:
+      context: .
+      dockerfile: ./packages/webapp/Dockerfile.prod
+      args:
+        - VITE_BASE_API_URL=https://api.${DOMAIN}/api
+    container_name: webapp
+    restart: unless-stopped
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webapp.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.webapp.tls.certresolver=letsencrypt"
+      - "traefik.http.services.webapp.loadbalancer.server.port=80"
+      # Security headers
+      - "traefik.http.middlewares.webapp-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.webapp-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.webapp-headers.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.webapp-headers.headers.frameDeny=true"
+      - "traefik.http.routers.webapp.middlewares=webapp-headers"
+
+  # =============================================================================
+  # Celery Worker (Background Tasks)
+  # =============================================================================
+  celery_worker:
+    build:
+      context: ./packages/backend
+      target: backend
+    container_name: celery_worker
+    restart: unless-stopped
+    command: ["./scripts/runtime/run_celery_worker_default.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Same environment as backend
+      - STORAGE_BACKEND=${STORAGE_BACKEND:-local}
+      - EMAIL_BACKEND=${EMAIL_BACKEND:-django.core.mail.backends.smtp.EmailBackend}
+      - TASK_BACKEND=celery
+      - TRACING_BACKEND=none
+      - DJANGO_DEBUG=False
+      - ENVIRONMENT_NAME=production
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - HASHID_FIELD_SALT=${HASHID_FIELD_SALT}
+      - DATABASE_URL=postgresql://backend:${POSTGRES_PASSWORD}@db:5432/backend
+      - REDIS_CONNECTION=redis://redis:6379
+      - MEDIA_ROOT=/app/media
+      - MEDIA_URL=/media/
+      - EMAIL_HOST=${EMAIL_HOST:-}
+      - EMAIL_PORT=${EMAIL_PORT:-587}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER:-}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD:-}
+      - EMAIL_FROM_ADDRESS=${EMAIL_FROM_ADDRESS:-}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY:-}
+      - STRIPE_LIVE_SECRET_KEY=${STRIPE_LIVE_SECRET_KEY:-sk_<CHANGE_ME>}
+      - STRIPE_TEST_SECRET_KEY=${STRIPE_TEST_SECRET_KEY:-sk_test_<CHANGE_ME>}
+      - STRIPE_CHECKS_ENABLED=False
+      - SENTRY_DSN=${SENTRY_DSN:-}
+    volumes:
+      - media_data:/app/media
+    networks:
+      - internal
+
+  # =============================================================================
+  # Celery Beat (Scheduled Tasks)
+  # =============================================================================
+  celery_beat:
+    build:
+      context: ./packages/backend
+      target: backend
+    container_name: celery_beat
+    restart: unless-stopped
+    command: ["./scripts/runtime/run_celery_beat.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - TASK_BACKEND=celery
+      - TRACING_BACKEND=none
+      - DJANGO_DEBUG=False
+      - ENVIRONMENT_NAME=production
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - HASHID_FIELD_SALT=${HASHID_FIELD_SALT}
+      - DATABASE_URL=postgresql://backend:${POSTGRES_PASSWORD}@db:5432/backend
+      - REDIS_CONNECTION=redis://redis:6379
+      - STRIPE_CHECKS_ENABLED=False
+    networks:
+      - internal
+
+  # =============================================================================
+  # Apollo MCP Server (AI Assistant)
+  # Exposes GraphQL operations as MCP tools for AI models
+  # =============================================================================
+  # NOTE: Pinned to specific SHA digest for reproducibility
+  mcp-server:
+    image: ghcr.io/apollographql/apollo-mcp-server:latest@sha256:a78a66c637236d2d72b1ff1fa34a0c7c7f7d2a84b372a2c54bd2eb13655a3dc1
+    container_name: mcp-server
+    command: ["/app/config.yaml"]
+    restart: unless-stopped
+    volumes:
+      - ./packages/mcp-server/config.yaml:/app/config.yaml:ro
+      - ./packages/mcp-server/operations:/app/operations:ro
+      - ./packages/webapp-libs/webapp-api-client/graphql/schema:/app/schema:ro
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    depends_on:
+      - backend
+    networks:
+      - internal
+
+networks:
+  web:
+    name: web
+    driver: bridge
+  internal:
+    name: internal
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: saas_postgres_data
+  redis_data:
+    name: saas_redis_data
+  media_data:
+    name: saas_media_data
+  letsencrypt:
+    name: saas_letsencrypt

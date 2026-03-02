@@ -5,7 +5,7 @@ from django.db import models
 
 from common.acl.helpers import CommonGroups
 from common.models import ImageWithThumbnailMixin
-from common.storages import UniqueFilePathGenerator, PublicS3Boto3StorageWithCDN
+from common.storages import UniqueFilePathGenerator, get_public_storage
 from apps.multitenancy.models import TenantMembership
 
 
@@ -59,8 +59,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     otp_enabled = models.BooleanField(default=False)
     otp_verified = models.BooleanField(default=False)
-    otp_base32 = models.CharField(max_length=255, blank=True, default='')
-    otp_auth_url = models.CharField(max_length=255, blank=True, default='')
+    otp_base32 = models.CharField(max_length=255, blank=True, default="")
+    otp_auth_url = models.CharField(max_length=255, blank=True, default="")
 
     objects = UserManager()
 
@@ -78,11 +78,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class UserAvatar(ImageWithThumbnailMixin, models.Model):
-    original = models.ImageField(
-        storage=PublicS3Boto3StorageWithCDN, upload_to=UniqueFilePathGenerator("avatars"), null=True
-    )
+    original = models.ImageField(storage=get_public_storage(), upload_to=UniqueFilePathGenerator("avatars"), null=True)
     thumbnail = models.ImageField(
-        storage=PublicS3Boto3StorageWithCDN, upload_to=UniqueFilePathGenerator("avatars/thumbnails"), null=True
+        storage=get_public_storage(), upload_to=UniqueFilePathGenerator("avatars/thumbnails"), null=True
     )
 
     THUMBNAIL_SIZE = (128, 128)
@@ -92,10 +90,24 @@ class UserAvatar(ImageWithThumbnailMixin, models.Model):
         return str(self.id)
 
 
+class LanguageChoices(models.TextChoices):
+    ENGLISH = "en", "English"
+    POLISH = "pl", "Polish"
+    GERMAN = "de", "German"
+    FRENCH = "fr", "French"
+    SPANISH = "es", "Spanish"
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    first_name = models.CharField(max_length=40, blank=True, default='')
-    last_name = models.CharField(max_length=40, blank=True, default='')
+    first_name = models.CharField(max_length=40, blank=True, default="")
+    last_name = models.CharField(max_length=40, blank=True, default="")
+    language = models.CharField(
+        max_length=5,
+        choices=LanguageChoices.choices,
+        default=LanguageChoices.ENGLISH,
+        help_text="User's preferred language for emails and notifications",
+    )
     avatar = models.OneToOneField(
         UserAvatar, on_delete=models.SET_NULL, null=True, blank=True, related_name="user_profile"
     )

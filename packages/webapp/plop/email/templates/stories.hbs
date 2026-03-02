@@ -1,23 +1,23 @@
-import { StoryFn } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { EmailTemplateType } from '../../types';
-import { EmailStory } from '../../emailStory/emailStory.component';
-import {
-  Template as {{ pascalCase name }}Email,
-  Subject as {{ pascalCase name }}Subject,
-  {{ pascalCase name }}Props,
-} from './{{ camelCase name }}.component';
+import { Template } from './{{ camelCase name }}.component';
 
-const Template: StoryFn<{{ pascalCase name }}Props> = (args) => (
-  <EmailStory type={EmailTemplateType.{{ constantCase name }}{{ append '}'}} subject={<{{ pascalCase name }}Subject />} emailData={args}>
-    <{{ pascalCase name }}Email {...args} />
-  </EmailStory>
-);
-
-export default {
+const meta: Meta<typeof Template> = {
   title: 'Emails/{{ pascalCase name }}',
-  component: {{ pascalCase name }}Email,
+  component: Template,
+  args: {
+    userName: 'John Doe',
+  },
 };
 
-export const Primary = Template.bind({});
-Primary.args = {};
+export default meta;
+
+type Story = StoryObj<typeof Template>;
+
+export const Default: Story = {};
+
+export const WithCustomName: Story = {
+  args: {
+    userName: 'Jane Smith',
+  },
+};

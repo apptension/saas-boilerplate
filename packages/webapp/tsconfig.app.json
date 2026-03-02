@@ -15,8 +15,12 @@
     "src/**/*.test.js",
     "src/**/*.spec.jsx",
     "src/**/*.test.jsx",
+    "src/**/*.stories.ts",
+    "src/**/*.stories.tsx",
     "src/**/__mocks__/**/*.ts",
     "src/setupTests.ts",
+    "src/tests/**/*",
+    "src/shared/utils/storybook.tsx",
     "infra/**/*",
     ".storybook/**/*"
   ],

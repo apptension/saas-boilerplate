@@ -147,7 +147,8 @@ export const NewCardInput = ({ control }: NewCardInputProps) => {
               hasError={!!cardNumberController.fieldState.error?.message?.toString()}
             >
               <CardNumberElement
-                {...cardNumberController.field}
+                onChange={cardNumberController.field.onChange}
+                onBlur={cardNumberController.field.onBlur}
                 options={{ style: S.StripeIframeStyles(theme), classes: S.StripeIframeClasses, showIcon: true }}
               />
             </StripeField>
@@ -158,7 +159,8 @@ export const NewCardInput = ({ control }: NewCardInputProps) => {
               hasError={!!cardExpiryController.fieldState.error?.message?.toString()}
             >
               <CardExpiryElement
-                {...cardExpiryController.field}
+                onChange={cardExpiryController.field.onChange}
+                onBlur={cardExpiryController.field.onBlur}
                 options={{ style: S.StripeIframeStyles(theme), classes: S.StripeIframeClasses }}
               />
             </StripeField>
@@ -169,7 +171,8 @@ export const NewCardInput = ({ control }: NewCardInputProps) => {
               hasError={!!cardCvcController.fieldState.error?.message?.toString()}
             >
               <CardCvcElement
-                {...cardCvcController.field}
+                onChange={cardCvcController.field.onChange}
+                onBlur={cardCvcController.field.onBlur}
                 options={{ style: S.StripeIframeStyles(theme), classes: S.StripeIframeClasses }}
               />
             </StripeField>

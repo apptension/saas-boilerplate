@@ -9,7 +9,9 @@ export type MarkdownPageProps = {
 export const MarkdownPage = ({ markdown }: MarkdownPageProps) => {
   return (
     <PageLayout>
-      <ReactMarkdown className="prose dark:prose-invert">{markdown ?? ''}</ReactMarkdown>
+      <div className="prose dark:prose-invert">
+        <ReactMarkdown>{markdown ?? ''}</ReactMarkdown>
+      </div>
     </PageLayout>
   );
 };

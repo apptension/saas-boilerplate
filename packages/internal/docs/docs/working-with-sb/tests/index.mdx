@@ -1,0 +1,121 @@
+---
+title: Testing
+slug: /working-with-sb/tests
+---
+
+import DocCardList from '@theme/DocCardList';
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Testing
+
+<ProjectName /> includes comprehensive testing infrastructure for both frontend and backend.
+
+---
+
+## Testing Stack
+
+| Layer | Framework | Key Libraries |
+|-------|-----------|---------------|
+| **Frontend** | Jest | React Testing Library, Apollo MockedProvider |
+| **Backend** | pytest | Factory Boy, pytest-django |
+
+---
+
+## Quick Commands
+
+### Frontend
+
+```bash
+# Run all webapp tests
+pnpm nx test webapp
+
+# Run specific library tests
+pnpm nx test webapp-core
+
+# Watch mode
+pnpm nx test webapp --watch
+
+# Update snapshots
+pnpm nx test webapp --updateSnapshot
+```
+
+### Backend
+
+```bash
+# Run all backend tests
+pnpm saas backend test
+
+# Run specific app tests
+pnpm saas backend test apps/users
+
+# Run with coverage
+pnpm saas backend test --cov
+```
+
+---
+
+## Common Tasks
+
+| Task | Guide |
+|------|-------|
+| Test React components | [Frontend Testing](/working-with-sb/tests/webapp) |
+| Test Django/GraphQL API | [Backend Testing](/working-with-sb/tests/backend) |
+
+---
+
+## Testing Philosophy
+
+- **Unit tests** for business logic and utilities
+- **Integration tests** for API endpoints and mutations
+- **Component tests** for React components with mocked GraphQL
+- **Factory-based** test data generation
+
+---
+
+## Key Patterns
+
+### Frontend: Mock GraphQL Queries
+
+```tsx
+import { render } from '../tests/utils/rendering';
+import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+
+it('should render user data', async () => {
+  const apolloMocks = [fillCommonQueryWithUser()];
+  
+  const { waitForApolloMocks } = render(<MyComponent />, { apolloMocks });
+  await waitForApolloMocks();
+  
+  expect(screen.getByText('User Name')).toBeInTheDocument();
+});
+```
+
+### Backend: Use Factories
+
+```python
+def test_create_product(self, graphene_client, user, product_factory):
+    products = product_factory.create_batch(3)
+    graphene_client.force_authenticate(user)
+    
+    result = graphene_client.query(ALL_PRODUCTS_QUERY)
+    
+    assert len(result['data']['allProducts']['edges']) == 3
+```
+
+---
+
+## Key Files
+
+| Location | Purpose |
+|----------|---------|
+| `packages/webapp/src/tests/` | Frontend test utilities |
+| `packages/backend/conftest.py` | pytest configuration and fixtures |
+| `**/tests/factories.py` | Factory definitions |
+| `**/__tests__/*.spec.tsx` | Frontend test files |
+
+---
+
+## All Guides
+
+<DocCardList />
+

@@ -91,7 +91,11 @@ export const StripePaymentForm = ({ onSuccess }: StripePaymentFormProps) => {
           <StripePaymentMethodSelector control={form.control} />
         </div>
 
-        {hasGenericErrorOnly && <div className="text-red-500">{genericError}</div>}
+        {hasGenericErrorOnly && (
+          <div className="text-sm text-destructive">
+            <span>{genericError}</span>
+          </div>
+        )}
 
         <Button type="submit" disabled={!form.formState.isValid || form.formState.isSubmitting || loading}>
           <FormattedMessage

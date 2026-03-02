@@ -1,5 +1,6 @@
 import { TenantUserRole } from '@sb/webapp-api-client';
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import { screen } from '@testing-library/react';
 import { composeMockedQueryResult, makeId } from '@sb/webapp-api-client/tests/utils';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 
@@ -62,11 +63,14 @@ describe('TenantMembersList: Component', () => {
       data: listQueryData,
     });
 
-    const { container, waitForApolloMocks } = render(<Component />, {
+    const { waitForApolloMocks } = render(<Component />, {
       apolloMocks: [commonQueryMock, requestListMock],
       routerProps,
     });
     await waitForApolloMocks();
-    expect(container).toMatchSnapshot();
+
+    expect(screen.getByText(new RegExp(user.firstName!))).toBeInTheDocument();
+    expect(screen.getByText(/Firstname 1/)).toBeInTheDocument();
+    expect(screen.getByText('example@example.com')).toBeInTheDocument();
   });
 });

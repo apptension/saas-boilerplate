@@ -1,0 +1,40 @@
+{
+  "name": "mcp-server",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "root": "packages/mcp-server",
+  "projectType": "application",
+  "sourceRoot": "packages/mcp-server",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/mcp-server",
+        "color": true,
+        "commands": ["node scripts/build.js"],
+        "parallel": false
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": [
+          "pnpm cdk deploy *McpServerStack",
+          "pnpm nx run tools:upload-service-version mcp-server \"url=https://${SB_DOMAIN_MCP}\""
+        ],
+        "parallel": false
+      }
+    },
+    "diff": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "packages/backend",
+        "color": true,
+        "commands": ["pnpm cdk diff *McpServerStack"],
+        "parallel": false
+      }
+    }
+  },
+  "tags": ["service"]
+}

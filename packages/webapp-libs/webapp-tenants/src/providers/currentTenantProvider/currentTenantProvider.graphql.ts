@@ -8,6 +8,7 @@ export const tenantFragment = gql(/* GraphQL */ `
     id
     name
     slug
+    actionLoggingEnabled
     membership {
       role
       invitationAccepted

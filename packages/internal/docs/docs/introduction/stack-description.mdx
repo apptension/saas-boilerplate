@@ -1,27 +1,65 @@
 ---
 title: Detailed stack description
+description: Complete technology stack with versions
 ---
 import ProjectName from '../shared/components/ProjectName.component';
 
 The <ProjectName /> incorporates a powerful and modern tech stack to ensure high performance and flexibility.
 
+:::tip Version Information
+The versions listed below are the current defaults. Check `package.json` and `pyproject.toml` for the exact versions in your project.
+:::
+
 ## Front-end Stack
-- **React**: A popular JavaScript library for building user interfaces, React provides a component-based approach to
-front-end development, enabling efficient and reusable code.
+
+| Technology | Version | Description |
+|------------|---------|-------------|
+| **React** | 19.2.x | Component-based UI library for building user interfaces |
+| **TypeScript** | 5.4.x | Static typing for better tooling and code quality |
+| **Vite** | 6.x | Fast build tool with instant HMR |
+| **Apollo Client** | 4.x | Comprehensive GraphQL client with state management |
+| **React Router** | 7.x | Declarative routing for React applications |
+| **Tailwind CSS** | 3.4.x | Utility-first CSS framework |
+| **shadcn/ui** | Latest | Accessible components built with Radix UI |
+| **Storybook** | 10.x | Development environment for UI components |
+
+### Core Libraries
+
+- **React**: A popular JavaScript library for building user interfaces, React 19 provides a component-based approach to
+front-end development with improved performance, better server components support, and enhanced developer experience.
+- **TypeScript**: TypeScript adds static typing to JavaScript, enabling better tooling, improved code quality, and
+easier refactoring across the codebase.
 - **GraphQL**: GraphQL is a query language for APIs that allows you to retrieve and manipulate data efficiently. It
 offers a flexible and efficient way of fetching data from the server.
-- **Apollo Client**: Apollo Client is a comprehensive state management library for JavaScript applications. It
-seamlessly integrates with React and GraphQL, providing tools for data caching, real-time updates, and error handling.
-- **styled-components**: This library enables you to write CSS code directly in your JavaScript files. It promotes
-component-based styling, making it easier to manage styles across your application.
-- **jest**: Jest is a testing framework for JavaScript applications. It provides a simple and intuitive way to write
+- **Apollo Client**: Apollo Client 4 is a comprehensive GraphQL client and state management library for JavaScript applications. It
+seamlessly integrates with React and GraphQL, providing tools for data caching, real-time updates, error handling, and optimistic UI updates.
+- **React Router**: React Router 7 provides declarative routing for React applications with improved performance, better TypeScript support, and enhanced data loading capabilities.
+- **Tailwind CSS**: A utility-first CSS framework that provides low-level utility classes to build custom designs
+directly in your markup, enabling rapid UI development with consistent styling.
+- **shadcn/ui**: A collection of re-usable components built with Radix UI and Tailwind CSS. These accessible,
+customizable components are centrally managed in the `webapp-core` package.
+- **Jest**: Jest is a testing framework for JavaScript applications. It provides a simple and intuitive way to write
 unit tests, ensuring the reliability of your code.
-- **Storybook**: Storybook is a development environment for UI components. It allows you to build and test individual
+- **Storybook**: Storybook 10 is a development environment for UI components with improved performance, better Vite integration, and enhanced theming capabilities. It allows you to build and test individual
 components in isolation, promoting a modular and reusable approach to UI development.
-- **Vite**: Vite is a fast build tool for modern JavaScript applications. It provides instant server start-up and
-lightning-fast hot module replacement (HMR), enhancing the developer experience.
+- **Vite**: Vite 6 is a fast build tool for modern JavaScript applications with improved performance, better ESM support, and enhanced developer experience. It provides instant server start-up and
+lightning-fast hot module replacement (HMR).
 
 ## Back-end Stack
+
+| Technology | Version | Description |
+|------------|---------|-------------|
+| **Python** | 3.11.x | Primary backend language |
+| **Django** | 5.2.x | High-level Python web framework |
+| **Django REST Framework** | 3.15.x | Powerful toolkit for building Web APIs |
+| **Graphene-Django** | 3.2.x | GraphQL integration for Django |
+| **Celery** | 5.4.x | Distributed task queue |
+| **Sentry SDK** | 2.0.x | Error tracking and performance monitoring |
+| **PostgreSQL** | 14+ | Primary database |
+| **Redis** | 7+ | Caching and message broker |
+
+### Core Libraries
+
 - **Python**: Python is a versatile and widely-used programming language known for its readability and simplicity. It
 serves as the primary language for the <ProjectName /> back-end development.
 - **Django**: Django is a high-level Python web framework. It provides a robust set of tools and conventions for
@@ -40,6 +78,16 @@ providing operations with the tools required to.
 broker.
 
 ## Infrastructure
+
+| Technology | Version | Description |
+|------------|---------|-------------|
+| **NX** | 19.x | Monorepo build system with improved caching and task execution |
+| **AWS CDK** | 2.x | Infrastructure as Code |
+| **Docker** | Latest | Container runtime |
+| **pnpm** | 9+ | Fast, disk space efficient package manager |
+
+### Core Components
+
 - **NX**: NX is a powerful development toolkit that helps you build scalable and efficient applications. It provides
 advanced features such as code generation, dependency graph analysis, and plugin extensibility.
 - **AWS infrastructure** written in AWS CDK: The <ProjectName /> leverages the AWS Cloud Development Kit (CDK) to
@@ -48,6 +96,17 @@ define and provision the necessary cloud infrastructure on Amazon Web Services (
 as GitHub and Bitbucket. You can easily manage and collaborate on your codebase using these platforms.
 
 ## 3rd Party Services
+
+| Service | Purpose |
+|---------|---------|
+| **Stripe** | Payment processing and subscriptions |
+| **Contentful** | Headless CMS for content management |
+| **Sentry** | Error tracking and monitoring |
+| **SonarCloud** | Code quality analysis |
+| **AWS SES** | Email delivery |
+
+### Service Details
+
 - **Stripe**: Stripe is a widely-used payment processing platform that provides a secure and flexible solution for
 handling subscription billing and payments. The <ProjectName /> integrates with Stripe to streamline the implementation
 of payment features.
@@ -58,3 +117,12 @@ integrate content into your SaaS application.
 application. It provides real-time error notifications, performance monitoring, and insightful debugging tools.
 - **SonarCloud**: SonarCloud is a cloud-based code analysis platform that helps you ensure code quality and
 maintainability. It offers automated code reviews, static code analysis, and continuous inspection of your codebase.
+
+---
+
+## Related Documentation
+
+- **[Architecture](/introduction/architecture)** — How the stack components work together
+- **[Quick Start](/getting-started)** — Get the stack running locally
+- **[AWS Deployment](/aws)** — Deploy to production
+- **[Coding Standards](/introduction/coding-standards)** — Code quality tools and conventions

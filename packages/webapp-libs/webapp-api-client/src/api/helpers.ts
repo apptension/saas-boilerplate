@@ -38,7 +38,13 @@ export const apiURLs = <T extends Record<string, string | ((constiables: any) =>
   const joinURL = (value: string, baseUrl: string) => {
     const protocolRx = /https?:\/\//;
     if (protocolRx.test(baseUrl)) {
-      return new URL(value, baseUrl).href;
+      // Parse the base URL to preserve its path (e.g., /api)
+      const url = new URL(baseUrl);
+      // Join the base path with the new path, avoiding double slashes
+      const basePath = url.pathname.replace(/\/$/, ''); // Remove trailing slash
+      const newPath = value.startsWith('/') ? value : '/' + value;
+      url.pathname = basePath + newPath;
+      return url.href;
     }
     return pathJoin(baseUrl, value);
   };

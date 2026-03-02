@@ -1,21 +1,141 @@
 ---
-description: Steps required to deploy SaaS Boilerplate on AWS
+title: Set Up Docker Hub
+description: Configure Docker Hub credentials for CI/CD builds
 ---
 
-# Setup Docker Hub account
+import ProjectName from '../../shared/components/ProjectName.component';
 
-We need to setup dockerhub credentials in order receive access to their images base.
-You can create new dockerhub account (there is a free tier) or get access to a existing one from the client.
-Third option is to use guest account (empty credentials) but in that case there is a very limited number daily downloads which is shared with other AWS users which will cause builds to fail randomly (quite often).
+# Set Up Docker Hub
 
-To setup dockerhub credentials go to AWS web panel, access `Secrets manager` and select `GlobalBuildSecrets`, now find `Secret value` section and click `Retrieve secret value` and then `edit`.
-This secret may initially be set to a placeholder value, which you can delete.
+Docker Hub credentials are required for your CI/CD pipeline to pull base Docker images without hitting rate limits. Without this configuration, builds will fail randomly.
 
-Secret's value have to be an object:
+**Estimated time: 5 minutes**
 
-```shell
-{
-  "DOCKER_USERNAME": "example@email.com",
-  "DOCKER_PASSWORD": "password123"
-}
+---
+
+## Why This is Necessary
+
+AWS CodeBuild runs on shared infrastructure. When pulling Docker images anonymously, you share rate limits with other AWS customers. This causes builds to fail with errors like:
+
 ```
+toomanyrequests: Rate exceeded
+```
+
+or
+
+```
+pull rate limit reached
+```
+
+By authenticating with Docker Hub, you get your own rate limits (200 pulls/6 hours for free accounts, more for paid).
+
+---
+
+## Step 1: Create Docker Hub Account
+
+If you don't have a Docker Hub account:
+
+1. Go to [hub.docker.com](https://hub.docker.com/)
+2. Click **Sign Up**
+3. Complete the registration
+4. Verify your email
+
+The free tier is sufficient for most use cases.
+
+---
+
+## Step 2: Configure AWS Secrets Manager
+
+1. **Open AWS Console:**
+   ```bash
+   pnpm saas aws login
+   ```
+
+2. **Navigate to Secrets Manager:**
+   - Search for "Secrets Manager" in the AWS Console
+   - Or go directly to: `https://console.aws.amazon.com/secretsmanager`
+
+3. **Find GlobalBuildSecrets:**
+   - Look for a secret named `GlobalBuildSecrets`
+   - This was created during infrastructure deployment
+
+4. **Edit the secret:**
+   - Click on `GlobalBuildSecrets`
+   - Click **Retrieve secret value**
+   - Click **Edit**
+
+5. **Add your credentials:**
+
+   ```json
+   {
+     "DOCKER_USERNAME": "your-dockerhub-username",
+     "DOCKER_PASSWORD": "your-dockerhub-password"
+   }
+   ```
+
+   Replace with your actual Docker Hub credentials.
+
+6. **Save the secret**
+
+---
+
+## Step 3: Verify Configuration
+
+Your next CodeBuild run will use these credentials. To verify:
+
+1. Trigger a build (push code or manually trigger CI)
+2. Check CodeBuild logs for successful Docker pulls
+3. No more rate limit errors!
+
+---
+
+## Using an Access Token (Recommended)
+
+Instead of your password, you can use a Docker Hub access token:
+
+1. Go to [Docker Hub → Account Settings → Security](https://hub.docker.com/settings/security)
+2. Click **New Access Token**
+3. Give it a description (e.g., "AWS CodeBuild")
+4. Set permissions to **Read-only**
+5. Copy the token
+6. Use the token as `DOCKER_PASSWORD` in the secret
+
+Access tokens are more secure because:
+- They can be revoked individually
+- They can have limited permissions
+- They don't expose your main password
+
+---
+
+## Troubleshooting
+
+### Secret not found
+
+If `GlobalBuildSecrets` doesn't exist, the global infrastructure stack wasn't deployed:
+
+```bash
+pnpm saas infra deploy global
+```
+
+### Still getting rate limit errors
+
+1. Verify the secret value is valid JSON
+2. Check for typos in username/password
+3. Ensure your Docker Hub account is active
+4. Try regenerating an access token
+
+### Invalid credentials error
+
+1. Test credentials locally:
+   ```bash
+   docker login -u your-username
+   ```
+2. If login fails, reset your Docker Hub password
+
+---
+
+## Next Step
+
+With Docker Hub configured, set up automatic deployments.
+
+**[Continue to Configure Auto-Deploy →](/aws/cicd/auto-deploy)**

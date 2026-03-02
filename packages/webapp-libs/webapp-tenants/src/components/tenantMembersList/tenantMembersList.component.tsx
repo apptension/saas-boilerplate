@@ -1,9 +1,9 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@sb/webapp-core/components/ui/table';
 import { FormattedMessage } from 'react-intl';
 
 import { useCurrentTenant } from '../../providers';
-import { MembershipEntry } from './membershipEntry';
+import { MembershipEntry, MembershipEntryProps } from './membershipEntry';
 import { tenantMembersListQuery } from './tenantMembersList.graphql';
 
 export const TenantMembersList = () => {
@@ -23,7 +23,7 @@ export const TenantMembersList = () => {
       <TableHeader>
         <TableRow>
           <TableHead>
-            <FormattedMessage defaultMessage="Username" id="Tenant members list / Username" />
+            <FormattedMessage defaultMessage="Name & surname" id="Tenant members list / Name & surname" />
           </TableHead>
           <TableHead>
             <FormattedMessage defaultMessage="Role" id="Tenant members list / Role" />
@@ -39,7 +39,13 @@ export const TenantMembersList = () => {
       <TableBody>
         {memberships.map(
           (membership) =>
-            membership && <MembershipEntry membership={membership} key={membership.id} onAfterUpdate={refetch} />
+            membership && (
+              <MembershipEntry
+                membership={membership as MembershipEntryProps['membership']}
+                key={membership.id}
+                onAfterUpdate={refetch}
+              />
+            )
         )}
       </TableBody>
     </Table>

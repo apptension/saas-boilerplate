@@ -26,9 +26,8 @@ describe('usePaginationQuery: Hook', () => {
       },
       { first: 8 }
     );
-    const useEffectCleanMock = initMockedResponse;
 
-    const mocks = mock ? [initMockedResponse, mock, useEffectCleanMock] : [initMockedResponse, useEffectCleanMock];
+    const mocks = mock ? [initMockedResponse, mock] : [initMockedResponse];
 
     const { result, waitForApolloMocks } = renderHook(
       () =>
@@ -85,7 +84,7 @@ describe('usePaginationQuery: Hook', () => {
     await waitForApolloMocks(1);
 
     await act(async () => {
-      result.current.loadNext();
+      await result.current.loadNext();
     });
 
     await waitForApolloMocks(1);
@@ -108,7 +107,7 @@ describe('usePaginationQuery: Hook', () => {
     await waitForApolloMocks(1);
 
     await act(async () => {
-      result.current.loadPrevious();
+      await result.current.loadPrevious();
     });
 
     await waitForApolloMocks(1);

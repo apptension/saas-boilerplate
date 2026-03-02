@@ -12,11 +12,13 @@ export default {
     },
   },
   moduleNameMapper: {
-    'react-markdown': '<rootDir>/../../../node_modules/react-markdown/react-markdown.min.js',
+    'react-markdown': '<rootDir>/src/tests/mocks/reactMarkdown.tsx',
+    'remark-gfm': '<rootDir>/src/tests/mocks/remarkGfm.ts',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageReporters: ['lcov'],
   coveragePathIgnorePatterns: ['/node_modules/', '.*.svg'],
   setupFilesAfterEnv: ['./src/tests/setupTests.ts'],
   watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
+  testEnvironment: 'jsdom',
 };

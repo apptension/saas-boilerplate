@@ -1,5 +1,7 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
+import { DEFAULT_LOCALE } from '@sb/webapp-core/config/i18n';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useIntl } from 'react-intl';
@@ -16,6 +18,7 @@ export const useEditProfileForm = () => {
     defaultValues: {
       firstName: currentUser?.firstName ?? '',
       lastName: currentUser?.lastName ?? '',
+      language: currentUser?.language ?? DEFAULT_LOCALE,
     },
   });
 
@@ -30,10 +33,14 @@ export const useEditProfileForm = () => {
           defaultMessage: 'Personal data successfully changed.',
           id: 'Auth / Update profile/ Success message',
         }),
+        variant: 'success',
       });
     },
     onError: (error) => {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        setApolloGraphQLResponseErrors(graphQLErrors);
+      }
     },
   });
 

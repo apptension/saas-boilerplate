@@ -1,5 +1,5 @@
 import { camelCaseKeys } from '@sb/webapp-core/utils';
-import { GraphQLError } from 'graphql/error/GraphQLError';
+import { GraphQLFormattedError, GraphQLError } from 'graphql';
 import { isEmpty, isNil, keys } from 'ramda';
 import { useCallback, useState } from 'react';
 import { FieldValues, Path, UseFormHandleSubmit, useForm } from 'react-hook-form';
@@ -26,12 +26,17 @@ import { useTranslatedErrors } from './useTranslatedErrors';
  *
  *
  * ```ts
+ * import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
+ *
  * const { setApolloGraphQLResponseErrors } = useApiForm<LoginFormFields>();
  *
  * const [commitLoginMutation] = useMutation(authSignInMutation, {
  *   onError: (error) => {
  *     // highlight-next-line
- *     setApolloGraphQLResponseErrors(error.graphQLErrors);
+ *     const graphQLErrors = extractGraphQLErrors(error);
+ *     if (graphQLErrors) {
+ *       setApolloGraphQLResponseErrors(graphQLErrors);
+ *     }
  *   },
  * });
  *
@@ -104,7 +109,7 @@ export const useApiForm = <FormData extends FieldValues = FieldValues>(
   );
 
   const setApolloGraphQLResponseErrors = useCallback(
-    (errors: ReadonlyArray<GraphQLError>) => {
+    (errors: ReadonlyArray<GraphQLFormattedError>) => {
       const validationError = errors.find(({ message }) => message === 'GraphQlValidationError') as
         | GraphQLValidationError<FormData>
         | undefined;

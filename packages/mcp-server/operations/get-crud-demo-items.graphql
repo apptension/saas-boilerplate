@@ -1,0 +1,22 @@
+# @tool(name: "get_crud_demo_items", description: "List CRUD demo items in the current tenant. Use this when the user asks about items, demo items, or wants to see what data exists. Supports pagination with first/after.")
+query GetCrudDemoItems($tenantId: ID!, $first: Int = 50, $after: String) {
+  allCrudDemoItems(tenantId: $tenantId, first: $first, after: $after) {
+    edges {
+      node {
+        id
+        name
+        createdBy {
+          id
+          email
+          firstName
+          lastName
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

@@ -1,0 +1,190 @@
+---
+title: Okta SSO Setup
+description: Step-by-step guide to configure Okta as an identity provider
+---
+
+# Okta SSO Setup
+
+This guide walks you through configuring Okta as a SAML or OIDC identity provider.
+
+## Prerequisites
+
+- Okta administrator access
+- Your SaaS Boilerplate instance deployed
+- Tenant created in your application
+
+## SAML 2.0 Configuration
+
+### Step 1: Create SAML Application in Okta
+
+1. Log in to Okta Admin Console
+2. Go to **Applications** → **Applications**
+3. Click **Create App Integration**
+4. Select **SAML 2.0** and click **Next**
+5. Enter an App name (e.g., "Your SaaS App")
+
+### Step 2: Configure SAML Settings
+
+In the **Configure SAML** step, enter:
+
+| Field | Value |
+|-------|-------|
+| Single Sign-On URL | `https://api.yourdomain.com/api/sso/saml/{connection_id}/acs` |
+| Audience URI (SP Entity ID) | `https://api.yourdomain.com/api/sso/saml/{connection_id}/metadata` |
+| Name ID format | EmailAddress |
+| Application username | Email |
+
+### Step 3: Configure Attribute Statements
+
+Add these attribute mappings:
+
+| Name | Value |
+|------|-------|
+| email | user.email |
+| firstName | user.firstName |
+| lastName | user.lastName |
+
+For groups, add a Group Attribute Statement:
+
+| Name | Filter | Value |
+|------|--------|-------|
+| groups | Matches regex | `.*` |
+
+### Step 4: Download Metadata
+
+1. Complete the wizard
+2. Go to **Sign On** tab
+3. Click **View SAML setup instructions**
+4. Download the **Identity Provider metadata**
+
+Or copy:
+- **IdP SSO URL**
+- **IdP Entity ID**
+- **X.509 Certificate**
+
+### Step 5: Configure in Your App
+
+1. Go to your tenant's SSO settings
+2. Create a new SAML connection
+3. Enter:
+   - **Name**: Okta
+   - **IdP Entity ID**: From Okta metadata
+   - **SSO URL**: From Okta metadata
+   - **Certificate**: Paste X.509 certificate
+
+### Step 6: Assign Users
+
+1. Go to **Assignments** tab
+2. Assign users or groups who should have access
+
+## OIDC Configuration
+
+### Step 1: Create OIDC Application in Okta
+
+1. Log in to Okta Admin Console
+2. Go to **Applications** → **Applications**
+3. Click **Create App Integration**
+4. Select **OIDC - OpenID Connect**
+5. Select **Web Application** and click **Next**
+
+### Step 2: Configure OIDC Settings
+
+Enter these values:
+
+| Field | Value |
+|-------|-------|
+| App integration name | Your SaaS App |
+| Grant type | Authorization Code |
+| Sign-in redirect URIs | `https://api.yourdomain.com/api/sso/oidc/{connection_id}/callback` |
+| Sign-out redirect URIs | `https://yourdomain.com/logout` |
+
+### Step 3: Get Client Credentials
+
+After creating the app:
+
+1. Copy the **Client ID**
+2. Copy the **Client Secret** (store securely!)
+3. Note your Okta domain (e.g., `https://your-company.okta.com`)
+
+### Step 4: Configure in Your App
+
+1. Go to your tenant's SSO settings
+2. Create a new OIDC connection
+3. Enter:
+   - **Name**: Okta
+   - **Issuer**: `https://your-company.okta.com`
+   - **Client ID**: From Okta
+   - **Client Secret**: Store in AWS Secrets Manager
+
+## SCIM Provisioning Setup
+
+### Step 1: Enable SCIM in Okta
+
+1. Go to your app in Okta
+2. Click **Provisioning** tab
+3. Click **Configure API Integration**
+4. Check **Enable API integration**
+
+### Step 2: Enter SCIM Credentials
+
+| Field | Value |
+|-------|-------|
+| SCIM connector base URL | `https://api.yourdomain.com/api/sso/scim/v2` |
+| API Token | Your SCIM token (generate in app) |
+
+### Step 3: Configure Provisioning
+
+Under **To App**:
+- ✅ Create Users
+- ✅ Update User Attributes
+- ✅ Deactivate Users
+
+Under attribute mappings, map:
+- userName → email
+- givenName → firstName
+- familyName → lastName
+
+### Step 4: Test Integration
+
+Click **Test API Credentials** to verify the connection.
+
+## Group-to-Role Mapping
+
+Configure group mappings in your SSO connection:
+
+```json
+{
+  "Admins": "OWNER",
+  "Developers": "ADMIN",
+  "Everyone": "MEMBER",
+  "_default": "MEMBER"
+}
+```
+
+:::info
+Okta groups are passed in the SAML assertion. Make sure you've configured the Group Attribute Statement.
+:::
+
+## Troubleshooting
+
+### "Invalid audience" error
+
+Verify the Audience URI in Okta matches your SP Entity ID exactly.
+
+### "Signature validation failed"
+
+1. Re-download the certificate from Okta
+2. Ensure there are no extra whitespace or line breaks
+3. Update the certificate in your SSO configuration
+
+### Users not being provisioned
+
+1. Check the SCIM token is valid
+2. Verify provisioning is enabled in Okta
+3. Check Okta provisioning logs for errors
+
+## Next Steps
+
+- [Return to Enterprise SSO overview](../)
+- [Configure SCIM sync](../scim-setup)
+

@@ -1,0 +1,96 @@
+---
+description: How to create a global/feature module (backend app + webapp-lib) following the backup module pattern
+globs: []
+alwaysApply: false
+---
+
+# Global Module Pattern
+
+Use when creating a **new feature module** with its own backend app, frontend package, and permissions. Reference implementation: **backup** module.
+
+## Architecture
+
+A global module is self-contained across two layers:
+
+- **Backend**: Django app at `packages/backend/apps/<module>/`
+- **Frontend**: webapp-lib at `packages/webapp-libs/webapp-<module>/`
+
+Permissions, notification types, and feature code live **inside the module**. The main app and shared libs only wire them in.
+
+---
+
+## Backend
+
+### App structure
+
+Minimum files: `permissions.py`, `schema.py`, `models.py`, `apps.py`. Add the app to `INSTALLED_APPS`.
+
+### Permissions (plugin-style registry)
+
+**Do not** edit `multitenancy.permissions` or `multitenancy.constants`. Everything is registered from your module.
+
+Follow the pattern in `packages/backend/apps/backup/permissions.py`:
+
+1. Define a local category (UPPERCASE) and register it with `register_permission_category(value, label, description)`
+2. Register system role grants with `register_system_role_permissions(role_type, codes)` -- OWNER gets all automatically; only register ADMIN/MEMBER as needed
+3. Define `<MODULE>_PERMISSIONS` as a list of `PermissionDefinition` with codes namespaced to your module (e.g. `backup.view`, `backup.manage`)
+4. Call `register_app_permissions(<MODULE>_PERMISSIONS)` -- multitenancy's `get_all_permissions()` discovers this automatically
+
+### Migrations
+
+Seed permissions in your **module's own migration** (not multitenancy's). See `packages/backend/apps/backup/migrations/0001_initial.py` for the `RunPython` pattern:
+
+- Use `get_all_permissions()` (not `PERMISSIONS`) to resolve definitions
+- Normalize category when writing to DB: `category_value = getattr(perm_def.category, 'value', perm_def.category)`
+
+### GraphQL schema
+
+Guard queries/mutations with your permission codes: `@permission_classes(IsTenantMemberAccess, requires('mymodule.view'))`. See `packages/backend/apps/backup/schema.py` for examples.
+
+---
+
+## Frontend
+
+### Package setup
+
+See `packages/webapp-libs/webapp-backup/` for the full structure (`package.json`, `project.json`, `tsconfig.json`).
+
+- Add path alias to `tsconfig.base.json` (e.g. `@sb/webapp-<module>`)
+- Typical deps: `@sb/webapp-api-client`, `@sb/webapp-core`, `@sb/webapp-tenants`
+
+### Permission checks
+
+Use `usePermissionCheck('<module>.view')` and `usePermissionCheck('<module>.manage')` from `@sb/webapp-tenants/hooks`. If `PermissionAuthRoute` uses a typed `PermissionCode`, add your codes to the union in `webapp-tenants`.
+
+### Notifications (optional)
+
+Define notification types **in your module**, not in `webapp-notifications`:
+
+- Enum + template record: see `packages/webapp-libs/webapp-backup/src/notifications/notificationTypes.ts`
+- Main webapp spreads your templates into the combined map: see `packages/webapp/src/shared/constants/notificationTemplates.ts`
+- `webapp-notifications` never imports your module
+
+### Routes
+
+Export the main UI entry from the package's `index.ts`. The main webapp defines the route with `PermissionAuthRoute permissions="<module>.view"` and imports the component from `@sb/webapp-<module>`.
+
+---
+
+## Key Rules
+
+- **Permission namespace**: Use module name as prefix (`backup.view`), not `management.backup.view`
+- **No central edits**: Never modify `multitenancy.permissions`, `multitenancy.constants`, or `ROLE_TEMPLATE_PERMISSIONS` for your module
+- **Same codes everywhere**: Backend `requires()`, frontend `usePermissionCheck()`, and route guards must use identical permission strings
+- **Clean exports**: Re-export public API from `index.ts`; avoid deep imports
+
+---
+
+## Checklist
+
+- [ ] Backend app at `packages/backend/apps/<module>/` with `permissions.py` using `register_app_permissions` + `register_permission_category` + `register_system_role_permissions`
+- [ ] App added to `INSTALLED_APPS`
+- [ ] Module migration seeds permissions via `RunPython` using `get_all_permissions()`
+- [ ] Frontend package at `packages/webapp-libs/webapp-<module>/` with path alias in `tsconfig.base.json`
+- [ ] Route in main webapp using `PermissionAuthRoute`
+- [ ] (If notifications) Local notification types enum + templates; main webapp merges them
+- [ ] (If typed `PermissionCode`) Codes added to the union in `webapp-tenants`

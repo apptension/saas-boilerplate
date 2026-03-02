@@ -1,0 +1,290 @@
+---
+title: Verify & Next Steps
+description: Confirm your deployment works and set up CI/CD
+---
+
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Step 7: Verify & Next Steps
+
+Congratulations on deploying <ProjectName /> to AWS! 🎉 This final step helps you verify everything works correctly and guides you toward setting up automated deployments.
+
+**Estimated time: 10-15 minutes**
+
+---
+
+## Deployment Verification Checklist
+
+Work through each section to confirm your deployment is successful.
+
+### 1. Web Application
+
+**URL:** `https://app.qa.example.com` (replace with your domain)
+
+- [ ] Page loads without errors
+- [ ] Login form is displayed
+- [ ] If basic auth is enabled, authentication prompt appears
+
+**Test actions:**
+1. Create a new user account
+2. Verify the signup process completes
+3. Login with the new account
+4. Check that the dashboard loads
+
+### 2. Backend API
+
+**URL:** `https://api.qa.example.com/api/healthcheck/`
+
+- [ ] Returns `{"status": "ok"}` or similar success response
+- [ ] No 502/503 errors
+
+**GraphQL Endpoint:** `https://api.qa.example.com/graphql/`
+
+- [ ] GraphQL playground loads (if debug mode is enabled)
+- [ ] Or returns appropriate response
+
+### 3. Admin Panel
+
+**URL:** `https://admin.qa.example.com/admin`
+
+- [ ] Django admin login page loads
+- [ ] Can login with `ADMIN_EMAIL` and `ADMIN_DEFAULT_PASSWORD`
+- [ ] Django admin dashboard is accessible
+
+**Immediate actions:**
+1. Change the admin password
+2. Verify user model shows registered users
+
+### 4. Celery Workers
+
+**Check via Flower:** `https://flower.qa.example.com`
+
+- [ ] Flower login works (use `FLOWER_BASIC_AUTH` credentials)
+- [ ] At least one worker is listed
+- [ ] Worker shows as online/connected
+
+**Alternative: Check ECS**
+1. Go to AWS Console → ECS → Clusters
+2. Find your cluster
+3. Check that Celery services are running
+
+### 5. Database
+
+Verify via admin panel or API:
+- [ ] Can create new records (e.g., user signup works)
+- [ ] Data persists after refresh
+- [ ] No database connection errors in logs
+
+### 6. Email (If Configured)
+
+- [ ] Password reset emails send successfully
+- [ ] Account verification emails arrive
+
+:::info SES Sandbox
+If using a new AWS account, SES is in sandbox mode. You can only send to verified email addresses until you request production access.
+:::
+
+---
+
+## Viewing Logs
+
+If something isn't working, check the logs:
+
+### CloudWatch Logs
+
+```bash
+pnpm saas aws login
+```
+
+Navigate to **CloudWatch → Log groups**:
+
+| Log Group | Contains |
+|-----------|----------|
+| `/ecs/saas-qa-api` | Backend API logs |
+| `/ecs/saas-qa-celery-default` | Celery worker logs |
+| `/ecs/saas-qa-celery-beat` | Celery scheduler logs |
+| `/aws/lambda/saas-qa-*` | Lambda function logs |
+
+### SSH into Running Container
+
+For debugging, you can access a running backend container:
+
+```bash
+pnpm saas backend remote-shell
+```
+
+This opens a bash shell inside the container where you can:
+- Run Django management commands
+- Check environment variables
+- Debug issues interactively
+
+---
+
+## Performance Baseline
+
+Your deployed infrastructure should show:
+
+| Metric | Expected Value |
+|--------|----------------|
+| **API Response Time** | < 500ms for simple queries |
+| **Web App Load Time** | < 3 seconds (first load) |
+| **CloudFront Cache Hit** | > 90% for static assets |
+
+Monitor in CloudWatch for anomalies.
+
+---
+
+## Security Checklist
+
+Before considering this deployment "production-ready":
+
+- [ ] Changed default admin password
+- [ ] Basic auth enabled for non-production environments
+- [ ] `DJANGO_DEBUG` is set to `False`
+- [ ] All secrets are unique and randomly generated
+- [ ] SSL certificates are valid (check browser padlock)
+- [ ] No sensitive data in CloudWatch logs
+
+---
+
+## What's Next?
+
+### Set Up CI/CD (Recommended)
+
+Automate deployments so changes deploy automatically when you push code:
+
+**[Set Up CI/CD Automation →](/aws/cicd)**
+
+This includes:
+- Connecting GitHub or Bitbucket
+- Configuring automatic deployments on merge
+- Setting up deployment notifications
+
+### Deploy Additional Environments
+
+Now that you've deployed `qa`, you can create other environments:
+
+```bash
+# Deploy staging
+pnpm saas aws set-env staging
+# Repeat steps 3-6 for staging
+
+# Deploy production
+pnpm saas aws set-env production
+# Repeat steps 3-6 for production
+```
+
+### Configure External Services
+
+Set up integrations:
+
+| Service | Documentation |
+|---------|---------------|
+| **Stripe Payments** | [Payment Configuration](/working-with-sb/payments) |
+| **Google/Facebook OAuth** | [OAuth Setup](/working-with-sb/users/create-oauth-method) |
+| **Sentry Error Tracking** | [Sentry Integration](/working-with-sb/dev-tools/sentry) |
+| **Contentful CMS** | [CMS Setup](/working-with-sb/contentful/sync-data) |
+
+### Set Up Monitoring
+
+- Configure CloudWatch alarms for error rates
+- Set up Sentry for error tracking
+- Enable AWS Cost Explorer to monitor spending
+
+---
+
+## Common Post-Deployment Tasks
+
+### Update Application Code
+
+After making code changes:
+
+```bash
+pnpm saas aws set-env qa
+pnpm saas build
+pnpm saas deploy
+```
+
+Or push to your CI/CD-enabled branch for automatic deployment.
+
+### Update Environment Variables
+
+```bash
+pnpm saas aws set-env qa
+pnpm saas backend secrets  # Edit secrets
+pnpm saas backend deploy api  # Redeploy to pick up changes
+```
+
+### Scale Resources
+
+Adjust instance sizes in CDK code:
+- `packages/infra/infra-shared/src/stacks/db/stack.ts` - Database size
+- `packages/infra/infra-shared/src/stacks/main/stack.ts` - ECS task sizes
+
+Then redeploy infrastructure:
+```bash
+pnpm saas infra deploy
+```
+
+### Delete an Environment
+
+To remove an environment and all its resources:
+
+```bash
+pnpm saas aws set-env qa
+
+# Delete in reverse order
+pnpm saas infra destroy components
+pnpm saas infra destroy ci
+pnpm saas infra destroy db
+pnpm saas infra destroy main
+```
+
+:::warning Destructive Operation
+This permanently deletes all data including the database. Make backups first if needed.
+:::
+
+---
+
+## Deployment Summary
+
+You've successfully:
+
+| Step | What You Did |
+|------|--------------|
+| 0. Prerequisites | Installed required tools |
+| 1. AWS Credentials | Configured secure access |
+| 2. Domain | Set up Route 53 hosted zone |
+| 3. Environment | Configured deployment variables |
+| 4. Infrastructure | Created AWS resources |
+| 5. Secrets | Configured application secrets |
+| 6. Deploy | Built and deployed your app |
+| 7. Verify | Confirmed everything works |
+
+---
+
+## Getting Help
+
+If you encounter issues:
+
+1. **Check the [Troubleshooting Guide](/aws/troubleshooting)** for common solutions
+2. **Review CloudWatch logs** for error details
+3. **Search existing GitHub issues** in the SaaS Boilerplate repository
+4. **Open a new issue** with detailed information about your problem
+
+---
+
+## Congratulations! 🎉
+
+You've deployed a production-ready SaaS application to AWS. Your application now has:
+
+- ✅ Scalable container orchestration with ECS Fargate
+- ✅ Managed PostgreSQL database with automatic backups
+- ✅ Redis caching for performance
+- ✅ Global CDN for fast asset delivery
+- ✅ SSL/TLS encryption everywhere
+- ✅ Infrastructure as code for repeatability
+- ✅ CI/CD pipeline ready for automation
+
+**[Continue to CI/CD Setup →](/aws/cicd)** to automate your deployments!
+

@@ -1,3 +1,4 @@
+import { PageCursors } from '../../graphql';
 import { pagedPaginationListTestQuery } from '../../hooks/usePagedPaginatedQuery/__tests__/usePagedPaginatedQuery.graphql';
 import { paginationListTestQuery } from '../../hooks/usePaginatedQuery/__tests__/usePaginatedQuery.graphql';
 import {
@@ -7,7 +8,6 @@ import {
   createDeepFactory,
   makeId,
 } from '../utils';
-import { PageCursors } from '../../graphql';
 
 export const paginationTestItemFactory = createDeepFactory<{ id: string; name: string }>(() => ({
   id: makeId(32),

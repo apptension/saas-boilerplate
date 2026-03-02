@@ -35,7 +35,16 @@ const getApolloMocks = (role: Role = Role.USER) => [
 
 describe('Sidebar: Component', () => {
   const Component = () => (
-    <LayoutContext.Provider value={{ isSidebarAvailable: true, isSideMenuOpen: true, setSideMenuOpen: () => null }}>
+    <LayoutContext.Provider
+      value={{
+        isSidebarAvailable: true,
+        isSideMenuOpen: true,
+        isSidebarCollapsed: false,
+        setSideMenuOpen: () => null,
+        setSidebarCollapsed: () => null,
+        toggleSidebar: () => null,
+      }}
+    >
       <Routes>
         <Route path="/" element={<Sidebar />} />
         <Route path={getLocalePath(RoutesConfig.home)} element={<span>Home mock route</span>} />
@@ -57,7 +66,7 @@ describe('Sidebar: Component', () => {
     it('should not show link to admin page', async () => {
       const { waitForApolloMocks } = render(<Component />);
       await waitForApolloMocks();
-      expect(screen.queryByText(/admin/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/admin panel/i)).not.toBeInTheDocument();
     });
   });
 
@@ -88,31 +97,16 @@ describe('Sidebar: Component', () => {
         const apolloMocks = getApolloMocks();
         const { waitForApolloMocks } = render(<Component />, { apolloMocks });
         await waitForApolloMocks();
-        expect(screen.queryByText(/admin/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/admin panel/i)).not.toBeInTheDocument();
       });
 
       describe('on desktop', () => {
-        it('should not show profile and logout link', async () => {
+        it('should not show profile and logout link in sidebar', async () => {
           const apolloMocks = getApolloMocks();
           const { waitForApolloMocks } = render(<Component />, { apolloMocks });
           await waitForApolloMocks();
           expect(screen.queryByText(/profile/i)).not.toBeInTheDocument();
           expect(screen.queryByText(/logout/i)).not.toBeInTheDocument();
-        });
-      });
-
-      describe('on mobile', () => {
-        beforeEach(() => {
-          mockedUseMediaQuery.mockImplementation(() => ({
-            matches: false,
-          }));
-        });
-        it('should show profile and logout link', async () => {
-          const apolloMocks = getApolloMocks();
-          const { waitForApolloMocks } = render(<Component />, { apolloMocks });
-          await waitForApolloMocks();
-          expect(await screen.findByText(/profile/i)).toBeInTheDocument();
-          expect(await screen.findByText(/logout/i)).toBeInTheDocument();
         });
       });
     });
@@ -133,7 +127,7 @@ describe('Sidebar: Component', () => {
       it('should show link to admin page', async () => {
         const apolloMocks = getApolloMocks(Role.ADMIN);
         render(<Component />, { apolloMocks });
-        expect(await screen.findByText(/admin/i)).toBeInTheDocument();
+        expect(await screen.findByText(/admin panel/i)).toBeInTheDocument();
       });
     });
   });

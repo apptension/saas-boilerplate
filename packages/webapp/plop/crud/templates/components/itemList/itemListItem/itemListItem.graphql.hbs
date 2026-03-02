@@ -1,0 +1,16 @@
+import { gql } from '@sb/webapp-api-client/graphql';
+
+export const {{ camelCase name }}ListItemDeleteMutation = gql(/* GraphQL */ `
+  mutation {{ camelCase name }}ListItemDeleteMutation($input: Delete{{ pascalCase name }}MutationInput!) {
+    delete{{ pascalCase name }}(input: $input) {
+      deletedIds
+    }
+  }
+`);
+
+export const {{ camelCase name }}ListItemFragment = gql(/* GraphQL */ `
+  fragment {{ camelCase name }}ListItem on {{ pascalCase name }}Type {
+    id
+    name
+  }
+`);

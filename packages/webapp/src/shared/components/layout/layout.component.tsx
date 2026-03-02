@@ -3,6 +3,7 @@ import { ReactNode, useMemo, useState } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
 
 import { NO_NAVIGATION_ROUTES } from '../../../app/config/routes';
+import { WelcomeModal } from '../welcomeModal';
 import { Header } from './header';
 import { LayoutContext } from './layout.context';
 import { Sidebar } from './sidebar';
@@ -13,6 +14,7 @@ export type LayoutProps = {
 
 export const Layout = ({ children }: LayoutProps) => {
   const [isSideMenuOpen, setSideMenuOpen] = useState(false);
+  const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { pathname } = useLocation();
 
   const shouldDisplaySidebar = useMemo(
@@ -20,18 +22,35 @@ export const Layout = ({ children }: LayoutProps) => {
     [pathname]
   );
 
-  const value = useMemo(
-    () => ({ isSidebarAvailable: shouldDisplaySidebar, isSideMenuOpen, setSideMenuOpen }),
-    [shouldDisplaySidebar, isSideMenuOpen, setSideMenuOpen]
+  const isAuthRoute = useMemo(
+    () => !NO_NAVIGATION_ROUTES.every((path) => isNil(matchPath({ path }, pathname))),
+    [pathname]
   );
+
+  const toggleSidebar = useMemo(() => () => setSidebarCollapsed((prev) => !prev), []);
+
+  const value = useMemo(
+    () => ({
+      isSidebarAvailable: shouldDisplaySidebar,
+      isSideMenuOpen,
+      setSideMenuOpen,
+      isSidebarCollapsed,
+      setSidebarCollapsed,
+      toggleSidebar,
+    }),
+    [shouldDisplaySidebar, isSideMenuOpen, isSidebarCollapsed, toggleSidebar]
+  );
+
+  const sidebarWidth = isSidebarCollapsed ? 'xl:pl-16' : 'xl:pl-72';
 
   return (
     <LayoutContext.Provider value={value}>
-      <div className={shouldDisplaySidebar ? 'lg:pl-72' : undefined}>
-        <Header />
-        <main className="py-10">{children}</main>
+      <div className={shouldDisplaySidebar ? sidebarWidth : undefined}>
+        {!isAuthRoute && <Header />}
+        <main className={isAuthRoute ? undefined : 'py-10'}>{children}</main>
       </div>
       {shouldDisplaySidebar && <Sidebar />}
+      {shouldDisplaySidebar && <WelcomeModal />}
     </LayoutContext.Provider>
   );
 };

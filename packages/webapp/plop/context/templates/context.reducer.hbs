@@ -1,0 +1,105 @@
+import { createContext, ReactNode, useReducer, useCallback, useMemo{{#if withPersistence}}, useEffect{{/if}} } from 'react';
+
+import {
+  {{ pascalCase name }}State,
+  {{ pascalCase name }}ContextValue,
+  {{ pascalCase name }}Action,
+  default{{ pascalCase name }}State,
+} from './{{ camelCase name }}.types';
+
+{{#if withPersistence}}
+const STORAGE_KEY = '{{ camelCase name }}_state';
+
+function loadFromStorage(): {{ pascalCase name }}State | null {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveToStorage(state: {{ pascalCase name }}State): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // Storage might be full or disabled
+  }
+}
+{{/if}}
+
+function {{ camelCase name }}Reducer(state: {{ pascalCase name }}State, action: {{ pascalCase name }}Action): {{ pascalCase name }}State {
+  switch (action.type) {
+    case 'SET_VALUE':
+      return { ...state, value: action.payload };
+    case 'SET_LOADING':
+      return { ...state, isLoading: action.payload };
+    case 'SET_ERROR':
+      return { ...state, error: action.payload };
+{{#if withReset}}
+    case 'RESET':
+      return default{{ pascalCase name }}State;
+{{/if}}
+    default:
+      return state;
+  }
+}
+
+export const {{ pascalCase name }}Context = createContext<{{ pascalCase name }}ContextValue | undefined>(undefined);
+
+export type {{ pascalCase name }}ProviderProps = {
+  children: ReactNode;
+  initialState?: Partial<{{ pascalCase name }}State>;
+};
+
+export const {{ pascalCase name }}Provider = ({ children, initialState }: {{ pascalCase name }}ProviderProps) => {
+  const [state, dispatch] = useReducer(
+    {{ camelCase name }}Reducer,
+    { ...default{{ pascalCase name }}State, ...initialState }{{#if withPersistence}},
+    (initial) => loadFromStorage() ?? initial{{/if}}
+  );
+
+{{#if withPersistence}}
+  // Persist state changes to localStorage
+  useEffect(() => {
+    saveToStorage(state);
+  }, [state]);
+{{/if}}
+
+  const setValue = useCallback((value: string) => {
+    dispatch({ type: 'SET_VALUE', payload: value });
+  }, []);
+
+  const setLoading = useCallback((isLoading: boolean) => {
+    dispatch({ type: 'SET_LOADING', payload: isLoading });
+  }, []);
+
+  const setError = useCallback((error: string | null) => {
+    dispatch({ type: 'SET_ERROR', payload: error });
+  }, []);
+
+{{#if withReset}}
+  const reset = useCallback(() => {
+    dispatch({ type: 'RESET' });
+{{#if withPersistence}}
+    localStorage.removeItem(STORAGE_KEY);
+{{/if}}
+  }, []);
+{{/if}}
+
+  const value = useMemo<{{ pascalCase name }}ContextValue>(
+    () => ({
+      state,
+      dispatch,
+      setValue,
+      setLoading,
+      setError,
+{{#if withReset}}
+      reset,
+{{/if}}
+    }),
+    [state, setValue, setLoading, setError{{#if withReset}}, reset{{/if}}]
+  );
+
+  return <{{ pascalCase name }}Context.Provider value={value}>{children}</{{ pascalCase name }}Context.Provider>;
+};

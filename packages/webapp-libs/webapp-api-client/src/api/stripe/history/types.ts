@@ -1,5 +1,5 @@
-import { StripeBillingDetails, StripePaymentMethod } from '../paymentMethod';
 import { SubscriptionPlan } from '../../subscription/types';
+import { StripeBillingDetails, StripePaymentMethod } from '../paymentMethod';
 
 export interface TransactionHistoryEntryInvoice {
   id: string;

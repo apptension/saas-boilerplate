@@ -19,7 +19,7 @@ class Product(models.Model):
 ```
 
 :::tip
-See the ["How to create a new Django app and model in back-end?"](../guides/backend/backend-model) is you've missed it.
+See the ["How to create a new Django app and model in back-end?"](../guides/backend/backend-model) if you've missed it.
 :::
 
 ## Creating Django model factories
@@ -268,6 +268,8 @@ Let's define the following serializer to work with our mutations:
 from hashid_field import rest as hidrest
 from rest_framework import serializers
 
+from . import models
+
 
 class ProductSerializer(serializers.ModelSerializer):
     id = hidrest.HashidSerializerCharField(source_field="store.Product.id", read_only=True)
@@ -371,7 +373,7 @@ class TestCreateProductMutation:
         assert executed["data"]["createProduct"]["product"]
         assert executed["data"]["createProduct"]["product"]["name"] == input_data["name"]
 
-        product_global_id = executed["data"]["createCrudDemoItem"]["crudDemoItem"]["id"]
+        product_global_id = executed["data"]["createProduct"]["product"]["id"]
         _, pk = from_global_id(product_global_id)
         product = models.Product.objects.get(pk=pk)
 
@@ -431,7 +433,7 @@ class TestUpdateProductMutation:
         product.refresh_from_db()
 
         assert executed["data"]["updateProduct"]
-        assert executed["data"]["createProduct"]["product"]
+        assert executed["data"]["updateProduct"]["product"]
         assert executed["data"]["updateProduct"]["product"]["name"] == input_data["name"]
         assert product.name == input_data["name"]
 ```

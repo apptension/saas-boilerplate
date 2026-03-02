@@ -1,0 +1,54 @@
+import { screen, waitFor } from '@testing-library/react';
+
+import { render } from '../../../tests/utils/rendering';
+import { {{ pascalCase name }}Table, {{ pascalCase name }}Item } from '../{{ camelCase name }}Table.component';
+
+describe('{{ pascalCase name }}Table: Component', () => {
+  const mockData: {{ pascalCase name }}Item[] = [
+{{#if hasFields}}
+    {
+      id: '1',
+{{#each fields}}
+      {{ name }}: {{#if_eq type "string"}}'Test Value'{{else}}{{#if_eq type "number"}}100{{else}}{{#if_eq type "boolean"}}true{{else}}'Value'{{/if_eq}}{{/if_eq}}{{/if_eq}},
+{{/each}}
+    },
+{{else}}
+    { id: '1', name: 'Test Item', createdAt: '2024-01-15' },
+{{/if}}
+  ];
+
+  it('should render table with data', async () => {
+    render(<{{ pascalCase name }}Table data={mockData} />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument();
+    });
+  });
+
+  it('should render empty state when no data', async () => {
+    render(<{{ pascalCase name }}Table data={[]} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/no items/i)).toBeInTheDocument();
+    });
+  });
+
+  it('should render loading skeleton when loading', async () => {
+    render(<{{ pascalCase name }}Table data={[]} loading={true} />);
+
+    // Skeleton should render instead of empty state
+    await waitFor(() => {
+      expect(screen.queryByText(/no items/i)).not.toBeInTheDocument();
+    });
+  });
+
+  it('should render correct number of rows', async () => {
+    render(<{{ pascalCase name }}Table data={mockData} />);
+
+    await waitFor(() => {
+      const rows = screen.getAllByRole('row');
+      // +1 for header row
+      expect(rows.length).toBe(mockData.length + 1);
+    });
+  });
+});

@@ -130,19 +130,24 @@ describe('CancelSubscription: Component', () => {
       const routerProps = createMockRouterProps(routePath);
       const requestMock = resolveSubscriptionDetailsQuery(tenantId);
       const requestCancelMock = resolveSubscriptionCancelMutation(undefined, { input: { tenantId } });
-      requestCancelMock.newData = jest.fn(() => ({
-        data: mutationData,
-      }));
 
       render(<Component />, {
         routerProps,
         apolloMocks: [tenantMock, requestMock, requestCancelMock],
       });
 
-      await userEvent.click(await screen.findByText(/cancel subscription/i));
-      await userEvent.click(await screen.findByText(/continue/i));
+      // Wait for the page to load and find the cancel button
+      const cancelButton = await screen.findByRole('button', { name: /cancel subscription/i });
+      await userEvent.click(cancelButton);
 
-      expect(requestCancelMock.newData).toHaveBeenCalled();
+      // Wait for the dialog to open and find the continue button
+      const continueButton = await screen.findByRole('button', { name: /continue/i });
+      await userEvent.click(continueButton);
+
+      // Wait for the mutation to complete by checking for a toast or success indicator
+      // The mock result function should have been called after the mutation completes
+      await screen.findByText(/free plan/i);
+      expect(requestCancelMock.result).toHaveBeenCalled();
     });
   });
 
@@ -166,8 +171,13 @@ describe('CancelSubscription: Component', () => {
         apolloMocks: [tenantMock, requestMock, requestCancelMock],
       });
 
-      await userEvent.click(await screen.findByText(/cancel subscription/i));
-      await userEvent.click(await screen.findByText(/continue/i));
+      // Wait for the page to load and find the cancel button
+      const cancelButton = await screen.findByRole('button', { name: /cancel subscription/i });
+      await userEvent.click(cancelButton);
+
+      // Wait for the dialog to open and find the continue button
+      const continueButton = await screen.findByRole('button', { name: /continue/i });
+      await userEvent.click(continueButton);
 
       const toast = await screen.findByTestId('toast-1');
       expect(toast).toHaveTextContent('You will be moved to free plan with the next billing period');

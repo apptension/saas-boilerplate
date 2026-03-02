@@ -1,8 +1,8 @@
 import { currentUserFactory, fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { getLocalePath } from '@sb/webapp-core/utils';
 import {
-  fillNotificationsListQuery,
   fillNotificationCreatedSubscriptionQuery,
+  fillNotificationsListQuery,
   notificationFactory,
 } from '@sb/webapp-notifications/tests/factories';
 import { screen } from '@testing-library/react';
@@ -34,15 +34,22 @@ describe('Header: Component', () => {
       const apolloMocks = getApolloMocks();
       render(<Component />, { apolloMocks });
 
-      await userEvent.click(await screen.findByLabelText(/open profile menu/i));
-      await userEvent.click(screen.getByText(/profile/i));
+      await userEvent.click(await screen.findByLabelText(/open user menu/i));
+      await userEvent.click(screen.getByText(/edit profile/i));
       expect(screen.getByText('Profile mock route')).toBeInTheDocument();
+    });
+
+    it('should show theme toggle in user menu', async () => {
+      const apolloMocks = getApolloMocks();
+      render(<Component />, { apolloMocks });
+      await userEvent.click(await screen.findByLabelText(/open user menu/i));
+      expect(screen.getByRole('menuitem', { name: /light mode|dark mode/i })).toBeInTheDocument();
     });
 
     it('should dispatch logout action when clicking on "logout" button', async () => {
       const apolloMocks = getApolloMocks();
       render(<Component />, { apolloMocks });
-      await userEvent.click(await screen.findByLabelText(/open profile menu/i));
+      await userEvent.click(await screen.findByLabelText(/open user menu/i));
       await userEvent.click(screen.getByText(/log out/i));
       expect(screen.getByText('Logout mock route')).toBeInTheDocument();
     });
@@ -58,7 +65,7 @@ describe('Header: Component', () => {
     it('should not display avatar', async () => {
       const { waitForApolloMocks } = render(<Component />);
       await waitForApolloMocks();
-      expect(screen.queryByLabelText(/open profile menu/i)).not.toBeInTheDocument();
+      expect(screen.queryByLabelText(/open user menu/i)).not.toBeInTheDocument();
     });
 
     it('should not display "profile" link', async () => {

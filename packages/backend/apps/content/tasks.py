@@ -11,7 +11,7 @@ LambdaTask = getattr(importlib.import_module(module_name), package)
 
 class ContentfulSync(LambdaTask):
     def __init__(self, name: str):
-        super().__init__(name=name, source='backend.contentfulSync')
+        super().__init__(name=name, source="backend.contentfulSync")
 
     def apply(self):
         super().apply({})

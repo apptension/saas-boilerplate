@@ -1,0 +1,514 @@
+---
+title: AI Agent (MCP)
+description: Production-ready AI assistant with Model Context Protocol - the future of SaaS applications
+---
+
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# AI Agent with Model Context Protocol
+
+<ProjectName /> is **MCP-ready** - implementing the [Model Context Protocol](https://modelcontextprotocol.io/) to provide a production-grade AI assistant that can intelligently interact with your application data through natural language.
+
+:::tip The Future of SaaS
+MCP represents a paradigm shift in how AI integrates with applications. Instead of building custom integrations for each AI provider, MCP provides a standardized protocol that any AI model can use to discover and execute tools. This makes your SaaS future-proof - as new AI models emerge, they can immediately leverage your existing tools.
+:::
+
+## Why This Matters
+
+Traditional AI integrations require:
+- Custom API endpoints for each operation
+- Manual prompt engineering for data access
+- Rebuilding when switching AI providers
+- Complex permission handling
+
+With MCP, you get:
+- **Standardized Tool Discovery**: AI models automatically discover what they can do
+- **Provider Agnostic**: Works with OpenAI, Claude, and any MCP-compatible AI
+- **RBAC Integration**: Tools respect your existing permission system
+- **Type-Safe Operations**: GraphQL operations exposed as strongly-typed tools
+- **Activity Logging**: All AI actions are tracked with full audit trail
+
+## Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      MCP-POWERED AI ASSISTANT                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│   ┌─────────┐      GraphQL       ┌─────────────┐         ┌──────────────┐  │
+│   │ Browser │◄───Subscription───►│   Django    │◄──MCP──►│ Apollo MCP   │  │
+│   │ (React) │     (WebSocket)    │   Backend   │  HTTP   │   Server     │  │
+│   └─────────┘                    └──────┬──────┘         └──────┬───────┘  │
+│        │                                │                        │          │
+│        │ GraphQL                        │ RBAC                   │ GraphQL  │
+│        │ Mutation                       │ Check                  │ Queries  │
+│        ▼                                ▼                        ▼          │
+│   ┌──────────────────────────────────────────────────────────────────────┐ │
+│   │                     Channels WebSocket Consumer                      │ │
+│   │   • Handles real-time bi-directional communication                   │ │
+│   │   • Uses same infrastructure as notifications                        │ │
+│   │   • Broadcasts events via GraphQL subscriptions                      │ │
+│   └──────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+│   ┌──────────────────────────────────────────────────────────────────────┐ │
+│   │                        OpenAI / Claude / Any MCP Client              │ │
+│   │   • Discovers available tools via MCP protocol                       │ │
+│   │   • Executes tools with automatic tenantId injection                 │ │
+│   │   • Streams responses word-by-word via GraphQL subscription          │ │
+│   └──────────────────────────────────────────────────────────────────────┘ │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### WebSocket Infrastructure
+
+The AI Assistant leverages the **same WebSocket infrastructure as notifications**, providing:
+
+- **Django Channels**: Handles WebSocket connections with proper authentication
+- **GraphQL Subscriptions**: Type-safe real-time events via `channels-graphql-ws`
+- **Connection Pooling**: Efficient resource usage across multiple conversations
+- **Automatic Reconnection**: Frontend handles disconnects gracefully
+
+## Key Features
+
+### 65+ Pre-Defined MCP Tools
+
+The AI assistant has access to a comprehensive toolkit:
+
+| Category | Tools | Description |
+|----------|-------|-------------|
+| **Projects** | 6 tools | List, search, create, update, delete projects |
+| **Clients** | 5 tools | Manage client relationships |
+| **Team** | 5 tools | Team members and rates |
+| **Financial** | 12 tools | Revenue, costs, profitability analysis |
+| **Forecasting** | 6 tools | AI-powered predictions and scenarios |
+| **Invoices** | 6 tools | Invoice management and requests |
+| **Pipeline** | 4 tools | Sales deals and opportunities |
+| **Iterations** | 4 tools | Project phases and timesheets |
+| **CRUD Operations** | 24 tools | Full create/update/delete for all entities |
+
+### Full RBAC Integration
+
+Every tool call is checked against the user's permissions:
+
+```python
+# Backend permission check on every tool call
+TOOL_PERMISSIONS = {
+    # View permissions
+    "get_projects": "management.projects.view",
+    "get_revenue_lines": "management.financial.view",
+    "get_forecast_insights": "management.analytics.view",
+    
+    # Edit permissions for mutations
+    "create_project": "management.projects.edit",
+    "update_revenue_line": "management.financial.edit",
+    "delete_invoice": "management.invoices.edit",
+}
+
+def check_tool_permission(user, tenant, tool_name):
+    required = TOOL_PERMISSIONS.get(tool_name)
+    if required and not user_has_permission(user, tenant, required):
+        return False, f"Missing permission: {required}"
+    return True, None
+```
+
+**Security Flow:**
+1. User sends message → Backend validates tenant access
+2. Backend filters available tools by user's permissions
+3. AI only sees tools the user can actually use
+4. Each tool execution is re-validated before execution
+5. All actions logged with `AI_AGENT` actor type
+
+### Real-Time Streaming via GraphQL Subscriptions
+
+The chat interface uses GraphQL subscriptions over WebSockets for real-time communication:
+
+```typescript
+// GraphQL Subscription
+subscription AiChat($conversationId: String!) {
+  aiChat(conversationId: $conversationId) {
+    event {
+      eventType    // status, tool_start, tool_complete, content, done, error
+      message      // Status messages
+      toolName     // MCP tool being executed
+      toolDisplayName  // Human-readable tool name
+      success      // Tool execution success
+      hasData      // Whether tool returned data
+      text         // Response content (streamed word-by-word)
+      toolsUsed    // Final list of tools used
+      conversationId
+    }
+  }
+}
+
+// Mutation to send message
+mutation SendAiMessage($message: String!, $tenantId: String!, $conversationId: String!, $history: [JSONString]) {
+  sendAiMessage(message: $message, tenantId: $tenantId, conversationId: $conversationId, history: $history) {
+    ok
+    error
+  }
+}
+```
+
+**How it works:**
+1. Frontend subscribes to `aiChat` subscription with unique `conversationId`
+2. User sends message via `sendAiMessage` mutation
+3. Backend processes asynchronously, broadcasting events via subscription
+4. Frontend receives real-time updates: status → tool execution → streaming content → done
+
+Users see:
+- "Connecting to data sources..." → "Connected to 45 data sources"
+- Real-time tool execution status with human-readable names
+- Word-by-word streaming response with natural typing delays
+- Clickable entity links in responses
+
+### Clickable Entity Links
+
+AI responses automatically include navigable links:
+
+```markdown
+## Top Projects by Revenue
+
+1. [ACME Mobile App](project:UHJvamVjdFR5cGU6MQ==) - $125,000
+   - Client: [Acme Corp](client:Q2xpZW50VHlwZTox)
+   - Status: In Progress
+   
+2. [TechStart Portal](project:UHJvamVjdFR5cGU6Mg==) - $98,500
+   - Lead: [John Smith](person:UGVyc29uVHlwZToz)
+```
+
+These links are:
+- Extracted from tool results automatically
+- Routed to the correct tenant-scoped pages
+- Styled with entity-specific colors and icons
+
+### Intelligent CFO Persona
+
+The AI assistant is configured as a sophisticated CFO:
+
+```python
+CFO_SYSTEM_PROMPT = """
+You are a sophisticated Chief Financial Officer (CFO) with 15+ years 
+of experience in IT services industry.
+
+## Your Capabilities
+- Financial planning and project profitability analysis
+- Resource allocation and revenue forecasting
+- Cost optimization and strategic decision-making
+
+## Communication Style
+- Professional, insightful, and data-driven
+- ALWAYS respond in the SAME LANGUAGE the user writes in
+- Use markdown formatting with tables, charts, and structure
+- Create clickable entity links for all projects/clients/people
+
+## When creating/updating data:
+1. Acknowledge the request
+2. Ask for required fields conversationally
+3. Confirm before executing mutations
+4. Report success with links to created entities
+"""
+```
+
+## Infrastructure
+
+### Apollo MCP Server
+
+The MCP server is a containerized service that exposes GraphQL operations as MCP tools:
+
+```yaml
+# packages/mcp-server/config.yaml
+endpoint: http://backend:5001/api/graphql/
+
+forward_headers:
+  - Authorization
+  - X-Tenant-ID
+  - X-AI-Agent-Request
+
+transport:
+  type: streamable_http
+  address: 0.0.0.0
+  port: 4000
+
+# Only allow pre-defined mutations (not arbitrary GraphQL)
+overrides:
+  mutation_mode: explicit
+```
+
+### Adding New MCP Tools
+
+Create a `.graphql` file in `packages/mcp-server/operations/`:
+
+```graphql
+# @tool(name: "get_custom_data", description: "Fetches custom data for analysis")
+query GetCustomData($tenantId: ID!, $dateRange: DateRangeInput) {
+  customData(tenantId: $tenantId, dateRange: $dateRange) {
+    id
+    name
+    value
+    timestamp
+  }
+}
+```
+
+The `@tool` directive comment tells the MCP server:
+- Tool name exposed to AI
+- Description for AI to understand when to use it
+
+### Mutation Modes
+
+| Mode | Description | Use Case |
+|------|-------------|----------|
+| `none` | Mutations disabled | Read-only deployments |
+| `explicit` | Only pre-defined mutation tools | **Production (default)** |
+| `all` | AI can build any mutation | Development/testing only |
+
+## Deployment Options
+
+### Local Development
+
+```bash
+# Included in standard startup
+pnpm saas up
+
+# Or start individually
+docker compose up mcp-server
+```
+
+### Docker Compose (VPS)
+
+```yaml
+# docker-compose.prod.yml
+mcp-server:
+  build:
+    context: ./packages/mcp-server
+  environment:
+    - GRAPHQL_ENDPOINT=http://backend:5001/api/graphql/
+    - OPENAI_API_KEY=${OPENAI_API_KEY}
+  depends_on:
+    - backend
+```
+
+### Render.com
+
+```yaml
+# render.yaml (uncomment to enable)
+- type: web
+  name: mcp-server
+  runtime: docker
+  dockerfilePath: ./packages/mcp-server/Dockerfile
+  envVars:
+    - key: GRAPHQL_ENDPOINT
+      fromService:
+        name: backend-api
+        property: host
+```
+
+### AWS (CDK)
+
+```typescript
+// packages/infra/infra-functions/src/stacks/ai-assistant.ts
+new AIAssistantStack(app, 'AIAssistant', {
+  openaiApiKeyArn: 'arn:aws:secretsmanager:...',
+  graphqlEndpoint: backendService.loadBalancerDnsName,
+});
+```
+
+## Frontend Integration
+
+### AI Assistant Hook
+
+```tsx
+import { useAiAssistant } from '@sb/webapp-ai-assistant/hooks';
+
+function ChatInterface() {
+  const {
+    messages,
+    isLoading,
+    sendMessage,
+    streamingState,
+    isConnected,
+  } = useAiAssistant();
+
+  return (
+    <div>
+      {/* Status indicator */}
+      {streamingState.status && (
+        <div className="text-muted">{streamingState.status}</div>
+      )}
+      
+      {/* Active tools */}
+      {streamingState.activeTools.map(tool => (
+        <ToolBadge key={tool.name} tool={tool} />
+      ))}
+      
+      {/* Messages */}
+      {messages.map(msg => (
+        <Message key={msg.id} {...msg} />
+      ))}
+      
+      {/* Input */}
+      <ChatInput onSend={sendMessage} disabled={isLoading} />
+    </div>
+  );
+}
+```
+
+### Command Palette Dialog
+
+```tsx
+import { CommandPalette } from '@sb/webapp-ai-assistant';
+
+// Opens with Cmd+K / Ctrl+K
+<CommandPalette />
+```
+
+Features:
+- Keyboard shortcut activation
+- Full-screen dialog with message history
+- Real-time tool execution feedback
+- Markdown rendering with clickable links
+- Suggested prompts for quick start
+
+## Example Conversations
+
+### Financial Analysis
+
+```
+User: How's our financial health this quarter?
+
+AI: 📊 **Q4 2025 Financial Overview**
+
+| Metric | Value | vs Q3 |
+|--------|-------|-------|
+| Revenue | $1.2M | +15% |
+| Costs | $780K | +8% |
+| Margin | 35% | +4pp |
+
+**Top Performers:**
+1. [ACME Mobile](project:xxx) - 42% margin
+2. [TechStart Portal](project:yyy) - 38% margin
+
+**Risk Alert:** [ClientX](client:zzz) represents 35% of revenue.
+Consider diversification.
+```
+
+### Creating Records
+
+```
+User: Add a new project for Acme Corp, fixed price $50K
+
+AI: I'll create that project. A few details:
+
+1. What should we call it?
+User: Mobile App v2
+
+AI: When does it start and end?
+User: January to March 2026
+
+AI: Creating project "Mobile App v2":
+- Client: [Acme Corp](client:xxx)
+- Budget: $50,000 (Fixed Price)
+- Timeline: Jan-Mar 2026
+
+Proceed? ✓
+
+User: Yes
+
+AI: ✅ Created! [Mobile App v2](project:abc123)
+```
+
+### Natural Language Queries
+
+```
+User: Kto z naszego zespołu ma najwyższe wykorzystanie w tym miesiącu?
+(Polish: Who on our team has the highest utilization this month?)
+
+AI: 📈 **Wykorzystanie zespołu - Styczeń 2026**
+(Team Utilization - January 2026)
+
+| Osoba | Wykorzystanie | Projekty |
+|-------|---------------|----------|
+| [Jan Kowalski](person:xxx) | 95% | 3 |
+| [Anna Nowak](person:yyy) | 88% | 2 |
+| [Piotr Wiśniewski](person:zzz) | 82% | 4 |
+
+💡 Jan pracuje powyżej zdrowego progu 85%. 
+Rozważ przesunięcie części zadań.
+```
+
+## Activity Logging
+
+All AI actions are logged for audit compliance:
+
+```python
+ActionLog.objects.create(
+    tenant=tenant,
+    action_type=ActionType.CREATE,  # or UPDATE, DELETE
+    entity_type=ActionEntityType.REVENUE_LINE,
+    entity_id=str(new_line.id),
+    actor_type=ActionActorType.AI_AGENT,  # Distinguishes AI from user
+    actor_user=request.user,  # User who initiated the conversation
+    changes={
+        'amount': '50000',
+        'source_type': 'DEAL_FORECAST',
+        'project': 'Mobile App v2'
+    }
+)
+```
+
+View AI actions in Activity Logs:
+- Filter by actor type: "AI Agent"
+- See which user initiated each AI action
+- Full change history for compliance
+
+## Environment Variables
+
+### Backend
+
+```bash
+# Required
+OPENAI_API_KEY=sk-...              # OpenAI API key
+MCP_SERVER_URL=http://mcp-server:4000  # MCP server URL
+
+# Optional
+AI_ASSISTANT_MODEL=gpt-4o          # Model to use (default: gpt-4o)
+AI_ASSISTANT_MAX_TOKENS=2000       # Max response tokens
+```
+
+### MCP Server
+
+```bash
+GRAPHQL_ENDPOINT=http://backend:5001/api/graphql/
+OPENAI_API_KEY=sk-...
+MUTATION_MODE=explicit             # none, explicit, all
+MCP_LOG_LEVEL=info
+```
+
+## Security Considerations
+
+### Built-in Protections
+
+| Protection | Implementation |
+|------------|----------------|
+| **Tenant Isolation** | tenantId injected server-side, cannot be manipulated |
+| **RBAC Enforcement** | Every tool checked against user permissions |
+| **Rate Limiting** | 30 MCP requests/min, 20 chat requests/min |
+| **Mutation Control** | Default `explicit` mode - only pre-defined mutations |
+| **Audit Trail** | All actions logged with AI_AGENT actor type |
+| **Auth Forwarding** | Authorization headers forwarded to GraphQL |
+
+### Best Practices
+
+1. **Start with `mutation_mode: explicit`** - only enable `all` for development
+2. **Review tool permissions** - ensure sensitive operations require appropriate permissions
+3. **Monitor AI actions** - use Activity Logs to audit AI behavior
+4. **Set appropriate rate limits** - prevent abuse while allowing productive use
+
+## Related Documentation
+
+- [Management Dashboard](/introduction/features/management-dashboard) - The data AI can access
+- [RBAC](/introduction/features/rbac) - Permission system
+- [Activity Logs](/introduction/features/activity-logs) - Audit AI actions
+- [OpenAI Integration](/introduction/features/openai) - AI/LLM foundations
+- [Deploy to Render.com](/deployment/render) - MCP server deployment

@@ -1,0 +1,67 @@
+---
+description: File naming conventions for components, hooks, tests, and stories
+globs: ["**/*.tsx", "**/*.ts"]
+alwaysApply: false
+---
+
+# File Naming Conventions
+
+## Component Files
+
+- **Component files**: `{componentName}.component.tsx`
+  - Example: `sidebar.component.tsx`, `sidebarLogo.component.tsx`
+
+- **Storybook stories**: `{componentName}.stories.tsx`
+  - Example: `sidebar.stories.tsx`
+
+- **Tests**: `{componentName}.spec.tsx` in `__tests__/` folder
+  - Example: `__tests__/sidebar.component.spec.tsx`
+
+- **Hooks**: `{hookName}.hook.ts` or `{hookName}.hooks.ts`
+  - Example: `authRoute.hook.tsx`, `languageSwitcher.hooks.ts`
+
+- **GraphQL**: `{featureName}.graphql.ts`
+  - Example: `editCrudDemoItem.graphql.ts`
+
+- **Index files**: Every folder should have an `index.ts` that exports public API
+
+## Folder Structure Pattern
+
+```
+componentFolder/
+├── __tests__/
+│   └── componentName.component.spec.tsx
+├── index.ts
+├── componentName.component.tsx
+├── componentName.stories.tsx
+└── componentName.hook.ts (if needed)
+```
+
+## Naming Style
+
+- Use **camelCase** for file names: `sidebarLogo.component.tsx`
+- Use **PascalCase** for component names in code: `export const SidebarLogo = ...`
+- Use **camelCase** for hooks: `useAuth`, `useGenerateTenantPath`
+
+## Index.ts Export Pattern
+
+```typescript
+export { ComponentName } from './componentName.component';
+export type { ComponentNameProps } from './componentName.component';
+```
+
+## Spelling and Naming Accuracy
+
+**CRITICAL**: Always double-check spelling in file names. Typos in file names are hard to fix later as they require updating all references.
+
+Common mistakes to avoid:
+- `invotation` → `invitation`
+- `recieve` → `receive`
+- `occured` → `occurred`
+- `seperate` → `separate`
+
+When renaming a file with a typo:
+1. Create the new file with correct name
+2. Delete the old file
+3. Update all import references (check `index.ts`, tests, and any importing files)
+4. Run tests to verify all references are updated

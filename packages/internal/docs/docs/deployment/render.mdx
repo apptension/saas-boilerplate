@@ -1,0 +1,604 @@
+---
+title: Deploy to Render.com
+description: Step-by-step guide for deploying the SaaS Boilerplate to Render.com
+---
+
+import { Steps, Step } from '../shared/components';
+
+# Deploy to Render.com
+
+This guide walks you through deploying the SaaS Boilerplate to Render.com using the Blueprint feature.
+
+## Prerequisites
+
+- A [Render.com](https://render.com) account
+- Your repository forked/cloned to GitHub or GitLab
+- A domain name (optional, Render provides free subdomains)
+- Cloudflare R2 account for storage (or another S3-compatible service)
+- SendGrid account for emails (or another email provider)
+
+## Quick Start with CLI
+
+The easiest way to deploy is using the SaaS Boilerplate CLI:
+
+```bash
+# One-time setup - stores your API key locally
+saas render setup
+
+# Deploy all services
+saas render deploy
+
+# Check service status
+saas render status
+```
+
+The CLI will guide you through:
+1. Entering your Render.com API key
+2. Selecting your owner/team
+3. Choosing which services to deploy
+
+Get your API key from: [Render Dashboard → Account Settings → API Keys](https://dashboard.render.com/u/settings#api-keys)
+
+## Alternative: Blueprint Deployment
+
+If you prefer deploying via the Render Dashboard:
+
+<Steps>
+<Step title="Push render.yaml to your repository">
+The `render.yaml` file is already included in the SaaS Boilerplate.
+</Step>
+
+<Step title="Create a Blueprint Instance">
+1. Go to [Render Dashboard](https://dashboard.render.com) → Blueprints
+2. Click "New Blueprint Instance"
+3. Connect your GitHub/GitLab repository
+</Step>
+
+<Step title="Apply the Blueprint">
+Render will detect the `render.yaml` and show the services to be created:
+- `postgres` - PostgreSQL database (basic-256mb)
+- `redis` - Redis key-value store (starter)
+- `backend-api` - Django API web service (starter)
+- `webapp` - Static React frontend
+- `celery-worker` - Background task worker (starter)
+- `celery-beat` - Scheduled task runner (starter)
+</Step>
+
+<Step title="Configure Environment Variables">
+After creation, configure the required variables in Render Dashboard. See the complete guide below.
+</Step>
+</Steps>
+
+## Complete Environment Variables Guide
+
+This section provides detailed guidance for every environment variable you need to configure.
+
+:::tip Quick Reference Files
+Use the example files in your project as a reference:
+- **Backend:** `packages/backend/.env.render.example`
+- **Webapp:** `packages/webapp/.env.render.example`
+:::
+
+### Generate Required Secrets
+
+Before starting, generate these secrets locally:
+
+```bash
+# Generate DJANGO_SECRET_KEY
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+
+# Generate HASHID_FIELD_SALT (any random string works)
+openssl rand -hex 32
+```
+
+:::tip
+Save these generated values securely - you'll use the same values across multiple services.
+:::
+
+---
+
+## Service: backend-api
+
+The main Django API service requires the most configuration.
+
+### Security (Required)
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `DJANGO_ALLOWED_HOSTS` | `backend-api-xxxx.onrender.com,api.yourdomain.com` | Comma-separated hostnames (no `https://` prefix) |
+| `DJANGO_SECRET_KEY` | `<generated>` | Generated with the command above |
+| `HASHID_FIELD_SALT` | `<generated>` | Generated with the command above |
+
+:::warning Important
+`DJANGO_ALLOWED_HOSTS` should NOT include the `https://` prefix:
+- ✅ `backend-api-xxxx.onrender.com,api.yourdomain.com`
+- ❌ `https://backend-api-xxxx.onrender.com`
+:::
+
+### URLs (Set after initial deployment)
+
+After your services are deployed, update these with your actual Render URLs.
+
+:::danger Critical - Cross-Origin Configuration Required!
+Since Render deploys webapp and backend on **different subdomains** (e.g., `webapp-xxx.onrender.com` and `backend-xxx.onrender.com`), you **must** configure:
+
+1. **CORS** - Allow cross-origin API requests
+2. **Cookie SameSite** - Allow cookies to be sent cross-origin (set automatically in `render.yaml`)
+
+Without these, login will fail! The `render.yaml` Blueprint sets `COOKIE_SAMESITE=None` and `COOKIE_SECURE=True` automatically.
+:::
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `WEB_APP_URL` | `https://webapp-xxxx.onrender.com` | Your frontend URL (with `https://`) |
+| `API_URL` | `https://backend-api-xxxx.onrender.com` | Your API URL (with `https://`) |
+| `CORS_ALLOWED_ORIGINS` | `https://webapp-xxxx.onrender.com` | **Critical!** Your webapp origin for CORS (with `https://`) |
+| `CSRF_TRUSTED_ORIGINS` | `https://webapp-xxxx.onrender.com,https://backend-api-xxxx.onrender.com` | Trusted origins for CSRF (with `https://`) |
+
+**How to get your URLs:**
+1. Go to Render Dashboard
+2. Click on each service
+3. Copy the URL shown (e.g., `https://backend-api-abc123.onrender.com`)
+
+:::warning URL Formatting Rules
+| Variable | Format | ✅ Correct | ❌ Wrong |
+|----------|--------|------------|----------|
+| `DJANGO_ALLOWED_HOSTS` | Hostnames only | `backend-api-xxx.onrender.com` | `https://backend-api-xxx.onrender.com` |
+| `CORS_ALLOWED_ORIGINS` | Full URL | `https://webapp-xxx.onrender.com` | `webapp-xxx.onrender.com` |
+| `CSRF_TRUSTED_ORIGINS` | Full URL | `https://webapp-xxx.onrender.com` | `webapp-xxx.onrender.com` |
+:::
+
+### Cloudflare R2 Storage (Required)
+
+Cloudflare R2 provides S3-compatible object storage. Follow these steps:
+
+<Steps>
+<Step title="Create a Cloudflare Account">
+Go to [Cloudflare Dashboard](https://dash.cloudflare.com) and create an account if you don't have one.
+</Step>
+
+<Step title="Enable R2 and Create a Bucket">
+1. Navigate to **R2 Object Storage** in the sidebar
+2. Click **Create bucket**
+3. Name your bucket (e.g., `my-app-uploads`)
+4. Select a location (optional)
+5. Click **Create bucket**
+</Step>
+
+<Step title="Find Your Account ID">
+Your Account ID is shown in the R2 Overview page, or you can find it in:
+- Cloudflare Dashboard → Overview (right sidebar)
+- URL: `https://dash.cloudflare.com/<ACCOUNT_ID>/...`
+</Step>
+
+<Step title="Create R2 API Token">
+1. Go to **R2 Object Storage** → **Manage R2 API Tokens**
+2. Click **Create API token**
+3. Select **Object Read & Write** permission
+4. (Optional) Scope to your specific bucket
+5. Click **Create API Token**
+6. **Important:** Copy the **Access Key ID** and **Secret Access Key** immediately - the secret is only shown once!
+</Step>
+</Steps>
+
+For more details, see the [Cloudflare R2 API Tokens documentation](https://developers.cloudflare.com/r2/api/tokens/).
+
+| Variable | Example Value | Where to Find |
+|----------|---------------|---------------|
+| `R2_ENDPOINT_URL` | `https://abc123def456.r2.cloudflarestorage.com` | Replace with your Account ID |
+| `R2_ACCESS_KEY_ID` | `abc123...` | From API token creation |
+| `R2_SECRET_ACCESS_KEY` | `xyz789...` | From API token creation (shown once) |
+| `R2_BUCKET_NAME` | `my-app-uploads` | Your bucket name |
+
+### SendGrid Email (Required)
+
+<Steps>
+<Step title="Create SendGrid Account">
+Sign up at [SendGrid](https://sendgrid.com) (free tier available: 100 emails/day).
+</Step>
+
+<Step title="Verify Sender Identity">
+1. Go to **Settings** → **Sender Authentication**
+2. Either verify a single sender email or authenticate your entire domain (recommended for production)
+</Step>
+
+<Step title="Create API Key">
+1. Go to **Settings** → **API Keys**
+2. Click **Create API Key**
+3. Select **Restricted Access**
+4. Enable **Mail Send** → **Full Access**
+5. Click **Create & View**
+6. Copy the API key (starts with `SG.`)
+</Step>
+</Steps>
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `SENDGRID_API_KEY` | `SG.xxxxxxxxxxxx.yyyyyyyy` | Your SendGrid API key |
+| `EMAIL_FROM_ADDRESS` | `noreply@yourdomain.com` | Must be a verified sender |
+
+### Stripe Payments (Optional)
+
+Skip these if you're not using payments yet. You can add them later.
+
+<Steps>
+<Step title="Get API Keys">
+1. Go to [Stripe Dashboard](https://dashboard.stripe.com/apikeys)
+2. Copy your **Secret key** (starts with `sk_test_` or `sk_live_`)
+</Step>
+
+<Step title="Set Up Webhook">
+1. Go to **Developers** → **Webhooks**
+2. Click **Add endpoint**
+3. Enter URL: `https://your-backend-api.onrender.com/subscriptions/stripe-webhook/`
+4. Select events to listen to (or select all)
+5. Click **Add endpoint**
+6. Copy the **Signing secret** (starts with `whsec_`)
+</Step>
+</Steps>
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `STRIPE_LIVE_SECRET_KEY` | `sk_live_xxxxxxxxx` | Production key (use when ready) |
+| `STRIPE_TEST_SECRET_KEY` | `sk_test_xxxxxxxxx` | Test key (use for initial testing) |
+| `DJSTRIPE_WEBHOOK_SECRET` | `whsec_xxxxxxxxx` | Webhook signing secret |
+
+:::tip
+Start with test keys (`sk_test_`) to verify everything works, then switch to live keys for production.
+:::
+
+### OAuth Social Login (Optional)
+
+Leave these empty if you're not using social login.
+
+#### Google OAuth
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+2. Create a new OAuth 2.0 Client ID
+3. Add authorized redirect URI: `https://your-backend-api.onrender.com/auth/social/complete/google-oauth2/`
+
+| Variable | Value |
+|----------|-------|
+| `SOCIAL_AUTH_GOOGLE_OAUTH2_KEY` | Your Google Client ID |
+| `SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET` | Your Google Client Secret |
+
+#### Facebook OAuth
+
+1. Go to [Facebook Developers](https://developers.facebook.com)
+2. Create a new app and configure Facebook Login
+3. Add redirect URI: `https://your-backend-api.onrender.com/auth/social/complete/facebook/`
+
+| Variable | Value |
+|----------|-------|
+| `SOCIAL_AUTH_FACEBOOK_KEY` | Your Facebook App ID |
+| `SOCIAL_AUTH_FACEBOOK_SECRET` | Your Facebook App Secret |
+
+#### Common OAuth Setting
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `SOCIAL_AUTH_ALLOWED_REDIRECT_HOSTS` | `yourdomain.com,www.yourdomain.com` | Allowed redirect hosts |
+
+### Email Rendering (Required)
+
+These variables are needed for rendering email templates:
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `VITE_WEB_APP_URL` | `https://webapp-xxxx.onrender.com` | Your webapp URL for email links |
+| `VITE_EMAIL_ASSETS_URL` | `https://webapp-xxxx.onrender.com/email-assets` | URL for email assets (images, styles) |
+
+### AI Features (Optional)
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `OPENAI_API_KEY` | `sk-...` | OpenAI API key for AI-powered features |
+| `MCP_SERVER_URL` | `https://mcp-server-xxxx.onrender.com` | URL of the MCP server (if using AI Assistant) |
+
+### Monitoring (Optional)
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `SENTRY_DSN` | `https://xxx@o12345.ingest.sentry.io/12345` | From [Sentry.io](https://sentry.io) project settings |
+
+---
+
+## Service: webapp (Static Site)
+
+The frontend needs these environment variables:
+
+### Required
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `VITE_BASE_API_URL` | `https://backend-api-xxxx.onrender.com/api` | Backend API URL (**must include `/api` suffix**) |
+
+:::warning Don't Forget the /api Suffix!
+The `VITE_BASE_API_URL` must include `/api` at the end:
+- ✅ `https://backend-api-xxx.onrender.com/api`
+- ❌ `https://backend-api-xxx.onrender.com`
+:::
+
+### Payments (Required if using Stripe)
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `VITE_STRIPE_PUBLISHABLE_KEY` | `pk_test_xxxxxxxx` | Stripe publishable key (from Stripe Dashboard) |
+
+### Contentful CMS (Optional)
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `VITE_CONTENTFUL_SPACE` | `abc123xyz` | Contentful Space ID |
+| `VITE_CONTENTFUL_TOKEN` | `xxx` | Content Delivery API token |
+| `VITE_CONTENTFUL_ENV` | `master` | Environment (master, develop) |
+
+### Monitoring (Optional)
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `VITE_SENTRY_DSN` | `https://xxx@o12345.ingest.sentry.io/12345` | Sentry DSN for frontend errors |
+
+:::info Static Site Rebuild Required
+Unlike web services, static sites need to be **rebuilt** after changing environment variables. Render usually does this automatically, but you can trigger a manual deploy if needed.
+:::
+
+---
+
+## Services: celery-worker & celery-beat
+
+These background workers share configuration with the backend. Copy these values exactly from your `backend-api` configuration:
+
+| Variable | Copy From |
+|----------|-----------|
+| `DJANGO_SECRET_KEY` | Same as backend-api |
+| `HASHID_FIELD_SALT` | Same as backend-api |
+| `R2_ENDPOINT_URL` | Same as backend-api |
+| `R2_ACCESS_KEY_ID` | Same as backend-api |
+| `R2_SECRET_ACCESS_KEY` | Same as backend-api |
+| `R2_BUCKET_NAME` | Same as backend-api |
+| `SENDGRID_API_KEY` | Same as backend-api |
+| `EMAIL_FROM_ADDRESS` | Same as backend-api |
+| `STRIPE_LIVE_SECRET_KEY` | Same as backend-api |
+| `STRIPE_TEST_SECRET_KEY` | Same as backend-api |
+
+:::tip
+Render's Blueprint feature can sync environment variables across services using environment groups. Consider creating an environment group for shared variables.
+:::
+
+---
+
+## Service: mcp-server (AI Assistant) - Optional
+
+The MCP (Model Context Protocol) Server enables AI assistants to interact with your application's data through GraphQL. This service is **optional** - only deploy it if you're using the AI Assistant feature.
+
+:::info Blueprint Configuration
+The `mcp-server` service is included in `render.yaml`. By default, it's configured but you'll need to set up the environment variables after deployment.
+:::
+
+### Environment Variables
+
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `GRAPHQL_ENDPOINT` | `https://backend-api-xxxx.onrender.com/api/graphql/` | Your backend's GraphQL endpoint URL |
+| `MCP_LOG_LEVEL` | `info` | Log level: `debug`, `info`, `warn`, `error` |
+| `MUTATION_MODE` | `explicit` | Mutation mode: `none`, `explicit`, `all` |
+
+### Mutation Modes
+
+| Mode | Description |
+|------|-------------|
+| `none` | AI can only query data (read-only) |
+| `explicit` | **Recommended** - AI can use pre-defined mutations only |
+| `all` | AI can execute any GraphQL mutation (use with caution) |
+
+### Connecting MCP Server to Backend
+
+After deploying the MCP server:
+
+1. Get the MCP server URL from Render Dashboard (e.g., `https://mcp-server-xxxx.onrender.com`)
+2. Update the `backend-api` service with:
+   ```
+   MCP_SERVER_URL=https://mcp-server-xxxx.onrender.com
+   ```
+3. Redeploy the backend to apply changes
+
+### Cost Considerations
+
+The MCP server is lightweight and can run on a starter plan:
+- **Plan:** Starter ($7/month)
+- **Instances:** 1
+
+If you're not using AI features, you can skip this service to save costs.
+
+---
+
+## Auto-Configured Variables
+
+These variables are automatically set by Render from the Blueprint - you don't need to configure them:
+
+| Variable | Source | Description |
+|----------|--------|-------------|
+| `DATABASE_URL` | postgres service | PostgreSQL connection string |
+| `REDIS_CONNECTION` | redis service | Redis connection string |
+
+---
+
+## Manual Setup (Without Blueprint)
+
+If you prefer to set up services manually:
+
+### 1. Create PostgreSQL Database
+
+1. Go to Dashboard → New → PostgreSQL
+2. Name: `saas-postgres`
+3. Version: PostgreSQL 16
+4. Plan: basic-256mb (or higher for production)
+
+### 2. Create Redis Instance
+
+1. Go to Dashboard → New → Redis
+2. Name: `saas-redis`
+3. Plan: Starter
+
+### 3. Create Backend Web Service
+
+1. Go to Dashboard → New → Web Service
+2. Connect your repository
+3. Settings:
+   - **Name:** `backend-api`
+   - **Runtime:** Docker
+   - **Docker File Path:** `./packages/backend/Dockerfile`
+   - **Docker Context:** `./packages/backend`
+   - **Health Check Path:** `/liveness/`
+
+### 4. Create Frontend Static Site
+
+1. Go to Dashboard → New → Static Site
+2. Connect your repository
+3. Settings:
+   - **Name:** `webapp`
+   - **Build Command:** `npm install -g pnpm@9 && pnpm install && pnpm nx build webapp`
+   - **Publish Directory:** `packages/webapp/build`
+4. Environment Variables:
+   - `VITE_BASE_API_URL`: URL of your backend service
+
+### 5. Create Celery Workers
+
+Create two Background Workers with the same Docker settings:
+
+**Celery Worker:**
+- **Name:** `celery-worker`
+- **Docker Command:** `./scripts/runtime/run_celery_worker_default.sh`
+
+**Celery Beat:**
+- **Name:** `celery-beat`
+- **Docker Command:** `./scripts/runtime/run_celery_beat.sh`
+
+## Custom Domain Setup
+
+### Backend API
+
+1. Go to your backend service → Settings → Custom Domains
+2. Add your domain: `api.yourdomain.com`
+3. Configure DNS:
+   - Type: CNAME
+   - Name: `api`
+   - Value: `your-backend.onrender.com`
+
+### Frontend
+
+1. Go to your static site → Settings → Custom Domains
+2. Add your domain: `yourdomain.com`
+3. Configure DNS as instructed by Render
+
+:::warning
+After adding custom domains, update these environment variables:
+- `DJANGO_ALLOWED_HOSTS` - add your custom API domain
+- `WEB_APP_URL` - update to your custom frontend domain
+- `API_URL` - update to your custom API domain
+- `CSRF_TRUSTED_ORIGINS` - add your custom frontend domain
+- `VITE_BASE_API_URL` - update to your custom API domain
+:::
+
+## Database Migrations
+
+Migrations run automatically during deployment. To run manually:
+
+1. Go to your backend service
+2. Click "Shell" tab
+3. Run: `python manage.py migrate`
+
+## Scaling
+
+### Horizontal Scaling
+- Go to service → Settings → Instance Count
+- Increase instances for high availability
+
+### Vertical Scaling
+- Upgrade plan from Starter to Standard/Pro
+
+### Auto-scaling
+- Available on Pro plan
+- Configure min/max instances and scaling rules
+
+## Monitoring
+
+### Logs
+- Go to service → Logs tab
+- Use log filters and search
+
+### Metrics
+- Go to service → Metrics tab
+- View CPU, memory, and request metrics
+
+### Sentry Integration
+Set `SENTRY_DSN` environment variable for error tracking.
+
+## Cost Estimate
+
+| Component | Plan | Cost |
+|-----------|------|------|
+| Web Service (API) | Starter | $7/mo |
+| Static Site | Free | $0/mo |
+| Background Worker x2 | Starter | $14/mo |
+| PostgreSQL | basic-256mb | $7/mo |
+| Redis | Starter | $10/mo |
+| **Total** | | **~$38/mo** |
+
+For production, upgrade to Standard plans for better performance and support.
+
+## Troubleshooting
+
+### Build Failures
+- Check build logs in the service Events tab
+- Ensure all required environment variables are set
+- Verify Docker file path and context
+
+### Database Connection Issues
+- Ensure `DATABASE_URL` is set from the database service
+- Check database is running and healthy
+
+### Static Site 404 Errors
+- Ensure build output is in the correct directory
+- Check build command completes successfully
+- Verify SPA routing is configured (done automatically with `render.yaml`)
+
+### CORS Errors (Login/API Calls Failing)
+
+If you see errors like "Cross-Origin Request Blocked" or "CORS policy" in browser console:
+
+1. **Set `CORS_ALLOWED_ORIGINS`** to your webapp URL (with `https://`):
+   ```
+   CORS_ALLOWED_ORIGINS=https://webapp-xxx.onrender.com
+   ```
+
+2. **Verify the URL is exact** - no trailing slash, correct subdomain
+
+3. **Redeploy the backend** after changing environment variables
+
+4. **Check browser console** for the exact origin being blocked
+
+### CSRF Errors
+- Verify `CSRF_TRUSTED_ORIGINS` includes your frontend URL with `https://` prefix
+- Ensure `DJANGO_ALLOWED_HOSTS` includes your API hostname without protocol
+- For CSRF, include both webapp and API origins:
+  ```
+  CSRF_TRUSTED_ORIGINS=https://webapp-xxx.onrender.com,https://backend-xxx.onrender.com
+  ```
+
+### Email Not Sending
+- Verify `SENDGRID_API_KEY` is correct and starts with `SG.`
+- Check sender is verified in SendGrid
+- Review logs for specific error messages
+
+### Stripe Webhook Errors
+- Verify webhook URL is correct: `https://your-api/subscriptions/stripe-webhook/`
+- Ensure `DJSTRIPE_WEBHOOK_SECRET` matches the signing secret from Stripe
+
+## Next Steps
+
+1. Set up monitoring with Sentry
+2. Configure custom domain with SSL
+3. Set up CI/CD for automatic deployments
+4. Configure preview environments for PRs

@@ -1,25 +1,306 @@
 ---
-description: Steps required to deploy SaaS Boilerplate infrastructure on AWS
+title: Deploy Infrastructure
+description: Create AWS resources with CDK
 ---
 
 import ProjectName from '../../shared/components/ProjectName.component';
 
-# Step 4: Deploy infrastructure
+# Step 4: Deploy Infrastructure
 
-## Switch context to proper environment stage
+This step creates all the AWS resources needed to run your application: database, cache, networking, CI/CD pipelines, and more. This is the longest step, but it only needs to be done once per environment.
 
-Run the following command that will switch context to specific environment stage.
+**Estimated time: 30-45 minutes** (AWS takes time to provision resources)
 
-```shell
-saas aws set-env [STAGE_NAME]
+---
+
+## What You'll Accomplish
+
+- ✅ Deploy VPC and networking (security groups, subnets)
+- ✅ Create RDS PostgreSQL database
+- ✅ Create ElastiCache Redis cluster
+- ✅ Set up ECS Fargate clusters
+- ✅ Create S3 buckets and CloudFront distributions
+- ✅ Configure SSL certificates
+- ✅ Deploy CI/CD pipeline (CodePipeline, CodeBuild)
+
+---
+
+## What Gets Created
+
+The infrastructure deployment creates these AWS resources:
+
+| Category | Resources Created |
+|----------|-------------------|
+| **Networking** | VPC, Subnets, NAT Gateway, Internet Gateway, Security Groups |
+| **Database** | RDS PostgreSQL instance, Security Group |
+| **Cache** | ElastiCache Redis cluster |
+| **Compute** | ECS Cluster, Fargate task definitions |
+| **Storage** | S3 buckets (static assets, artifacts, code) |
+| **CDN** | CloudFront distributions (web app, API, docs) |
+| **DNS** | Route 53 records for your domains |
+| **Security** | SSL/TLS certificates, IAM roles |
+| **CI/CD** | CodePipeline, CodeBuild projects, ECR repositories |
+| **Secrets** | Secrets Manager entries |
+
+---
+
+## Step 4.1: Ensure Correct Environment
+
+Make sure you're targeting the right environment:
+
+```bash
+# Set environment context
+pnpm saas aws set-env qa
+
+# Verify
+pnpm saas aws get-env
+# Expected output: qa
 ```
 
-## Deploy the infrastructure
+---
 
-Deploy an actual infrastructure of your app by running following command:
+## Step 4.2: Preview Changes (Optional)
 
-```shell
+Before deploying, you can preview what will be created:
+
+```bash
+pnpm saas infra deploy --diff
+```
+
+This shows all resources that will be created without actually creating them. Review the output to understand what's being deployed.
+
+---
+
+## Step 4.3: Deploy Infrastructure
+
+Now deploy the infrastructure:
+
+```bash
 pnpm saas infra deploy
 ```
 
-This command will run CDK deployment of all environment specific infrastructure components like: database, CI/CD.
+This command deploys multiple CDK stacks in order:
+
+| Stack | What It Creates | Approximate Time |
+|-------|-----------------|------------------|
+| `global` | ECR repositories, base resources | 2-5 min |
+| `main` | VPC, networking, base infrastructure | 5-10 min |
+| `db` | RDS PostgreSQL, ElastiCache Redis | 10-15 min |
+| `ci` | CodePipeline, CodeBuild, S3 artifacts | 5-10 min |
+| `components` | CloudFront, S3 static hosting | 5-10 min |
+
+:::info Patience Required
+This step can take 30-45 minutes. AWS is provisioning real infrastructure:
+- Database instances need to start up
+- SSL certificates need to be validated
+- CloudFront distributions need to propagate globally
+:::
+
+### What You'll See
+
+```bash
+✨  Deployment time: 2.5s
+
+Stack saas-qa-main
+✅  saas-qa-main
+
+Stack saas-qa-db
+✅  saas-qa-db
+
+Stack saas-qa-ci
+✅  saas-qa-ci
+
+Stack saas-qa-components
+✅  saas-qa-components
+```
+
+### During Deployment
+
+You can monitor progress in the AWS Console:
+1. Go to **CloudFormation** in AWS Console
+2. Watch the stack status change from `CREATE_IN_PROGRESS` to `CREATE_COMPLETE`
+
+---
+
+## Step 4.4: Set Up Docker Hub Credentials
+
+Before your CI/CD pipeline can run builds, it needs Docker Hub credentials to pull base images without rate limiting.
+
+1. Go to [AWS Console → Secrets Manager](https://console.aws.amazon.com/secretsmanager)
+2. Find `GlobalBuildSecrets`
+3. Click **Retrieve secret value**
+4. Click **Edit**
+5. Enter your Docker Hub credentials:
+
+```json
+{
+  "DOCKER_USERNAME": "your-dockerhub-username",
+  "DOCKER_PASSWORD": "your-dockerhub-password"
+}
+```
+
+6. Click **Save**
+
+:::warning Required for CI/CD
+Without Docker Hub credentials, your CI/CD builds will fail randomly due to Docker's anonymous pull rate limits.
+:::
+
+---
+
+## Deploying Individual Stacks
+
+If you need to deploy a specific stack (for updates or troubleshooting):
+
+```bash
+# Deploy only the global stack
+pnpm saas infra deploy global
+
+# Deploy only the database stack
+pnpm saas infra deploy db
+
+# Deploy only the CI/CD stack
+pnpm saas infra deploy ci
+
+# Deploy only the components stack
+pnpm saas infra deploy components
+
+# Deploy only the main networking stack
+pnpm saas infra deploy main
+```
+
+---
+
+## Understanding the Stacks
+
+### Global Stack
+- ECR (Container Registry) for Docker images
+- Lambda functions for Docker Hub mirror synchronization
+- Resources shared across all environments
+
+### Main Stack
+- VPC with public/private subnets
+- NAT Gateway for outbound internet access
+- Security groups
+- Application Load Balancer
+- ECS Cluster
+
+### DB Stack
+- RDS PostgreSQL instance
+- ElastiCache Redis cluster
+- Database security groups
+- Automatic backups configuration
+
+### CI Stack
+- CodePipeline for deployment orchestration
+- CodeBuild projects for building and testing
+- S3 bucket for code artifacts
+- IAM user for external CI integration (GitHub/Bitbucket)
+
+### Components Stack
+- S3 buckets for static assets
+- CloudFront distributions
+- SSL certificates (via ACM)
+- Route 53 DNS records
+
+---
+
+## Verification
+
+After deployment completes:
+
+### Check CloudFormation
+
+```bash
+# Open AWS Console
+pnpm saas aws login
+```
+
+Go to **CloudFormation** and verify these stacks show `CREATE_COMPLETE`:
+- [ ] `saas-qa-main`
+- [ ] `saas-qa-db`
+- [ ] `saas-qa-ci`
+- [ ] `saas-qa-components`
+
+### Check Key Resources
+
+In the AWS Console, verify:
+
+| Service | What to Check |
+|---------|---------------|
+| **RDS** | Database instance is `Available` |
+| **ElastiCache** | Redis cluster is `Available` |
+| **ECS** | Cluster exists (no services yet) |
+| **CloudFront** | Distribution is `Deployed` |
+| **Route 53** | DNS records exist for your domains |
+| **Secrets Manager** | `GlobalBuildSecrets` has Docker credentials |
+
+---
+
+## Cost Implications
+
+The deployed infrastructure will incur AWS charges. Main cost drivers:
+
+| Resource | Approximate Monthly Cost |
+|----------|-------------------------|
+| RDS db.t3.small | ~$30/month |
+| ElastiCache cache.t3.micro | ~$15/month |
+| NAT Gateway | ~$45/month |
+| CloudFront (depends on traffic) | ~$5-20/month |
+| S3, CloudWatch, etc. | ~$5-10/month |
+
+**Total: ~$100-150/month for a staging environment**
+
+:::tip Cost Optimization
+- Use smaller instance sizes for non-production
+- Delete unused environments when not needed
+- Consider using reserved instances for production (significant savings)
+:::
+
+---
+
+## Troubleshooting
+
+### "CREATE_FAILED" in CloudFormation
+
+1. Go to CloudFormation in AWS Console
+2. Click the failed stack
+3. Check the **Events** tab for error details
+4. Common issues:
+   - Service quotas exceeded (request increase)
+   - Certificate validation timeout (check DNS)
+   - IAM permission issues
+
+### SSL Certificate Stuck in "Pending Validation"
+
+Certificates are validated via DNS. If stuck:
+1. Go to **ACM (Certificate Manager)** in AWS Console
+2. Click the pending certificate
+3. Verify the CNAME records exist in Route 53
+4. Wait up to 30 minutes for validation
+
+### "Resource limit exceeded"
+
+New AWS accounts have low limits. Request increases:
+1. Go to **Service Quotas** in AWS Console
+2. Find the service (e.g., CodeBuild)
+3. Request a quota increase
+
+### Database Creation Slow
+
+RDS instances take 10-15 minutes to create. This is normal.
+
+### "Stack is in ROLLBACK_COMPLETE state"
+
+A failed stack needs to be deleted before retrying:
+1. Go to CloudFormation
+2. Delete the failed stack
+3. Fix the underlying issue
+4. Retry deployment
+
+---
+
+## Next Step
+
+Infrastructure is deployed! Now let's configure the runtime secrets your application needs.
+
+**[Continue to Step 5: Configure App Secrets →](/aws/deploy-to-aws/create-runtime-env-vars)**

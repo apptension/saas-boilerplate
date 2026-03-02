@@ -17,15 +17,29 @@ class CommonGroups:
 ```
 
 Once you have added the new role to the `CommonGroups` class, you need to create an empty Django migration to insert the new group into the database.
-To do this, run the following command:
+To do this, run the following command from the project root:
 
 ```shell
+pnpm saas backend shell
+# Inside the container:
 python manage.py makemigrations --empty users
 ```
 
-This will create a new empty migration file in the `users` app. Open the migration file and add the following code to the `operations` list:
+Alternatively, you can run it directly:
 
-```python title="packages/backend/apps/users/migrations/0007_example_migration.py" showLineNumbers
+```shell
+docker compose run --rm backend python manage.py makemigrations --empty users
+```
+
+This will create a new empty migration file in the `users` app (e.g., `0002_add_support_role.py`). The migration number will depend on your current migration history.
+
+:::tip
+You can check existing migrations by listing the files in `packages/backend/apps/users/migrations/`.
+:::
+
+Open the newly created migration file and add the following code to the `operations` list:
+
+```python title="packages/backend/apps/users/migrations/0002_add_support_role.py" showLineNumbers
 from django.db import migrations
 from common.acl.helpers import CommonGroups
 
@@ -45,13 +59,17 @@ def remove_support_role(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0006_case_insensitive_collation'),
+        ('users', '0001_initial'),  # Update this to match your latest users migration
     ]
 
     operations = [
         migrations.RunPython(create_support_role, remove_support_role),
     ]
 ```
+
+:::warning
+Make sure to update the `dependencies` list to reference the latest migration in your `users` app. The default SaaS Boilerplate starts with `0001_initial`, but your project may have additional migrations.
+:::
 
 The migration file defines two functions: `create_support_role` and `remove_support_role`.
 The `create_support_role` function creates a new `Group` object with the name `CommonGroups.Support` and saves it to the database.

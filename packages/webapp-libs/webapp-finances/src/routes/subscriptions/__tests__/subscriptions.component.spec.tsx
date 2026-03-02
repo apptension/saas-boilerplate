@@ -27,6 +27,12 @@ import {
 import { createMockRouterProps, render } from '../../../tests/utils/rendering';
 import { Subscriptions } from '../currentSubscription.component';
 
+// Mock usePermissionCheck to simulate having billing permissions
+jest.mock('@sb/webapp-tenants/hooks', () => ({
+  ...jest.requireActual('@sb/webapp-tenants/hooks'),
+  usePermissionCheck: () => ({ hasPermission: true, loading: false }),
+}));
+
 const paymentMethodsMock = [paymentMethodFactory()];
 
 const defaultActivePlan = {

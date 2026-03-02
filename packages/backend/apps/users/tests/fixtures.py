@@ -19,6 +19,6 @@ def totp_mock(mocker):
     def _factory(verify):
         totp_mock = mocker.Mock()
         totp_mock.verify.return_value = verify
-        mocker.patch('pyotp.TOTP', return_value=totp_mock)
+        mocker.patch("pyotp.TOTP", return_value=totp_mock)
 
     return _factory

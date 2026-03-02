@@ -1,0 +1,25 @@
+import { useContext } from 'react';
+
+import { {{ pascalCase name }}Context } from './{{ camelCase name }}.context';
+import { {{ pascalCase name }}ContextValue } from './{{ camelCase name }}.types';
+
+/**
+ * Hook to access the {{ pascalCase name }} context
+ * 
+ * @throws Error if used outside of {{ pascalCase name }}Provider
+ * @returns {{ pascalCase name }}ContextValue
+ * 
+ * @example
+ * ```tsx
+ * const { state, setState } = use{{ pascalCase name }}();
+ * ```
+ */
+export const use{{ pascalCase name }} = (): {{ pascalCase name }}ContextValue => {
+  const context = useContext({{ pascalCase name }}Context);
+
+  if (context === undefined) {
+    throw new Error('use{{ pascalCase name }} must be used within a {{ pascalCase name }}Provider');
+  }
+
+  return context;
+};

@@ -8,12 +8,13 @@ module.exports = (plop) => {
   const notificationDirectory = path.join(notificationsNamespace, '{{ camelCase name }}');
 
   plop.setGenerator('notification', {
-    description: 'Generate a notification',
+    description: 'Generate a notification component',
     prompts: [
       {
-        type: 'name',
+        type: 'input',
         name: 'name',
-        message: 'Name:',
+        message: 'Notification name (e.g., "OrderConfirmed"):',
+        validate: plop.validators.required,
       },
     ],
     actions: [
@@ -43,6 +44,21 @@ module.exports = (plop) => {
         path: `${notificationsLibNamespace}/notifications.types.ts`,
         pattern: /(\/\/<-- INJECT NOTIFICATION TYPE -->)/g,
         template: "{{ constantCase name }} = '{{ constantCase name }}',\n  $1",
+      },
+      {
+        type: 'logSuccess',
+        message: `
+✅ Notification "{{ pascalCase name }}" created successfully!
+
+📁 Created files:
+   - ${notificationDirectory}/index.ts
+   - ${notificationDirectory}/{{ camelCase name }}.component.tsx
+   - ${notificationDirectory}/{{ camelCase name }}.stories.tsx
+
+🔧 Next steps:
+   1. The notification type was added to webapp-notifications/src/notifications.types.ts
+   2. Update the notification mapping in your notifications handler
+`,
       },
     ],
   });

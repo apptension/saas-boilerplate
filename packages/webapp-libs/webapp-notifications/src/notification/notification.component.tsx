@@ -13,6 +13,8 @@ export type NotificationProps = Omit<NotificationType, 'data'> & {
   content: ReactNode;
   children?: ReactNode;
   avatar?: string | null;
+  icon?: ReactNode;
+  iconClassName?: string;
   onClick?: () => void;
   className?: string;
 };
@@ -22,6 +24,8 @@ export const Notification = ({
   title,
   children,
   avatar,
+  icon,
+  iconClassName,
   className,
   content,
   onClick,
@@ -29,6 +33,7 @@ export const Notification = ({
   createdAt,
 }: NotificationProps) => {
   const hasAvatar = typeof avatar === 'string';
+  const hasIcon = !!icon;
   const isRead = typeof readAt === 'string';
   const onToggleIsRead = useToggleIsRead({
     id,
@@ -36,51 +41,74 @@ export const Notification = ({
   });
 
   return (
-    <li
-      data-status={isRead ? 'read' : 'notRead'}
+    <div
+      data-status={isRead ? 'read' : 'unread'}
       className={cn(
-        'list-none rounded p-2 flex flex-row my-2 w-full cursor-pointer transition-colors',
-        'text-accent-foreground data-[status=read]:text-muted-foreground',
-        'hover:bg-accent hover:text-accent-foreground',
-        'focus:bg-accent focus:text-accent-foreground',
+        'group relative flex w-full items-start gap-3 px-4 py-3 transition-colors',
+        'hover:bg-accent/50',
+        'data-[status=read]:bg-transparent',
+        'cursor-pointer',
+        'border-b border-border/50 last:border-b-0',
         className
       )}
-      role="link"
+      role="button"
       tabIndex={0}
       onClick={onClick}
-      onKeyUp={(event) => {
-        const { target, key } = event;
-        if (
-          key === 'Enter' &&
-          target instanceof Element &&
-          target.tagName === 'LI' &&
-          target.isEqualNode(document.activeElement)
-        ) {
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
           onClick?.();
         }
       }}
     >
-      {hasAvatar ? (
-        <img src={avatar} alt="" className="mr-3 rounded-full w-10 h-10 object-cover" />
-      ) : (
-        <div className="flex items-center justify-center p-3 h-10 w-10 dark:bg-muted-foreground bg-slate-300 rounded-full mr-3">
-          <Bell />
+      {/* Unread indicator - subtle left border */}
+      {!isRead && <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />}
+
+      <div className="flex-shrink-0">
+        {hasAvatar ? (
+          <img src={avatar} alt="" className="h-10 w-10 rounded-full object-cover ring-2 ring-background" />
+        ) : (
+          <div className={cn('flex h-10 w-10 items-center justify-center rounded-full bg-muted', iconClassName)}>
+            {hasIcon ? icon : <Bell className="h-4 w-4 text-muted-foreground" />}
+          </div>
+        )}
+      </div>
+
+      <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+        <div className="flex items-center justify-between gap-2">
+          <H4
+            className={cn(
+              'text-sm leading-none truncate',
+              isRead ? 'font-normal text-muted-foreground' : 'font-semibold'
+            )}
+          >
+            {title}
+          </H4>
+          <Button
+            variant={ButtonVariant.GHOST}
+            size="icon"
+            className="h-6 w-6 shrink-0 opacity-60 transition-opacity hover:opacity-100 -mr-1"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleIsRead(e);
+            }}
+            aria-label={isRead ? 'Mark as unread' : 'Mark as read'}
+          >
+            {isRead ? (
+              <MailOpen className="h-3.5 w-3.5 text-muted-foreground" />
+            ) : (
+              <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+            )}
+          </Button>
         </div>
-      )}
-      <div className="flex flex-col w-full">
-        <H4 className="text-sm">{title}</H4>
-        <p className="mt-1 text-xs">{content}</p>
-        <div className="flex flex-row justify-between items-center">
+        <p className={cn('text-sm line-clamp-3', isRead ? 'text-muted-foreground' : 'text-foreground')}>{content}</p>
+        <div className="flex items-center gap-2">
           <Small className="text-xs text-muted-foreground">
             <RelativeDate date={new Date(createdAt as string)} />
           </Small>
         </div>
-
-        {children && <footer className="flex flex-row flex-wrap items-start mt-2 gap-2">{children}</footer>}
+        {children && <div className="mt-2 flex flex-wrap items-start gap-2">{children}</div>}
       </div>
-      <Button className="p-1 h-6" variant={ButtonVariant.GHOST} onClick={onToggleIsRead}>
-        {isRead ? <MailOpen size={16} /> : <Mail size={16} />}
-      </Button>
-    </li>
+    </div>
   );
 };

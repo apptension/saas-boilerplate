@@ -1,4 +1,5 @@
-from unittest.mock import MagicMock
+from unittest.mock import Mock, patch, MagicMock
+import json
 
 import pytest
 from django.conf import settings
@@ -10,11 +11,25 @@ pytestmark = pytest.mark.django_db
 
 
 class TestSendEmail:
-    def test_send_example_email(self):
+    @patch('common.emails.subprocess.run')
+    @patch('common.emails.send_email.update_state')
+    def test_send_example_email(self, mock_update_state, mock_subprocess):
+        # Mock the node subprocess to return a valid email JSON
+        mock_process = Mock()
+        mock_process.stdout = json.dumps(
+            {
+                'subject': 'Activate your account',
+                'html': f'<p>Click <a href="http://localhost:3000/en/auth/confirm/test-user/test-token">here</a> to activate</p>',
+            }
+        ).encode('utf-8')
+        mock_subprocess.return_value = mock_process
+
         to = 'test@example.org'
         email_type = 'ACCOUNT_ACTIVATION'
         email_data = {'token': 'test-token', 'user_id': 'test-user'}
-        send_email(to, email_type, email_data)
+
+        # Call the run method - celery binds self automatically, so we don't pass it
+        send_email.run(to, email_type, email_data)
 
         assert len(mail.outbox) == 1
 

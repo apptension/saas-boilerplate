@@ -1,6 +1,6 @@
-import { useGenerateAbsoluteLocalePath } from '@sb/webapp-core//hooks';
+import { useGenerateAbsoluteLocalePath } from '@sb/webapp-core/hooks';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { Button, Layout } from '../../base';
 import { EmailComponentProps } from '../../types';
@@ -11,24 +11,36 @@ export type PasswordResetProps = EmailComponentProps & {
 };
 
 export const Template = ({ userId, token }: PasswordResetProps) => {
+  const intl = useIntl();
   const generateLocalePath = useGenerateAbsoluteLocalePath();
   const url = generateLocalePath(RoutesConfig.passwordReset.confirm, {
     token,
     user: userId,
   });
 
+  const preheaderText = intl.formatMessage({
+    defaultMessage: 'This link expires in 24 hours for your security',
+    id: 'Email / Reset Password / Preheader',
+  });
+
   return (
     <Layout
-      title={<FormattedMessage defaultMessage="Reset the password" id="Email / Reset Password / Title" />}
+      preheader={preheaderText}
+      title={
+        <FormattedMessage defaultMessage="Reset your password" id="Email / Reset Password / Title" />
+      }
       text={
         <FormattedMessage
-          defaultMessage="Click the button below to reset the password. "
+          defaultMessage="We received a request to reset your password. Click the button below to create a new one. If you didn't make this request, you can safely ignore this email."
           id="Email / Reset Password / Text"
         />
       }
+      footer={{
+        companyName: 'SaaS Boilerplate',
+      }}
     >
       <Button linkTo={url}>
-        <FormattedMessage defaultMessage="Reset the password" id="Email / Reset Password / Link label" />
+        <FormattedMessage defaultMessage="Create new password" id="Email / Reset Password / Link label" />
       </Button>
     </Layout>
   );

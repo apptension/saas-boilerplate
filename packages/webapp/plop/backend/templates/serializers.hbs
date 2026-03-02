@@ -1,0 +1,79 @@
+from hashid_field import rest as hidrest
+from rest_framework import serializers
+{{#if tenantDependent}}
+from apps.multitenancy.serializers import TenantDependentModelSerializer
+{{/if}}
+
+from .models import {{ pascalCase name }}
+
+
+class {{ pascalCase name }}Serializer({{#if tenantDependent}}TenantDependentModelSerializer{{else}}serializers.ModelSerializer{{/if}}):
+    """
+    Serializer for {{ pascalCase name }} model
+    """
+    id = hidrest.HashidSerializerCharField(source_field='apps.{{ snakeCase name }}.{{ pascalCase name }}.id', read_only=True)
+
+    class Meta:
+        model = {{ pascalCase name }}
+        fields = [
+            'id',
+{{#if hasFields}}
+{{#each fields}}
+            '{{ name }}',
+{{/each}}
+{{else}}
+            'name',
+{{/if}}
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class Create{{ pascalCase name }}Serializer({{#if tenantDependent}}TenantDependentModelSerializer{{else}}serializers.ModelSerializer{{/if}}):
+    """
+    Serializer for creating {{ pascalCase name }} instances
+    """
+    id = hidrest.HashidSerializerCharField(source_field='apps.{{ snakeCase name }}.{{ pascalCase name }}.id', read_only=True)
+
+    class Meta:
+        model = {{ pascalCase name }}
+        fields = [
+            'id',
+{{#if hasFields}}
+{{#each fields}}
+            '{{ name }}',
+{{/each}}
+{{else}}
+            'name',
+{{/if}}
+        ]
+        read_only_fields = ['id']
+
+    def create(self, validated_data):
+{{#if tenantDependent}}
+        tenant = self.context.get('tenant')
+        validated_data['tenant'] = tenant
+{{/if}}
+        return super().create(validated_data)
+
+
+class Update{{ pascalCase name }}Serializer({{#if tenantDependent}}TenantDependentModelSerializer{{else}}serializers.ModelSerializer{{/if}}):
+    """
+    Serializer for updating {{ pascalCase name }} instances
+    """
+    id = hidrest.HashidSerializerCharField(source_field='apps.{{ snakeCase name }}.{{ pascalCase name }}.id', read_only=True)
+
+    class Meta:
+        model = {{ pascalCase name }}
+        fields = [
+            'id',
+{{#if hasFields}}
+{{#each fields}}
+            '{{ name }}',
+{{/each}}
+{{else}}
+            'name',
+{{/if}}
+        ]
+        read_only_fields = ['id']

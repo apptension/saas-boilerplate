@@ -1,0 +1,365 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+  :root {
+    --color-bg: #f8fafc;
+    --color-surface: #ffffff;
+    --color-border: #e2e8f0;
+    --color-text: #1e293b;
+    --color-text-muted: #64748b;
+    --color-primary: #0ea5e9;
+    --color-primary-hover: #0284c7;
+    --color-info-bg: #f0f9ff;
+    --color-info-border: #bae6fd;
+    --color-info-text: #0369a1;
+  }
+
+  .translate-container {
+    max-width: 480px;
+    margin: 32px auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      sans-serif;
+  }
+
+  .translate-header {
+    margin-bottom: 24px;
+  }
+
+  .translate-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0 0 8px 0;
+  }
+
+  .translate-header p {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .info-card {
+    background: var(--color-info-bg);
+    border: 1px solid var(--color-info-border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: var(--color-info-text);
+  }
+
+  .info-card strong {
+    font-weight: 600;
+  }
+
+  .form-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text);
+    margin-bottom: 6px;
+  }
+
+  .form-select,
+  .form-input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    transition: border-color 0.15s ease;
+    box-sizing: border-box;
+  }
+
+  .form-select {
+    height: auto;
+    min-height: 42px;
+    padding-right: 32px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+  }
+
+  .form-select option {
+    padding: 8px 12px;
+  }
+
+  .form-select:focus,
+  .form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+  }
+
+  .form-hint {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+  }
+
+  .checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    background: var(--color-bg);
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  .checkbox-group:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .checkbox-group input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    cursor: pointer;
+  }
+
+  .checkbox-content {
+    flex: 1;
+  }
+
+  .checkbox-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .checkbox-hint {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+  }
+
+  .form-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin: 20px 0;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: white;
+    flex: 1;
+    box-shadow: 0 2px 4px rgba(30, 41, 59, 0.2);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #334155 0%, #475569 100%);
+    box-shadow: 0 4px 8px rgba(30, 41, 59, 0.25);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: white;
+    color: var(--color-text);
+    border: 1.5px solid var(--color-border);
+  }
+
+  .btn-secondary:hover {
+    background: var(--color-bg);
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+  }
+
+  .error-list {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    color: #dc2626;
+    font-size: 13px;
+    list-style: none;
+  }
+
+  .model-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 12px;
+    color: var(--color-text-muted);
+  }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+  &rsaquo;
+  <a href="{% url 'admin:app_list' app_label=opts.app_label %}"
+    >{{ opts.app_label|capfirst }}</a
+  >
+  &rsaquo;
+  <a href="{% url 'admin:translations_locale_changelist' %}">Locales</a>
+  &rsaquo; AI Translate
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="translate-container">
+  <div class="translate-header">
+    <h1>AI Translation</h1>
+    <p>
+      Automatically translate all keys using OpenAI
+      <span class="model-badge">{{ openai_model }}</span>
+    </p>
+  </div>
+
+  <div class="info-card">
+    <strong>How it works:</strong> The AI will translate untranslated keys in
+    batches. You can pause and resume anytime. Keep the browser tab open during
+    translation.
+  </div>
+
+  <form method="post" class="form-card">
+    {% csrf_token %} {% if form.non_field_errors %}
+    <ul class="error-list">
+      {% for error in form.non_field_errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="form-group">
+      <label class="form-label" for="id_source_locale">Translate from</label>
+      {{ form.source_locale }} {% if form.source_locale.errors %}
+      <ul class="error-list">
+        {% for e in form.source_locale.errors %}
+        <li>{{ e }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="id_target_locale">Translate to</label>
+      {{ form.target_locale }} {% if form.target_locale.errors %}
+      <ul class="error-list">
+        {% for e in form.target_locale.errors %}
+        <li>{{ e }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+
+    <div class="form-divider"></div>
+
+    <div class="checkbox-group">
+      {{ form.overwrite_existing }}
+      <div class="checkbox-content">
+        <label class="checkbox-label" for="id_overwrite_existing"
+          >Overwrite existing</label
+        >
+        <div class="checkbox-hint">
+          Re-translate keys that already have translations
+        </div>
+      </div>
+    </div>
+
+    <div class="checkbox-group">
+      {{ form.auto_publish }}
+      <div class="checkbox-content">
+        <label class="checkbox-label" for="id_auto_publish">Auto-publish</label>
+        <div class="checkbox-hint">
+          Set translations to Published status immediately
+        </div>
+      </div>
+    </div>
+
+    <div class="form-divider"></div>
+
+    <div class="form-group">
+      <label class="form-label" for="id_batch_size">Batch size</label>
+      {{ form.batch_size }}
+      <div class="form-hint">
+        Keys per API call (1-50). Smaller = more accurate, larger = faster
+      </div>
+      {% if form.batch_size.errors %}
+      <ul class="error-list">
+        {% for e in form.batch_size.errors %}
+        <li>{{ e }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Start Translation</button>
+      <a
+        href="{% url 'admin:translations_locale_changelist' %}"
+        class="btn btn-secondary"
+        >Cancel</a
+      >
+    </div>
+  </form>
+</div>
+
+<script>
+  // Add CSS class to form elements
+  document
+    .querySelectorAll('select')
+    .forEach((el) => el.classList.add('form-select'));
+  document
+    .querySelectorAll('input[type="number"]')
+    .forEach((el) => el.classList.add('form-input'));
+</script>
+{% endblock %}

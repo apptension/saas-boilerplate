@@ -19,10 +19,19 @@ class OpenAIResponse(BaseModel):
 class OpenAICompletionResponseChoice(BaseModel):
     text: str
     index: int
-    longprobs: Optional[int]
+    logprobs: Optional[int] = None
     finish_reason: str
 
 
 class OpenAICompletionResponse(OpenAIResponse):
     model: str
     choices: list[OpenAICompletionResponseChoice]
+
+
+# Structured SaaS Idea model
+class SaaSIdea(BaseModel):
+    name: str
+    description: str
+    targetMarket: str
+    features: list[str]
+    monetization: str

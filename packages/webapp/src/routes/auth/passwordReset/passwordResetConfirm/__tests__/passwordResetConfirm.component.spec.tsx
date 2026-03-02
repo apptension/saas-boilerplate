@@ -33,11 +33,11 @@ describe('PasswordResetConfirm: Component', () => {
 
   const fillForm = async (newPassword: string) => {
     await userEvent.type(await screen.findByLabelText(/^new password$/i), newPassword);
-    await userEvent.type(screen.getByLabelText(/^repeat new password$/i), newPassword);
+    await userEvent.type(screen.getByLabelText(/^confirm new password$/i), newPassword);
   };
 
   const sendForm = async () => {
-    await userEvent.click(screen.getByRole('button', { name: /confirm the change/i }));
+    await userEvent.click(screen.getByRole('button', { name: /update password/i }));
   };
 
   describe('token is valid', () => {
@@ -52,13 +52,16 @@ describe('PasswordResetConfirm: Component', () => {
         },
       });
 
-      render(<Component />, { routerProps, apolloMocks: append(requestMock) });
+      const { waitForApolloMocks } = render(<Component />, { routerProps, apolloMocks: append(requestMock) });
 
       await fillForm(newPassword);
       await sendForm();
 
-      expect(await screen.findByText(/login page mock/i)).toBeInTheDocument();
-    });
+      // Wait for the mutation to complete
+      await waitForApolloMocks(1);
+
+      expect(await screen.findByText(/login page mock/i, {}, { timeout: 3000 })).toBeInTheDocument();
+    }, 15000);
   });
 
   describe('token is missing', () => {

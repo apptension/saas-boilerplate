@@ -9,6 +9,7 @@ export const commonQueryCurrentUserFragment = gql(/* GraphQL */ `
     email
     firstName
     lastName
+    language
     roles
     avatar
     otpVerified
@@ -24,6 +25,7 @@ export const commonQueryTenantItemFragment = gql(/* GraphQL */ `
     id
     name
     type
+    actionLoggingEnabled
     membership {
       ...commonQueryMembershipFragment
     }

@@ -1,7 +1,45 @@
 ---
 title: Linters
+description: Static analysis tools used in SaaS Boilerplate
 ---
 
 import DocCardList from '@theme/DocCardList';
+
+# Linters
+
+Linters are static analysis tools that identify potential bugs, code smells, and anti-patterns without running your code. They help catch issues early in the development process.
+
+## Why Use Linters?
+
+- **Bug Prevention** — Catch common errors before they reach production
+- **Best Practices** — Enforce coding conventions and patterns
+- **Security** — Identify potential security vulnerabilities
+- **Performance** — Flag inefficient code patterns
+
+## Linters in SaaS Boilerplate
+
+| Linter | Language | Config Location |
+|--------|----------|-----------------|
+| **ESLint** | TypeScript, JavaScript, React | `eslint.config.js` (root) |
+| **Ruff** | Python | `packages/backend/pyproject.toml` |
+| **Stylelint** | CSS, Tailwind | `packages/webapp/.stylelintrc` |
+
+### Running Linters
+
+```bash
+# Lint frontend code
+pnpm nx run webapp:lint
+
+# Lint Python backend code
+cd packages/backend
+uv run ruff .
+
+# Lint all packages
+pnpm nx run-many --target=lint
+```
+
+---
+
+## Detailed Documentation
 
 <DocCardList />

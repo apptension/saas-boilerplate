@@ -11,14 +11,14 @@ FROM ${SB_MIRROR_REPOSITORY}segment/chamber:2 AS chamber
 ##
 FROM ${SB_PULL_THROUGH_CACHE_REPOSITORY}python:3.11-slim-bullseye AS backend_build
 
-ENV PYTHONUNBUFFERED 1
-ENV PIP_NO_CACHE_DIR off
+ENV PYTHONUNBUFFERED=1
+ENV PIP_NO_CACHE_DIR=off
 
 
 RUN apt-get update && apt-get install -y gcc postgresql-client ca-certificates jq curl \
   && update-ca-certificates \
   && pip install --upgrade pip \
-  && pip install --no-cache-dir setuptools pdm~=2.5.2 awscli==1.32.24
+  && pip install --no-cache-dir setuptools uv==0.9.29 awscli==1.32.24
 
 
 RUN curl -fsS https://deb.nodesource.com/setup_20.x | bash - \
@@ -28,8 +28,8 @@ COPY --from=chamber /chamber /bin/chamber
 
 WORKDIR /pkgs
 
-COPY pdm.lock pyproject.toml pdm.toml /pkgs/
-RUN pdm sync \
+COPY uv.lock pyproject.toml /pkgs/
+RUN uv sync --frozen \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
@@ -46,14 +46,14 @@ ENV HASHID_FIELD_SALT='' \
     DB_CONNECTION='{"dbname":"build","username":"build","password":"build","host":"db","port":5432}' \
     REDIS_CONNECTION=redis://redis:6379 \
     WORKERS_EVENT_BUS_NAME='' \
-    PYTHONPATH=/pkgs/__pypackages__/3.11/lib
+    PYTHONPATH=/pkgs/.venv/lib/python3.11/site-packages
 
 RUN ./scripts/runtime/build_static.sh
 
 
 FROM backend_build AS backend
 COPY --from=static_files /app/static /app/static
-ENV PYTHONPATH=/pkgs/__pypackages__/3.11/lib \
-    PATH=$PATH:/pkgs/__pypackages__/3.11/bin
+ENV PYTHONPATH=/pkgs/.venv/lib/python3.11/site-packages \
+    PATH=$PATH:/pkgs/.venv/bin
 
 CMD ["./scripts/runtime/run.sh"]

@@ -13,6 +13,7 @@ export class EnvCiStack extends Stack {
     super(scope, id, props);
 
     const backendRepository = this.retrieveBackendECRRepository(props);
+    const mcpServerRepository = this.retrieveMcpServerECRRepository(props);
 
     const entrypoint = new CiEntrypoint(this, 'Entrypoint', {
       envSettings: props.envSettings,
@@ -21,6 +22,7 @@ export class EnvCiStack extends Stack {
     new CiPipeline(this, 'PipelineConfig', {
       envSettings: props.envSettings,
       backendRepository,
+      mcpServerRepository,
       entrypointArtifactBucket: entrypoint.artifactsBucket,
     });
   }
@@ -30,6 +32,14 @@ export class EnvCiStack extends Stack {
       this,
       'ECRBackendRepository',
       GlobalECR.getBackendRepositoryName(props.envSettings),
+    );
+  }
+
+  private retrieveMcpServerECRRepository(props: EnvCiStackProps) {
+    return ecr.Repository.fromRepositoryName(
+      this,
+      'ECRMcpServerRepository',
+      GlobalECR.getMcpServerRepositoryName(props.envSettings),
     );
   }
 }

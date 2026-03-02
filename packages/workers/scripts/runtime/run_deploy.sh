@@ -2,6 +2,6 @@
 
 cd /app/packages/workers/ || exit
 
-pdm sync --prod # Sync command before deployment is needed to prevent deploying dev dependencies
+uv sync --frozen --no-dev
 pnpm run sls --version
 pnpm run sls deploy --stage "${ENV_STAGE}"

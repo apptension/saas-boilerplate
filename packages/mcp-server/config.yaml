@@ -1,0 +1,46 @@
+# Apollo MCP Server - Local Schema Configuration
+# This configuration uses local schema and operations files
+# No Apollo Studio account required
+
+# GraphQL endpoint to execute queries against
+# NOTE: For production (Render.com), this is overridden by the entrypoint script
+# using the GRAPHQL_ENDPOINT environment variable
+endpoint: http://backend:5001/api/graphql/
+
+# Forward authentication headers from MCP client to GraphQL endpoint
+forward_headers:
+  - Authorization
+  - X-Tenant-ID
+  - X-AI-Agent-Request
+
+# Transport configuration for HTTP server
+transport:
+  type: streamable_http
+  address: 0.0.0.0
+  port: 4000
+
+# Schema configuration - use local file
+schema:
+  source: local
+  path: /app/schema/api.graphql
+
+# Operations to expose as MCP tools
+operations:
+  source: local
+  paths:
+    - /app/operations
+
+# Introspection capabilities for AI
+introspection:
+  execute:
+    enabled: true
+  introspect:
+    enabled: true
+  search:
+    enabled: true
+
+# Enable mutations (create/update/delete operations)
+# Options: none (default), explicit (allow pre-defined mutations only), all (allow AI to build any mutations)
+# Using 'explicit' to only allow our pre-defined mutation tools, not arbitrary GraphQL mutations
+overrides:
+  mutation_mode: explicit

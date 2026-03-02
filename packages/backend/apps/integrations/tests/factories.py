@@ -30,7 +30,7 @@ class OpenAICompletionResponseChoiceFactory(factory.DictFactory):
 
 
 class OpenAICompletionResponseFactory(OpenAIResponseFactory):
-    model = factory.Faker('random_element', elements=["text-babbage-001", "text-davinci-003", "text-ada-001"])
+    model = factory.Faker("random_element", elements=["text-babbage-001", "text-davinci-003", "text-ada-001"])
     choices = factory.List([factory.SubFactory(OpenAICompletionResponseChoiceFactory)])
 
     class Meta:

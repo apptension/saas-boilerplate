@@ -1,5 +1,122 @@
-# Continuous integration
+---
+title: CI/CD Automation
+description: Automate deployments with continuous integration and deployment
+---
 
+import ProjectName from '../../shared/components/ProjectName.component';
 import DocCardList from '@theme/DocCardList';
+
+# CI/CD Automation
+
+After manually deploying <ProjectName />, you can set up automated deployments. This means every time you push code to a specific branch, it automatically builds and deploys to AWS.
+
+---
+
+## How CI/CD Works in SaaS Boilerplate
+
+<ProjectName /> uses a hybrid CI/CD architecture:
+
+```
+┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
+│   GitHub /      │      │   AWS S3        │      │   AWS           │
+│   Bitbucket     │─────▶│   (Artifacts)   │─────▶│   CodePipeline  │
+│                 │      │                 │      │                 │
+│  1. Build       │      │  2. Store ZIP   │      │  3. Deploy      │
+│  2. Test        │      │                 │      │                 │
+│  3. Package     │      │                 │      │                 │
+└─────────────────┘      └─────────────────┘      └─────────────────┘
+```
+
+1. **External CI (GitHub Actions / Bitbucket Pipelines):**
+   - Runs tests
+   - Builds artifacts
+   - Uploads to S3
+
+2. **AWS CodePipeline:**
+   - Triggered by S3 upload
+   - Runs CodeBuild for deployment
+   - Deploys to ECS, Lambda, S3
+
+This approach gives you the flexibility of your preferred Git platform while leveraging AWS's deployment capabilities.
+
+---
+
+## Setup Checklist
+
+To enable automated deployments:
+
+1. **[Set Up Docker Hub](/aws/cicd/setup-docker-hub)** (if not done during deployment)
+   - Required to avoid Docker rate limits during builds
+
+2. **[Configure Auto-Deploy](/aws/cicd/auto-deploy)**
+   - Connect GitHub or Bitbucket to AWS
+   - Configure branch-to-environment mapping
+
+3. **[Optional: Slack Notifications](/aws/cicd/configure-cicd-notifications)**
+   - Get notified when deployments succeed or fail
+
+---
+
+## Deployment Flow
+
+### Automatic Deployment (After Setup)
+
+```bash
+git checkout main
+git pull
+# Make your changes
+git commit -m "Add new feature"
+git push origin main
+# → Automatically deploys to production
+```
+
+### What Happens Behind the Scenes
+
+1. Push triggers GitHub Actions / Bitbucket Pipelines
+2. CI runs tests
+3. CI builds Docker images and webapp
+4. CI creates a deployment artifact (ZIP file)
+5. CI uploads artifact to S3
+6. S3 upload triggers AWS CodePipeline
+7. CodePipeline runs CodeBuild
+8. CodeBuild deploys to ECS/Lambda/S3
+9. CloudFront cache is invalidated
+10. New version is live!
+
+**Total time:** ~10-20 minutes from push to deploy
+
+---
+
+## Environment Configuration
+
+You can configure different branches to deploy to different environments:
+
+| Branch | Environment | Domain |
+|--------|-------------|--------|
+| `develop` | qa | `app.qa.example.com` |
+| `staging` | staging | `app.staging.example.com` |
+| `main` | production | `app.example.com` |
+
+This is configured in your `.github/workflows/` or `bitbucket-pipelines.yml` files.
+
+---
+
+## Manual Deployment Options
+
+Even with CI/CD set up, you can still deploy manually:
+
+### From Local Machine
+```bash
+pnpm saas aws set-env qa
+pnpm saas build
+pnpm saas deploy
+```
+
+### Trigger CI Manually
+See [Manual Deployments](/aws/cicd/trigger-cicd-manually) for triggering GitHub Actions manually.
+
+---
+
+## CI/CD Documentation
 
 <DocCardList />

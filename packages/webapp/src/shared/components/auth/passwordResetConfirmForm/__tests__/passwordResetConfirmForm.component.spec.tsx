@@ -30,12 +30,12 @@ describe('PasswordResetConfirmForm: Component', () => {
     const d = { ...formData, ...data };
     await userEvent.type(await screen.findByLabelText(/^new password$/i), d.newPassword);
     if (d.confirmPassword) {
-      await userEvent.type(screen.getByLabelText(/^repeat new password$/i), d.confirmPassword);
+      await userEvent.type(screen.getByLabelText(/^confirm new password$/i), d.confirmPassword);
     }
   };
 
   const sendForm = async () => {
-    await userEvent.click(screen.getByRole('button', { name: /^confirm the change$/i }));
+    await userEvent.click(screen.getByRole('button', { name: /^update password$/i }));
   };
 
   const Component = (props: Partial<PasswordResetConfirmFormProps>) => (
@@ -59,7 +59,7 @@ describe('PasswordResetConfirmForm: Component', () => {
     await sendForm();
 
     const toast = await screen.findByTestId('toast-1');
-    expect(toast).toHaveTextContent('🎉 Password reset successfully!');
+    expect(toast).toHaveTextContent('Password reset successfully!');
     expect(trackEvent).toHaveBeenCalledWith('auth', 'reset-password-confirm');
   });
 
@@ -73,7 +73,7 @@ describe('PasswordResetConfirmForm: Component', () => {
     await fillForm({ confirmPassword: null });
     await sendForm();
 
-    expect(screen.getByText('Repeat new password is required')).toBeInTheDocument();
+    expect(screen.getByText(/please confirm your new password/i)).toBeInTheDocument();
   });
 
   it('should show field error if action throws error', async () => {

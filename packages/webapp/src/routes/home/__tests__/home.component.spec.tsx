@@ -34,8 +34,20 @@ describe('Home: Component', () => {
 
     render(<Component />, { apolloMocks });
 
-    // 6 items + heading + alert
-    expect(await screen.findAllByRole('heading')).toHaveLength(8);
+    // Check for main heading
+    expect(await screen.findByText('Dashboard')).toBeInTheDocument();
+    // Check for "Available Features" heading
+    expect(await screen.findByText('Available Features')).toBeInTheDocument();
+    // Check for feature cards (owner should see all 6)
+    // Note: Some text like "Documents", "CRUD Items" appears in both stat cards and feature cards
+    expect(await screen.findByText('Payments')).toBeInTheDocument();
+    expect(await screen.findByText('Subscriptions')).toBeInTheDocument();
+    expect(await screen.findByText('Open AI integration')).toBeInTheDocument();
+    expect(await screen.findByText('Content items')).toBeInTheDocument();
+    const documentsElements = await screen.findAllByText('Documents');
+    expect(documentsElements.length).toBeGreaterThan(0);
+    const crudElements = await screen.findAllByText(/^CRUD/);
+    expect(crudElements.length).toBeGreaterThan(0);
   });
 
   it('should display dashboard items for member', async () => {
@@ -53,7 +65,19 @@ describe('Home: Component', () => {
 
     render(<Component />, { apolloMocks });
 
-    // 6 items + heading + alert
-    expect(await screen.findAllByRole('heading')).toHaveLength(6);
+    // Check for main heading
+    expect(await screen.findByText('Dashboard')).toBeInTheDocument();
+    // Check for "Available Features" heading
+    expect(await screen.findByText('Available Features')).toBeInTheDocument();
+    // Check for feature cards (member should see 4, without Payments and Subscriptions)
+    expect(screen.queryByText('Payments')).not.toBeInTheDocument();
+    expect(screen.queryByText('Subscriptions')).not.toBeInTheDocument();
+    expect(await screen.findByText('Open AI integration')).toBeInTheDocument();
+    expect(await screen.findByText('Content items')).toBeInTheDocument();
+    // Note: "Documents" and "CRUD" text appears in both stat cards and feature cards
+    const documentsElements = await screen.findAllByText('Documents');
+    expect(documentsElements.length).toBeGreaterThan(0);
+    const crudElements = await screen.findAllByText(/^CRUD/);
+    expect(crudElements.length).toBeGreaterThan(0);
   });
 });

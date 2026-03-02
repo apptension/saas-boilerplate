@@ -10,6 +10,9 @@ const Template: StoryFn = () => {
 export default {
   title: 'Shared/Auth/PasswordResetRequestForm',
   component: PasswordResetRequestForm,
+  parameters: {
+    layout: 'centered',
+  },
 };
 
 export const Default = {

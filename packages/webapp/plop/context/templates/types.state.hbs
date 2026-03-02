@@ -1,0 +1,24 @@
+/**
+ * {{ pascalCase name }} Context Types
+ */
+
+export type {{ pascalCase name }}State = {
+  // TODO: Define your state shape
+  value: string;
+  isLoading: boolean;
+  error: string | null;
+};
+
+export const default{{ pascalCase name }}State: {{ pascalCase name }}State = {
+  value: '',
+  isLoading: false,
+  error: null,
+};
+
+export type {{ pascalCase name }}ContextValue = {
+  state: {{ pascalCase name }}State;
+  setState: (updates: Partial<{{ pascalCase name }}State>) => void;
+{{#if withReset}}
+  reset: () => void;
+{{/if}}
+};

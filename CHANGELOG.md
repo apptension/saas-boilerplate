@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/apptension/saas-boilerplate/compare/4.1.1...4.2.0) (2025-12-29)
+
+
+### Features
+
+* [#645](https://github.com/apptension/saas-boilerplate/issues/645) Confirm dialog component ([#651](https://github.com/apptension/saas-boilerplate/issues/651)) ([4578dfe](https://github.com/apptension/saas-boilerplate/commit/4578dfe629ddba5dfb3727205a2d2699c1f60928))
+* [#656](https://github.com/apptension/saas-boilerplate/issues/656) Improve pagination and add example to CRUD demo items ([#660](https://github.com/apptension/saas-boilerplate/issues/660)) ([161fece](https://github.com/apptension/saas-boilerplate/commit/161fece2115a4f7a44fdb595631dd691b76c52b8))
+* Add data-driven dashboard with charts and statistics ([6edbbc1](https://github.com/apptension/saas-boilerplate/commit/6edbbc1a0632953837cd11c5ce049b98248af019))
+* add dynamic translations system with remote loading ([76d2727](https://github.com/apptension/saas-boilerplate/commit/76d27274ca9b2db5d9be28b3cd6a4bdca87abebd))
+* Add Enterprise SSO, Passkeys, and Active Sessions management ([78327fe](https://github.com/apptension/saas-boilerplate/commit/78327fe1bc108cc960d66d0988f2e7f8805ffb9b))
+* Add pixel-art styled 404 Not Found page with glitch effects ([21d548e](https://github.com/apptension/saas-boilerplate/commit/21d548e5da299bdd3c091e7ae31deb0092bf9bed))
+* Add resend invitation button for pending tenant members ([14b1e07](https://github.com/apptension/saas-boilerplate/commit/14b1e07c5f51f7f450cae8984267f1e572460bc9))
+* Add shadcn/ui CLI integration, move shadcn components into ui directory ([#640](https://github.com/apptension/saas-boilerplate/issues/640)) ([9cf16f5](https://github.com/apptension/saas-boilerplate/commit/9cf16f56a934f7b64d841e80819fb86a8b9485be))
+* Add SidebarLogo component with signet badge for collapsed state ([6237a51](https://github.com/apptension/saas-boilerplate/commit/6237a51647ca24c3e9107429de16f90dcda7b18f))
+* **admin:** beautify admin page with RBAC documentation ([4c069ae](https://github.com/apptension/saas-boilerplate/commit/4c069ae156dc091856a4f4428579844056f45164))
+* **contentful:** redesign Terms and Privacy pages with error handling ([41f0227](https://github.com/apptension/saas-boilerplate/commit/41f02271caaaf85ff9b014242ca8ea732710d985))
+* Enhance toast notification system with semantic variants and icons ([cc33b23](https://github.com/apptension/saas-boilerplate/commit/cc33b23d9f8d0fa31c6ceb721796c908620655c7))
+* Implement sidebar collapse functionality and enhance layout components ([636f377](https://github.com/apptension/saas-boilerplate/commit/636f377ea9a6dc91aad99d931515b3567ed93663))
+* Overhaul PLOP code generation system with new generators and full-stack support ([71884d5](https://github.com/apptension/saas-boilerplate/commit/71884d5e4919a445ddbd671e010be554d905e311))
+* Redesign Documents page with Card-based UI and fix RelativeDate error handling ([a8d13f7](https://github.com/apptension/saas-boilerplate/commit/a8d13f715b85021e8199101c006f67236255708a))
+* Redesign SubscriptionPlanItem with visual distinctions and add Badge component ([b4cbdbb](https://github.com/apptension/saas-boilerplate/commit/b4cbdbb634ddadfd440235de08b4eb83e3cc05f8))
+* Restyle Contentful demo pages with Card-based UI and graceful error handling ([568b75c](https://github.com/apptension/saas-boilerplate/commit/568b75c6253ce7af2e4581da9ddf7dbaffcd6230))
+* **security:** improve UI/UX consistency across security settings cards ([18baeb5](https://github.com/apptension/saas-boilerplate/commit/18baeb539bd0ae4db6beec764a3952dafc49d743))
+* **webapp:** Refactor sidebar with organized menu sections ([583b87a](https://github.com/apptension/saas-boilerplate/commit/583b87a23a78c738d3f79596e84af04dc1a42a9d))
+
+
+### Bug Fixes
+
+* [#593](https://github.com/apptension/saas-boilerplate/issues/593) change openAI model and parametrize it ([#649](https://github.com/apptension/saas-boilerplate/issues/649)) ([1892151](https://github.com/apptension/saas-boilerplate/commit/1892151f34c994192909e5b2e9167d73228b597a))
+* [#596](https://github.com/apptension/saas-boilerplate/issues/596) Redirect on role change to member and update current user state ([#638](https://github.com/apptension/saas-boilerplate/issues/638)) ([5e1184f](https://github.com/apptension/saas-boilerplate/commit/5e1184f0f2f81f9333e786859fc1c47edf1c09e8))
+* [#597](https://github.com/apptension/saas-boilerplate/issues/597) remove file from s3 after deleting from db ([#646](https://github.com/apptension/saas-boilerplate/issues/646)) ([069648e](https://github.com/apptension/saas-boilerplate/commit/069648ea26729d1ea1aba2ced3e5f8b2bbe40145))
+* [#598](https://github.com/apptension/saas-boilerplate/issues/598) Handle non-existent CRUD item with error and redirect ([#636](https://github.com/apptension/saas-boilerplate/issues/636)) ([a3ee32c](https://github.com/apptension/saas-boilerplate/commit/a3ee32c3f6d6de36d47b3acd4565e3d0b499d6f3))
+* [#599](https://github.com/apptension/saas-boilerplate/issues/599) Use ellipses for long organization names ([#635](https://github.com/apptension/saas-boilerplate/issues/635)) ([1fac0fd](https://github.com/apptension/saas-boilerplate/commit/1fac0fd62747a3a56e927f618eafd88274ad70c0))
+* [#600](https://github.com/apptension/saas-boilerplate/issues/600) Unify subscriptions links ([#634](https://github.com/apptension/saas-boilerplate/issues/634)) ([59ee87d](https://github.com/apptension/saas-boilerplate/commit/59ee87d3469a30e1adc4ac6c8c5170b28f15b229))
+* [#628](https://github.com/apptension/saas-boilerplate/issues/628) Add selecting avatar to queryset ([#648](https://github.com/apptension/saas-boilerplate/issues/648)) ([0aaba1d](https://github.com/apptension/saas-boilerplate/commit/0aaba1de0bbe4ca23c7ddbef39a98844ccb5895c))
+* [#642](https://github.com/apptension/saas-boilerplate/issues/642) Ignore whole backend/templates directory on precommit linter ([#657](https://github.com/apptension/saas-boilerplate/issues/657)) ([fa13470](https://github.com/apptension/saas-boilerplate/commit/fa13470d5fb4bfa3133ec52b6bcf562f13a293cc))
+* [#653](https://github.com/apptension/saas-boilerplate/issues/653) Lock and match versions of react-router libraries ([#654](https://github.com/apptension/saas-boilerplate/issues/654)) ([064d78f](https://github.com/apptension/saas-boilerplate/commit/064d78f2e81e0da261d4371b1d07be6d251d8d15))
+* Align page header icons with sidebar navigation icons ([85906b9](https://github.com/apptension/saas-boilerplate/commit/85906b932c00ec61788cc5abf09be474e9c88710))
+* **audit-logs:** fix 401 errors and improve UI ([d4e85fc](https://github.com/apptension/saas-boilerplate/commit/d4e85fc8b95af32fd309c1d1f29069624506eb3d))
+* Bitbucket pipelines configuration ([#627](https://github.com/apptension/saas-boilerplate/issues/627)) ([2eb2176](https://github.com/apptension/saas-boilerplate/commit/2eb217616c1a5847b1324d9e41af3207e55e28f0))
+* **cli:** Correct description for down command ([b68a62e](https://github.com/apptension/saas-boilerplate/commit/b68a62e72abc8bb9e25b49dbd140601e49a7d8a9))
+* Correct initialData syntax in editItem and itemForm component tests ([d9d2bae](https://github.com/apptension/saas-boilerplate/commit/d9d2bae24b462780d6fd9e750acbeecf61903478))
+* **docs:** prevent horizontal overflow on html element ([6218a1f](https://github.com/apptension/saas-boilerplate/commit/6218a1fa4a94d405b824295f039c2666839d9bad))
+* Mute InvalidToken error in Sentry ([#667](https://github.com/apptension/saas-boilerplate/issues/667)) ([3c7cf6e](https://github.com/apptension/saas-boilerplate/commit/3c7cf6e14e56abac467108175ac6282d9e56e8ae))
+* Set default value for VITE_EMAIL_ASSETS_URL env ([#633](https://github.com/apptension/saas-boilerplate/issues/633)) ([946532d](https://github.com/apptension/saas-boilerplate/commit/946532d5ba793fec3180142cd99c533e5ceba2bc))
+* Token test failing on certain timestamps ([#632](https://github.com/apptension/saas-boilerplate/issues/632)) ([71723a6](https://github.com/apptension/saas-boilerplate/commit/71723a6002261cfa7b3f987f8b5e2aee1aaedcf7))
+* Update outdated RDS version, update CDK dependency ([#631](https://github.com/apptension/saas-boilerplate/issues/631)) ([029325c](https://github.com/apptension/saas-boilerplate/commit/029325c17bb3fdc6575c13587274dc5eb465e8d0))
+* Update tests to match UI changes and add top Cursor AI rules ([aac14dc](https://github.com/apptension/saas-boilerplate/commit/aac14dc1bd29dc6bdb39deaf0adc8c03cd103742))
+
 ### [4.1.1](https://github.com/apptension/saas-boilerplate/compare/4.1.0...4.1.1) (2024-09-27)
 
 ### Bug Fixes

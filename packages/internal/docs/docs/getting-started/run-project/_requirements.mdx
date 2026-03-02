@@ -1,18 +1,54 @@
 ### Requirements
 
-- Install [Docker](https://docs.docker.com/get-docker)
-- Install [Node.js](https://nodejs.org/en/download/) version 18 or above (which can be checked by running `node -v`).
-  - You can use [nvm](https://github.com/nvm-sh/nvm) or [n](https://github.com/tj/n) for managing multiple Node versions
-  installed on a single machine.
-- Install [pnpm](https://pnpm.io/installation) version 8.6 or above (which can be checked by running `pnpm --version`)
-- (Windows only) Install [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install)
+Before you begin, ensure you have the following installed:
 
-#### Optional
+| Requirement | Version | How to Check       | Installation                                         |
+| ----------- | ------- | ------------------ | ---------------------------------------------------- |
+| **Docker**  | Latest  | `docker --version` | [Install Docker](https://docs.docker.com/get-docker) |
+| **Node.js** | 20+     | `node -v`          | [Install Node.js](https://nodejs.org/en/download/)   |
+| **pnpm**    | 9+      | `pnpm --version`   | [Install pnpm](https://pnpm.io/installation)         |
 
-- Install [Python](https://www.python.org/downloads/) version 3.11 (which can be checked by running `python3 -v`) and
-[PDM](https://github.com/pdm-project/pdm/#installation) version 2.3 or above (which can be checked by running
-  `pdm --version`)
-  - You need this one if you want to run `pdm install` command in `packages/backend` or `packages/workers` outside
-    docker container
-  - You can use [`pyenv`](https://github.com/pyenv/pyenv) for managing multiple Python versions installed on a single
-  machine.
+:::tip Version Managers
+We recommend using version managers to easily switch between versions:
+
+- **Node.js**: [nvm](https://github.com/nvm-sh/nvm) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows) (Windows)
+- **Python**: [pyenv](https://github.com/pyenv/pyenv)
+  :::
+
+:::caution Windows Users
+If you are using Windows, you **must install [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install)** (Windows Subsystem for Linux) before proceeding. All commands should be run inside WSL.
+:::
+
+#### Verify Your Setup
+
+Run this quick check to ensure everything is ready:
+
+```bash
+# Check all requirements at once
+node -v && pnpm --version && docker --version
+```
+
+**Expected output** (versions may vary):
+
+```
+v20.10.0
+9.1.0
+Docker version 24.0.7, build afdd53b
+```
+
+:::tip Node.js Version
+We recommend Node.js 20+ for optimal compatibility with React 19, Vite 6, and other modern tools. Node.js 18 may work but is not officially supported.
+:::
+
+#### Optional Requirements
+
+These are only needed if you want to run Python code outside of Docker containers:
+
+| Requirement | Version | How to Check        | Purpose                            |
+| ----------- | ------- | ------------------- | ---------------------------------- |
+| **Python**  | 3.11    | `python3 --version` | Backend development outside Docker |
+| **uv**      | 0.9.29  | `uv --version`      | Python dependency management       |
+
+:::note
+Most developers don't need Python installed locally since the backend runs in Docker. Only install these if you want IDE features like autocomplete for Python code.
+:::

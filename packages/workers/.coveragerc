@@ -1,4 +1,5 @@
 [run]
+omit = setup.py
 concurrency = multiprocessing
 parallel = true
 sigterm = true

@@ -63,7 +63,7 @@ class ProductSerializer(serializers.ModelSerializer):
     id = hidrest.HashidSerializerCharField(source_field="store.Product.id", read_only=True)
     customer = serializers.PrimaryKeyRelatedField(
         queryset=Customer.objects.all(),
-        pk_field=rest.HashidSerializerCharField(),
+        pk_field=hidrest.HashidSerializerCharField(),
         write_only=True,
     )
 
@@ -112,7 +112,7 @@ class ProductSerializer(serializers.ModelSerializer):
     id = hidrest.HashidSerializerCharField(source_field="store.Product.id", read_only=True)
     customer = serializers.PrimaryKeyRelatedField(
       queryset=Customer.objects.all(),
-      pk_field=rest.HashidSerializerCharField(),
+      pk_field=hidrest.HashidSerializerCharField(),
       write_only=True,
     )
 
@@ -158,7 +158,7 @@ class ProductSerializer(serializers.ModelSerializer):
     id = hidrest.HashidSerializerCharField(source_field="store.Product.id", read_only=True)
     customer = serializers.PrimaryKeyRelatedField(
       queryset=Customer.objects.all(),
-      pk_field=rest.HashidSerializerCharField(),
+      pk_field=hidrest.HashidSerializerCharField(),
       write_only=True,
     )
 

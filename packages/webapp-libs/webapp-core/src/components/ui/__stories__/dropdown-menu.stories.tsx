@@ -29,7 +29,7 @@ const Template: StoryFn = () => {
 
 const meta: Meta = {
   title: 'Core / UI / Dropdown Menu',
-  component: Template,
+  component: Template as any,
 };
 
 export default meta;

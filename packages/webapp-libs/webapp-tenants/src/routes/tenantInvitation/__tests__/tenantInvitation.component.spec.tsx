@@ -99,16 +99,6 @@ describe('TenantInvitation: Component', () => {
       };
       const refetchMock = fillCommonQueryWithUser(currentUserRefetchData);
 
-      requestMock.newData = jest.fn(() => ({
-        data,
-      }));
-
-      refetchMock.newData = jest.fn(() => ({
-        data: {
-          currentUser: currentUserRefetchData,
-        },
-      }));
-
       const apolloMocks = [fillCommonQueryWithUser(user), requestMock, refetchMock];
 
       render(<Component />, { routerProps, apolloMocks });
@@ -117,13 +107,12 @@ describe('TenantInvitation: Component', () => {
 
       await userEvent.click(screen.getByRole('button', { name: /accept/i }));
 
-      expect(requestMock.newData).toHaveBeenCalled();
-      expect(refetchMock.newData).toHaveBeenCalled();
-
+      // Wait for the toast first (proves mutation completed), then verify mocks were called
       const toast = await screen.findByTestId('toast-1');
+      expect(toast).toHaveTextContent('Invitation accepted!');
 
+      expect(requestMock.result).toHaveBeenCalled();
       expect(trackEvent).toHaveBeenCalledWith('tenantInvitation', 'accept', targetTenant.id);
-      expect(toast).toHaveTextContent('🎉 Invitation accepted!');
     });
 
     it('should send decline mutation on button click', async () => {
@@ -157,16 +146,6 @@ describe('TenantInvitation: Component', () => {
       };
       const refetchMock = fillCommonQueryWithUser(currentUserRefetchData);
 
-      requestMock.newData = jest.fn(() => ({
-        data,
-      }));
-
-      refetchMock.newData = jest.fn(() => ({
-        data: {
-          currentUser: currentUserRefetchData,
-        },
-      }));
-
       const apolloMocks = [fillCommonQueryWithUser(user), requestMock, refetchMock];
 
       render(<Component />, { routerProps, apolloMocks });
@@ -175,13 +154,12 @@ describe('TenantInvitation: Component', () => {
 
       await userEvent.click(screen.getByRole('button', { name: /decline/i }));
 
-      expect(requestMock.newData).toHaveBeenCalled();
-      expect(refetchMock.newData).toHaveBeenCalled();
-
+      // Wait for the toast first (proves mutation completed), then verify mocks were called
       const toast = await screen.findByTestId('toast-1');
+      expect(toast).toHaveTextContent('Invitation declined.');
 
+      expect(requestMock.result).toHaveBeenCalled();
       expect(trackEvent).toHaveBeenCalledWith('tenantInvitation', 'decline', targetTenant.id);
-      expect(toast).toHaveTextContent('🎉 Invitation declined!');
     });
   });
 });

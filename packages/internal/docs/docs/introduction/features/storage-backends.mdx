@@ -1,0 +1,274 @@
+---
+title: Storage Backends
+description: Flexible file storage with support for AWS S3, Cloudflare R2, and more
+---
+
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Storage Backends
+
+<ProjectName /> provides a flexible storage system that supports multiple cloud storage providers out of the box, allowing you to choose the best option for your deployment.
+
+## Supported Backends
+
+| Provider | Backend | Use Case |
+|----------|---------|----------|
+| **AWS S3** | `storages.backends.s3.S3Storage` | Standard AWS deployments |
+| **Cloudflare R2** | `storages.backends.s3.S3Storage` | Cost-effective S3-compatible storage |
+| **Backblaze B2** | `storages.backends.s3.S3Storage` | Budget-friendly storage |
+| **MinIO** | `storages.backends.s3.S3Storage` | Self-hosted S3-compatible |
+| **Local Filesystem** | `django.core.files.storage.FileSystemStorage` | Development only |
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    STORAGE ARCHITECTURE                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   Application          Storage Layer           Cloud Provider    │
+│   ┌──────────┐        ┌────────────┐          ┌──────────────┐  │
+│   │  Django  │───────►│  Dynamic   │─────────►│  AWS S3      │  │
+│   │  Models  │        │  Backend   │          ├──────────────┤  │
+│   └──────────┘        │  Selector  │─────────►│  Cloudflare  │  │
+│                       └────────────┘          │  R2          │  │
+│                            │                  ├──────────────┤  │
+│                            │                  │  Backblaze   │  │
+│                            └─────────────────►│  B2          │  │
+│                                               └──────────────┘  │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Configuration
+
+### Environment Variables
+
+```bash
+# Storage provider selection
+STORAGE_BACKEND=r2  # Options: s3, r2, b2, minio, local
+
+# For AWS S3
+AWS_ACCESS_KEY_ID=AKIA...
+AWS_SECRET_ACCESS_KEY=...
+AWS_STORAGE_BUCKET_NAME=my-bucket
+AWS_S3_REGION_NAME=us-east-1
+
+# For Cloudflare R2
+R2_ENDPOINT_URL=https://ACCOUNT_ID.r2.cloudflarestorage.com
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_BUCKET_NAME=my-bucket
+
+# For Backblaze B2
+B2_ENDPOINT_URL=https://s3.us-west-000.backblazeb2.com
+B2_ACCESS_KEY_ID=...
+B2_SECRET_ACCESS_KEY=...
+B2_BUCKET_NAME=my-bucket
+```
+
+### Django Settings
+
+The storage backend is configured automatically based on environment variables:
+
+```python
+# config/settings.py
+
+STORAGES = {
+    "default": {"BACKEND": get_default_storage_backend()},
+    "staticfiles": {"BACKEND": get_static_storage_backend()},
+    "public": {"BACKEND": get_public_storage_backend()},
+}
+```
+
+## Backend Selection Logic
+
+The `get_default_storage_backend()` function automatically selects the appropriate backend:
+
+```python
+from common.storages import get_default_storage_backend
+
+# Returns the correct backend class path based on env vars:
+# - If R2_ENDPOINT_URL is set → R2 storage
+# - If B2_ENDPOINT_URL is set → B2 storage
+# - If AWS credentials are set → S3 storage
+# - Otherwise → Local filesystem (dev only)
+```
+
+## Cloudflare R2 Setup
+
+Cloudflare R2 is recommended for Render.com and other non-AWS deployments due to:
+- No egress fees
+- S3-compatible API
+- Global edge caching
+
+### Setup Steps
+
+1. **Create R2 Bucket**
+   - Go to Cloudflare Dashboard → R2 Object Storage
+   - Create a new bucket
+
+2. **Create API Token**
+   - Go to R2 → Manage R2 API Tokens
+   - Create token with "Object Read & Write" permission
+
+3. **Configure Environment**
+
+```bash
+R2_ENDPOINT_URL=https://YOUR_ACCOUNT_ID.r2.cloudflarestorage.com
+R2_ACCESS_KEY_ID=your_access_key
+R2_SECRET_ACCESS_KEY=your_secret_key
+R2_BUCKET_NAME=your-bucket-name
+```
+
+### Public Access for Assets
+
+For public assets (like user avatars), configure a public bucket or use Cloudflare's R2 public URL feature:
+
+```python
+# The public storage is used for files that need public URLs
+from common.storages import get_public_storage
+
+storage = get_public_storage()
+url = storage.url('path/to/file.jpg')
+```
+
+## AWS S3 Setup
+
+For AWS deployments, S3 is automatically configured via IAM roles or explicit credentials.
+
+### With IAM Roles (Recommended for AWS)
+
+```bash
+# No credentials needed - uses IAM role attached to EC2/ECS
+AWS_STORAGE_BUCKET_NAME=my-bucket
+AWS_S3_REGION_NAME=us-east-1
+```
+
+### With Access Keys
+
+```bash
+AWS_ACCESS_KEY_ID=AKIA...
+AWS_SECRET_ACCESS_KEY=...
+AWS_STORAGE_BUCKET_NAME=my-bucket
+AWS_S3_REGION_NAME=us-east-1
+```
+
+## Usage in Models
+
+### File Fields
+
+```python
+from django.db import models
+from common.storages import get_public_storage
+
+class UserProfile(models.Model):
+    # Private storage (default)
+    document = models.FileField(upload_to='documents/')
+    
+    # Public storage (for avatars, etc.)
+    avatar = models.ImageField(
+        upload_to='avatars/',
+        storage=get_public_storage
+    )
+```
+
+### Direct Upload
+
+```python
+from django.core.files.storage import default_storage
+
+# Save a file
+path = default_storage.save('path/to/file.txt', content)
+
+# Get URL
+url = default_storage.url(path)
+
+# Check existence
+exists = default_storage.exists(path)
+
+# Delete
+default_storage.delete(path)
+```
+
+## Storage for Translations
+
+The translation system uses storage backends for publishing translations:
+
+```python
+# Translations are published to storage for CDN delivery
+from apps.translations.services import publish_locale
+
+# Publishes {locale}.json to storage bucket
+publish_locale(locale='en')
+```
+
+## Local Development
+
+In development, files are stored locally:
+
+```bash
+# Local storage paths
+MEDIA_ROOT=/app/media
+STATIC_ROOT=/app/static
+```
+
+Files are served by Django's development server.
+
+## Security Considerations
+
+### Signed URLs
+
+For private files, use signed URLs with expiration:
+
+```python
+from common.storages import generate_signed_url
+
+url = generate_signed_url(
+    'path/to/private/file.pdf',
+    expires_in=3600  # 1 hour
+)
+```
+
+### CORS Configuration
+
+For direct browser uploads, configure CORS on your bucket:
+
+```json
+{
+  "CORSRules": [
+    {
+      "AllowedOrigins": ["https://your-app.com"],
+      "AllowedMethods": ["GET", "PUT", "POST"],
+      "AllowedHeaders": ["*"],
+      "MaxAgeSeconds": 3600
+    }
+  ]
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| `NoCredentialsError` | Missing or invalid credentials | Check env vars match provider |
+| `AccessDenied` | Bucket permissions | Verify IAM/API token permissions |
+| `BucketNotFound` | Wrong bucket name | Check `*_BUCKET_NAME` env var |
+| Files not public | Wrong storage class | Use `get_public_storage()` for public files |
+
+### Debug Storage Configuration
+
+```python
+# In Django shell
+from django.core.files.storage import default_storage
+print(default_storage.__class__.__name__)
+print(default_storage.bucket_name)
+```
+
+## Related Documentation
+
+- [Deploy to Render.com](/deployment/render) - R2 configuration
+- [Asset Management](/introduction/features/assets) - File handling
+- [Environment Variables](/api-reference/env) - All storage env vars

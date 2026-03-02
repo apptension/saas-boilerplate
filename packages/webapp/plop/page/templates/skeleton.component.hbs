@@ -1,0 +1,36 @@
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Card, CardContent, CardHeader } from '@sb/webapp-core/components/ui/card';
+import { Skeleton } from '@sb/webapp-core/components/ui/skeleton';
+
+export const {{ pascalCase name }}Skeleton = () => {
+  return (
+    <PageLayout>
+      <div className="mx-auto w-full max-w-5xl space-y-8">
+        {/* Hero Section Skeleton */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-6 w-6 rounded" />
+            <Skeleton className="h-9 w-48" />
+          </div>
+          <Skeleton className="h-6 w-96" />
+        </div>
+
+        {/* Main Content Skeleton */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-5 w-5 rounded" />
+              <Skeleton className="h-6 w-32" />
+            </div>
+            <Skeleton className="h-4 w-64" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+          </CardContent>
+        </Card>
+      </div>
+    </PageLayout>
+  );
+};

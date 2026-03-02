@@ -1,0 +1,591 @@
+---
+title: Enterprise SSO & Directory Sync
+description: Complete guide to implementing enterprise single sign-on, directory synchronization, and passwordless authentication
+---
+
+# Enterprise SSO & Directory Sync
+
+The SaaS Boilerplate includes a comprehensive Enterprise SSO solution that provides:
+
+- **SAML 2.0** - Industry-standard SSO protocol used by Okta, Azure AD, OneLogin, and more
+- **OpenID Connect (OIDC)** - Modern OAuth-based SSO protocol
+- **SCIM 2.0** - Automated user provisioning and directory synchronization
+- **Just-in-Time (JIT) Provisioning** - Automatic user creation on first SSO login
+- **Group-to-Role Mapping** - Map IdP groups to tenant roles
+- **Session Management** - View and revoke active sessions
+- **Device Management** - Track and manage trusted devices
+- **WebAuthn/Passkeys** - Passwordless authentication with biometrics and security keys
+
+:::info
+This feature is designed for mid-market and enterprise customers who require centralized identity management and compliance with security policies.
+:::
+
+## User Roles & SSO Flow
+
+The SSO feature is designed with three user roles in mind:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          USER HIERARCHY                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  1. SaaS DEVELOPERS (you, using this boilerplate)                           │
+│     └── Enable/disable enterprise features via environment variables        │
+│                                                                              │
+│  2. TENANT OWNERS/ADMINS (your customers' organizations)                    │
+│     └── Configure SSO/SCIM for their organization in Security Settings      │
+│     └── View security audit logs                                            │
+│                                                                              │
+│  3. END USERS (employees of your customers)                                 │
+│     └── Login via standard methods OR enterprise SSO if configured          │
+│     └── Manage their own passkeys in Profile (personal, not org-level)      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Note: Passkeys are personal authentication credentials. They authenticate a user,
+not an organization membership. Users manage passkeys in their Profile, not in
+Organization Settings. This ensures a user's passkey works across all their orgs.
+```
+
+### Developer Configuration
+
+SaaS developers can enable/disable authentication features via environment variables:
+
+```bash
+# .env
+VITE_ENABLE_SSO=true          # Enable SSO discovery on login page
+VITE_ENABLE_PASSKEYS=true     # Enable passkey/WebAuthn login
+VITE_ENABLE_SOCIAL_LOGIN=true # Enable Google/Facebook login
+VITE_ENABLE_PASSWORD_LOGIN=true # Enable email/password login
+```
+
+All features are **enabled by default**. Set to `false` to disable.
+
+### End User Login Flow
+
+When SSO is enabled, the login page automatically detects if a user's email domain has SSO configured:
+
+```
+┌──────────────────────────────────────┐
+│           Welcome back               │
+├──────────────────────────────────────┤
+│  [🔑 Sign in with Passkey]          │  ← Passkeys (if enabled)
+│                                      │
+│  [f] Log in with Facebook           │  ← Social login (if enabled)
+│  [G] Log in with Google             │
+│                                      │
+│  ─────── Or continue with email ─── │
+│                                      │
+│  📧 Email: [john@acme.com_______]   │
+│                                      │
+│  ┌──────────────────────────────┐   │  ← Auto-detected SSO
+│  │ 🏢 SSO available for acme.com │   │
+│  │ [Continue with Acme SSO]      │   │
+│  └──────────────────────────────┘   │
+│                                      │
+│  🔒 Password: [________________]    │  ← Hidden if SSO is required
+│                                      │
+│  [       Sign in        ]           │
+└──────────────────────────────────────┘
+```
+
+## Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Identity Provider                         │
+│                  (Okta, Azure AD, OneLogin, etc.)                │
+└─────────────────────────────┬───────────────────────────────────┘
+                              │
+                    SAML 2.0 / OIDC / SCIM 2.0
+                              │
+┌─────────────────────────────▼───────────────────────────────────┐
+│                      SaaS Boilerplate                            │
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │                    SSO App (apps.sso)                       ││
+│  │                                                             ││
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         ││
+│  │  │ SAML Service│  │ OIDC Service│  │ SCIM Service│         ││
+│  │  └─────────────┘  └─────────────┘  └─────────────┘         ││
+│  │                                                             ││
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         ││
+│  │  │JIT Provision│  │ WebAuthn    │  │Session Mgmt │         ││
+│  │  └─────────────┘  └─────────────┘  └─────────────┘         ││
+│  └─────────────────────────────────────────────────────────────┘│
+│                                                                  │
+│  ┌─────────────────────────────────────────────────────────────┐│
+│  │                  AWS Secrets Manager                        ││
+│  │         (Certificates, Client Secrets, Keys)                ││
+│  └─────────────────────────────────────────────────────────────┘│
+└──────────────────────────────────────────────────────────────────┘
+```
+
+## Quick Start
+
+### 1. Enable the SSO App
+
+The SSO app is already included in the boilerplate. Verify it's in your settings:
+
+```python
+# packages/backend/config/settings.py
+LOCAL_APPS = [
+    # ... other apps
+    "apps.sso",
+]
+```
+
+### 2. Run Migrations
+
+```bash
+cd packages/backend
+uv run python manage.py makemigrations sso
+uv run python manage.py migrate
+```
+
+### 3. Configure Your Identity Provider
+
+See the provider-specific guides:
+- [Okta Setup Guide](./providers/okta)
+- [Azure AD Setup Guide](./providers/azure-ad)
+
+## Features
+
+### SAML 2.0 Integration
+
+SAML (Security Assertion Markup Language) is the most widely adopted enterprise SSO protocol.
+
+#### SP Metadata
+
+Your Service Provider (SP) metadata is automatically generated and available at:
+
+```
+https://api.yourdomain.com/api/sso/saml/{connection_id}/metadata
+```
+
+Provide this URL to your IdP administrator for configuration.
+
+#### Supported Features
+
+- ✅ SP-initiated SSO (user starts from your app)
+- ✅ IdP-initiated SSO (user starts from IdP portal)
+- ✅ Single Logout (SLO)
+- ✅ Signed assertions
+- ✅ Multiple NameID formats
+- ✅ Attribute mapping
+
+#### Configuration Options
+
+| Field | Description |
+|-------|-------------|
+| `saml_entity_id` | IdP Entity ID from metadata |
+| `saml_sso_url` | IdP SSO endpoint URL |
+| `saml_slo_url` | IdP Single Logout URL (optional) |
+| `saml_name_id_format` | NameID format (email, persistent, etc.) |
+| `saml_attribute_mapping` | Map SAML attributes to user fields |
+
+### OpenID Connect (OIDC) Integration
+
+OIDC is built on OAuth 2.0 and provides a modern, REST-based SSO protocol.
+
+#### Supported Flows
+
+- ✅ Authorization Code Flow with PKCE
+- ✅ ID Token validation
+- ✅ UserInfo endpoint
+- ✅ JWKS key rotation
+
+#### Configuration Options
+
+| Field | Description |
+|-------|-------------|
+| `oidc_issuer` | IdP issuer URL (used for discovery) |
+| `oidc_client_id` | OAuth client ID |
+| `oidc_client_secret_arn` | Client secret in AWS Secrets Manager |
+| `oidc_scopes` | OAuth scopes (default: "openid email profile") |
+| `oidc_claim_mapping` | Map OIDC claims to user fields |
+
+### SCIM 2.0 Directory Sync
+
+SCIM (System for Cross-domain Identity Management) provides automated user provisioning.
+
+#### Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/sso/scim/v2/Users` | List users |
+| `POST /api/sso/scim/v2/Users` | Create user |
+| `GET /api/sso/scim/v2/Users/{id}` | Get user |
+| `PUT /api/sso/scim/v2/Users/{id}` | Replace user |
+| `PATCH /api/sso/scim/v2/Users/{id}` | Update user |
+| `DELETE /api/sso/scim/v2/Users/{id}` | Delete user |
+| `GET /api/sso/scim/v2/Groups` | List groups (roles) |
+| `GET /api/sso/scim/v2/Groups/{id}` | Get group |
+
+#### Authentication
+
+SCIM endpoints require a Bearer token:
+
+```bash
+curl -H "Authorization: Bearer scim_YOUR_TOKEN_HERE" \
+  https://api.yourdomain.com/api/sso/scim/v2/Users
+```
+
+Generate tokens via the admin UI or GraphQL mutation.
+
+### Just-in-Time (JIT) Provisioning
+
+JIT provisioning automatically creates user accounts on first SSO login.
+
+#### How It Works
+
+1. User authenticates with IdP
+2. IdP sends assertion/claims to your app
+3. If user doesn't exist, JIT creates them
+4. User is assigned to the tenant with appropriate role
+5. User is logged in
+
+#### Configuration
+
+```python
+# Enable/disable per connection
+sso_connection.jit_provisioning_enabled = True
+
+# Restrict to specific domains
+sso_connection.allowed_domains = ["company.com", "subsidiary.com"]
+```
+
+### Group-to-Role Mapping
+
+Map IdP groups to tenant roles automatically.
+
+#### Configuration
+
+```json
+{
+  "Admins": "OWNER",
+  "Engineering": "ADMIN",
+  "Sales": "MEMBER",
+  "_default": "MEMBER"
+}
+```
+
+The `_default` key specifies the role for users without matching groups.
+
+### Session Management
+
+Users can view and manage their active sessions from their **Profile Settings** page. This is a user-level feature, not an organization-level feature.
+
+:::tip Why is session management in Profile, not Organization Settings?
+Sessions are personal to each user - they represent where *you* are signed in. Organization admins should not be able to see or revoke other users' sessions for privacy reasons. Each user manages their own sessions.
+:::
+
+#### Features
+
+- View all active sessions with device info
+- See current session indicator ("This device")
+- See last activity time
+- Revoke individual sessions
+- Revoke all other sessions at once
+
+#### Where to Find Session Management
+
+| User Role | Where to Manage Sessions |
+|-----------|-------------------------|
+| Any user | **Profile → Active Sessions** section |
+| Org admin | Cannot view other users' sessions (privacy) |
+
+#### GraphQL Queries
+
+```graphql
+query MySessions {
+  mySessions(first: 50) {
+    edges {
+      node {
+        id
+        deviceName
+        browser
+        ipAddress
+        isCurrent
+        lastActivityAt
+      }
+    }
+  }
+}
+
+mutation RevokeSession($sessionId: String!) {
+  revokeSession(sessionId: $sessionId) {
+    ok
+  }
+}
+```
+
+### WebAuthn / Passkeys
+
+Passwordless authentication using biometrics and security keys. Unlike SSO (which is organization-level), **passkeys are personal credentials** managed by each user from their profile.
+
+#### Supported Authenticators
+
+- ✅ Platform authenticators (Touch ID, Face ID, Windows Hello)
+- ✅ Cross-platform authenticators (YubiKey, Titan Key)
+- ✅ Discoverable credentials (passwordless login)
+
+#### Registration Flow
+
+1. User navigates to **Profile Settings** (user menu → Profile)
+2. Scrolls to the **Passkeys** section
+3. Clicks "Add Passkey"
+4. Authenticates with biometrics/PIN
+5. Passkey is registered and linked to their account
+
+:::tip
+Each user manages their own passkeys from their profile. This is a personal authentication method, not an organization-level setting.
+:::
+
+#### Authentication Flow
+
+1. User clicks "Sign in with Passkey" on the login page
+2. Browser prompts for passkey selection
+3. User authenticates with biometrics/PIN
+4. User is logged in (no email/password required)
+
+#### Where to Find Passkey Management
+
+| User Role | Where to Manage Passkeys |
+|-----------|-------------------------|
+| Any user | Profile → Passkeys section |
+| Org admin | Cannot manage other users' passkeys (personal credentials) |
+
+## Security Best Practices
+
+### Certificate Management
+
+Store all certificates and secrets in AWS Secrets Manager:
+
+```python
+from apps.sso.services import SecretsService
+
+secrets = SecretsService()
+
+# Store IdP certificate
+arn = secrets.store_saml_certificate(
+    tenant_id=tenant.id,
+    connection_id=connection.id,
+    certificate=certificate_pem,
+)
+```
+
+### Audit Logging
+
+All security events are automatically logged for compliance. The audit log captures:
+
+#### Logged Events
+
+| Event Category | Events |
+|---------------|--------|
+| **SSO Authentication** | Login initiated, success, failed, logout |
+| **SSO Configuration** | Connection created, updated, deleted, activated, deactivated |
+| **User Provisioning** | JIT user creation, user updates, group mapping applied |
+| **SCIM Operations** | User/group created, updated, deleted via SCIM |
+| **Passkey Events** | Registered, removed, auth success, auth failed |
+
+#### Viewing Audit Logs
+
+Tenant admins can view audit logs in **Organization Settings → Security → Audit Log**.
+
+The audit log shows:
+- Event type and description
+- User email (if applicable)
+- IP address
+- Success/failure status
+- Timestamp
+- Additional metadata
+
+#### REST API
+
+```bash
+# Get audit logs for a tenant
+curl -X GET \
+  "http://localhost:5001/api/sso/tenant/{tenant_id}/audit-logs/?days=30&limit=100" \
+  -H "Authorization: Bearer {token}"
+```
+
+Response:
+```json
+{
+  "logs": [
+    {
+      "id": "abc123",
+      "eventType": "sso_login_success",
+      "eventDescription": "OIDC login successful for user@example.com",
+      "userEmail": "user@example.com",
+      "connectionName": "Okta SSO",
+      "ipAddress": "192.168.1.1",
+      "success": true,
+      "createdAt": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "totalCount": 150,
+  "hasMore": true
+}
+```
+
+#### Programmatic Logging
+
+You can log custom security events:
+
+```python
+from apps.sso.models import SSOAuditLog
+from apps.sso.constants import SSOAuditEventType
+
+SSOAuditLog.log_event(
+    event_type=SSOAuditEventType.SSO_LOGIN_SUCCESS,
+    tenant=tenant,
+    user=user,
+    description="Custom event description",
+    ip_address=request.META.get('REMOTE_ADDR'),
+    metadata={'custom_key': 'custom_value'},
+)
+```
+
+### Domain Verification
+
+Restrict SSO to verified domains:
+
+```python
+sso_connection.allowed_domains = ["company.com"]
+```
+
+Users with emails from other domains will be rejected.
+
+## API Reference
+
+### GraphQL Mutations
+
+#### Create SSO Connection
+
+```graphql
+mutation CreateSSOConnection($input: CreateSSOConnectionMutationInput!) {
+  createSsoConnection(input: $input) {
+    ssoConnection {
+      id
+      name
+      status
+      spMetadataUrl
+    }
+  }
+}
+```
+
+#### Create SCIM Token
+
+```graphql
+mutation CreateSCIMToken($input: CreateSCIMTokenMutationInput!) {
+  createScimToken(input: $input) {
+    scimToken {
+      id
+      tokenPrefix
+    }
+    rawToken  # Only returned once!
+  }
+}
+```
+
+### REST Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/sso/discover` | GET | Discover SSO options for an email |
+| `/api/sso/saml/{id}/metadata` | GET | SP metadata XML |
+| `/api/sso/saml/{id}/login` | GET | Initiate SAML login |
+| `/api/sso/saml/{id}/acs` | POST | SAML assertion consumer |
+| `/api/sso/oidc/{id}/login` | GET | Initiate OIDC login |
+| `/api/sso/oidc/{id}/callback` | GET | OIDC callback |
+| `/api/sso/passkeys/register/options` | POST | Get passkey registration options |
+| `/api/sso/passkeys/register/verify` | POST | Verify passkey registration |
+| `/api/sso/passkeys/authenticate/options` | POST | Get passkey auth options |
+| `/api/sso/passkeys/authenticate/verify` | POST | Verify passkey auth |
+| `/api/sso/passkeys/` | GET | List user's passkeys |
+| `/api/sso/passkeys/{id}` | DELETE | Delete a passkey |
+| `/api/sso/tenant/{id}/connections/` | GET/POST | List/create SSO connections |
+| `/api/sso/tenant/{id}/connections/{id}` | GET/DELETE | Get/delete SSO connection |
+| `/api/sso/tenant/{id}/connections/{id}/activate` | POST | Activate SSO connection |
+| `/api/sso/tenant/{id}/connections/{id}/deactivate` | POST | Deactivate SSO connection |
+| `/api/sso/scim/v2/*` | Various | SCIM endpoints |
+
+## Troubleshooting
+
+### Common Issues
+
+#### "Invalid signature" errors
+
+1. Verify IdP certificate is correct
+2. Check certificate hasn't expired
+3. Ensure clock sync between servers
+
+#### "User not provisioned" errors
+
+1. Check JIT provisioning is enabled
+2. Verify user's email domain is allowed
+3. Check audit logs for details
+
+#### SCIM sync failures
+
+1. Verify token is valid and not expired
+2. Check request format matches SCIM 2.0 spec
+3. Review audit logs for error details
+
+### Debug Mode
+
+Enable debug logging:
+
+```python
+LOGGING = {
+    'loggers': {
+        'apps.sso': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}
+```
+
+## Migration from Existing Auth
+
+If you have existing users, you can link them to SSO:
+
+1. Users log in with SSO
+2. JIT provisioning matches by email
+3. User's existing account is linked to SSO
+4. No data is lost
+
+## Disabling Enterprise Features
+
+If you don't need enterprise SSO features, you can disable them entirely:
+
+### Option 1: Environment Variables (Recommended)
+
+```bash
+# .env
+VITE_ENABLE_SSO=false
+VITE_ENABLE_PASSKEYS=false
+```
+
+This hides SSO and passkey options from the login page while keeping the backend available for future use.
+
+### Option 2: Remove from Backend
+
+If you want to completely remove enterprise SSO:
+
+1. Remove `apps.sso` from `LOCAL_APPS` in `settings.py`
+2. Delete the migrations: `rm -rf apps/sso/migrations/`
+3. Remove SSO URLs from `urls_api.py`
+
+:::warning
+Removing the SSO app will delete all SSO configuration data. This is irreversible.
+:::
+
+## Next Steps
+
+- [Configure Okta SSO](./providers/okta)
+- [Configure Azure AD SSO](./providers/azure-ad)
+- [Set up SCIM provisioning](./scim-setup)
+- [Enable Passkeys](./passkeys-setup)
+

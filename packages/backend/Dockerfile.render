@@ -1,0 +1,108 @@
+# Render.com Dockerfile
+# This Dockerfile builds from the repo root to include email renderer build
+# Context: repository root (.)
+
+##
+# Email Renderer Build Stage
+##
+FROM node:20-slim AS email_builder
+
+WORKDIR /build
+
+# Install pnpm first
+RUN npm install -g pnpm@10
+
+# Copy workspace configuration files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml nx.json tsconfig.base.json ./
+
+# Copy patches folder (pnpm needs these for patched dependencies)
+COPY patches/ ./patches/
+
+# Copy webapp-libs (all frontend libraries needed for email build)
+COPY packages/webapp-libs/ ./packages/webapp-libs/
+
+# Copy webapp package.json (needed for workspace resolution)
+COPY packages/webapp/package.json ./packages/webapp/package.json
+
+# Copy internal packages (cli, tools, etc. - needed for workspace)
+COPY packages/internal/cli/package.json ./packages/internal/cli/package.json
+COPY packages/internal/core/package.json ./packages/internal/core/package.json
+COPY packages/internal/tools/package.json ./packages/internal/tools/package.json
+COPY packages/internal/docs/package.json ./packages/internal/docs/package.json
+COPY packages/internal/status-dashboard/package.json ./packages/internal/status-dashboard/package.json
+
+# Copy other workspace packages
+COPY packages/contentful/package.json ./packages/contentful/package.json
+COPY packages/infra/infra-shared/package.json ./packages/infra/infra-shared/package.json
+COPY packages/infra/infra-core/package.json ./packages/infra/infra-core/package.json
+
+# Copy backend/workers package.json (pnpm needs them for workspace resolution)
+COPY packages/backend/package.json ./packages/backend/package.json
+COPY packages/workers/package.json ./packages/workers/package.json
+
+# Install dependencies for webapp-emails and its workspace dependencies
+# Use --ignore-scripts to skip postinstall that tries to build CLI (not needed for emails)
+RUN pnpm install --frozen-lockfile --ignore-scripts --filter "@sb/webapp-emails..."
+
+# Build email renderer using nx (the build is an nx target, not a pnpm script)
+RUN pnpm nx run webapp-emails:build
+
+##
+# App build stage
+##
+FROM python:3.11-slim-bullseye AS backend_build
+
+ENV PYTHONUNBUFFERED=1
+ENV PIP_NO_CACHE_DIR=off
+
+RUN apt-get update && apt-get install -y gcc postgresql-client ca-certificates jq curl \
+  && update-ca-certificates \
+  && pip install --upgrade pip \
+  && pip install --no-cache-dir setuptools uv==0.9.29
+
+RUN curl -fsS https://deb.nodesource.com/setup_20.x | bash - \
+  && apt-get --no-install-recommends install -y nodejs
+
+WORKDIR /pkgs
+
+# Copy backend package files (paths relative to repo root)
+COPY packages/backend/uv.lock packages/backend/pyproject.toml /pkgs/
+RUN uv sync --frozen \
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+  && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy backend source
+COPY packages/backend/ /app/
+
+# Copy translations for database sync
+# - master.json: Contains all translation keys (synced to TranslationKey table)
+# - translations_export.json: Contains all AI-translated content (imported to Translation table)
+COPY packages/webapp-libs/webapp-core/src/translations/master.json /app/translations/master.json
+COPY packages/webapp-libs/webapp-core/src/translations/translations_export.json /app/translations/translations_export.json
+
+# Copy built email renderer from email_builder stage
+COPY --from=email_builder /build/packages/webapp-libs/webapp-emails/build/email-renderer/index.umd.js /app/scripts/runtime/email/renderer/index.umd.js
+
+RUN chmod +x /app/scripts/runtime/*.sh
+
+FROM backend_build AS static_files
+ENV HASHID_FIELD_SALT='' \
+    DJANGO_PARENT_HOST='' \
+    DJANGO_SECRET_KEY='build' \
+    DB_CONNECTION='{"dbname":"build","username":"build","password":"build","host":"db","port":5432}' \
+    REDIS_CONNECTION=redis://redis:6379 \
+    WORKERS_EVENT_BUS_NAME='' \
+    PYTHONPATH=/pkgs/.venv/lib/python3.11/site-packages
+
+RUN ./scripts/runtime/build_static.sh
+
+
+FROM backend_build AS backend
+COPY --from=static_files /app/static /app/static
+ENV PYTHONPATH=/pkgs/.venv/lib/python3.11/site-packages \
+    PATH=$PATH:/pkgs/.venv/bin \
+    DJANGO_SETTINGS_MODULE=config.settings
+
+CMD ["./scripts/runtime/run.sh"]

@@ -1,89 +1,150 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
-import { append } from 'ramda';
 
-import { appConfigFactory, fillContentfulAppConfigQuery } from '../../tests/factories';
+import { createContentfulPageMocks } from '../../components/contentfulContentPage/contentfulContentPage.storyHelpers';
 import { withProviders } from '../../utils/storybook';
 import { PrivacyPolicy } from './privacyPolicy.component';
 
-const requestMock = fillContentfulAppConfigQuery({
-  items: [
-    appConfigFactory({
-      privacyPolicy: `
-# Privacy policy
+const sampleContent = `
+# Privacy Policy
 
-## Est in sacras miracula movere aether ensem
+## 1. Introduction
 
-Lorem markdownum ipse silvae, quo [natus
-capillos](http://ergovenus.net/agrostot) namque heros contagia Timoli. Opto
-carent te est *nequeam* vulgi extrema, speculo manu! Humana undis esse?
+This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service. Please read this privacy policy carefully.
 
-1. Poscit et iustamque adfuit Thisbe est latentia
-2. Tenet sed famulis artes hoc iuvenem arbore
-3. Procorum laevaque pater
-4. Que petit in superos levatae
+## 2. Information We Collect
 
-## Turba forsitan scilicet rapitur eget ut similis
+### 2.1 Personal Data
+We may collect personally identifiable information, including but not limited to:
+- Name and email address
+- Phone number
+- Billing and payment information
+- Usage data and preferences
 
-Et nares fortibus! **Danda pectore** Sisyphio, tamen silva addunt nostri hinc
-**consistere** vota: adversa opes [teneris ardor](http://prius-ipsumque.org/),
-oraque, est. **Ille sum utque** litus deus, conpagibus videres. Saxo aura
-Sarpedonis inque, alveus et.
+### 2.2 Automatically Collected Information
+When you access our service, we automatically collect:
+- Device and browser information
+- IP address and location data
+- Usage patterns and preferences
+- Cookies and similar tracking technologies
 
-- Tangunt reliquerat pietate simul
-- Latus terra
-- Auro erat erat fallacia corpora
-- Si sibila animae et intrare sortemque socerumque
+## 3. How We Use Your Information
 
-## Aurum est excepit mensas
+We use the information we collect to:
+1. Provide and maintain our service
+2. Process transactions and send related information
+3. Send promotional communications (with your consent)
+4. Respond to your inquiries and support requests
+5. Improve our services and user experience
+6. Comply with legal obligations
 
-Solacia relicta in radiantia iamque, ira Aegyptia pater. Deo cum irascitur,
-memorque pinus, claro Liber, omnia lacus munere.
+## 4. Data Sharing and Disclosure
 
-1. Et ossa arboris superator ipse mutata intravit
-2. Potentum tenet
-3. Vicina ubi cadunt iuvenis ad apes fata
-4. Vos hanc dedecus
-5. Tibi miracula orbe cognitus fieri praecordiaque et
+We may share your information with:
+- **Service Providers**: Third parties that help us operate our service
+- **Business Partners**: For joint marketing or service offerings
+- **Legal Compliance**: When required by law or to protect our rights
 
-## Corpora dant
+We do not sell your personal information to third parties.
 
-Metuenti post omnibus antra, utinamque de frigidus nunc parvumque temptat **in**
-utraque ferarum. *Cuspide magna* mihi Lucifer exitus, tumidaque cum cedemus
-tempore inguina deseret pectora profers; superbia et dicta sua. Precari
-speciosam multaque cupidine alios persequerer compos Lapithae his oborto frena
-deprenduntur auram tenebrisque. Orbem ego pectora lingua ultra traduxit meo
-pulsavere ferre, animal. Ibi pectora texerat precor, facta hunc *adunca aetas*
-obsita, se stant digiti, me unde.
+## 5. Data Security
 
-1. Summis gratentur iactavit a decidit tyranni secutus
-2. Quibus saepe polluit dea Phocus capillis cristati
-3. Sed quem aequora
-4. Rediit fluctus sed peccare Erycina cuperem ferrum
-5. Nescit de monte gramen incaluit prosilit
+We implement appropriate technical and organizational measures to protect your data, including:
+- Encryption of data in transit and at rest
+- Regular security assessments
+- Access controls and authentication
+- Employee training on data protection
 
-Canescunt candescere favet tum glandes queri audierat caespite medios; aquae
-magis *prius* in trahunt, ut. Onus volumine et mitte fornace **in** iterant
-obusta cum Oribasos armorum et tulit **nec** aegre fuisses materno, **luna**.
-Cum huc palantesque tamen desiluit inexperrectus, toto, patitur!
-    `,
-    }),
-  ],
-  limit: 1,
-  skip: 0,
-  total: 1,
-});
+## 6. Your Rights
 
-const Template: StoryFn = () => {
-  return <PrivacyPolicy />;
-};
+Depending on your location, you may have the right to:
+- Access your personal data
+- Correct inaccurate data
+- Delete your data
+- Object to processing
+- Data portability
+- Withdraw consent
+
+## 7. Cookies and Tracking
+
+We use cookies and similar technologies to:
+- Remember your preferences
+- Analyze usage patterns
+- Provide personalized content
+- Improve our services
+
+You can control cookies through your browser settings.
+
+## 8. Children's Privacy
+
+Our service is not intended for children under 13. We do not knowingly collect information from children under 13.
+
+## 9. Changes to This Policy
+
+We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "Last Updated" date.
+
+## 10. Contact Us
+
+If you have questions about this Privacy Policy, please contact us at:
+- Email: privacy@example.com
+- Address: 123 Privacy Street, Data City, DC 12345
+
+---
+
+*Last updated: January 2024*
+`;
+
+const mocks = createContentfulPageMocks('privacyPolicy', sampleContent, null);
+
+const Template: StoryFn = () => <PrivacyPolicy />;
+
 const meta: Meta = {
   title: 'Routes/PrivacyPolicy',
   component: PrivacyPolicy,
-  decorators: [withProviders({ apolloMocks: append(requestMock) })],
 };
 
 export default meta;
 
 export const Default: StoryObj<typeof meta> = {
   render: Template,
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) => mocks.default(defaultMocks),
+    }),
+  ],
+};
+
+export const Loading: StoryObj<typeof meta> = {
+  render: Template,
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) => mocks.loading(defaultMocks),
+    }),
+  ],
+};
+
+export const EmptyContent: StoryObj<typeof meta> = {
+  render: Template,
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) => mocks.empty(defaultMocks),
+    }),
+  ],
+};
+
+export const NotConfigured: StoryObj<typeof meta> = {
+  render: Template,
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) => mocks.notConfigured(defaultMocks),
+    }),
+  ],
+};
+
+export const WithError: StoryObj<typeof meta> = {
+  render: Template,
+  decorators: [
+    withProviders({
+      apolloMocks: (defaultMocks) => mocks.withError(defaultMocks),
+    }),
+  ],
 };

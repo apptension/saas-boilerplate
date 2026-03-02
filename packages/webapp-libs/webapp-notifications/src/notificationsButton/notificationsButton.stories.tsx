@@ -23,7 +23,40 @@ export const Default: StoryObj<typeof meta> = {
 
   decorators: [
     withProviders({
-      apolloMocks: append(fillNotificationsListQuery([])),
+      apolloMocks: append(fillNotificationsListQuery([], { hasUnreadNotifications: false })),
+    }),
+  ],
+};
+
+export const WithUnreadDot: StoryObj<typeof meta> = {
+  render: Template,
+  args: { onClick: action('on click') },
+
+  decorators: [
+    withProviders({
+      apolloMocks: append(fillNotificationsListQuery([], { hasUnreadNotifications: true, unreadNotificationsCount: 0 })),
+    }),
+  ],
+};
+
+export const WithUnreadCount: StoryObj<typeof meta> = {
+  render: Template,
+  args: { onClick: action('on click') },
+
+  decorators: [
+    withProviders({
+      apolloMocks: append(fillNotificationsListQuery([], { hasUnreadNotifications: true, unreadNotificationsCount: 5 })),
+    }),
+  ],
+};
+
+export const WithHighUnreadCount: StoryObj<typeof meta> = {
+  render: Template,
+  args: { onClick: action('on click') },
+
+  decorators: [
+    withProviders({
+      apolloMocks: append(fillNotificationsListQuery([], { hasUnreadNotifications: true, unreadNotificationsCount: 150 })),
     }),
   ],
 };

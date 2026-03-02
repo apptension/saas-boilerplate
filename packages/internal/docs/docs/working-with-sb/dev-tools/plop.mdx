@@ -1,28 +1,636 @@
 ---
-title: Plop
-description: Generating project files and code snippets
+title: Plop Code Generator
+description: Generating project files and code snippets with best practices
 ---
 
-The `plop` tool is a popular and powerful tool for generating project files and code snippets. It allows you to create
-custom generators that will automate repetitive tasks and improve your development workflow. In this project, we have
-configured several generators that you can use to quickly create common project elements.
+The `plop` tool is a powerful micro-generator framework that automates the creation of project files and ensures consistency across the codebase. We've configured comprehensive generators optimized for this project's architecture and design patterns, supporting everything from simple components to full-stack CRUD modules.
 
-#### Usage
+## Quick Start
 
-To run `plop` tool use the following command from `packages/webapp` directory:
+Run the plop generator from the `packages/webapp` directory:
 
 ```bash
-pnpm run plop
+cd packages/webapp
+pnpm plop
+# or
+pnpm generate
 ```
 
-##### Possible `plop` generators:
+You'll be presented with an interactive menu to select a generator.
 
-| Generator name | Generated component        | Description                                                                                                                        |
-|----------------|----------------------------|------------------------------------------------------------------------------------------------------------------------------------|
-| `component`    | Generate a React component | Check [How to create a new React component in web application](../../working-with-sb/guides/web-app/create-react-component) guide! |
-| `hook`         | Generate a React hook      |                                                                                                                                    |
-| `crud`         | Generate a CRUD            | This generator will create a basic CRUD (Create, Read, Update, Delete) component with some basic functionality                     |
-| `icon`         | Register icon              |                                                                                                                                    |
-| `notification` | Generate a notification    |                                                                                                                                    |
-| `email`        | Generate an email          | This generator will create a new email template with the basic structure already in place.                                         |
+## Available Generators
 
+### Frontend Generators
+
+| Generator | Description |
+|-----------|-------------|
+| `component` | React component with tests, Storybook stories, and optional GraphQL/hook files |
+| `hook` | React hook with tests (supports state, effect, query, mutation, custom types) |
+| `page` | Page/route with navigation, skeleton loading, and optional data fetching |
+| `form` | Multi-field form with validation, types, and optional GraphQL mutation |
+| `modal` | Modal/dialog component (confirm, form, info, or custom variants) |
+| `table` | Data table with pagination, search, row actions, and skeleton |
+| `context` | React Context provider with typed hook (state, reducer, or store patterns) |
+
+### Backend Generators
+
+| Generator | Description |
+|-----------|-------------|
+| `backend` | Django app with model, serializers, GraphQL schema, admin, and tests |
+
+### Full-Stack Generators
+
+| Generator | Description |
+|-----------|-------------|
+| `crud` | Complete CRUD module with frontend components and optional backend API |
+
+### Utility Generators
+
+| Generator | Description |
+|-----------|-------------|
+| `icon` | Register a custom SVG icon |
+| `notification` | Notification component |
+| `email` | Email template using @react-email |
+
+---
+
+## Component Generator
+
+Creates a new React component with:
+- Component file with TypeScript types
+- Index file for clean exports
+- Storybook stories (CSF3 format)
+- Test file with basic specs
+- Optional GraphQL operations file
+- Optional custom hook file
+
+### Usage
+
+```bash
+pnpm plop component
+```
+
+### Prompts
+
+1. **Component name** - e.g., `UserProfile`, `PaymentCard`
+2. **Directory** - Select where to create the component
+3. **Has props?** - Include TypeScript props interface
+4. **Include GraphQL?** - Add a GraphQL operations file
+5. **Include hook?** - Add a custom hook file
+
+### Generated Structure
+
+```
+src/[directory]/userProfile/
+├── index.ts
+├── userProfile.component.tsx
+├── userProfile.stories.tsx
+├── userProfile.graphql.ts (optional)
+├── userProfile.hook.ts (optional)
+└── __tests__/
+    └── userProfile.component.spec.tsx
+```
+
+---
+
+## Hook Generator
+
+Creates a React hook with multiple template options for different use cases.
+
+### Usage
+
+```bash
+pnpm plop hook
+```
+
+### Hook Types
+
+| Type | Description |
+|------|-------------|
+| `state` | useState-based hook for state management |
+| `effect` | Side effects hook with async operations |
+| `callback` | Memoized callback functions |
+| `query` | GraphQL query hook with tenant support |
+| `mutation` | GraphQL mutation hook with toast notifications |
+| `custom` | Empty template for custom implementation |
+
+### Generated Structure
+
+```
+src/[directory]/useFormValidation/
+├── index.ts
+├── useFormValidation.hook.ts
+└── __tests__/
+    └── useFormValidation.hook.spec.ts
+```
+
+---
+
+## Page Generator
+
+Creates a page/route component with:
+- Page component with PageLayout wrapper
+- Optional loading skeleton
+- Optional GraphQL data fetching
+- Storybook stories and tests
+
+### Usage
+
+```bash
+pnpm plop page
+```
+
+### Prompts
+
+1. **Page name** - e.g., `Dashboard`, `Settings`, `Analytics`
+2. **Route path** - e.g., `/dashboard`, `/settings`
+3. **Page title** - Browser tab title
+4. **Page description** - Subtitle text
+5. **Page icon** - Select from Lucide icons
+6. **Requires auth?** - Authentication requirement
+7. **Include skeleton?** - Loading skeleton component
+8. **Include data fetching?** - GraphQL query setup
+
+### Generated Structure
+
+```
+src/routes/dashboard/
+├── index.tsx
+├── dashboard.component.tsx
+├── dashboard.stories.tsx
+├── dashboardSkeleton.component.tsx (optional)
+├── dashboard.graphql.ts (optional)
+└── __tests__/
+    └── dashboard.component.spec.tsx
+```
+
+---
+
+## Form Generator
+
+Creates a multi-field form component with:
+- Form component using react-hook-form
+- Form hook with validation and API error handling
+- TypeScript types for form fields
+- Optional GraphQL mutation
+- Support for entity templates (Product, BlogPost, etc.)
+
+### Usage
+
+```bash
+pnpm plop form
+```
+
+### Entity Templates
+
+Choose from predefined templates to get started quickly:
+
+| Template | Fields |
+|----------|--------|
+| Product | name, description, price, category, imageUrl, isActive, stock |
+| Blog Post | title, slug, excerpt, content, coverImageUrl, publishedAt, isPublished, tags |
+| User Profile | firstName, lastName, bio, avatarUrl, website, location, phoneNumber |
+| Task/Todo | title, description, status, priority, dueDate, estimatedHours, isCompleted |
+| Event | title, description, startDate, endDate, location, isOnline, meetingUrl, maxAttendees, isPublic |
+| Project | name, description, status, startDate, endDate, budget, isArchived |
+| Contact | firstName, lastName, email, phone, company, jobTitle, notes, source |
+| Document | title, description, fileUrl, fileType, fileSize, isPublic |
+| Custom | Start from scratch |
+
+### Generated Structure
+
+```
+src/[directory]/userProfileForm/
+├── index.ts
+├── userProfileForm.component.tsx
+├── userProfileForm.hook.ts
+├── userProfileForm.types.ts
+├── userProfileForm.stories.tsx
+├── userProfileForm.graphql.ts (optional)
+└── __tests__/
+    └── userProfileForm.component.spec.tsx
+```
+
+---
+
+## Modal Generator
+
+Creates a modal/dialog component with:
+- Multiple variant options
+- Optional state management hook
+- Storybook stories and tests
+
+### Usage
+
+```bash
+pnpm plop modal
+```
+
+### Variants
+
+| Variant | Description |
+|---------|-------------|
+| Confirm | Yes/No confirmation dialog with optional destructive styling |
+| Form | Modal with embedded form |
+| Info | Display information or content |
+| Custom | Empty template for custom implementation |
+
+### Generated Structure
+
+```
+src/[directory]/deleteConfirmModal/
+├── index.ts
+├── deleteConfirmModal.component.tsx
+├── deleteConfirmModal.stories.tsx
+├── useDeleteConfirmModal.hook.ts (optional)
+└── __tests__/
+    └── deleteConfirmModal.component.spec.tsx
+```
+
+### Usage Example
+
+```tsx
+import { useDeleteConfirmModal } from './deleteConfirmModal';
+
+const { isOpen, open, close, Modal } = useDeleteConfirmModal({
+  onConfirm: () => handleDelete(),
+});
+
+return (
+  <>
+    <button onClick={open}>Delete</button>
+    <Modal />
+  </>
+);
+```
+
+---
+
+## Table Generator
+
+Creates a data table component with:
+- Table with configurable columns
+- Pagination support
+- Search/filter functionality
+- Row actions (edit/delete)
+- Loading skeleton
+- Empty state
+
+### Usage
+
+```bash
+pnpm plop table
+```
+
+### Features
+
+| Feature | Description |
+|---------|-------------|
+| Pagination | Configurable page size with navigation |
+| Search | Filter data by searchable fields |
+| Row Actions | Edit and delete buttons per row |
+| GraphQL | Auto-generated query with connection pattern |
+
+### Generated Structure
+
+```
+src/[directory]/usersTable/
+├── index.ts
+├── usersTable.component.tsx
+├── usersTableRow.component.tsx
+├── usersTableSkeleton.component.tsx
+├── usersTable.stories.tsx
+├── usersTable.graphql.ts (optional)
+└── __tests__/
+    └── usersTable.component.spec.tsx
+```
+
+---
+
+## Context Generator
+
+Creates a React Context provider with:
+- Multiple state management patterns
+- TypeScript types for state and context value
+- Custom hook for consuming context
+- Optional localStorage persistence
+- Reset functionality
+
+### Usage
+
+```bash
+pnpm plop context
+```
+
+### State Patterns
+
+| Pattern | Description |
+|---------|-------------|
+| state | Simple useState with setter |
+| reducer | useReducer with typed actions |
+| store | External store pattern (Zustand-like) |
+
+### Generated Structure
+
+```
+src/[directory]/cart/
+├── index.ts
+├── cart.context.tsx
+├── useCart.hook.ts
+├── cart.types.ts
+└── __tests__/
+    └── cart.context.spec.tsx
+```
+
+### Usage Example
+
+```tsx
+// Wrap your app with the provider
+import { CartProvider } from './cart';
+
+<CartProvider>
+  <App />
+</CartProvider>
+
+// Use in child components
+import { useCart } from './cart';
+
+const { state, setState, reset } = useCart();
+```
+
+---
+
+## Backend Generator
+
+Creates a Django app with:
+- Django model with fields
+- DRF serializers
+- GraphQL schema (types, queries, mutations)
+- Django admin registration
+- Factory Boy factories for testing
+- GraphQL schema tests
+
+### Usage
+
+```bash
+pnpm plop backend
+```
+
+### Prompts
+
+1. **App/model name** - e.g., `Product`, `BlogPost`
+2. **Plural name** - Auto-generated or custom
+3. **Template** - Choose from entity templates or start custom
+4. **Tenant-dependent?** - Multi-tenancy support
+5. **Register in admin?** - Django admin registration
+6. **Generate tests?** - Factory and schema tests
+
+### Generated Structure
+
+```
+packages/backend/apps/product/
+├── __init__.py
+├── apps.py
+├── models.py
+├── serializers.py
+├── schema.py
+├── admin.py (optional)
+└── tests/
+    ├── __init__.py
+    ├── factories.py
+    └── test_schema.py
+```
+
+### After Generation
+
+1. Add app to `INSTALLED_APPS` in settings
+2. Add schema to root GraphQL config
+3. Run migrations: `pnpm saas backend makemigrations && pnpm saas backend migrate`
+4. Download schema: `pnpm saas webapp graphql download-schema`
+
+---
+
+## CRUD Generator
+
+Creates a complete CRUD (Create, Read, Update, Delete) module with:
+- List view with pagination
+- Detail view
+- Add form
+- Edit form
+- Reusable form component
+- All GraphQL operations
+- Multi-tenancy support
+- **Full-stack mode**: Also generates Django backend
+
+### Usage
+
+```bash
+pnpm plop crud
+```
+
+### Prompts
+
+1. **Entity name** - e.g., `Product`, `BlogPost`
+2. **Plural name** - Auto-generated or custom
+3. **Template** - Choose from entity templates or start custom
+4. **Mode** - Frontend only or Full-stack
+5. **Tenant-dependent?** - (Full-stack mode) Multi-tenancy support
+6. **Location** - webapp or webapp-libs
+
+### Generated Structure (Full-Stack)
+
+**Frontend:**
+```
+src/routes/product/
+├── index.ts
+├── productList/
+│   ├── productList.component.tsx
+│   ├── productList.stories.tsx
+│   ├── productListItem/
+│   │   ├── productListItem.component.tsx
+│   │   ├── productListItem.graphql.ts
+│   │   └── productDropdownMenu/
+│   └── listSkeleton/
+├── addProduct/
+├── editProduct/
+├── productDetails/
+└── productForm/
+```
+
+**Backend:**
+```
+packages/backend/apps/product/
+├── __init__.py
+├── apps.py
+├── models.py
+├── serializers.py
+├── schema.py
+├── admin.py
+└── tests/
+```
+
+### After Generation (Full-Stack)
+
+1. Add app to `INSTALLED_APPS`
+2. Add schema to root GraphQL config
+3. Run migrations
+4. Download schema and generate types
+5. Add routes to routes config
+6. Test your new CRUD feature!
+
+---
+
+## Icon Generator
+
+Registers a custom SVG icon for use across the application.
+
+### Usage
+
+```bash
+pnpm plop icon
+```
+
+### Prerequisites
+
+1. Add your SVG file to `src/images/icons/` with camelCase naming
+2. Run the generator to register it
+
+### After Generation
+
+```tsx
+import { CustomLogoIcon } from '@/images/icons';
+
+<CustomLogoIcon className="h-6 w-6" />
+```
+
+:::tip
+For most icons, prefer using Lucide icons directly:
+```tsx
+import { Settings, User, ChevronRight } from 'lucide-react';
+```
+Custom icons are best for brand assets and unique graphics.
+:::
+
+---
+
+## Notification Generator
+
+Creates a notification component for the in-app notification system.
+
+### Usage
+
+```bash
+pnpm plop notification
+```
+
+---
+
+## Email Generator
+
+Creates an email template using @react-email components.
+
+### Usage
+
+```bash
+pnpm plop email
+```
+
+### Prompts
+
+1. **Template name** - e.g., `WelcomeEmail`, `PasswordReset`
+2. **Subject line** - Email subject
+
+### Generated Template
+
+The email template includes:
+- HTML structure with responsive styling
+- Preview text for email clients
+- Customizable sections
+- Subject line export
+- Storybook preview for testing
+
+---
+
+## Entity Templates
+
+Many generators support entity templates to quickly scaffold common data structures:
+
+| Template | Best For |
+|----------|----------|
+| Product | E-commerce items |
+| Blog Post | Content management |
+| User Profile | User settings/profiles |
+| Task/Todo | Task management |
+| Event | Calendar/scheduling |
+| Project | Project management |
+| Contact | CRM/contacts |
+| Document | File management |
+
+Templates define:
+- Field names and types
+- Required/optional status
+- Validation rules
+- Default values
+
+---
+
+## Best Practices
+
+### Naming Conventions
+
+- **Components**: PascalCase (e.g., `UserProfile`)
+- **Hooks**: camelCase with `use` prefix (e.g., `useFormValidation`)
+- **Files**: camelCase (e.g., `userProfile.component.tsx`)
+- **Directories**: camelCase (e.g., `userProfile/`)
+- **Django apps**: snake_case (e.g., `user_profile/`)
+
+### After Generation
+
+1. **Review generated code** - Templates provide a starting point
+2. **Update GraphQL operations** - Customize queries/mutations for your schema
+3. **Run type-check**: `pnpm type-check`
+4. **Run tests**: `pnpm test`
+5. **Update snapshots if needed**: `pnpm test --updateSnapshot`
+
+### Internationalization
+
+All generated text uses `react-intl` with the pattern:
+```tsx
+<FormattedMessage
+  defaultMessage="Your text here"
+  id="ComponentName / Description"
+/>
+```
+
+---
+
+## Troubleshooting
+
+### "Command not found: plop"
+
+Ensure you're in the `packages/webapp` directory and dependencies are installed:
+```bash
+cd packages/webapp
+pnpm install
+```
+
+### Template errors
+
+If you encounter Handlebars errors, check that:
+1. The template files exist in `plop/[generator]/templates/`
+2. Handlebars syntax is correct (use `\{{` to escape if needed)
+
+### File already exists
+
+Plop won't overwrite existing files. Delete the existing files first or choose a different name.
+
+### Full-stack mode not generating backend
+
+Make sure you selected "Full-stack" mode when prompted. Backend files are only generated in full-stack mode.
+
+### GraphQL types not available
+
+After generating code with GraphQL operations:
+1. Ensure your backend is running
+2. Download the schema: `pnpm saas webapp graphql download-schema`
+3. Generate types: `pnpm nx run webapp-api-client:graphql-codegen`

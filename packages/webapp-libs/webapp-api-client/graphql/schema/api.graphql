@@ -10,34 +10,85 @@ value as specified by
 """
 scalar DateTime
 """
-Allows use of a JSON String for input / output from the GraphQL schema.
-
-Use of this type is *not recommended* as you lose the benefits of having a defined, static
-schema (one of the key benefits of GraphQL).
-"""
-scalar JSONString
-"The `Decimal` scalar type represents a python Decimal."
-scalar Decimal
-"""
 The `BigInt` scalar type represents non-fractional whole numeric values.
 `BigInt` is not constrained to 32-bit like the `Int` type and thus is a less
 compatible type.
 """
 scalar BigInt
 """
+Allows use of a JSON String for input / output from the GraphQL schema.
+
+Use of this type is *not recommended* as you lose the benefits of having a defined, static
+schema (one of the key benefits of GraphQL).
+"""
+scalar JSONString
+"""
 The `GenericScalar` scalar type represents a generic
 GraphQL scalar value that could be:
 String, Boolean, Int, Float, List or Object.
 """
 scalar GenericScalar
+"The `Decimal` scalar type represents a python Decimal."
+scalar Decimal
 """
 Create scalar that ignores normal serialization/deserialization, since
 that will be handled by the multipart request spec
 """
 scalar Upload
 type Query {
+  "Get backup configuration for a tenant"
+  backupConfig(tenantId: ID!): BackupConfigType
+  "Get backup records for a tenant"
+  backupRecords(tenantId: ID!, before: String, after: String, first: Int, last: Int): BackupRecordConnection
+  "Get all available backup modules"
+  availableBackupModules(tenantId: ID!): [BackupModuleType]
+  "Get all available models for a specific module"
+  availableBackupModels(tenantId: ID!, moduleId: String!): [BackupModelType]
+  "Get restore records for a tenant"
+  restoreRecords(tenantId: ID!, before: String, after: String, first: Int, last: Int): RestoreRecordConnection
+  "Tenant members who have backup.manage permission (for email recipients)"
+  backupEligibleRecipients(tenantId: ID!): [TenantMembershipType]
+  "Get all active locales"
+  availableLocales: [LocaleType]
+  "Get the default locale"
+  defaultLocale: LocaleType
+  "Get translation sync status (admin only)"
+  translationSyncStatus: TranslationSyncStatusType
+  "Get translation progress for all locales"
+  localeProgress: [LocaleProgressType]
+  ssoConnections(tenantId: ID!, before: String, after: String, first: Int, last: Int): SSOConnectionConnection
+  ssoConnection(tenantId: ID!, id: ID): SSOConnectionType
+  scimTokens(tenantId: ID!, before: String, after: String, first: Int, last: Int): SCIMTokenConnection
+  ssoAuditLogs(tenantId: ID!, eventType: String, userEmail: String, success: Boolean, startDate: String, endDate: String, search: String, before: String, after: String, first: Int, last: Int): SSOAuditLogConnection
+  tenantPasskeys(tenantId: ID!, search: String): [TenantPasskeyType]
+  myPasskeys(before: String, after: String, first: Int, last: Int): PasskeyConnection
+  mySessions(before: String, after: String, first: Int, last: Int): SSOSessionConnection
+  myDevices(before: String, after: String, first: Int, last: Int): UserDeviceConnection
+  ssoDiscover(email: String!): SSODiscoveryResultType
   allTenants(before: String, after: String, first: Int, last: Int): TenantConnection
   tenant(id: ID): TenantType
+  allActionLogs(tenantId: ID!, 
+    "Filter by entity type"
+    entityType: String,
+    "Filter by action type"
+    actionType: String,
+    "Filter by actor email"
+    actorEmail: String,
+    "Filter logs from this datetime"
+    fromDatetime: DateTime,
+    "Filter logs until this datetime"
+    toDatetime: DateTime,
+    "Search in entity name, actor email, or metadata"
+    search: String,before: String, after: String, first: Int, last: Int  ): ActionLogConnection
+  allPermissions(
+    "Filter by category"
+    category: PermissionCategory,before: String, after: String, first: Int, last: Int  ): PermissionConnection
+  allOrganizationRoles(tenantId: ID!, before: String, after: String, first: Int, last: Int): OrganizationRoleConnection
+  organizationRole(id: ID!): OrganizationRoleType
+  "Get all permission codes for the current user in a tenant"
+  currentUserPermissions(tenantId: ID!): [String]
+  "Get all organization roles for the current user in a tenant"
+  currentUserOrganizationRoles(tenantId: ID!): [OrganizationRoleType]
   allSubscriptionPlans(before: String, after: String, first: Int, last: Int): StripePriceConnection
   activeSubscription(tenantId: ID): SubscriptionScheduleType
   allPaymentMethods(tenantId: ID, before: String, after: String, first: Int, last: Int): PaymentMethodConnection
@@ -46,6 +97,7 @@ type Query {
   paymentIntent(id: ID, tenantId: ID): StripePaymentIntentType
   currentUser: CurrentUserType
   hasUnreadNotifications: Boolean
+  unreadNotificationsCount: Int
   allNotifications(before: String, after: String, first: Int, last: Int): NotificationConnection
   crudDemoItem(id: ID, tenantId: ID): CrudDemoItemType
   allCrudDemoItems(tenantId: ID, before: String, after: String, first: Int, last: Int): CrudDemoItemConnection
@@ -56,11 +108,33 @@ type Query {
     id: ID!
   ): Node
 }
-type TenantConnection {
+"GraphQL type for BackupConfig."
+type BackupConfigType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  "The ID of the object"
+  id: ID!
+  "Whether periodic backups are enabled for this tenant"
+  enabled: Boolean!
+  "Interval between backups in hours (minimum 1 hour)"
+  backupIntervalHours: Int!
+  "Number of days to retain backup files (minimum 1 day)"
+  retentionDays: Int!
+  "List of user IDs (as GraphQL global IDs)"
+  emailRecipients: [ID]
+  "List of module IDs selected for backup"
+  selectedModules: [String]
+  "List of specific model names selected"
+  selectedModels: [String]
+  "List of model names excluded from backup"
+  excludedModels: [String]
+}
+"Connection class for paginated BackupRecord lists."
+type BackupRecordConnection {
   "Pagination data for this connection."
   pageInfo: PageInfo!
   "Contains the nodes in this connection."
-  edges: [TenantEdge]!
+  edges: [BackupRecordEdge]!
 }
 "The Relay compliant `PageInfo` type, containing data necessary to paginate this connection."
 type PageInfo {
@@ -73,12 +147,38 @@ type PageInfo {
   "When paginating forwards, the cursor to continue."
   endCursor: String
 }
-"A Relay edge containing a `Tenant` and its cursor."
-type TenantEdge {
+"A Relay edge containing a `BackupRecord` and its cursor."
+type BackupRecordEdge {
   "The item at the end of the edge"
-  node: TenantType
+  node: BackupRecordType
   "A cursor for use in pagination"
   cursor: String!
+}
+"GraphQL type for BackupRecord."
+type BackupRecordType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  tenant: TenantType
+  "The ID of the object"
+  id: ID!
+  "The backup configuration that triggered this backup"
+  backupConfig: BackupConfigType
+  "Storage path to the backup file"
+  filePath: String!
+  "Size of the backup file in bytes"
+  fileSize: BigInt
+  "Current status of the backup"
+  status: BackupBackupRecordStatusChoices!
+  "Error message if backup failed"
+  errorMessage: String!
+  "Count of records per model type in this backup"
+  modelCounts: JSONString!
+  "Whether this backup file is encrypted at rest"
+  isEncrypted: Boolean
+  "The backup record that was restored"
+  restoreRecords(offset: Int, before: String, after: String, first: Int, last: Int): RestoreRecordTypeConnection!
+  "Signed download URL for the backup file"
+  downloadUrl: String
 }
 type TenantType implements Node {
   id: ID!
@@ -86,6 +186,7 @@ type TenantType implements Node {
   slug: String
   type: String
   billingEmail: String
+  actionLoggingEnabled: Boolean
   userMemberships: [TenantMembershipType]
   membership: TenantMembershipType!
 }
@@ -100,6 +201,470 @@ type TenantMembershipType implements Node {
   lastName: String
   userEmail: String
   avatar: String
+  organizationRoles: [OrganizationRoleType]
+  effectivePermissions: [String]
+}
+"GraphQL type for OrganizationRole - custom roles per tenant."
+type OrganizationRoleType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+  "Display name of the role"
+  name: String!
+  "Description of the role's purpose"
+  description: String!
+  systemRoleType: SystemRoleType
+  color: RoleColor
+  permissions: [PermissionType]
+  isSystemRole: Boolean
+  isOwnerRole: Boolean
+  memberCount: Int
+}
+"GraphQL type for Permission model - available permissions in the system."
+type PermissionType implements Node {
+  id: ID!
+  "Unique permission code (e.g., 'dashboard.projects.edit')"
+  code: String!
+  "Human-readable name for display"
+  name: String!
+  "Detailed description of what this permission allows"
+  description: String!
+  "Category for grouping (multitenancy or app-defined)"
+  category: String
+  "System permissions cannot be deleted"
+  isSystem: Boolean!
+  "Order within category for UI display"
+  sortOrder: Int!
+  "Display label for the category"
+  categoryLabel: String
+  "Optional description (app-defined categories only)"
+  categoryDescription: String
+}
+type RestoreRecordTypeConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [RestoreRecordTypeEdge]!
+}
+"A Relay edge containing a `RestoreRecordType` and its cursor."
+type RestoreRecordTypeEdge {
+  "The item at the end of the edge"
+  node: RestoreRecordType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for RestoreRecord."
+type RestoreRecordType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  "The ID of the object"
+  id: ID!
+  "The backup record that was restored"
+  backupRecord: BackupRecordType!
+  "Current status of the restoration"
+  status: BackupRestoreRecordStatusChoices!
+  "Strategy used for handling conflicting records during restore"
+  conflictStrategy: BackupRestoreRecordConflictStrategyChoices!
+  "Detailed counts per model: {ModelName: {created: N, updated: N, skipped: N, failed: N}}"
+  modelCounts: JSONString!
+  "Error message if restoration failed"
+  errorMessage: String!
+  "When the restoration started processing"
+  startedAt: DateTime
+  "When the restoration completed or failed"
+  completedAt: DateTime
+  "Total records created across all models"
+  totalCreated: Int
+  "Total records updated across all models"
+  totalUpdated: Int
+  "Total records skipped across all models"
+  totalSkipped: Int
+  "Total records failed across all models"
+  totalFailed: Int
+}
+"GraphQL type for a backup module."
+type BackupModuleType {
+  "Module identifier"
+  id: String
+  "Human-readable module name"
+  name: String
+  "Module description"
+  description: String
+  "Number of models in this module"
+  modelCount: Int
+}
+"GraphQL type for a backupable model."
+type BackupModelType {
+  "Django app label"
+  appLabel: String
+  "Model class name"
+  modelName: String
+  "Human-readable model name"
+  displayName: String
+  "Full model name (app_label.ModelName)"
+  fullName: String
+}
+"Connection class for paginated RestoreRecord lists."
+type RestoreRecordConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [RestoreRecordEdge]!
+}
+"A Relay edge containing a `RestoreRecord` and its cursor."
+type RestoreRecordEdge {
+  "The item at the end of the edge"
+  node: RestoreRecordType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for Locale model."
+type LocaleType implements Node {
+  "The ID of the object"
+  id: ID!
+  "Locale code (e.g., 'en', 'pl', 'de', 'en-US')"
+  code: String!
+  "Language name in English (e.g., 'English', 'Polish')"
+  name: String!
+  "Language name in native language (e.g., 'English', 'Polski')"
+  nativeName: String!
+  "Whether this is the default/fallback locale"
+  isDefault: Boolean!
+  "Whether this locale is available to users"
+  isActive: Boolean!
+  "Right-to-left language (e.g., Arabic, Hebrew)"
+  rtl: Boolean!
+  translationProgress: Float
+}
+"Type for translation sync status."
+type TranslationSyncStatusType {
+  totalKeys: Int
+  activeKeys: Int
+  deprecatedKeys: Int
+}
+"Type for locale translation progress."
+type LocaleProgressType {
+  code: String
+  name: String
+  publishedTranslations: Int
+  progress: Float
+}
+type SSOConnectionConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [SSOConnectionEdge]!
+}
+"A Relay edge containing a `SSOConnection` and its cursor."
+type SSOConnectionEdge {
+  "The item at the end of the edge"
+  node: SSOConnectionType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for SSO connections."
+type SSOConnectionType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+  "Display name for this SSO connection"
+  name: String!
+  connectionType: SsoTenantSSOConnectionConnectionTypeChoices!
+  status: SsoTenantSSOConnectionStatusChoices!
+  "List of email domains allowed to use this SSO connection"
+  allowedDomains: JSONString!
+  "When enabled, users from allowed domains must use SSO to access this tenant. Password login will not grant access."
+  enforceSso: Boolean!
+  "Automatically create users on first SSO login"
+  jitProvisioningEnabled: Boolean!
+  "Mapping of IdP groups to tenant roles"
+  groupRoleMapping: JSONString!
+  samlEntityId: String!
+  samlSsoUrl: String!
+  "Single Logout URL"
+  samlSloUrl: String!
+  samlNameIdFormat: SsoTenantSSOConnectionSamlNameIdFormatChoices!
+  samlWantAssertionsSigned: Boolean!
+  samlWantResponseSigned: Boolean!
+  "Mapping of SAML attributes to user fields"
+  samlAttributeMapping: JSONString!
+  oidcIssuer: String!
+  oidcClientId: String!
+  oidcAuthorizationEndpoint: String!
+  oidcTokenEndpoint: String!
+  oidcUserinfoEndpoint: String!
+  oidcJwksUri: String!
+  "Space-separated list of OAuth scopes"
+  oidcScopes: String!
+  "Mapping of OIDC claims to user fields"
+  oidcClaimMapping: JSONString!
+  lastLoginAt: DateTime
+  loginCount: Int!
+  isActive: Boolean
+  isSaml: Boolean
+  isOidc: Boolean
+  spMetadataUrl: String
+  spAcsUrl: String
+  spEntityId: String
+  oidcCallbackUrl: String
+  oidcLoginUrl: String
+}
+type SCIMTokenConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [SCIMTokenEdge]!
+}
+"A Relay edge containing a `SCIMToken` and its cursor."
+type SCIMTokenEdge {
+  "The item at the end of the edge"
+  node: SCIMTokenType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for SCIM tokens."
+type SCIMTokenType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+  "Display name for this token"
+  name: String!
+  "First 8 chars of token for identification"
+  tokenPrefix: String!
+  isActive: Boolean!
+  expiresAt: DateTime
+  lastUsedAt: DateTime
+  lastUsedIp: String
+  requestCount: Int!
+  isValid: Boolean
+  isExpired: Boolean
+}
+type SSOAuditLogConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [SSOAuditLogEdge]!
+}
+"A Relay edge containing a `SSOAuditLog` and its cursor."
+type SSOAuditLogEdge {
+  "The item at the end of the edge"
+  node: SSOAuditLogType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for SSO audit logs."
+type SSOAuditLogType implements Node {
+  createdAt: DateTime!
+  id: ID!
+  eventType: SsoSSOAuditLogEventTypeChoices!
+  eventDescription: String!
+  ipAddress: String
+  metadata: JSONString!
+  success: Boolean!
+  errorMessage: String!
+  userEmail: String
+  connectionName: String
+}
+type TenantPasskeyType {
+  id: ID
+  name: String
+  authenticatorType: String
+  transports: GenericScalar
+  isActive: Boolean
+  lastUsedAt: DateTime
+  useCount: Int
+  deviceType: String
+  createdAt: DateTime
+  userEmail: String
+  userName: String
+}
+type PasskeyConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [PasskeyEdge]!
+}
+"A Relay edge containing a `Passkey` and its cursor."
+type PasskeyEdge {
+  "The item at the end of the edge"
+  node: PasskeyType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for passkeys."
+type PasskeyType implements Node {
+  createdAt: DateTime!
+  id: ID!
+  "User-provided name for this passkey"
+  name: String!
+  authenticatorType: String!
+  transports: JSONString!
+  isActive: Boolean!
+  lastUsedAt: DateTime
+  useCount: Int!
+  deviceType: String!
+}
+type SSOSessionConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [SSOSessionEdge]!
+}
+"A Relay edge containing a `SSOSession` and its cursor."
+type SSOSessionEdge {
+  "The item at the end of the edge"
+  node: SSOSessionType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for SSO sessions."
+type SSOSessionType implements Node {
+  createdAt: DateTime!
+  id: ID!
+  sessionId: String!
+  deviceName: String!
+  deviceType: String!
+  browser: String!
+  operatingSystem: String!
+  ipAddress: String
+  location: String!
+  isActive: Boolean!
+  lastActivityAt: DateTime!
+  expiresAt: DateTime!
+  isValid: Boolean
+  isExpired: Boolean
+  isCurrent: Boolean
+}
+type UserDeviceConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [UserDeviceEdge]!
+}
+"A Relay edge containing a `UserDevice` and its cursor."
+type UserDeviceEdge {
+  "The item at the end of the edge"
+  node: UserDeviceType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for user devices."
+type UserDeviceType implements Node {
+  createdAt: DateTime!
+  id: ID!
+  deviceName: String!
+  deviceType: String!
+  browser: String!
+  operatingSystem: String!
+  isTrusted: Boolean!
+  trustedAt: DateTime
+  lastSeenAt: DateTime!
+  lastIpAddress: String
+  lastLocation: String!
+  isBlocked: Boolean!
+}
+type SSODiscoveryResultType {
+  ssoAvailable: Boolean
+  requireSso: Boolean
+  connections: [SSODiscoveryConnectionType]
+}
+type SSODiscoveryConnectionType {
+  id: String
+  name: String
+  type: String
+  tenantId: String
+  tenantName: String
+  loginUrl: String
+}
+type TenantConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [TenantEdge]!
+}
+"A Relay edge containing a `Tenant` and its cursor."
+type TenantEdge {
+  "The item at the end of the edge"
+  node: TenantType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"Connection class for paginated ActionLog lists."
+type ActionLogConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [ActionLogEdge]!
+  totalCount: Int
+}
+"A Relay edge containing a `ActionLog` and its cursor."
+type ActionLogEdge {
+  "The item at the end of the edge"
+  node: ActionLogType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+"GraphQL type for ActionLog model - audit trail of actions."
+type ActionLogType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  "The ID of the object"
+  id: ID!
+  tenant: TenantType!
+  "Type of action performed"
+  actionType: MultitenancyActionLogActionTypeChoices!
+  "Type of entity affected (e.g., client, project, user)"
+  entityType: String!
+  "ID of the affected entity"
+  entityId: String!
+  "Human-readable name of the entity for display"
+  entityName: String!
+  "Type of actor that performed the action"
+  actorType: MultitenancyActionLogActorTypeChoices!
+  "User who performed the action (null for system actions)"
+  actorUser: CurrentUserType
+  "Email of the actor (stored for historical reference)"
+  actorEmail: String!
+  changes: GenericScalar
+  metadata: GenericScalar
+}
+type CurrentUserType {
+  id: ID!
+  email: String!
+  otpEnabled: Boolean!
+  otpVerified: Boolean!
+  tenants: [TenantType]
+  firstName: String
+  lastName: String
+  language: String
+  roles: [String]
+  avatar: String
+}
+type PermissionConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [PermissionEdge]!
+}
+"A Relay edge containing a `Permission` and its cursor."
+type PermissionEdge {
+  "The item at the end of the edge"
+  node: PermissionType
+  "A cursor for use in pagination"
+  cursor: String!
+}
+type OrganizationRoleConnection {
+  "Pagination data for this connection."
+  pageInfo: PageInfo!
+  "Contains the nodes in this connection."
+  edges: [OrganizationRoleEdge]!
+}
+"A Relay edge containing a `OrganizationRole` and its cursor."
+type OrganizationRoleEdge {
+  "The item at the end of the edge"
+  node: OrganizationRoleType
+  "A cursor for use in pagination"
+  cursor: String!
 }
 type StripePriceConnection {
   "Pagination data for this connection."
@@ -617,17 +1182,6 @@ type StripeChargeTypeEdge {
   "A cursor for use in pagination"
   cursor: String!
 }
-type CurrentUserType {
-  id: ID!
-  email: String!
-  otpEnabled: Boolean!
-  otpVerified: Boolean!
-  tenants: [TenantType]
-  firstName: String
-  lastName: String
-  roles: [String]
-  avatar: String
-}
 type NotificationConnection {
   "Pagination data for this connection."
   pageInfo: PageInfo!
@@ -758,15 +1312,141 @@ type FileFieldType {
   name: String
 }
 type ApiMutation {
+  "Create or update backup configuration for a tenant."
+  updateBackupConfig(input: BackupConfigInput!): UpdateBackupConfigMutation
+  "Delete a backup record and its file."
+  deleteBackup(backupId: ID!): DeleteBackupMutation
+  "Manually trigger a backup for a tenant."
+  triggerBackup(tenantId: ID!): TriggerBackupMutation
+  "Download a backup file with decryption applied in-memory."
+  downloadBackupDecrypted(backupId: ID!): DownloadBackupDecryptedMutation
+  "Trigger a backup restoration for a tenant."
+  restoreBackup(
+    "ID of the backup record to restore from"
+    backupId: ID!,
+    "Strategy for handling conflicting records: SKIP, UPDATE, or FAIL"
+    conflictStrategy: ConflictStrategyEnum!
+  ): RestoreBackupMutation
+  "Publish translations for a locale to S3/CDN."
+  publishTranslations(input: PublishTranslationsMutationInput!): PublishTranslationsMutationPayload
+  "Sync translation keys from master JSON."
+  syncTranslationKeys(input: SyncTranslationKeysMutationInput!): SyncTranslationKeysMutationPayload
+  "Rollback to a previous translation version."
+  rollbackTranslations(input: RollbackTranslationsMutationInput!): RollbackTranslationsMutationPayload
+  "Create a new SSO connection."
+  createSsoConnection(input: CreateSSOConnectionMutationInput!): CreateSSOConnectionMutationPayload
+  "Update an existing SSO connection."
+  updateSsoConnection(input: UpdateSSOConnectionMutationInput!): UpdateSSOConnectionMutationPayload
+  "Delete an SSO connection. Requires tenantId in input for tenant context."
+  deleteSsoConnection(input: DeleteSSOConnectionMutationInput!): DeleteSSOConnectionMutationPayload
+  "Activate an SSO connection."
+  activateSsoConnection(input: ActivateSSOConnectionMutationInput!): ActivateSSOConnectionMutationPayload
+  "Deactivate an SSO connection. Requires tenantId for tenant context."
+  deactivateSsoConnection(id: ID!, tenantId: ID!): DeactivateSSOConnectionMutation
+  "Test an SSO connection configuration. Requires tenantId for tenant context."
+  testSsoConnection(id: ID!, tenantId: ID!): TestSSOConnectionMutation
+  "Create a new SCIM token."
+  createScimToken(input: CreateSCIMTokenMutationInput!): CreateSCIMTokenMutationPayload
+  "Revoke a SCIM token. Requires tenantId for tenant context."
+  revokeScimToken(id: ID!, tenantId: ID!): RevokeSCIMTokenMutation
+  "Delete a passkey as tenant admin (for any tenant member). Requires tenantId for tenant context."
+  deleteTenantPasskey(id: ID!, tenantId: ID!): DeleteTenantPasskeyMutation
+  "Revoke an SSO session."
+  revokeSession(reason: String, sessionId: String!): RevokeSessionMutation
+  "Revoke all SSO sessions for the current user except the current session."
+  revokeAllSessions: RevokeAllSessionsMutation
+  "Mark a device as trusted."
+  trustDevice(id: ID!): TrustDeviceMutation
+  "Remove trust from a device."
+  untrustDevice(id: ID!): UntrustDeviceMutation
+  "Block a device."
+  blockDevice(id: ID!, reason: String): BlockDeviceMutation
+  "Rename a passkey."
+  renamePasskey(id: ID!, name: String!): RenamePasskeyMutation
+  "Delete a passkey."
+  deletePasskey(input: DeletePasskeyMutationInput!): DeletePasskeyMutationPayload
   updateTenant(input: UpdateTenantMutationInput!): UpdateTenantMutationPayload
   "Mutation to delete a tenant from the system."
   deleteTenant(input: DeleteTenantMutationInput!): DeleteTenantMutationPayload
   createTenantInvitation(input: CreateTenantInvitationMutationInput!): CreateTenantInvitationMutationPayload
+  resendTenantInvitation(input: ResendTenantInvitationMutationInput!): ResendTenantInvitationMutationPayload
   updateTenantMembership(input: UpdateTenantMembershipMutationInput!): UpdateTenantMembershipMutationPayload
+  "Mutation to enable or disable action logging for a tenant."
+  updateTenantActionLogging(enabled: Boolean!, tenantId: ID!): UpdateTenantActionLoggingMutation
+  """
+  Mutation to trigger an async export of action logs.
+  
+  Creates an export job that processes in the background.
+  User receives a notification when the export is ready.
+  """
+  exportActionLogs(actionType: String, actorEmail: String, entityType: String, fromDatetime: DateTime, search: String, tenantId: ID!, toDatetime: DateTime): ExportActionLogsMutation
+  """
+  Create a new custom organization role.
+  
+  SECURITY:
+  - Requires 'org.roles.manage' permission
+  - Users can only create roles with permissions they themselves have (except owners)
+  """
+  createOrganizationRole(color: RoleColor, description: String, name: String!, permissionIds: [ID]!, tenantId: ID!): CreateOrganizationRoleMutation
+  """
+  Update an existing organization role.
+  
+  SECURITY:
+  - Requires 'org.roles.manage' permission
+  - Cannot modify the Owner role
+  - Users can only add permissions they themselves have (except owners)
+  """
+  updateOrganizationRole(color: RoleColor, description: String, id: ID!, name: String, permissionIds: [ID], tenantId: ID!): UpdateOrganizationRoleMutation
+  """
+  Delete an organization role.
+  
+  If there are members with this role, a replacement_role_id must be provided.
+  
+  SECURITY:
+  - Requires 'org.roles.manage' permission
+  - Cannot delete system roles (Owner, Admin, Member)
+  """
+  deleteOrganizationRole(id: ID!, 
+    "Role to assign to affected members"
+    replacementRoleId: ID,tenantId: ID!  ): DeleteOrganizationRoleMutation
+  """
+  Assign one or more organization roles to a member.
+  
+  SECURITY:
+  - Requires 'members.roles.edit' permission
+  - Only owners can assign the Owner role
+  - Users can only assign roles with permissions they themselves have
+  - Users cannot remove their own owner role if they're the last owner
+  """
+  assignRolesToMember(membershipId: ID!, roleIds: [ID]!, tenantId: ID!): AssignRolesToMemberMutation
+  """
+  Remove a specific role from a member.
+  
+  SECURITY:
+  - Requires 'members.roles.edit' permission
+  - Only owners can remove the Owner role
+  - Cannot remove the last owner's owner role
+  - Non-owners cannot modify owner memberships
+  """
+  removeRoleFromMember(membershipId: ID!, roleId: ID!, tenantId: ID!): RemoveRoleFromMemberMutation
   createTenant(input: CreateTenantMutationInput!): CreateTenantMutationPayload
   acceptTenantInvitation(input: AcceptTenantInvitationMutationInput!): AcceptTenantInvitationMutationPayload
   declineTenantInvitation(input: DeclineTenantInvitationMutationInput!): DeclineTenantInvitationMutationPayload
+  """
+  Delete/remove a member from the organization.
+  
+  SECURITY:
+  - Requires 'members.remove' permission to remove other members
+  - Users can always remove themselves (leave organization)
+  - Only owners can remove other owners
+  - Cannot remove the last owner
+  """
   deleteTenantMembership(input: DeleteTenantMembershipMutationInput!): DeleteTenantMembershipMutationPayload
+  """
+  Mutation to send a message to the AI assistant.
+  The response is streamed via the AiChatSubscription.
+  """
+  sendAiMessage(conversationId: String!, history: [JSONString], message: String!, tenantId: String!): SendAiMessageMutation
   generateSaasIdeas(input: GenerateSaasIdeasMutationInput!): GenerateSaasIdeasMutationPayload
   changeActiveSubscription(input: ChangeActiveSubscriptionMutationInput!): ChangeActiveSubscriptionMutationPayload
   cancelActiveSubscription(input: CancelActiveSubscriptionMutationInput!): CancelActiveSubscriptionMutationPayload
@@ -796,6 +1476,231 @@ type ApiMutation {
   createFavoriteContentfulDemoItem(input: CreateFavoriteContentfulDemoItemMutationInput!): CreateFavoriteContentfulDemoItemMutationPayload
   deleteFavoriteContentfulDemoItem(input: DeleteFavoriteContentfulDemoItemMutationInput!): DeleteFavoriteContentfulDemoItemMutationPayload
 }
+"Create or update backup configuration for a tenant."
+type UpdateBackupConfigMutation {
+  backupConfig: BackupConfigType
+  ok: Boolean
+  error: String
+}
+"Delete a backup record and its file."
+type DeleteBackupMutation {
+  ok: Boolean
+  error: String
+}
+"Manually trigger a backup for a tenant."
+type TriggerBackupMutation {
+  ok: Boolean
+  error: String
+  backupId: ID
+}
+"Download a backup file with decryption applied in-memory."
+type DownloadBackupDecryptedMutation {
+  "Decrypted backup XML content"
+  content: String
+  ok: Boolean
+  error: String
+}
+"Trigger a backup restoration for a tenant."
+type RestoreBackupMutation {
+  ok: Boolean
+  error: String
+  "ID of the created restore record"
+  restoreId: ID
+}
+"Publish translations for a locale to S3/CDN."
+type PublishTranslationsMutationPayload {
+  success: Boolean
+  version: String
+  message: String
+  clientMutationId: String
+}
+"Sync translation keys from master JSON."
+type SyncTranslationKeysMutationPayload {
+  success: Boolean
+  created: Int
+  updated: Int
+  deprecated: Int
+  message: String
+  clientMutationId: String
+}
+"Rollback to a previous translation version."
+type RollbackTranslationsMutationPayload {
+  success: Boolean
+  message: String
+  clientMutationId: String
+}
+"Create a new SSO connection."
+type CreateSSOConnectionMutationPayload {
+  id: String
+  "Display name for this SSO connection"
+  name: String
+  connectionType: connection_type
+  status: status
+  "List of email domains allowed to use this SSO connection"
+  allowedDomains: JSONString
+  "When enabled, users from allowed domains must use SSO to access this tenant. Password login will not grant access."
+  enforceSso: Boolean
+  "Automatically create users on first SSO login"
+  jitProvisioningEnabled: Boolean
+  "Mapping of IdP groups to tenant roles"
+  groupRoleMapping: JSONString
+  samlEntityId: String
+  samlSsoUrl: String
+  "IdP X.509 certificate (PEM format) - for local development"
+  samlCertificate: String
+  "Single Logout URL"
+  samlSloUrl: String
+  samlNameIdFormat: saml_name_id_format
+  samlWantAssertionsSigned: Boolean
+  samlWantResponseSigned: Boolean
+  "Mapping of SAML attributes to user fields"
+  samlAttributeMapping: JSONString
+  oidcIssuer: String
+  oidcClientId: String
+  oidcAuthorizationEndpoint: String
+  oidcTokenEndpoint: String
+  oidcUserinfoEndpoint: String
+  oidcJwksUri: String
+  "Space-separated list of OAuth scopes"
+  oidcScopes: String
+  "Mapping of OIDC claims to user fields"
+  oidcClaimMapping: JSONString
+  spMetadataXml: String
+  metadataLastUpdated: DateTime
+  lastLoginAt: DateTime
+  loginCount: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  ssoConnection: SSOConnectionType
+  clientMutationId: String
+}
+"Update an existing SSO connection."
+type UpdateSSOConnectionMutationPayload {
+  id: String
+  "Display name for this SSO connection"
+  name: String
+  connectionType: connection_type
+  status: status
+  "List of email domains allowed to use this SSO connection"
+  allowedDomains: JSONString
+  "When enabled, users from allowed domains must use SSO to access this tenant. Password login will not grant access."
+  enforceSso: Boolean
+  "Automatically create users on first SSO login"
+  jitProvisioningEnabled: Boolean
+  "Mapping of IdP groups to tenant roles"
+  groupRoleMapping: JSONString
+  samlEntityId: String
+  samlSsoUrl: String
+  "IdP X.509 certificate (PEM format) - for local development"
+  samlCertificate: String
+  "Single Logout URL"
+  samlSloUrl: String
+  samlNameIdFormat: saml_name_id_format
+  samlWantAssertionsSigned: Boolean
+  samlWantResponseSigned: Boolean
+  "Mapping of SAML attributes to user fields"
+  samlAttributeMapping: JSONString
+  oidcIssuer: String
+  oidcClientId: String
+  oidcAuthorizationEndpoint: String
+  oidcTokenEndpoint: String
+  oidcUserinfoEndpoint: String
+  oidcJwksUri: String
+  "Space-separated list of OAuth scopes"
+  oidcScopes: String
+  "Mapping of OIDC claims to user fields"
+  oidcClaimMapping: JSONString
+  spMetadataXml: String
+  metadataLastUpdated: DateTime
+  lastLoginAt: DateTime
+  loginCount: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+  ssoConnection: SSOConnectionType
+  clientMutationId: String
+}
+"Delete an SSO connection. Requires tenantId in input for tenant context."
+type DeleteSSOConnectionMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
+}
+"Activate an SSO connection."
+type ActivateSSOConnectionMutationPayload {
+  id: String
+  tenantId: String
+  ssoConnection: SSOConnectionType
+  clientMutationId: String
+}
+"Deactivate an SSO connection. Requires tenantId for tenant context."
+type DeactivateSSOConnectionMutation {
+  ssoConnection: SSOConnectionType
+}
+"Test an SSO connection configuration. Requires tenantId for tenant context."
+type TestSSOConnectionMutation {
+  result: TestSSOConnectionPayload
+}
+type TestSSOConnectionPayload {
+  connectionId: String
+  connectionName: String
+  connectionType: String
+  overallStatus: String
+  checks: [TestSSOConnectionCheckType]
+  testedAt: String
+}
+type TestSSOConnectionCheckType {
+  name: String
+  status: String
+  message: String
+  details: GenericScalar
+}
+"Create a new SCIM token."
+type CreateSCIMTokenMutationPayload {
+  tenantId: String
+  name: String
+  ssoConnectionId: String
+  expiresInDays: Int
+  scimToken: SCIMTokenType
+  rawToken: String
+  clientMutationId: String
+}
+"Revoke a SCIM token. Requires tenantId for tenant context."
+type RevokeSCIMTokenMutation {
+  ok: Boolean
+}
+"Delete a passkey as tenant admin (for any tenant member). Requires tenantId for tenant context."
+type DeleteTenantPasskeyMutation {
+  ok: Boolean
+}
+"Revoke an SSO session."
+type RevokeSessionMutation {
+  ok: Boolean
+}
+"Revoke all SSO sessions for the current user except the current session."
+type RevokeAllSessionsMutation {
+  ok: Boolean
+  revokedCount: Int
+}
+"Mark a device as trusted."
+type TrustDeviceMutation {
+  device: UserDeviceType
+}
+"Remove trust from a device."
+type UntrustDeviceMutation {
+  device: UserDeviceType
+}
+"Block a device."
+type BlockDeviceMutation {
+  device: UserDeviceType
+}
+"Rename a passkey."
+type RenamePasskeyMutation {
+  passkey: PasskeyType
+}
+"Delete a passkey."
+type DeletePasskeyMutationPayload {
+  deletedIds: [ID]
+  clientMutationId: String
+}
 type UpdateTenantMutationPayload {
   tenant: TenantType
   tenantEdge: TenantEdge
@@ -807,9 +1712,10 @@ type DeleteTenantMutationPayload {
   clientMutationId: String
 }
 type CreateTenantInvitationMutationPayload {
-  email: String
-  role: TenantUserRole
-  tenantId: String
+  ok: Boolean
+  clientMutationId: String
+}
+type ResendTenantInvitationMutationPayload {
   ok: Boolean
   clientMutationId: String
 }
@@ -817,6 +1723,105 @@ type UpdateTenantMembershipMutationPayload {
   tenantMembership: TenantMembershipType
   tenantMembershipEdge: TenantEdge
   clientMutationId: String
+}
+"Mutation to enable or disable action logging for a tenant."
+type UpdateTenantActionLoggingMutation {
+  tenant: TenantType
+  ok: Boolean
+}
+"""
+Mutation to trigger an async export of action logs.
+
+Creates an export job that processes in the background.
+User receives a notification when the export is ready.
+"""
+type ExportActionLogsMutation {
+  export: ActionLogExportType
+  ok: Boolean
+}
+"GraphQL type for ActionLogExport model."
+type ActionLogExportType implements Node {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  "The ID of the object"
+  id: ID!
+  tenant: TenantType!
+  requestedBy: CurrentUserType!
+  status: MultitenancyActionLogExportStatusChoices!
+  errorMessage: String!
+  startedAt: DateTime
+  completedAt: DateTime
+  filters: GenericScalar
+  "Path to the generated file in storage"
+  filePath: String!
+  "Size of the generated file in bytes"
+  fileSize: BigInt
+  "Number of logs in the export"
+  logCount: Int
+  celeryTaskId: String!
+  downloadUrl: String
+}
+"""
+Create a new custom organization role.
+
+SECURITY:
+- Requires 'org.roles.manage' permission
+- Users can only create roles with permissions they themselves have (except owners)
+"""
+type CreateOrganizationRoleMutation {
+  role: OrganizationRoleType
+  ok: Boolean
+}
+"""
+Update an existing organization role.
+
+SECURITY:
+- Requires 'org.roles.manage' permission
+- Cannot modify the Owner role
+- Users can only add permissions they themselves have (except owners)
+"""
+type UpdateOrganizationRoleMutation {
+  role: OrganizationRoleType
+  ok: Boolean
+}
+"""
+Delete an organization role.
+
+If there are members with this role, a replacement_role_id must be provided.
+
+SECURITY:
+- Requires 'org.roles.manage' permission
+- Cannot delete system roles (Owner, Admin, Member)
+"""
+type DeleteOrganizationRoleMutation {
+  ok: Boolean
+  affectedMemberCount: Int
+}
+"""
+Assign one or more organization roles to a member.
+
+SECURITY:
+- Requires 'members.roles.edit' permission
+- Only owners can assign the Owner role
+- Users can only assign roles with permissions they themselves have
+- Users cannot remove their own owner role if they're the last owner
+"""
+type AssignRolesToMemberMutation {
+  membership: TenantMembershipType
+  ok: Boolean
+}
+"""
+Remove a specific role from a member.
+
+SECURITY:
+- Requires 'members.roles.edit' permission
+- Only owners can remove the Owner role
+- Cannot remove the last owner's owner role
+- Non-owners cannot modify owner memberships
+"""
+type RemoveRoleFromMemberMutation {
+  membership: TenantMembershipType
+  ok: Boolean
 }
 type CreateTenantMutationPayload {
   tenant: TenantType
@@ -831,12 +1836,29 @@ type DeclineTenantInvitationMutationPayload {
   ok: Boolean
   clientMutationId: String
 }
+"""
+Delete/remove a member from the organization.
+
+SECURITY:
+- Requires 'members.remove' permission to remove other members
+- Users can always remove themselves (leave organization)
+- Only owners can remove other owners
+- Cannot remove the last owner
+"""
 type DeleteTenantMembershipMutationPayload {
   deletedIds: [ID]
   clientMutationId: String
 }
+"""
+Mutation to send a message to the AI assistant.
+The response is streamed via the AiChatSubscription.
+"""
+type SendAiMessageMutation {
+  ok: Boolean
+  error: String
+}
 type GenerateSaasIdeasMutationPayload {
-  ideas: [String]
+  response: String
   clientMutationId: String
 }
 type ChangeActiveSubscriptionMutationPayload {
@@ -928,6 +1950,12 @@ type UserProfileType implements Node {
   user: CurrentUserType!
   firstName: String!
   lastName: String!
+  "User's preferred language for emails and notifications"
+  language: UsersUserProfileLanguageChoices!
+  avatar: String
+  email: String
+  "The hashid of the associated user"
+  userId: String
 }
 "A Relay edge containing a `CurrentUser` and its cursor."
 type CurrentUserEdge {
@@ -983,9 +2011,12 @@ type UpdateNotificationMutationPayload {
   notification: NotificationType
   notificationEdge: NotificationEdge
   hasUnreadNotifications: Boolean
+  unreadNotificationsCount: Int
   clientMutationId: String
 }
 type MarkReadAllNotificationsMutationPayload {
+  hasUnreadNotifications: Boolean
+  unreadNotificationsCount: Int
   ok: Boolean
   clientMutationId: String
 }
@@ -1022,9 +2053,35 @@ type DeleteFavoriteContentfulDemoItemMutationPayload {
   clientMutationId: String
 }
 type ApiSubscription {
+  aiChat(conversationId: String!): AiChatSubscription
   notificationCreated: NotificationCreatedSubscription
 }
-"Simple GraphQL subscription."
+"""
+GraphQL subscription for AI chat streaming.
+Receives events as the AI processes messages.
+"""
+type AiChatSubscription {
+  event: AiChatEventType
+}
+"Event sent during AI chat streaming."
+type AiChatEventType {
+  eventType: String!
+  message: String
+  toolName: String
+  toolDisplayName: String
+  success: Boolean
+  hasData: Boolean
+  text: String
+  toolsUsed: [String]
+  conversationId: String
+}
+"""
+GraphQL subscription for real-time notification updates.
+
+SECURITY: Ensures only authenticated users can subscribe to their own
+notifications. The subscribe method verifies authentication and prevents
+users from subscribing to other users' notification streams.
+"""
 type NotificationCreatedSubscription {
   notification: NotificationType
 }
@@ -1046,12 +2103,204 @@ enum TenantUserRole {
   ADMIN
   MEMBER
 }
+"System role types that serve as templates."
+enum SystemRoleType {
+  OWNER
+  ADMIN
+  MEMBER
+}
+"Predefined colors for organization roles."
+enum RoleColor {
+  BLUE
+  GREEN
+  RED
+  YELLOW
+  PURPLE
+  ORANGE
+  PINK
+  TEAL
+  GRAY
+}
+"An enumeration."
+enum BackupBackupRecordStatusChoices {
+  "Pending"
+  PENDING
+  "Processing"
+  PROCESSING
+  "Completed"
+  COMPLETED
+  "Failed"
+  FAILED
+}
+"An enumeration."
+enum BackupRestoreRecordStatusChoices {
+  "Pending"
+  PENDING
+  "Processing"
+  PROCESSING
+  "Completed"
+  COMPLETED
+  "Partially Completed"
+  PARTIALLY_COMPLETED
+  "Failed"
+  FAILED
+}
+"An enumeration."
+enum BackupRestoreRecordConflictStrategyChoices {
+  "Skip existing records"
+  SKIP
+  "Update existing records"
+  UPDATE
+  "Fail on conflicts"
+  FAIL
+}
+"An enumeration."
+enum SsoTenantSSOConnectionConnectionTypeChoices {
+  "SAML 2.0"
+  SAML
+  "OpenID Connect"
+  OIDC
+}
+"An enumeration."
+enum SsoTenantSSOConnectionStatusChoices {
+  "Draft"
+  DRAFT
+  "Active"
+  ACTIVE
+  "Inactive"
+  INACTIVE
+  "Configuration Error"
+  ERROR
+}
+"An enumeration."
+enum SsoTenantSSOConnectionSamlNameIdFormatChoices {
+  "Email Address"
+  URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_EMAILADDRESS
+  "Persistent"
+  URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_PERSISTENT
+  "Transient"
+  URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_TRANSIENT
+  "Unspecified"
+  URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_UNSPECIFIED
+}
+"An enumeration."
+enum SsoSSOAuditLogEventTypeChoices {
+  "IdP Configuration Created"
+  IDP_CONFIG_CREATED
+  "IdP Configuration Updated"
+  IDP_CONFIG_UPDATED
+  "IdP Configuration Deleted"
+  IDP_CONFIG_DELETED
+  "IdP Configuration Activated"
+  IDP_CONFIG_ACTIVATED
+  "IdP Configuration Deactivated"
+  IDP_CONFIG_DEACTIVATED
+  "SSO Login Initiated"
+  SSO_LOGIN_INITIATED
+  "SSO Login Success"
+  SSO_LOGIN_SUCCESS
+  "SSO Login Failed"
+  SSO_LOGIN_FAILED
+  "SSO Logout"
+  SSO_LOGOUT
+  "User Provisioned via JIT"
+  USER_PROVISIONED
+  "User Updated via SSO"
+  USER_UPDATED
+  "Group Mapping Applied"
+  GROUP_MAPPING_APPLIED
+  "SCIM User Created"
+  SCIM_USER_CREATED
+  "SCIM User Updated"
+  SCIM_USER_UPDATED
+  "SCIM User Deleted"
+  SCIM_USER_DELETED
+  "SCIM Group Created"
+  SCIM_GROUP_CREATED
+  "SCIM Group Updated"
+  SCIM_GROUP_UPDATED
+  "SCIM Group Deleted"
+  SCIM_GROUP_DELETED
+  "SSO Enforce Bypass Login"
+  SSO_ENFORCE_BYPASS
+  "Session Created"
+  SESSION_CREATED
+  "Session Revoked"
+  SESSION_REVOKED
+  "Device Registered"
+  DEVICE_REGISTERED
+  "Device Removed"
+  DEVICE_REMOVED
+  "Passkey Registered"
+  PASSKEY_REGISTERED
+  "Passkey Removed"
+  PASSKEY_REMOVED
+  "Passkey Auth Success"
+  PASSKEY_AUTH_SUCCESS
+  "Passkey Auth Failed"
+  PASSKEY_AUTH_FAILED
+  "Passkey Clone Detected"
+  PASSKEY_CLONE_DETECTED
+  "Security Anomaly Detected"
+  SECURITY_ANOMALY
+}
+"An enumeration."
+enum MultitenancyActionLogActionTypeChoices {
+  "Create"
+  CREATE
+  "Update"
+  UPDATE
+  "Delete"
+  DELETE
+  "Settings Change"
+  SETTINGS_CHANGE
+  "Import"
+  IMPORT
+  "Sync"
+  SYNC
+  "Bulk Delete"
+  BULK_DELETE
+  "Bulk Update"
+  BULK_UPDATE
+  "Activate"
+  ACTIVATE
+  "Deactivate"
+  DEACTIVATE
+  "Revoke"
+  REVOKE
+}
+"An enumeration."
+enum MultitenancyActionLogActorTypeChoices {
+  "User"
+  USER
+  "AI Agent"
+  AI_AGENT
+  "System (Sync)"
+  SYSTEM_SYNC
+  "System (Import)"
+  SYSTEM_IMPORT
+  "System (Scheduled Task)"
+  SYSTEM_SCHEDULED_TASK
+  "System (Migration)"
+  SYSTEM_MIGRATION
+}
+"Categories for grouping permissions in the UI."
+enum PermissionCategory {
+  ORGANIZATION
+  MEMBERS
+  SECURITY
+  BILLING
+  FEATURES
+  DASHBOARD
+}
+"An enumeration."
 enum DjstripeProductTypeChoices {
   "Good"
   GOOD
   "Service"
   SERVICE
 }
+"An enumeration."
 enum DjstripePlanAggregateUsageChoices {
   "Last during period"
   LAST_DURING_PERIOD
@@ -1062,12 +2311,14 @@ enum DjstripePlanAggregateUsageChoices {
   "Sum"
   SUM
 }
+"An enumeration."
 enum DjstripePlanBillingSchemeChoices {
   "Per-unit"
   PER_UNIT
   "Tiered"
   TIERED
 }
+"An enumeration."
 enum DjstripePlanIntervalChoices {
   "Day"
   DAY
@@ -1078,18 +2329,21 @@ enum DjstripePlanIntervalChoices {
   "Year"
   YEAR
 }
+"An enumeration."
 enum DjstripePlanTiersModeChoices {
   "Graduated"
   GRADUATED
   "Volume-based"
   VOLUME
 }
+"An enumeration."
 enum DjstripePlanUsageTypeChoices {
   "Licensed"
   LICENSED
   "Metered"
   METERED
 }
+"An enumeration."
 enum DjstripeSubscriptionStatusChoices {
   "Active"
   ACTIVE
@@ -1106,30 +2360,35 @@ enum DjstripeSubscriptionStatusChoices {
   "Unpaid"
   UNPAID
 }
+"An enumeration."
 enum DjstripePriceTypeChoices {
   "One-time"
   ONE_TIME
   "Recurring"
   RECURRING
 }
+"An enumeration."
 enum DjstripePriceBillingSchemeChoices {
   "Per-unit"
   PER_UNIT
   "Tiered"
   TIERED
 }
+"An enumeration."
 enum DjstripePriceTiersModeChoices {
   "Graduated"
   GRADUATED
   "Volume-based"
   VOLUME
 }
+"An enumeration."
 enum DjstripeSubscriptionScheduleEndBehaviorChoices {
   "Cancel"
   CANCEL
   "Release"
   RELEASE
 }
+"An enumeration."
 enum DjstripeSubscriptionScheduleStatusChoices {
   "Active"
   ACTIVE
@@ -1142,6 +2401,7 @@ enum DjstripeSubscriptionScheduleStatusChoices {
   "Released"
   RELEASED
 }
+"An enumeration."
 enum DjstripePaymentMethodTypeChoices {
   "Acss Dbit"
   ACSS_DEBIT
@@ -1204,6 +2464,7 @@ enum DjstripePaymentMethodTypeChoices {
   "Wechat Pay"
   WECHAT_PAY
 }
+"An enumeration."
 enum DjstripeChargeFailureCodeChoices {
   "Account already exists"
   ACCOUNT_ALREADY_EXISTS
@@ -1380,6 +2641,7 @@ enum DjstripeChargeFailureCodeChoices {
   "URL invalid"
   URL_INVALID
 }
+"An enumeration."
 enum DjstripeInvoiceBillingReasonChoices {
   "Automatic pending invoice item invoice"
   AUTOMATIC_PENDING_INVOICE_ITEM_INVOICE
@@ -1398,12 +2660,14 @@ enum DjstripeInvoiceBillingReasonChoices {
   "Upcoming"
   UPCOMING
 }
+"An enumeration."
 enum DjstripeInvoiceCollectionMethodChoices {
   "Charge automatically"
   CHARGE_AUTOMATICALLY
   "Send invoice"
   SEND_INVOICE
 }
+"An enumeration."
 enum DjstripeInvoiceCustomerTaxExemptChoices {
   "Exempt"
   EXEMPT
@@ -1412,6 +2676,7 @@ enum DjstripeInvoiceCustomerTaxExemptChoices {
   "Reverse"
   REVERSE
 }
+"An enumeration."
 enum DjstripeInvoiceStatusChoices {
   "Draft"
   DRAFT
@@ -1424,6 +2689,7 @@ enum DjstripeInvoiceStatusChoices {
   "Void"
   VOID
 }
+"An enumeration."
 enum DjstripeChargeStatusChoices {
   "Failed"
   FAILED
@@ -1432,6 +2698,53 @@ enum DjstripeChargeStatusChoices {
   "Succeeded"
   SUCCEEDED
 }
+"Enum for backup restore conflict strategies."
+enum ConflictStrategyEnum {
+  SKIP
+  UPDATE
+  FAIL
+}
+"An enumeration."
+enum connection_type {
+  "SAML 2.0"
+  SAML
+  "OpenID Connect"
+  OIDC
+}
+"An enumeration."
+enum status {
+  "Draft"
+  DRAFT
+  "Active"
+  ACTIVE
+  "Inactive"
+  INACTIVE
+  "Configuration Error"
+  ERROR
+}
+"An enumeration."
+enum saml_name_id_format {
+  "Email Address"
+  URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_EMAILADDRESS
+  "Persistent"
+  URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_PERSISTENT
+  "Transient"
+  URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_TRANSIENT
+  "Unspecified"
+  URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_UNSPECIFIED
+}
+"An enumeration."
+enum MultitenancyActionLogExportStatusChoices {
+  "Pending"
+  PENDING
+  "Processing"
+  PROCESSING
+  "Completed"
+  COMPLETED
+  "Failed"
+  FAILED
+}
+"An enumeration."
 enum DjstripeSetupIntentCancellationReasonChoices {
   "Abandoned"
   ABANDONED
@@ -1440,6 +2753,7 @@ enum DjstripeSetupIntentCancellationReasonChoices {
   "Requested by Customer"
   REQUESTED_BY_CUSTOMER
 }
+"An enumeration."
 enum DjstripeSetupIntentStatusChoices {
   "Cancellation invalidates the intent for future confirmation and cannot be undone."
   CANCELED
@@ -1454,11 +2768,152 @@ enum DjstripeSetupIntentStatusChoices {
   "Setup was successful and the payment method is optimized for future payments."
   SUCCEEDED
 }
+"An enumeration."
 enum DjstripeSetupIntentUsageChoices {
   "Off session"
   OFF_SESSION
   "On session"
   ON_SESSION
+}
+"An enumeration."
+enum UsersUserProfileLanguageChoices {
+  "English"
+  EN
+  "Polish"
+  PL
+  "German"
+  DE
+  "French"
+  FR
+  "Spanish"
+  ES
+}
+"Input type for backup configuration."
+input BackupConfigInput {
+  tenantId: ID!
+  enabled: Boolean!
+  backupIntervalHours: Int!
+  retentionDays: Int!
+  "List of user IDs to receive email notifications"
+  emailRecipients: [ID]
+  "List of module IDs to include in backups"
+  selectedModules: [String]
+  "Optional: Specific models to include (format: 'app_label.ModelName')"
+  selectedModels: [String]
+  "Optional: Specific models to exclude (format: 'app_label.ModelName')"
+  excludedModels: [String]
+}
+input PublishTranslationsMutationInput {
+  localeCode: String!
+  clientMutationId: String
+}
+input SyncTranslationKeysMutationInput {
+  translations: JSONString!
+  clientMutationId: String
+}
+input RollbackTranslationsMutationInput {
+  versionId: ID!
+  clientMutationId: String
+}
+input CreateSSOConnectionMutationInput {
+  id: String
+  tenantId: String!
+  "Display name for this SSO connection"
+  name: String!
+  connectionType: connection_type
+  status: status
+  "List of email domains allowed to use this SSO connection"
+  allowedDomains: JSONString
+  "When enabled, users from allowed domains must use SSO to access this tenant. Password login will not grant access."
+  enforceSso: Boolean
+  "Automatically create users on first SSO login"
+  jitProvisioningEnabled: Boolean
+  "Mapping of IdP groups to tenant roles"
+  groupRoleMapping: JSONString
+  samlEntityId: String
+  samlSsoUrl: String
+  "IdP X.509 certificate (PEM format) - for local development"
+  samlCertificate: String
+  "Single Logout URL"
+  samlSloUrl: String
+  samlNameIdFormat: saml_name_id_format
+  samlWantAssertionsSigned: Boolean
+  samlWantResponseSigned: Boolean
+  "Mapping of SAML attributes to user fields"
+  samlAttributeMapping: JSONString
+  oidcIssuer: String
+  oidcClientId: String
+  oidcClientSecret: String
+  oidcAuthorizationEndpoint: String
+  oidcTokenEndpoint: String
+  oidcUserinfoEndpoint: String
+  oidcJwksUri: String
+  "Space-separated list of OAuth scopes"
+  oidcScopes: String
+  "Mapping of OIDC claims to user fields"
+  oidcClaimMapping: JSONString
+  clientMutationId: String
+}
+input UpdateSSOConnectionMutationInput {
+  id: String
+  tenantId: String
+  "Display name for this SSO connection"
+  name: String
+  connectionType: connection_type
+  status: status
+  "List of email domains allowed to use this SSO connection"
+  allowedDomains: JSONString
+  "When enabled, users from allowed domains must use SSO to access this tenant. Password login will not grant access."
+  enforceSso: Boolean
+  "Automatically create users on first SSO login"
+  jitProvisioningEnabled: Boolean
+  "Mapping of IdP groups to tenant roles"
+  groupRoleMapping: JSONString
+  samlEntityId: String
+  samlSsoUrl: String
+  "IdP X.509 certificate (PEM format) - for local development"
+  samlCertificate: String
+  "Single Logout URL"
+  samlSloUrl: String
+  samlNameIdFormat: saml_name_id_format
+  samlWantAssertionsSigned: Boolean
+  samlWantResponseSigned: Boolean
+  "Mapping of SAML attributes to user fields"
+  samlAttributeMapping: JSONString
+  oidcIssuer: String
+  oidcClientId: String
+  "OIDC client secret. Leave blank to keep existing. Only set when updating."
+  oidcClientSecret: String
+  oidcAuthorizationEndpoint: String
+  oidcTokenEndpoint: String
+  oidcUserinfoEndpoint: String
+  oidcJwksUri: String
+  "Space-separated list of OAuth scopes"
+  oidcScopes: String
+  "Mapping of OIDC claims to user fields"
+  oidcClaimMapping: JSONString
+  clientMutationId: String
+}
+input DeleteSSOConnectionMutationInput {
+  id: String
+  tenantId: String!
+  clientMutationId: String
+}
+input ActivateSSOConnectionMutationInput {
+  id: String!
+  tenantId: String!
+  clientMutationId: String
+}
+input CreateSCIMTokenMutationInput {
+  tenantId: String!
+  name: String!
+  ssoConnectionId: String
+  expiresInDays: Int
+  clientMutationId: String
+}
+input DeletePasskeyMutationInput {
+  id: String
+  clientMutationId: String
 }
 input UpdateTenantMutationInput {
   name: String!
@@ -1472,7 +2927,14 @@ input DeleteTenantMutationInput {
 }
 input CreateTenantInvitationMutationInput {
   email: String!
-  role: TenantUserRole!
+  role: TenantUserRole
+  "List of organization role IDs to assign to the invited member"
+  organizationRoleIds: [String]
+  tenantId: String!
+  clientMutationId: String
+}
+input ResendTenantInvitationMutationInput {
+  id: String!
   tenantId: String!
   clientMutationId: String
 }
@@ -1555,6 +3017,7 @@ input UpdateCurrentUserMutationInput {
   firstName: String
   lastName: String
   avatar: Upload
+  language: String
   clientMutationId: String
 }
 input GenerateOTPMutationInput {
@@ -1612,14 +3075,12 @@ input MarkReadAllNotificationsMutationInput {
 input CreateCrudDemoItemMutationInput {
   tenantId: String!
   name: String!
-  createdBy: String
   clientMutationId: String
 }
 input UpdateCrudDemoItemMutationInput {
   id: ID!
   tenantId: String!
   name: String!
-  createdBy: String
   clientMutationId: String
 }
 input DeleteCrudDemoItemMutationInput {
@@ -1629,7 +3090,6 @@ input DeleteCrudDemoItemMutationInput {
 }
 input CreateDocumentDemoItemMutationInput {
   file: Upload
-  createdBy: String
   clientMutationId: String
 }
 input DeleteDocumentDemoItemMutationInput {
@@ -1638,7 +3098,6 @@ input DeleteDocumentDemoItemMutationInput {
 }
 input CreateFavoriteContentfulDemoItemMutationInput {
   item: String!
-  user: String
   clientMutationId: String
 }
 input DeleteFavoriteContentfulDemoItemMutationInput {

@@ -1,4 +1,4 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import { EmailStory } from '../../emailStory/emailStory.component';
 import { EmailTemplateType } from '../../types';
@@ -9,25 +9,53 @@ import {
 } from './passwordReset.component';
 
 const Template: StoryFn<PasswordResetProps> = (args: PasswordResetProps) => (
-  <EmailStory
-    type={EmailTemplateType.PASSWORD_RESET}
-    subject={<PasswordResetSubject />}
-    emailData={args}
-  >
+  <EmailStory type={EmailTemplateType.PASSWORD_RESET} subject={<PasswordResetSubject />} emailData={args}>
     <PasswordResetEmail {...args} />
   </EmailStory>
 );
 
-export default {
+const meta: Meta<typeof PasswordResetEmail> = {
   title: 'Emails/PasswordReset',
   component: PasswordResetEmail,
+  parameters: {
+    docs: {
+      description: {
+        component: 'Email sent to users when they request a password reset.',
+      },
+    },
+  },
+  argTypes: {
+    token: {
+      description: 'Password reset token',
+      control: 'text',
+    },
+    userId: {
+      description: 'User ID for the reset link',
+      control: 'text',
+    },
+  },
 };
 
-export const Primary = {
-  render: Template,
+export default meta;
+type Story = StoryObj<typeof PasswordResetEmail>;
 
+export const Primary: Story = {
+  render: Template,
   args: {
-    token: 'token-value',
-    userId: 'user-id',
+    token: 'reset-token-xyz789',
+    userId: 'user-12345',
+  },
+};
+
+export const Mobile: Story = {
+  render: Template,
+  args: {
+    token: 'reset-token-xyz789',
+    userId: 'user-12345',
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
   },
 };

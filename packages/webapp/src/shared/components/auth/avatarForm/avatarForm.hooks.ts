@@ -1,4 +1,5 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useFormatFileSize } from '@sb/webapp-core/components/fileSize';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
@@ -41,10 +42,11 @@ export const useAvatarForm = () => {
     form: { reset },
   } = form;
 
-  const [commitAvatarMutation] = useMutation(authUpdateUserProfileMutation, {
+  const [commitAvatarMutation, { loading }] = useMutation(authUpdateUserProfileMutation, {
+    // The mutation returns commonQueryCurrentUserFragment which includes the avatar field
+    // Apollo automatically updates the cache when the mutation response includes matching fragments
     onCompleted: () => {
       trackEvent('profile', 'avatar-update');
-
       reset();
 
       toast({
@@ -52,10 +54,21 @@ export const useAvatarForm = () => {
           defaultMessage: 'Avatar successfully changed.',
           id: 'Auth / Avatar Form / Success message',
         }),
+        variant: 'success',
       });
     },
     onError: (error) => {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        setApolloGraphQLResponseErrors(graphQLErrors);
+      }
+      toast({
+        description: intl.formatMessage({
+          defaultMessage: 'Failed to update avatar. Please try again.',
+          id: 'Auth / Avatar Form / Error message',
+        }),
+        variant: 'destructive',
+      });
     },
   });
 
@@ -70,5 +83,5 @@ export const useAvatarForm = () => {
     });
   });
 
-  return { ...form, handleAvatarUpload, fileTooLargeMessage };
+  return { ...form, handleAvatarUpload, fileTooLargeMessage, loading };
 };

@@ -2,7 +2,7 @@ import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils/fixt
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { GraphQLError } from 'graphql/error/GraphQLError';
+import { GraphQLError } from 'graphql';
 import { append } from 'ramda';
 
 import { render } from '../../../../../tests/utils/rendering';
@@ -21,11 +21,11 @@ describe('PasswordResetRequestForm: Component', () => {
   };
 
   const fillForm = async (emailValue = email) => {
-    await userEvent.type(await screen.findByLabelText(/email/i), emailValue);
+    await userEvent.type(await screen.findByLabelText(/email address/i), emailValue);
   };
 
   const sendForm = async () => {
-    await userEvent.click(await screen.findByRole('button', { name: /send the link/i }));
+    await userEvent.click(await screen.findByRole('button', { name: /send reset link/i }));
   };
 
   it('should show resend button if action completes successfully', async () => {
@@ -44,7 +44,7 @@ describe('PasswordResetRequestForm: Component', () => {
     await sendForm();
 
     await waitFor(() => {
-      expect(screen.getByText(/send the link again/i)).toBeInTheDocument();
+      expect(screen.getByText(/resend reset link/i)).toBeInTheDocument();
     });
 
     expect(trackEvent).toHaveBeenCalledWith('auth', 'reset-password');
@@ -56,7 +56,7 @@ describe('PasswordResetRequestForm: Component', () => {
     await sendForm();
 
     await waitFor(() => {
-      expect(screen.getByText('Email is required')).toBeInTheDocument();
+      expect(screen.getByText(/please enter your email address/i)).toBeInTheDocument();
     });
   });
 
@@ -64,21 +64,16 @@ describe('PasswordResetRequestForm: Component', () => {
     const errorMessage = 'Email is invalid';
     const requestMock = composeMockedQueryResult(authRequestPasswordResetMutation, {
       variables: defaultVariable,
-      data: {
-        passwordReset: {
-          ok: true,
-        },
-      },
+      data: {},
       errors: [new GraphQLError(errorMessage)],
     });
 
-    render(<Component />, { apolloMocks: append(requestMock) });
+    render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(requestMock) });
 
     await fillForm();
     await sendForm();
 
-    await waitFor(() => {
-      expect(screen.getByText(errorMessage)).toBeInTheDocument();
-    });
+    // Wait for error to be processed and displayed
+    expect(await screen.findByText(errorMessage, {}, { timeout: 3000 })).toBeInTheDocument();
   });
 });

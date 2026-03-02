@@ -1,0 +1,318 @@
+---
+title: Session Management
+description: Secure authentication with cross-origin support and multi-device session tracking
+---
+
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Session Management
+
+<ProjectName /> includes enterprise-grade session management with support for cross-origin deployments, Safari/iOS compatibility, and multi-device session tracking.
+
+## Overview
+
+The session system provides:
+
+- **Cross-Origin Cookie Support**: Works with separate frontend/backend domains
+- **Safari/iOS Fallback**: Authorization header fallback for restrictive browsers
+- **Multi-Device Tracking**: View and manage active sessions across devices
+- **Session Revocation**: Remotely log out specific devices
+- **Activity Logging**: Track authentication events
+
+## Cross-Origin Authentication
+
+When your frontend and backend are on different domains (common with Render.com, Vercel, etc.), special configuration is required.
+
+### The Challenge
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│               CROSS-ORIGIN DEPLOYMENT                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   webapp-xxx.onrender.com        backend-xxx.onrender.com       │
+│   ┌──────────────────┐          ┌──────────────────┐            │
+│   │    React App     │◄────────►│   Django API     │            │
+│   │                  │  CORS    │                  │            │
+│   │  Cookies need    │  Cookies │  Set-Cookie      │            │
+│   │  SameSite=None   │  ────────│  headers         │            │
+│   └──────────────────┘          └──────────────────┘            │
+│                                                                  │
+│   ⚠️ Different domains = third-party cookies                    │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Configuration
+
+#### Backend Environment Variables
+
+```bash
+# Required for cross-origin deployments
+COOKIE_SAMESITE=None        # Allow cookies on cross-origin requests
+COOKIE_SECURE=True          # Required when SameSite=None
+
+# CORS configuration
+CORS_ALLOWED_ORIGINS=https://webapp-xxx.onrender.com
+CSRF_TRUSTED_ORIGINS=https://webapp-xxx.onrender.com,https://backend-xxx.onrender.com
+
+# Allowed hosts
+DJANGO_ALLOWED_HOSTS=backend-xxx.onrender.com
+```
+
+#### Django Settings
+
+The cookie settings are automatically applied:
+
+```python
+# config/settings.py
+
+# Cookie SameSite attribute
+COOKIE_SAMESITE = env('COOKIE_SAMESITE', default='Lax')
+
+# Applied to all cookies
+SESSION_COOKIE_SAMESITE = COOKIE_SAMESITE
+CSRF_COOKIE_SAMESITE = COOKIE_SAMESITE
+
+# Secure cookies (required for SameSite=None)
+SESSION_COOKIE_SECURE = env.bool('COOKIE_SECURE', default=True)
+CSRF_COOKIE_SECURE = env.bool('COOKIE_SECURE', default=True)
+```
+
+## Safari/iOS Fallback
+
+Safari and iOS have stricter third-party cookie policies. The boilerplate includes an automatic fallback using Authorization headers.
+
+### How It Works
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              SAFARI/iOS AUTHENTICATION FLOW                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│   1. Try cookie-based auth                                       │
+│      ┌────────┐     Cookie      ┌─────────┐                     │
+│      │ Safari │───────────────►│ Backend │  ← Cookie rejected   │
+│      └────────┘                 └─────────┘                     │
+│                                                                  │
+│   2. Fallback to Authorization header                            │
+│      ┌────────┐  Authorization  ┌─────────┐                     │
+│      │ Safari │─────────────────►│ Backend │  ← Token accepted   │
+│      └────────┘  Bearer <token>  └─────────┘                     │
+│                                                                  │
+│   3. Token stored in localStorage                                │
+│      ┌─────────────────────┐                                     │
+│      │ localStorage        │                                     │
+│      │ 'auth_token': '...' │                                     │
+│      └─────────────────────┘                                     │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Frontend Implementation
+
+The API client automatically handles the fallback:
+
+```typescript
+// webapp-api-client/src/apolloClient.ts
+
+const authLink = setContext(async (_, { headers }) => {
+  // Try cookie auth first (preferred)
+  // If cookies blocked, use localStorage token
+  const token = localStorage.getItem('auth_token');
+  
+  return {
+    headers: {
+      ...headers,
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+  };
+});
+```
+
+### Backend Token Handling
+
+```python
+# apps/users/utils.py
+
+def set_auth_cookie(response, token, user):
+    """Set both cookie and response header for fallback support."""
+    
+    # Set HTTP-only cookie (primary)
+    response.set_cookie(
+        'auth_token',
+        token,
+        httponly=True,
+        secure=True,
+        samesite=settings.COOKIE_SAMESITE,
+    )
+    
+    # Also include in response for localStorage fallback
+    response['X-Auth-Token'] = token
+```
+
+## Multi-Device Session Management
+
+Users can view and manage their active sessions across devices.
+
+### Session Tracking
+
+Each login creates a session record:
+
+```python
+class UserSession(models.Model):
+    user = models.ForeignKey(User)
+    device_info = models.CharField(max_length=255)  # "Chrome on macOS"
+    ip_address = models.GenericIPAddressField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_activity = models.DateTimeField(auto_now=True)
+    is_current = models.BooleanField(default=False)
+```
+
+### Session UI
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Active Sessions                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  🖥️  Chrome on macOS                        This device         │
+│      192.168.1.100 • Last active: Just now                      │
+│                                                                  │
+│  📱  Safari on iOS                          [Revoke]            │
+│      10.0.0.50 • Last active: 2 hours ago                       │
+│                                                                  │
+│  💻  Firefox on Windows                     [Revoke]            │
+│      203.0.113.45 • Last active: 1 day ago                      │
+│                                                                  │
+│                              [Sign out all other devices]        │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Session Revocation
+
+```typescript
+// Revoke a specific session
+const [revokeSession] = useMutation(RevokeSessionMutation);
+
+await revokeSession({
+  variables: {
+    input: { sessionId: session.id }
+  }
+});
+```
+
+```python
+# Backend mutation
+class RevokeSessionMutation(graphene.Mutation):
+    class Arguments:
+        session_id = graphene.ID(required=True)
+    
+    def mutate(self, info, session_id):
+        session = UserSession.objects.get(id=session_id)
+        # Verify ownership
+        if session.user != info.context.user:
+            raise PermissionDenied()
+        session.delete()
+        return RevokeSessionMutation(ok=True)
+```
+
+## Activity Logging for Auth Events
+
+Authentication events are logged for security auditing:
+
+```python
+# Logged events
+ActionLog.objects.create(
+    action_type=ActionType.ACTIVATE,  # Login
+    entity_type=ActionEntityType.SSO_SESSION,
+    actor_user=user,
+    changes={
+        'device': device_info,
+        'ip_address': ip_address,
+    }
+)
+```
+
+### Auth Event Types
+
+| Event | Action Type | Description |
+|-------|-------------|-------------|
+| Login | `ACTIVATE` | User logged in |
+| Logout | `DEACTIVATE` | User logged out |
+| Session Revoked | `REVOKE` | Session terminated remotely |
+| Password Changed | `SETTINGS_CHANGE` | Security credential updated |
+
+## WebSocket Authentication
+
+For real-time features, WebSocket connections are authenticated:
+
+```typescript
+// Frontend WebSocket connection
+const wsUrl = `${WS_URL}?token=${authToken}`;
+const socket = new WebSocket(wsUrl);
+```
+
+```python
+# Backend consumer
+class AuthenticatedConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        token = self.scope['query_string'].decode().split('=')[1]
+        user = await self.authenticate(token)
+        if not user:
+            await self.close()
+            return
+        self.scope['user'] = user
+        await self.accept()
+```
+
+## Security Best Practices
+
+### Production Checklist
+
+- [ ] `COOKIE_SECURE=True` in production
+- [ ] `COOKIE_SAMESITE=None` for cross-origin (with HTTPS)
+- [ ] `CORS_ALLOWED_ORIGINS` explicitly set (no wildcards)
+- [ ] `CSRF_TRUSTED_ORIGINS` includes all valid origins
+- [ ] Session expiration configured appropriately
+- [ ] Rate limiting on login endpoints
+
+### Cookie Configuration Matrix
+
+| Deployment | `COOKIE_SAMESITE` | `COOKIE_SECURE` | Notes |
+|------------|-------------------|-----------------|-------|
+| Same domain | `Lax` | `True` | Standard secure config |
+| Cross-origin (Render, Vercel) | `None` | `True` | Required for cross-origin |
+| Local development | `Lax` | `False` | HTTP allowed locally |
+
+## Troubleshooting
+
+### Cookies Not Being Set
+
+1. Check browser DevTools → Application → Cookies
+2. Verify `CORS_ALLOWED_ORIGINS` includes your frontend URL
+3. Ensure `COOKIE_SECURE=True` with HTTPS
+4. For Safari, check if localStorage fallback is working
+
+### 403 CSRF Errors
+
+```bash
+# Ensure CSRF origins are configured
+CSRF_TRUSTED_ORIGINS=https://webapp-xxx.onrender.com,https://backend-xxx.onrender.com
+```
+
+### Session Not Persisting
+
+Check if cookies are being blocked:
+- Safari: Settings → Privacy → Prevent cross-site tracking
+- Chrome: Third-party cookies may be blocked
+
+The localStorage fallback should handle these cases automatically.
+
+## Related Documentation
+
+- [Authentication](/introduction/features/auth) - Auth overview
+- [Enterprise SSO](/features/enterprise-sso) - SAML/OIDC integration
+- [Activity Logs](/introduction/features/activity-logs) - Security auditing
+- [Deploy to Render.com](/deployment/render) - Cross-origin setup

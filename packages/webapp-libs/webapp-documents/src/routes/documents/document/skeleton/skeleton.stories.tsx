@@ -1,19 +1,13 @@
 import { Meta, StoryFn, StoryObj } from '@storybook/react';
-import styled from 'styled-components';
 
 import { withProviders } from '../../../../utils/storybook';
 import { Skeleton } from './skeleton.component';
 
-const Container = styled.div`
-  width: 200px;
-  padding: 10px;
-`;
-
 const Template: StoryFn = () => {
   return (
-    <Container>
+    <div className="w-[320px] p-4">
       <Skeleton />
-    </Container>
+    </div>
   );
 };
 

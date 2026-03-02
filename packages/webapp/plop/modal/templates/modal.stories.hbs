@@ -1,0 +1,54 @@
+import { useState } from 'react';
+import type { Meta, StoryObj } from '@storybook/react';
+
+import { Button } from '@sb/webapp-core/components/buttons';
+import { {{ pascalCase name }}Modal } from './{{ camelCase name }}Modal.component';
+
+const meta: Meta<typeof {{ pascalCase name }}Modal> = {
+  title: 'Modals/{{ pascalCase name }}Modal',
+  component: {{ pascalCase name }}Modal,
+  args: {
+    isOpen: true,
+    onClose: () => {},
+{{#if_eq variant "confirm"}}
+    onConfirm: () => {},
+{{/if_eq}}
+  },
+};
+
+export default meta;
+
+type Story = StoryObj<typeof {{ pascalCase name }}Modal>;
+
+export const Default: Story = {};
+
+export const Interactive: Story = {
+  render: (args) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+      <>
+        <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
+        <{{ pascalCase name }}Modal
+          {...args}
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+{{#if_eq variant "confirm"}}
+          onConfirm={() => {
+            console.log('Confirmed!');
+            setIsOpen(false);
+          }}
+{{/if_eq}}
+        />
+      </>
+    );
+  },
+};
+
+{{#if_eq variant "confirm"}}
+export const Loading: Story = {
+  args: {
+    isLoading: true,
+  },
+};
+{{/if_eq}}

@@ -44,8 +44,8 @@ describe('ValidateOtpForm: Component', () => {
       apolloMocks: (mocks) => mocks.concat(requestMock, refreshQueryMock),
     });
 
-    const input = await screen.findByPlaceholderText(/Authentication Code/i);
-    const submitButton = screen.getByText(/Submit/i);
+    const input = await screen.findByPlaceholderText(/000000/i);
+    const submitButton = screen.getByRole('button', { name: /verify code/i });
 
     await userEvent.type(input, token);
     await userEvent.click(submitButton);
@@ -57,9 +57,10 @@ describe('ValidateOtpForm: Component', () => {
   it('should display error if token is invalid', async () => {
     const token = '111111';
     const errorMessage = 'Verification token is invalid';
+    // Remove data field so composeMockedQueryResult uses error field instead of result.errors
     const requestMock = composeMockedQueryResult(validateOtpMutation, {
       variables: { input: { otpToken: token } },
-      data: { validateOtp: null },
+      data: {},
       errors: [
         new GraphQLError('GraphQlValidationError', {
           extensions: { token: [{ message: errorMessage, code: errorMessage }] },
@@ -67,15 +68,15 @@ describe('ValidateOtpForm: Component', () => {
       ],
     });
 
-    const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(requestMock) });
+    render(<Component />, { apolloMocks: append(requestMock) });
 
-    const input = await screen.findByPlaceholderText(/Authentication Code/i);
-    const submitButton = screen.getByText(/Submit/i);
+    const input = await screen.findByPlaceholderText(/000000/i);
+    const submitButton = screen.getByRole('button', { name: /verify code/i });
 
     await userEvent.type(input, token);
     await userEvent.click(submitButton);
-    await waitForApolloMocks();
 
-    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
+    // Wait for error to be processed and displayed
+    expect(await screen.findByText(errorMessage, {}, { timeout: 3000 })).toBeInTheDocument();
   });
 });

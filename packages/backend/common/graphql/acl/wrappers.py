@@ -25,7 +25,7 @@ def check_permissions(perms: types.PermissionsClasses, request: Request | dict, 
 
 
 def wraps_resolver_function(fn: Callable, perms: types.PermissionsClasses, node_resolver: bool = False) -> Callable:
-    if not hasattr(__wrapped_fns, 'value'):
+    if not hasattr(__wrapped_fns, "value"):
         __wrapped_fns.value = set()
 
     # Avoid wrapping function twice
@@ -62,7 +62,7 @@ def wraps_field(field: Field, perms: types.PermissionsClasses, parent_resolver=N
 
 
 def wraps_object_type(obj: Type[graphene.ObjectType], perms: types.PermissionsClasses) -> Type[graphene.ObjectType]:
-    if not hasattr(__wrapped_field_names, 'value'):
+    if not hasattr(__wrapped_field_names, "value"):
         __wrapped_field_names.value = set()
 
     for field_name, field in obj._meta.fields.items():

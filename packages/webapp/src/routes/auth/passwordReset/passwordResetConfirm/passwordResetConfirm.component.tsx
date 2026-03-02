@@ -1,11 +1,13 @@
-import { Link } from '@sb/webapp-core/components/buttons';
-import { H3, Small } from '@sb/webapp-core/components/typography';
+import { Button } from '@sb/webapp-core/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
+import { AuthLogo } from '../../../../shared/components/auth/authLogo';
+import { FloatingThemeToggle } from '../../../../shared/components/auth/floatingThemeToggle';
 import { PasswordResetConfirmForm } from '../../../../shared/components/auth/passwordResetConfirmForm';
 
 export const PasswordResetConfirm = () => {
@@ -30,22 +32,37 @@ export const PasswordResetConfirm = () => {
   }
 
   return (
-    <div className="m-auto flex max-w-xs flex-col items-center justify-center gap-6 2xl:mt-32">
-      <H3>
-        <FormattedMessage defaultMessage="Change your password" id="Auth / Confirm reset password / heading" />
-      </H3>
+    <>
+      <FloatingThemeToggle />
+      <div className="container flex min-h-screen items-center justify-center px-4 py-8">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-4 text-center">
+            <div className="flex justify-center">
+              <AuthLogo />
+            </div>
+            <CardTitle className="text-3xl font-semibold tracking-tight">
+              <FormattedMessage defaultMessage="Create new password" id="Auth / Confirm reset password / heading" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Please enter your new password below. Make sure it's strong and secure."
+                id="Auth / Confirm reset password / description"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <PasswordResetConfirmForm user={params.user} token={params.token} />
 
-      <Small>
-        <FormattedMessage defaultMessage="Set your new password." id="Auth / Confirm reset password / description" />
-      </Small>
-
-      <PasswordResetConfirmForm user={params.user} token={params.token} />
-
-      <div className="mt-8 flex w-full flex-row justify-between">
-        <Link to={generateLocalePath(RoutesConfig.login)}>
-          <FormattedMessage defaultMessage="Go back to log in" id="Auth / Confirm reset password / login link" />
-        </Link>
+            <div className="flex w-full flex-row justify-center text-sm">
+              <Button variant="link" className="h-auto p-0 text-sm" asChild>
+                <Link to={generateLocalePath(RoutesConfig.login)}>
+                  <FormattedMessage defaultMessage="Back to sign in" id="Auth / Confirm reset password / login link" />
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </>
   );
 };

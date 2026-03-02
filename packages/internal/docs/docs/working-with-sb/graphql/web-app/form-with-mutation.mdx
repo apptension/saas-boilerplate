@@ -49,10 +49,14 @@ this approach has the potential to separate the presentation and business logic,
 easier to maintain.
 
 ```ts title="packages/webapp/src/routes/productForm/productForm.hooks.ts" showLineNumbers
-export const useCreateProductForm = () => {
-  const form = useApiForm<ProductFields>();
+import { useApiForm } from '@sb/webapp-api-client/hooks';
 
- const handleSubmit = form.handleSubmit(async (data: ProductFields) => {
+import { ProductFormFields } from './productForm.types';
+
+export const useCreateProductForm = () => {
+  const form = useApiForm<ProductFormFields>();
+
+ const handleSubmit = form.handleSubmit(async (data: ProductFormFields) => {
    // You'll commit mutation here
  });
 
@@ -189,17 +193,23 @@ export const createProductMutation = gql(/* GraphQL */ `
 ```ts title="packages/webapp/src/routes/productForm/productForm.hooks.ts" showLineNumbers
 // highlight-start
 import { useMutation } from '@apollo/client';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
+import { useApiForm } from '@sb/webapp-api-client/hooks';
 
-import { createProductMutation } from './productForm.graphql'
+import { createProductMutation } from './productForm.graphql';
+import { ProductFormFields } from './productForm.types';
 // highlight-end
 
 export const useCreateProductForm = () => {
-  const form = useApiForm<ProductFields>();
+  const form = useApiForm<ProductFormFields>();
 
 // highlight-start
   const [commitMutation] = useMutation(createProductMutation, {
     onError: (error) => {
-      form.setApolloGraphQLResponseErrors(error.graphQLErrors);
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        form.setApolloGraphQLResponseErrors(graphQLErrors);
+      }
     }
   });
 // highlight-end
@@ -216,7 +226,48 @@ export const useCreateProductForm = () => {
 helps modify back-end data with mutations.
 - Using `async` handler makes sure the `form.formState.isSubmitting` prop is `true` when the request is in flight.
 
-## Key points
-- Use [useApiForm](../../../api-reference/webapp-api-client/generated/modules/hooks#useapiform) hook to control form state
-- Commit mutations inside custom hooks instead of directly in components to decouple logic from presentation layer
-- Use `react-intl` to format input labels, placeholders, and error messages
+## Key Points
+
+- ✅ Use [useApiForm](../../../api-reference/webapp-api-client/generated/modules/hooks#useapiform) hook to control form state
+- ✅ Commit mutations inside custom hooks to decouple logic from presentation
+- ✅ Use `react-intl` for all user-facing text (labels, placeholders, errors)
+- ✅ Set `async` on your submit handler to enable loading states
+
+---
+
+## Common Issues
+
+<details>
+<summary><strong>Mutation not triggering</strong></summary>
+
+Ensure your GraphQL mutation name matches the backend schema. Run `pnpm nx run webapp-api-client:graphql:generate-types` to regenerate types after backend changes.
+
+</details>
+
+<details>
+<summary><strong>Form errors not displaying</strong></summary>
+
+Make sure you're passing errors to the `error` prop of your Input component:
+```tsx
+error={errors.fieldName?.message}
+```
+
+</details>
+
+<details>
+<summary><strong>TypeScript errors on mutation variables</strong></summary>
+
+Regenerate types with `pnpm nx run webapp-api-client:graphql:generate-types` after any GraphQL schema changes.
+
+</details>
+
+---
+
+## Related Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Add Backend Mutation](/working-with-sb/graphql/backend/adding-new-mutation) | Create the backend API for your form |
+| [Update Schema Types](/working-with-sb/graphql/web-app/update-schema) | Regenerate TypeScript types |
+| [Create React Component](/working-with-sb/guides/web-app/create-react-component) | Component structure patterns |
+| [Testing](/working-with-sb/tests/webapp) | Write tests for your forms |

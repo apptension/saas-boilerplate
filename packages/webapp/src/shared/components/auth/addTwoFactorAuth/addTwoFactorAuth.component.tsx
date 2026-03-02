@@ -1,12 +1,13 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { Button, ButtonVariant } from '@sb/webapp-core/components/buttons';
 import { Input } from '@sb/webapp-core/components/forms';
-import { H1, H4, Paragraph, Small } from '@sb/webapp-core/components/typography';
-import { Separator } from '@sb/webapp-core/components/ui/separator';
+import { Small } from '@sb/webapp-core/components/typography';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
+import { Copy, KeyRound, QrCode, ShieldCheck, Smartphone } from 'lucide-react';
 import * as QRCode from 'qrcode';
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -18,9 +19,6 @@ export type AddTwoFactorAuthProps = {
   closeModal: () => void;
 };
 
-const bTag = (chunks: React.ReactNode[]) => <b>{chunks}</b>;
-const spanTag = (chunks: React.ReactNode[]) => <span>{chunks}</span>;
-
 export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
   const intl = useIntl();
   const { toast } = useToast();
@@ -29,12 +27,12 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
   const [base32, setBase32] = useState('');
   const [qrCodeUrl, setQrCodeUrl] = useState('');
   const [otpAuthUrl, setOtpAuthUrl] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const form = useApiForm<VerifyOtpFormFields>();
 
   const {
     handleSubmit,
-    hasGenericErrorOnly,
     genericError,
     setApolloGraphQLResponseErrors,
     form: {
@@ -45,11 +43,16 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
 
   const successMessage = intl.formatMessage({
     id: 'Auth / Add Two-factor / Success message',
-    defaultMessage: '🎉 Two-Factor Auth Enabled Successfully!',
+    defaultMessage: 'Two-Factor Auth enabled successfully!',
   });
 
   const [commitVerifyOtpMutation] = useMutation(verifyOtpMutation, {
-    onError: (error) => setApolloGraphQLResponseErrors(error.graphQLErrors),
+    onError: (error) => {
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        setApolloGraphQLResponseErrors(graphQLErrors);
+      }
+    },
     onCompleted: () => {
       trackEvent('auth', 'otp-verify');
     },
@@ -63,14 +66,42 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
   });
 
   const submitHandler = async (values: { token: string }) => {
-    const { data } = await commitVerifyOtpMutation({ variables: { input: { otpToken: values.token } } });
+    try {
+      const { data } = await commitVerifyOtpMutation({ variables: { input: { otpToken: values.token } } });
 
-    const isOtpVerified = data?.verifyOtp?.otpVerified;
-    if (!isOtpVerified) return;
+      const isOtpVerified = data?.verifyOtp?.otpVerified;
+      if (!isOtpVerified) return;
 
-    reload();
-    closeModal();
-    toast({ description: successMessage });
+      reload();
+      closeModal();
+      toast({ description: successMessage, variant: 'success' });
+    } catch (error) {
+      // Error is handled by onError callback
+      // This catch prevents unhandled promise rejection
+    }
+  };
+
+  const handleCopyKey = async () => {
+    try {
+      await navigator.clipboard.writeText(base32);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+      toast({
+        description: intl.formatMessage({
+          defaultMessage: 'Secret key copied to clipboard',
+          id: 'Auth / Add Two-factor / Key copied',
+        }),
+        variant: 'success',
+      });
+    } catch {
+      toast({
+        description: intl.formatMessage({
+          defaultMessage: 'Failed to copy key',
+          id: 'Auth / Add Two-factor / Key copy failed',
+        }),
+        variant: 'destructive',
+      });
+    }
   };
 
   useEffect(() => {
@@ -79,133 +110,200 @@ export const AddTwoFactorAuth = ({ closeModal }: AddTwoFactorAuthProps) => {
   }, [otpAuthUrl]);
 
   useEffect(() => {
+    let isMounted = true;
+
     const getOtpData = async () => {
-      const { data } = await commitGenerateOtpMutation();
+      try {
+        const { data } = await commitGenerateOtpMutation();
 
-      const base32 = data?.generateOtp?.base32;
-      const otpAuthPathUrl = data?.generateOtp?.otpauthUrl;
-      if (!base32 || !otpAuthPathUrl) return;
+        // Only update state if component is still mounted
+        if (!isMounted) return;
 
-      setBase32(base32);
-      setOtpAuthUrl(otpAuthPathUrl);
+        const base32 = data?.generateOtp?.base32;
+        const otpAuthPathUrl = data?.generateOtp?.otpauthUrl;
+        if (!base32 || !otpAuthPathUrl) return;
+
+        setBase32(base32);
+        setOtpAuthUrl(otpAuthPathUrl);
+      } catch (error) {
+        // Error is handled by onError callback if present
+        // This catch prevents unhandled promise rejection and handles AbortError
+      }
     };
     getOtpData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [commitGenerateOtpMutation]);
 
   return (
-    <div aria-hidden={true} className="max-h-[92vh] w-auto overflow-y-auto p-2 text-left">
-      <div className="px-4">
-        <H1 className="text-lg lg:text-xl">
-          <FormattedMessage
-            defaultMessage="Configuring Google Authenticator or Authy"
-            id="Auth / Add Two-factor / Configuring authenticator"
-          />
-        </H1>
-        <Separator className="mb-2 mt-1" />
-        <ol className="flex list-none flex-col gap-2 pl-0">
-          <li className="text-sm">
-            <FormattedMessage
-              defaultMessage="Install Google Authenticator (IOS - Android) or Authy (IOS - Android)."
-              id="Auth / Add Two-factor / Install authenticator app"
-            />
-          </li>
-          <li className="text-sm">
-            <FormattedMessage
-              defaultMessage={`In the authenticator app, select "+" icon.`}
-              id="Auth / Add Two-factor / Click add icon"
-            />
-          </li>
-          <li className="text-sm">
-            <FormattedMessage
-              defaultMessage={`Select "Scan a barcode (or QR code)" and use the phone's camera to scan this barcode.`}
-              id="Auth / Add Two-factor / Use camera to scan qr code"
-            />
-          </li>
-        </ol>
-        <div>
-          <H4 className="mt-4 text-lg">
-            <FormattedMessage defaultMessage="Scan QR Code" id="Auth / Add Two-factor / Scan QR Code" />
-          </H4>
-          <Separator className="mb-2 mt-1" />
-          <div className="flex justify-center p-4">
-            <img src={qrCodeUrl} alt="qrcode url" className="h-64 w-64" />
-          </div>
+    <form onSubmit={handleSubmit(submitHandler)} className="-m-6 flex h-[85vh] max-h-[700px] flex-col overflow-hidden sm:rounded-lg">
+      {/* Fixed Header */}
+      <div className="flex shrink-0 items-center gap-3 border-b bg-background px-6 py-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+          <ShieldCheck className="h-5 w-5 text-primary" />
         </div>
-        <div>
-          <H4 className="mt-4 text-lg">
+        <div className="mr-8">
+          <h2 className="text-lg font-semibold">
             <FormattedMessage
-              defaultMessage="Or Enter Code Into Your App"
-              id="Auth / Add Two-factor / Enter code in app"
+              defaultMessage="Set Up Two-Factor Authentication"
+              id="Auth / Add Two-factor / Configuring authenticator"
             />
-          </H4>
-          <Separator className="mb-2 mt-1" />
-          <Paragraph firstChildMargin={false} className="my-0 text-sm">
+          </h2>
+          <p className="text-sm text-muted-foreground">
             <FormattedMessage
-              defaultMessage="SecretKey: <b>{base32}</b> <span>(Base32 encoded)</span>"
-              id="Auth / Add Two-factor / Secret key encoded"
-              values={{
-                b: bTag,
-                span: spanTag,
-                base32,
-              }}
+              defaultMessage="Secure your account with an authenticator app"
+              id="Auth / Add Two-factor / Subtitle"
             />
-          </Paragraph>
+          </p>
         </div>
-        <div>
-          <H4 className="mt-4 text-lg">
-            <FormattedMessage defaultMessage="Verify Code" id="Auth / Add Two-factor / Verify Code" />
-          </H4>
-          <Separator className="mb-2 mt-1" />
-          <Paragraph firstChildMargin={false} className="my-0 text-sm">
-            <FormattedMessage
-              defaultMessage="For changing the setting, please verify the authentication code"
-              id="Auth / Add Two-factor / Verify code for changing the setting"
-            />
-            :
-          </Paragraph>
-        </div>
-        <form className="relative" onSubmit={handleSubmit(submitHandler)}>
-          <Input
-            {...register('token', {
-              required: {
-                value: true,
-                message: intl.formatMessage({
-                  defaultMessage: 'The authentication code is required',
-                  id: 'Auth / Validate OTP / Auth code required',
-                }),
-              },
-              minLength: {
-                value: 6,
-                message: intl.formatMessage({
-                  defaultMessage: 'The authentication code must be 6 characters long.',
-                  id: 'Auth / Validate OTP / Password too short',
-                }),
-              },
-            })}
-            pattern="[0-9]*"
-            placeholder="Authentication Code"
-            maxLength={6}
-            autoFocus
-            error={errors.token?.message}
-            autoComplete="off"
-            className="mb-8 mt-4 w-48"
-          />
-
-          {hasGenericErrorOnly ? <Small className="absolute top-11 text-red-500">{genericError}</Small> : null}
-
-          <div className="flex flex-row gap-4">
-            <Button type="button" variant={ButtonVariant.SECONDARY} onClick={closeModal}>
-              <FormattedMessage defaultMessage="Close" id="Auth / Add Two-factor / Close button" />
-            </Button>
-            <Button type="submit">
-              <FormattedMessage
-                defaultMessage="Verify & Activate"
-                id="Auth / Add Two-factor / Verify & Activate button"
-              />
-            </Button>
-          </div>
-        </form>
       </div>
-    </div>
+
+      {/* Scrollable Content */}
+      <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-6 py-5">
+        {/* Step 1: Install App */}
+        <div className="flex gap-4">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium">
+            1
+          </div>
+          <div className="flex-1 space-y-2">
+            <h3 className="text-sm font-medium">
+              <FormattedMessage defaultMessage="Install Authenticator App" id="Auth / Add Two-factor / Step 1 title" />
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              <FormattedMessage
+                defaultMessage="Download Google Authenticator or Authy on your mobile device from the App Store or Google Play."
+                id="Auth / Add Two-factor / Install authenticator app"
+              />
+            </p>
+            <div className="flex items-center gap-2 pt-1">
+              <Smartphone className="h-4 w-4 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">
+                <FormattedMessage defaultMessage="iOS & Android" id="Auth / Add Two-factor / Platforms" />
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Step 2: Scan QR Code */}
+        <div className="flex gap-4">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium">
+            2
+          </div>
+          <div className="flex-1 space-y-3">
+            <h3 className="text-sm font-medium">
+              <FormattedMessage defaultMessage="Scan QR Code" id="Auth / Add Two-factor / Scan QR Code" />
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              <FormattedMessage
+                defaultMessage="Open your authenticator app and scan the QR code below."
+                id="Auth / Add Two-factor / Use camera to scan qr code"
+              />
+            </p>
+
+            {/* QR Code Card */}
+            <div className="flex flex-col items-center gap-3 rounded-lg border bg-white p-4 dark:bg-muted/30">
+              {qrCodeUrl ? (
+                <img src={qrCodeUrl} alt="QR Code" className="h-40 w-40" />
+              ) : (
+                <div className="flex h-40 w-40 items-center justify-center">
+                  <QrCode className="h-8 w-8 animate-pulse text-muted-foreground" />
+                </div>
+              )}
+            </div>
+
+            {/* Manual Entry Option */}
+            <div className="space-y-2 rounded-lg border bg-muted/30 p-3">
+              <div className="flex items-center gap-2">
+                <KeyRound className="h-4 w-4 text-muted-foreground" />
+                <span className="text-xs font-medium text-muted-foreground">
+                  <FormattedMessage
+                    defaultMessage="Can't scan? Enter this key manually:"
+                    id="Auth / Add Two-factor / Enter code in app"
+                  />
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <code className="flex-1 rounded bg-background px-2 py-1.5 font-mono text-xs">
+                  {base32 || '...'}
+                </code>
+                <Button
+                  type="button"
+                  variant={ButtonVariant.SECONDARY}
+                  onClick={handleCopyKey}
+                  className="h-8 w-8 shrink-0 p-0"
+                  disabled={!base32}
+                >
+                  <Copy className={`h-3.5 w-3.5 ${copied ? 'text-green-500' : ''}`} />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Step 3: Verify */}
+        <div className="flex gap-4">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-medium text-primary-foreground">
+            3
+          </div>
+          <div className="flex-1 space-y-3">
+            <h3 className="text-sm font-medium">
+              <FormattedMessage defaultMessage="Enter Verification Code" id="Auth / Add Two-factor / Verify Code" />
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              <FormattedMessage
+                defaultMessage="Enter the 6-digit code from your authenticator app to complete setup."
+                id="Auth / Add Two-factor / Verify code for changing the setting"
+              />
+            </p>
+
+            <Input
+              {...register('token', {
+                required: {
+                  value: true,
+                  message: intl.formatMessage({
+                    defaultMessage: 'The authentication code is required',
+                    id: 'Auth / Validate OTP / Auth code required',
+                  }),
+                },
+                minLength: {
+                  value: 6,
+                  message: intl.formatMessage({
+                    defaultMessage: 'The authentication code must be 6 characters long.',
+                    id: 'Auth / Validate OTP / Password too short',
+                  }),
+                },
+              })}
+              inputMode="numeric"
+              pattern="[0-9]*"
+              placeholder="000000"
+              maxLength={6}
+              autoFocus
+              error={errors.token?.message}
+              autoComplete="one-time-code"
+              className="w-full max-w-[160px] text-center font-mono text-lg tracking-widest"
+            />
+
+            {genericError && (
+              <div className="text-sm text-destructive">
+                <Small>{genericError}</Small>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Fixed Footer */}
+      <div className="flex shrink-0 gap-3 border-t bg-background px-6 py-4">
+        <Button type="button" variant={ButtonVariant.SECONDARY} onClick={closeModal} className="flex-1">
+          <FormattedMessage defaultMessage="Cancel" id="Auth / Add Two-factor / Close button" />
+        </Button>
+        <Button type="submit" className="flex-1">
+          <ShieldCheck className="mr-2 h-4 w-4" />
+          <FormattedMessage defaultMessage="Activate 2FA" id="Auth / Add Two-factor / Verify & Activate button" />
+        </Button>
+      </div>
+    </form>
   );
 };

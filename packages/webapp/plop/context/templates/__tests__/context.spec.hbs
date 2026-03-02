@@ -1,0 +1,85 @@
+import { renderHook, act } from '@testing-library/react';
+import { ReactNode } from 'react';
+
+import { {{ pascalCase name }}Provider } from '../{{ camelCase name }}.context';
+import { use{{ pascalCase name }} } from '../use{{ pascalCase name }}.hook';
+
+const wrapper = ({ children }: { children: ReactNode }) => (
+  <{{ pascalCase name }}Provider>{children}</{{ pascalCase name }}Provider>
+);
+
+describe('{{ pascalCase name }} Context', () => {
+  it('should provide default state', () => {
+    const { result } = renderHook(() => use{{ pascalCase name }}(), { wrapper });
+
+    expect(result.current.state).toBeDefined();
+    expect(result.current.state.value).toBe('');
+    expect(result.current.state.isLoading).toBe(false);
+    expect(result.current.state.error).toBeNull();
+  });
+
+  it('should update state', () => {
+    const { result } = renderHook(() => use{{ pascalCase name }}(), { wrapper });
+
+    act(() => {
+      result.current.setState({ value: 'test' });
+    });
+
+    expect(result.current.state.value).toBe('test');
+  });
+
+  it('should preserve other state when updating', () => {
+    const { result } = renderHook(() => use{{ pascalCase name }}(), { wrapper });
+
+    act(() => {
+      result.current.setState({ value: 'test' });
+    });
+
+    act(() => {
+      result.current.setState({ isLoading: true });
+    });
+
+    expect(result.current.state.value).toBe('test');
+    expect(result.current.state.isLoading).toBe(true);
+  });
+
+{{#if withReset}}
+  it('should reset state', () => {
+    const { result } = renderHook(() => use{{ pascalCase name }}(), { wrapper });
+
+    act(() => {
+      result.current.setState({ value: 'test', isLoading: true });
+    });
+
+    act(() => {
+      result.current.reset();
+    });
+
+    expect(result.current.state.value).toBe('');
+    expect(result.current.state.isLoading).toBe(false);
+  });
+{{/if}}
+
+  it('should throw error when used outside provider', () => {
+    // Suppress console.error for this test
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    expect(() => {
+      renderHook(() => use{{ pascalCase name }}());
+    }).toThrow('use{{ pascalCase name }} must be used within a {{ pascalCase name }}Provider');
+
+    consoleSpy.mockRestore();
+  });
+
+  it('should accept initial state', () => {
+    const customWrapper = ({ children }: { children: ReactNode }) => (
+      <{{ pascalCase name }}Provider initialState=\{{ value: 'initial' }}>
+        {children}
+      </{{ pascalCase name }}Provider>
+    );
+
+    const { result } = renderHook(() => use{{ pascalCase name }}(), { wrapper: customWrapper });
+
+    expect(result.current.state.value).toBe('initial');
+  });
+});

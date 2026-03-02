@@ -1,0 +1,58 @@
+import { Button } from '@sb/webapp-core/components/buttons';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@sb/webapp-core/components/ui/dialog';
+import { FormattedMessage } from 'react-intl';
+
+export type {{ pascalCase name }}ModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  // TODO: Add your custom props
+};
+
+export const {{ pascalCase name }}Modal = ({
+  isOpen,
+  onClose,
+}: {{ pascalCase name }}ModalProps) => {
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            <FormattedMessage
+              defaultMessage="{{ modalTitle }}"
+              id="{{ pascalCase name }}Modal / Title"
+            />
+          </DialogTitle>
+          <DialogDescription>
+            <FormattedMessage
+              defaultMessage="Modal description goes here"
+              id="{{ pascalCase name }}Modal / Description"
+            />
+          </DialogDescription>
+        </DialogHeader>
+
+        {/* TODO: Add your modal content here */}
+        <div className="py-4">
+          <p className="text-sm text-muted-foreground">
+            Your custom content goes here
+          </p>
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>
+            <FormattedMessage defaultMessage="Cancel" id="{{ pascalCase name }}Modal / Cancel" />
+          </Button>
+          <Button onClick={onClose}>
+            <FormattedMessage defaultMessage="Confirm" id="{{ pascalCase name }}Modal / Confirm" />
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};

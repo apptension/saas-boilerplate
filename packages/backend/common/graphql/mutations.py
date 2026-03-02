@@ -9,6 +9,7 @@ from graphene_django.registry import Registry, get_global_registry
 from graphene_django.rest_framework.mutation import SerializerMutationOptions, fields_for_serializer
 from graphql_relay import from_global_id, offset_to_cursor
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied
 
 from . import exceptions, constants
 from .exceptions import GraphQlMutationError
@@ -142,12 +143,12 @@ class CreateModelMutation(RelayModelSerializerMutation):
             model_class = getattr(serializer_meta, "model", None)
 
         if not model_class:
-            raise GraphQlMutationError('model_class is required in serializer_class')
+            raise GraphQlMutationError("model_class is required in serializer_class")
 
         model_name = model_class.__name__
 
         if not edge_field_name and edge_class:
-            edge_field_name = model_name[:1].lower() + model_name[1:] + 'Edge'
+            edge_field_name = model_name[:1].lower() + model_name[1:] + "Edge"
 
         if not return_field_name:
             return_field_name = model_name[:1].lower() + model_name[1:]
@@ -260,12 +261,12 @@ class UpdateModelMutation(RelayModelSerializerMutation):
                 model_class = getattr(serializer_meta, "model", None)
 
         if not model_class:
-            raise GraphQlMutationError('model_class is required')
+            raise GraphQlMutationError("model_class is required")
 
         model_name = model_class.__name__
 
         if not edge_field_name and edge_class:
-            edge_field_name = model_name[:1].lower() + model_name[1:] + 'Edge'
+            edge_field_name = model_name[:1].lower() + model_name[1:] + "Edge"
 
         if not return_field_name:
             return_field_name = model_name[:1].lower() + model_name[1:]
@@ -285,8 +286,8 @@ class UpdateModelMutation(RelayModelSerializerMutation):
             raise GraphQlMutationError("No type registered for model: {}".format(model_class.__name__))
 
         available_fields = cls.get_available_fields(input_fields, only_fields, exclude)
-        if require_id_field and 'id' in available_fields:
-            input_fields['id'] = relay.GlobalID(model_type)
+        if require_id_field and "id" in available_fields:
+            input_fields["id"] = relay.GlobalID(model_type)
 
         output_fields = OrderedDict({return_field_name: graphene.Field(model_type)})
 
@@ -349,7 +350,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         :param input: dictionary of input values passed to the mutation
         :return: object of the specified model with the specified ID
         """
-        _, pk = from_global_id(input['id'])
+        _, pk = from_global_id(input["id"])
         return get_object_or_404(cls.get_queryset(model_class, root, info, **input), pk=pk)
 
     @classmethod
@@ -375,7 +376,7 @@ class UpdateModelMutation(RelayModelSerializerMutation):
         :param exclude: tuple of field names to exclude from the available fields set
         :return: set of available fields
         """
-        available_fields = {'id'}.union(set(input_fields.keys()))
+        available_fields = {"id"}.union(set(input_fields.keys()))
         if only_fields:
             available_fields = available_fields.intersection(only_fields)
         if exclude:
@@ -588,7 +589,7 @@ class DeleteModelMutation(ClientIDMutation):
             registry = get_global_registry()
 
         assert isinstance(registry, Registry), (
-            "The attribute registry in {} needs to be an instance of " 'Registry, received "{}".'
+            'The attribute registry in {} needs to be an instance of Registry, received "{}".'
         ).format(cls.__name__, registry)
 
         if not model:
@@ -635,6 +636,10 @@ class DeleteTenantDependentModelMutation(DeleteModelMutation):
     [`DeleteModelMutation`](#deletemodelmutation).
     It is used to delete an object of a specified model from the database which is dependent on tenant.
     It implements `tenant_id` field in input.
+
+    SECURITY: This mutation enforces tenant-level authorization:
+    - Objects can only be deleted if they belong to the specified tenant
+    - The user must be a member of the specified tenant (verified via context)
     """
 
     class Meta:
@@ -645,10 +650,70 @@ class DeleteTenantDependentModelMutation(DeleteModelMutation):
         tenant_id = graphene.String(required=True)
 
     @classmethod
-    def mutate_and_get_payload(cls, root, info, **input):
-        if "tenant_id" in input:
-            _, input["tenant_id"] = from_global_id(input["tenant_id"])
-        return super().mutate_and_get_payload(root, info, **input)
+    def get_object(cls, id, tenant_id=None, **kwargs):
+        """
+        Retrieve a single instance of a model based on id, enforcing tenant scope.
+
+        SECURITY: Always filters by tenant_id to prevent cross-tenant object access.
+
+        :param id: Global ID of the model instance to retrieve
+        :param tenant_id: Tenant ID to scope the query (REQUIRED for security)
+        :param kwargs: additional keyword arguments
+        :return: instance of the model with the specified id within the tenant
+        :raises: Http404 if object doesn't exist or doesn't belong to tenant
+        """
+        model = cls._meta.model
+        _, pk = from_global_id(id)
+
+        if tenant_id is None:
+            raise exceptions.GraphQlValidationError("tenant_id is required for this operation")
+
+        # Filter by both pk AND tenant_id to ensure tenant isolation
+        return get_object_or_404(model, pk=pk, tenant_id=tenant_id, **kwargs)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, id, **input):
+        """
+        Perform a mutation to delete a model instance with tenant validation.
+
+        SECURITY:
+        - Decodes and validates tenant_id from input
+        - Verifies the user has access to the specified tenant via context
+        - Only deletes objects that belong to the specified tenant
+        """
+        tenant_id_raw = input.get("tenant_id") or input.get("tenantId")
+        if not tenant_id_raw:
+            raise exceptions.GraphQlValidationError("tenant_id is required")
+
+        try:
+            id_type, tenant_id = from_global_id(tenant_id_raw)
+            # If from_global_id returns empty/None, use the raw value (it's already a hashid)
+            if not tenant_id:
+                tenant_id = tenant_id_raw
+        except (TypeError, ValueError):
+            tenant_id = tenant_id_raw
+
+        # SECURITY: Verify user has access to this tenant
+        context_tenant = getattr(info.context, "tenant", None)
+        if context_tenant is None or str(context_tenant.pk) != str(tenant_id):
+            from apps.multitenancy.models import Tenant, TenantMembership
+
+            user = info.context.user
+            if not user or not user.is_authenticated:
+                raise PermissionDenied("Authentication required")
+
+            try:
+                tenant = Tenant.objects.get(pk=tenant_id)
+            except Tenant.DoesNotExist:
+                raise PermissionDenied("You don't have access to this tenant")
+
+            if not TenantMembership.objects.filter(user=user, tenant=tenant, is_accepted=True).exists():
+                raise PermissionDenied("You don't have access to this tenant")
+
+        # Get the object with tenant scoping
+        obj = cls.get_object(id, tenant_id=tenant_id)
+        obj.delete()
+        return cls(deleted_ids=[id])
 
 
 class UpdateTenantDependentModelMutation(UpdateModelMutation):
@@ -657,6 +722,10 @@ class UpdateTenantDependentModelMutation(UpdateModelMutation):
     [`UpdateModelMutation`](#updatemodelmutation).
     It is used to update an object of a specified model in the database which is dependent on tenant.
     It implements `tenant_id` field in input.
+
+    SECURITY: This mutation enforces tenant-level authorization:
+    - Objects can only be updated if they belong to the specified tenant
+    - The user must be a member of the specified tenant (verified via context)
     """
 
     class Meta:
@@ -667,9 +736,57 @@ class UpdateTenantDependentModelMutation(UpdateModelMutation):
         tenant_id = graphene.String(required=True)
 
     @classmethod
+    def get_queryset(cls, model_class, root, info, **input):
+        """
+        Return a queryset scoped to the specified tenant.
+
+        SECURITY: Always filters by tenant_id to prevent cross-tenant object access.
+        """
+        tenant_id = input.get("tenant_id")
+        if tenant_id:
+            return model_class.objects.filter(tenant_id=tenant_id)
+        return model_class.objects.none()  # Return empty queryset if no tenant_id
+
+    @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        if "tenant_id" in input:
-            _, input["tenant_id"] = from_global_id(input["tenant_id"])
+        """
+        Perform a mutation to update a model instance with tenant validation.
+
+        SECURITY:
+        - Decodes and validates tenant_id from input
+        - Verifies the user has access to the specified tenant via context
+        """
+        tenant_id_raw = input.get("tenant_id") or input.get("tenantId")
+        if not tenant_id_raw:
+            raise exceptions.GraphQlValidationError("tenant_id is required")
+
+        try:
+            id_type, tenant_id = from_global_id(tenant_id_raw)
+            # If from_global_id returns empty/None, use the raw value (it's already a hashid)
+            if not tenant_id:
+                tenant_id = tenant_id_raw
+        except (TypeError, ValueError):
+            tenant_id = tenant_id_raw
+
+        input["tenant_id"] = tenant_id
+
+        # SECURITY: Verify user has access to this tenant
+        context_tenant = getattr(info.context, "tenant", None)
+        if context_tenant is None or str(context_tenant.pk) != str(tenant_id):
+            from apps.multitenancy.models import Tenant, TenantMembership
+
+            user = info.context.user
+            if not user or not user.is_authenticated:
+                raise PermissionDenied("Authentication required")
+
+            try:
+                tenant = Tenant.objects.get(pk=tenant_id)
+            except Tenant.DoesNotExist:
+                raise PermissionDenied("You don't have access to this tenant")
+
+            if not TenantMembership.objects.filter(user=user, tenant=tenant, is_accepted=True).exists():
+                raise PermissionDenied("You don't have access to this tenant")
+
         return super().mutate_and_get_payload(root, info, **input)
 
 
@@ -679,6 +796,10 @@ class CreateTenantDependentModelMutation(CreateModelMutation):
     [`CreateModelMutation`](#createmodelmutation).
      It is used to create a new object of a specified model in the database which is dependent on tenant.
      It implements `tenant_id` field in input.
+
+    SECURITY: This mutation enforces tenant-level authorization:
+    - Objects can only be created within tenants the user has access to
+    - The user must be a member of the specified tenant (verified via context)
     """
 
     class Meta:
@@ -689,6 +810,43 @@ class CreateTenantDependentModelMutation(CreateModelMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        if "tenant_id" in input:
-            _, input["tenant_id"] = from_global_id(input["tenant_id"])
+        """
+        Perform a mutation to create a model instance with tenant validation.
+
+        SECURITY:
+        - Decodes and validates tenant_id from input
+        - Verifies the user has access to the specified tenant via context
+        """
+        tenant_id_raw = input.get("tenant_id") or input.get("tenantId")
+
+        if not tenant_id_raw:
+            raise exceptions.GraphQlValidationError("tenant_id is required")
+
+        try:
+            id_type, tenant_id = from_global_id(tenant_id_raw)
+            # If from_global_id returns empty/None, use the raw value (it's already a hashid)
+            if not tenant_id:
+                tenant_id = tenant_id_raw
+        except (TypeError, ValueError):
+            tenant_id = tenant_id_raw
+
+        input["tenant_id"] = tenant_id
+
+        # SECURITY: Verify user has access to this tenant
+        context_tenant = getattr(info.context, "tenant", None)
+        if context_tenant is None or str(context_tenant.pk) != str(tenant_id):
+            from apps.multitenancy.models import Tenant, TenantMembership
+
+            user = info.context.user
+            if not user or not user.is_authenticated:
+                raise PermissionDenied("Authentication required")
+
+            try:
+                tenant = Tenant.objects.get(pk=tenant_id)
+            except Tenant.DoesNotExist:
+                raise PermissionDenied("You don't have access to this tenant")
+
+            if not TenantMembership.objects.filter(user=user, tenant=tenant, is_accepted=True).exists():
+                raise PermissionDenied("You don't have access to this tenant")
+
         return super().mutate_and_get_payload(root, info, **input)

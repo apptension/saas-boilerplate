@@ -1,4 +1,4 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
 import { EmailStory } from '../../emailStory/emailStory.component';
 import { EmailTemplateType } from '../../types';
@@ -8,27 +8,52 @@ import {
   Subject as TrialExpiresSoonSubject,
 } from './trialExpiresSoon.component';
 
-const Template: StoryFn<TrialExpiresSoonProps> = (
-  args: TrialExpiresSoonProps
-) => (
-  <EmailStory
-    type={EmailTemplateType.TRIAL_EXPIRES_SOON}
-    subject={<TrialExpiresSoonSubject />}
-    emailData={args}
-  >
+const Template: StoryFn<TrialExpiresSoonProps> = (args: TrialExpiresSoonProps) => (
+  <EmailStory type={EmailTemplateType.TRIAL_EXPIRES_SOON} subject={<TrialExpiresSoonSubject />} emailData={args}>
     <TrialExpiresSoonEmail {...args} />
   </EmailStory>
 );
 
-export default {
+const meta: Meta<typeof TrialExpiresSoonEmail> = {
   title: 'Emails/TrialExpiresSoon',
   component: TrialExpiresSoonEmail,
+  parameters: {
+    docs: {
+      description: {
+        component: 'Email sent when a trial period is about to expire.',
+      },
+    },
+  },
+  argTypes: {
+    expiryDate: {
+      description: 'Trial expiration date',
+      control: 'date',
+    },
+  },
 };
 
-export const Primary = {
-  render: Template,
+export default meta;
+type Story = StoryObj<typeof TrialExpiresSoonEmail>;
 
+// Get a date 3 days from now for a realistic expiry date
+const futureDate = new Date();
+futureDate.setDate(futureDate.getDate() + 3);
+
+export const Primary: Story = {
+  render: Template,
   args: {
-    expiryDate: '10/10/2020',
+    expiryDate: futureDate.toISOString(),
+  },
+};
+
+export const Mobile: Story = {
+  render: Template,
+  args: {
+    expiryDate: futureDate.toISOString(),
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
   },
 };

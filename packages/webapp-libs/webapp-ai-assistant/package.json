@@ -1,0 +1,24 @@
+{
+  "name": "@sb/webapp-ai-assistant",
+  "version": "4.2.0",
+  "type": "commonjs",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit --project tsconfig.lib.json"
+  },
+  "dependencies": {
+    "@radix-ui/react-visually-hidden": "^1.2.4",
+    "@sb/webapp-api-client": "workspace:*",
+    "@sb/webapp-core": "workspace:*",
+    "@sb/webapp-tenants": "workspace:*",
+    "lucide-react": "^0.378.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^11.0.0"
+  }
+}

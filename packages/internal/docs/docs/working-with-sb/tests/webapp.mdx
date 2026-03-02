@@ -190,6 +190,92 @@ const document = documentFactory();
 const document = documentFactory({ file: { name: 'image.png', url: 'http://example/image.png' } })
 ```
 
+---
+
+## Common Issues & Troubleshooting
+
+<details>
+<summary><strong>Test fails with "Unable to find element"</strong></summary>
+
+Use `findBy*` queries instead of `getBy*` for elements that appear after async operations:
+
+```tsx
+// ❌ Fails for async content
+expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+// ✅ Waits for element to appear
+expect(await screen.findByText('Loading...')).toBeInTheDocument();
+```
+
+</details>
+
+<details>
+<summary><strong>Apollo mock not being called</strong></summary>
+
+Ensure your mock query/mutation variables exactly match what the component sends:
+
+```tsx
+// If component sends { id: "123" }, mock must match exactly
+composeMockedQueryResult(myQuery, {
+  variables: { id: "123" },  // Must match exactly!
+  data: { ... }
+})
+```
+
+</details>
+
+<details>
+<summary><strong>Multiple elements with same text</strong></summary>
+
+Use `findAllBy*` or more specific selectors:
+
+```tsx
+// ❌ Fails if multiple buttons exist
+screen.getByRole('button');
+
+// ✅ More specific
+screen.getByRole('button', { name: /submit/i });
+```
+
+</details>
+
+<details>
+<summary><strong>Test passes locally but fails in CI</strong></summary>
+
+- Use `waitFor` for timing-sensitive assertions
+- Ensure mocks cover all GraphQL queries the component makes
+- Check for timezone-dependent date assertions
+
+</details>
+
+---
+
+## Running Tests
+
+```bash
+# Run all webapp tests
+pnpm nx test webapp
+
+# Run tests for a specific library
+pnpm nx test webapp-core
+
+# Run tests in watch mode
+pnpm nx test webapp --watch
+
+# Update snapshots
+pnpm nx test webapp --updateSnapshot
+```
+
+---
+
+## Related Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Backend Testing](/working-with-sb/tests/backend) | Django/pytest testing patterns |
+| [Create React Component](/working-with-sb/guides/web-app/create-react-component) | Includes test file setup |
+| [Form with Mutation](/working-with-sb/graphql/web-app/form-with-mutation) | Test forms and mutations |
+
 ## Defining and using `fill*` methods
 
 <ProjectName /> provides a way to define <code>fill*</code> methods that generate mock queries for Apollo&nbsp;

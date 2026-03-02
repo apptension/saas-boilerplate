@@ -1,0 +1,24 @@
+# @tool(name: "get_documents", description: "List documents uploaded by the current user. Returns document id, file name, and creation date. Use when the user asks about documents or files.")
+query GetDocuments($first: Int = 50, $after: String) {
+  allDocumentDemoItems(first: $first, after: $after) {
+    edges {
+      node {
+        id
+        createdAt
+        file {
+          url
+          name
+        }
+        createdBy {
+          id
+          email
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

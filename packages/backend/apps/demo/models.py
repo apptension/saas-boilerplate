@@ -31,7 +31,7 @@ class ContentfulDemoItemFavorite(TimestampedMixin, models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = [['item', 'user']]
+        unique_together = [["item", "user"]]
 
     def __str__(self) -> str:
         return str(self.id)

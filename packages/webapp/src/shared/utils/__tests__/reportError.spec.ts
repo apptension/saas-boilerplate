@@ -1,6 +1,5 @@
-import * as Sentry from '@sentry/react';
-
 import { reportError } from '@sb/webapp-core/utils/reportError';
+import * as Sentry from '@sentry/react';
 
 describe('reportError', () => {
   let originalEnv: NodeJS.ProcessEnv;

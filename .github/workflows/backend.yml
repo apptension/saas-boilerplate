@@ -9,11 +9,11 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        node-version: [ 18, 20 ]
+        node-version: [ 22, 24 ]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -37,7 +37,7 @@ jobs:
         run: pnpm nx run backend:test
 
       - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v7.0.0
         if: env.SONAR_ORGANIZATION != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -81,7 +81,11 @@ export const EditPaymentMethodForm = ({ onSuccess }: EditPaymentMethodFormProps)
           defaultSavedPaymentMethodId={activeSubscriptionFragment?.defaultPaymentMethod?.id}
         />
 
-        {hasGenericErrorOnly && <div className="text-red-500">{genericError}</div>}
+        {hasGenericErrorOnly && (
+          <div className="text-sm text-destructive">
+            <span>{genericError}</span>
+          </div>
+        )}
 
         <Button disabled={!form.formState.isValid || form.formState.isSubmitting} className="mt-2" type="submit">
           <FormattedMessage defaultMessage="Save" id="Subscription / change payment method / submit button" />

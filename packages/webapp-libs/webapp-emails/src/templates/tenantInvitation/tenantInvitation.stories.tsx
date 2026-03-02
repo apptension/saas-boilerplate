@@ -1,23 +1,61 @@
-import { StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react';
 
-import { EmailTemplateType } from '../../types';
 import { EmailStory } from '../../emailStory/emailStory.component';
+import { EmailTemplateType } from '../../types';
 import {
   Template as TenantInvitationEmail,
-  Subject as TenantInvitationSubject,
   TenantInvitationProps,
+  Subject as TenantInvitationSubject,
 } from './tenantInvitation.component';
 
-const Template: StoryFn<TenantInvitationProps> = (args) => (
+const Template: StoryFn<TenantInvitationProps> = (args: TenantInvitationProps) => (
   <EmailStory type={EmailTemplateType.TENANT_INVITATION} subject={<TenantInvitationSubject />} emailData={args}>
     <TenantInvitationEmail {...args} />
   </EmailStory>
 );
 
-export default {
+const meta: Meta<typeof TenantInvitationEmail> = {
   title: 'Emails/TenantInvitation',
   component: TenantInvitationEmail,
+  parameters: {
+    docs: {
+      description: {
+        component: 'Email sent when a user is invited to join an organization.',
+      },
+    },
+  },
+  argTypes: {
+    token: {
+      description: 'Invitation token',
+      control: 'text',
+    },
+    tenantMembershipId: {
+      description: 'Membership ID for the invitation',
+      control: 'text',
+    },
+  },
 };
 
-export const Primary = Template.bind({});
-Primary.args = {};
+export default meta;
+type Story = StoryObj<typeof TenantInvitationEmail>;
+
+export const Primary: Story = {
+  render: Template,
+  args: {
+    token: 'invitation-token-abc123',
+    tenantMembershipId: 'membership-12345',
+  },
+};
+
+export const Mobile: Story = {
+  render: Template,
+  args: {
+    token: 'invitation-token-abc123',
+    tenantMembershipId: 'membership-12345',
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+  },
+};

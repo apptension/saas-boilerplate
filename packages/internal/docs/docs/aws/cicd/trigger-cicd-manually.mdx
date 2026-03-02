@@ -1,18 +1,191 @@
-# Trigger CI/CD deployment manually
+---
+title: Manual Deployments
+description: Trigger deployments manually when needed
+---
 
-You can also trigger a deployment manually using GitHub Actions.
+import ProjectName from '../../shared/components/ProjectName.component';
 
-### Run GitHub Actions manually
+# Manual Deployments
 
-If you have [GitHub Actions configured](./auto-deploy) in your repository, you can trigger a deployment manually.
+While CI/CD automation handles most deployments, sometimes you need to deploy manually—for hotfixes, testing, or when CI isn't configured yet.
 
-1. Go to the GitHub repository and navigate to the "Actions" tab.
+---
 
-2. Select `Deploy to {ENVIRONMENT}` workflow.
+## Option 1: Deploy from Local Machine
 
-3. Press the "Run workflow" button.
+The most direct approach—build and deploy from your computer:
 
-:::info
-Learn how to run GitHub Actions manually from the
-[documentation](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/manually-running-a-workflow).
-:::
+```bash
+# Set environment
+pnpm saas aws set-env qa
+
+# Build all artifacts
+pnpm saas build
+
+# Deploy to AWS
+pnpm saas deploy
+```
+
+### Deploy Individual Services
+
+For faster deployments when only one service changed:
+
+```bash
+# Backend only
+pnpm saas backend build
+pnpm saas backend deploy api
+
+# Workers only
+pnpm saas workers build
+pnpm saas workers deploy
+
+# Frontend only
+pnpm saas webapp build
+pnpm saas webapp deploy
+
+# Database migrations only
+pnpm saas backend deploy migrations
+```
+
+---
+
+## Option 2: Trigger GitHub Actions Manually
+
+If you have [GitHub Actions configured](/aws/cicd/auto-deploy), you can trigger workflows manually:
+
+### Using GitHub UI
+
+1. Go to your GitHub repository
+2. Click the **Actions** tab
+3. Select your deployment workflow (e.g., "Deploy to QA")
+4. Click **Run workflow**
+5. Select the branch to deploy
+6. Click **Run workflow** (green button)
+
+### Using GitHub CLI
+
+```bash
+# Install GitHub CLI if needed
+brew install gh
+
+# Trigger a workflow
+gh workflow run deploy-qa.yml --ref develop
+```
+
+---
+
+## Option 3: Trigger Bitbucket Pipelines Manually
+
+### Using Bitbucket UI
+
+1. Go to your Bitbucket repository
+2. Click **Pipelines** in the left sidebar
+3. Click **Run pipeline**
+4. Select branch and pipeline
+5. Click **Run**
+
+---
+
+## Option 4: Trigger AWS CodePipeline Directly
+
+If you want to re-run the AWS deployment without rebuilding:
+
+### Using AWS Console
+
+1. Open AWS Console: `pnpm saas aws login`
+2. Navigate to **CodePipeline → Pipelines**
+3. Select your pipeline (e.g., `saas-qa`)
+4. Click **Release change**
+
+### Using AWS CLI
+
+```bash
+aws codepipeline start-pipeline-execution --name saas-qa-pipeline
+```
+
+---
+
+## When to Use Manual Deployments
+
+| Scenario | Recommended Approach |
+|----------|---------------------|
+| **Emergency hotfix** | Local machine deployment |
+| **Testing specific branch** | Manual GitHub Actions trigger |
+| **CI/CD not yet configured** | Local machine deployment |
+| **Rerun failed deployment** | AWS CodePipeline release |
+| **Deploy to new environment** | Local machine deployment |
+
+---
+
+## Deployment Checklist
+
+Before deploying manually:
+
+- [ ] Confirmed correct environment: `pnpm saas aws get-env`
+- [ ] Tests pass locally: `pnpm saas test`
+- [ ] No linter errors: `pnpm saas lint`
+- [ ] Changes committed (for traceability)
+- [ ] Team is aware of deployment
+
+---
+
+## Rollback
+
+If a deployment causes issues, rollback by deploying the previous version:
+
+### Option A: Git Revert
+
+```bash
+# Revert to previous commit
+git revert HEAD
+
+# Deploy the revert
+pnpm saas build
+pnpm saas deploy
+```
+
+### Option B: Deploy Previous Commit
+
+```bash
+# Checkout previous working commit
+git checkout <previous-commit-hash>
+
+# Build and deploy
+pnpm saas build
+pnpm saas deploy
+
+# Return to main branch
+git checkout main
+```
+
+### Option C: ECS Service Rollback
+
+In AWS Console:
+1. Go to **ECS → Clusters → Your cluster**
+2. Select the service
+3. Click **Update service**
+4. Under **Deployment options**, select previous task definition revision
+5. Click **Update**
+
+---
+
+## Troubleshooting
+
+### "AWS credentials not configured"
+
+```bash
+pnpm saas aws set-env qa
+```
+
+### "Build failed"
+
+Check for:
+- Missing dependencies: `pnpm install`
+- TypeScript errors: `pnpm tsc --noEmit`
+- Linter errors: `pnpm saas lint`
+
+### "Deploy succeeded but app not updating"
+
+- Wait for ECS tasks to start (2-5 minutes)
+- Check ECS service events for errors
+- Verify task definition was updated

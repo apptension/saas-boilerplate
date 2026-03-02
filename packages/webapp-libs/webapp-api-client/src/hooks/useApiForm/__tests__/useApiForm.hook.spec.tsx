@@ -1,5 +1,5 @@
 import { act } from '@testing-library/react-hooks';
-import { GraphQLError } from 'graphql/error/GraphQLError';
+import { GraphQLFormattedError } from 'graphql';
 
 import { renderHook } from '../../../tests/utils/rendering';
 import { useApiForm } from '../useApiForm.hook';
@@ -17,11 +17,12 @@ describe('useApiForm: Hook', () => {
     await waitForApolloMocks();
     act(() => {
       result.current.setApolloGraphQLResponseErrors([
-        new GraphQLError('GraphQlValidationError', {
+        {
+          message: 'GraphQlValidationError',
           extensions: {
             nonFieldErrors: [{ message: 'custom error', code: 'custom-error' }],
           },
-        }),
+        } as GraphQLFormattedError,
       ]);
     });
 
@@ -34,11 +35,12 @@ describe('useApiForm: Hook', () => {
     await waitForApolloMocks();
     act(() => {
       result.current.setApolloGraphQLResponseErrors([
-        new GraphQLError('GraphQlValidationError', {
+        {
+          message: 'GraphQlValidationError',
           extensions: {
             email: [{ message: 'custom email error', code: 'custom-email-error' }],
           },
-        }),
+        } as GraphQLFormattedError,
       ]);
     });
 
@@ -54,11 +56,12 @@ describe('useApiForm: Hook', () => {
       await waitForApolloMocks();
       act(() => {
         result.current.setApolloGraphQLResponseErrors([
-          new GraphQLError('GraphQlValidationError', {
+          {
+            message: 'GraphQlValidationError',
             extensions: {
               email: [{ message: '', code: 'custom_error' }],
             },
-          }),
+          } as GraphQLFormattedError,
         ]);
       });
 
@@ -73,11 +76,12 @@ describe('useApiForm: Hook', () => {
       await waitForApolloMocks();
       act(() => {
         result.current.setApolloGraphQLResponseErrors([
-          new GraphQLError('GraphQlValidationError', {
+          {
+            message: 'GraphQlValidationError',
             extensions: {
               nonFieldErrors: [{ message: '', code: 'custom_error' }],
             },
-          }),
+          } as GraphQLFormattedError,
         ]);
       });
 
@@ -100,12 +104,13 @@ describe('useApiForm: Hook', () => {
 
       act(() => {
         result.current.setApolloGraphQLResponseErrors([
-          new GraphQLError('GraphQlValidationError', {
+          {
+            message: 'GraphQlValidationError',
             extensions: {
               nonFieldErrors: [{ message: '', code: 'custom_error' }],
               email: [{ message: '', code: 'custom_error' }],
             },
-          }),
+          } as GraphQLFormattedError,
         ]);
       });
 
@@ -118,11 +123,12 @@ describe('useApiForm: Hook', () => {
 
       act(() => {
         result.current.setApolloGraphQLResponseErrors([
-          new GraphQLError('GraphQlValidationError', {
+          {
+            message: 'GraphQlValidationError',
             extensions: {
               nonFieldErrors: [{ message: '', code: 'custom_error' }],
             },
-          }),
+          } as GraphQLFormattedError,
         ]);
       });
 

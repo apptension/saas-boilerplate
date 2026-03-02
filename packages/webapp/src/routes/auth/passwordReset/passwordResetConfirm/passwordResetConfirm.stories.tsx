@@ -8,8 +8,8 @@ import { createMockRouterProps } from '../../../../tests/utils/rendering';
 import { PasswordResetConfirm } from './passwordResetConfirm.component';
 
 const routePath = RoutesConfig.passwordReset.confirm;
-const userParam = 'user';
-const tokenParam = 'token';
+const userParam = 'sample-user-id';
+const tokenParam = 'sample-reset-token-12345';
 
 const Template: StoryFn = () => {
   return (
@@ -22,11 +22,13 @@ const Template: StoryFn = () => {
 export default {
   title: 'Routes/Auth/PasswordResetConfirm',
   component: PasswordResetConfirm,
+  parameters: {
+    layout: 'fullscreen',
+  },
 };
 
 export const Default = {
   render: Template,
-
   decorators: [
     withProviders({
       routerProps: createMockRouterProps(routePath, {

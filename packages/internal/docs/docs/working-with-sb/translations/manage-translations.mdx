@@ -1,0 +1,260 @@
+---
+title: How to manage translations?
+description: Complete guide to adding and publishing translations
+---
+
+This guide covers the full workflow for managing translations in SaaS Boilerplate—from adding new text in code to publishing translations via the admin panel.
+
+## Prerequisites
+
+- Backend running with `docker compose up`
+- Access to Django Admin (`/admin/`)
+- Superuser account
+
+---
+
+## Step 1: Add Translatable Text in Code
+
+Use `react-intl` for all user-facing strings:
+
+```tsx title="packages/webapp-libs/webapp-core/src/components/myComponent/myComponent.component.tsx"
+import { FormattedMessage, useIntl } from 'react-intl';
+
+export const MyComponent = () => {
+  const intl = useIntl();
+
+  return (
+    <div>
+      {/* For JSX content */}
+      <h1>
+        <FormattedMessage
+          defaultMessage="Welcome to our app"
+          id="MyComponent / Welcome heading"
+        />
+      </h1>
+
+      {/* For attributes/props */}
+      <input
+        placeholder={intl.formatMessage({
+          defaultMessage: 'Enter your email',
+          id: 'MyComponent / Email placeholder',
+        })}
+      />
+    </div>
+  );
+};
+```
+
+### Message ID Convention
+
+Follow the pattern `"Section / Description"`:
+
+| Example | Meaning |
+|---------|---------|
+| `"Home / Welcome message"` | Welcome text on the home page |
+| `"Profile / Save button"` | Save button on profile page |
+| `"Auth / Login error"` | Error message on login form |
+
+:::tip
+Keep IDs descriptive and unique. They serve as identifiers for translators.
+:::
+
+---
+
+## Step 2: Extract Translation Keys
+
+Run the extraction command to generate `master.json`:
+
+```bash
+cd packages/webapp
+pnpm extract-intl:master
+```
+
+This creates `packages/webapp/src/translations/master.json` containing all message IDs and their default values:
+
+```json
+{
+  "MyComponent / Welcome heading": {
+    "defaultMessage": "Welcome to our app"
+  },
+  "MyComponent / Email placeholder": {
+    "defaultMessage": "Enter your email"
+  }
+}
+```
+
+---
+
+## Step 3: Sync Keys to Database
+
+### Automatic Sync
+
+When you run `pnpm saas up`, translation keys are automatically synced from `master.json` 
+during backend startup. This happens after migrations run.
+
+### Manual Sync
+
+To manually sync after extracting new keys:
+
+```bash
+pnpm translations:sync
+```
+
+Or combine extraction and sync:
+
+```bash
+pnpm translations:extract-and-sync
+```
+
+:::tip No Authentication Required
+The sync script uses docker exec to run the Django management command directly, 
+so no admin credentials or API tokens are needed for local development.
+:::
+
+:::info CI/CD Integration
+In CI/CD pipelines, you can use the management command directly:
+```bash
+docker compose exec backend python manage.py sync_translations /path/to/master.json
+```
+:::
+
+---
+
+## Step 4: Translate in Admin Panel
+
+### 4.1 Open Translation Keys
+
+1. Navigate to `/admin/translations/translationkey/`
+2. You'll see all synced keys with their default messages
+
+### 4.2 Add Translations
+
+1. Click on a translation key
+2. In the **Translations** inline section, click **Add Translation**
+3. Select the locale (e.g., Polish)
+4. Enter the translated message
+5. Set **Status** to `Draft` or `Published`
+6. Save
+
+### 4.3 Bulk Editing Tips
+
+- Use the **Filter by locale** to see untranslated keys
+- Sort by **Translation count** to find keys needing work
+- Use **Search** to find specific features/sections
+
+---
+
+## Step 5: Publish Translations
+
+Publishing generates a JSON file and uploads it to S3/CloudFront.
+
+### Option A: Admin UI
+
+1. Go to Admin → Translations → **Locales**
+2. Select the locale(s) to publish
+3. From the **Actions** dropdown, select **Publish translations**
+4. Click **Go**
+
+### Option B: Command Line
+
+```bash
+cd packages/backend
+
+# Publish single locale
+uv run python manage.py publish_translations en
+
+# Publish all active locales
+uv run python manage.py publish_translations --all
+```
+
+### Option C: GraphQL Mutation
+
+```graphql
+mutation {
+  publishTranslations(input: { localeCode: "pl" }) {
+    success
+    version
+    message
+  }
+}
+```
+
+---
+
+## Step 6: Verify in App
+
+1. Refresh your browser
+2. Switch language using the language selector (🌍 icon in header)
+3. Verify translations appear correctly
+
+:::tip Cache Behavior
+- **Production**: CloudFront cache is invalidated on publish (~30 seconds)
+- **Development**: Enable polling for instant updates (`VITE_TRANSLATIONS_POLLING=true`)
+:::
+
+---
+
+## Version History & Rollback
+
+Each publish creates a version snapshot.
+
+### Viewing Version History
+
+Admin → Translations → **Translation Versions**
+
+### Rolling Back
+
+1. Find the version you want to restore
+2. Select it
+3. From Actions, choose **Activate this version**
+4. Go to Locales and **Publish** again
+
+---
+
+## Best Practices
+
+### Do
+
+- ✅ Use descriptive message IDs
+- ✅ Include placeholders for dynamic content: `Hello, {name}!`
+- ✅ Set translations to `Draft` until reviewed
+- ✅ Test translations in the app before marking as `Published`
+
+### Don't
+
+- ❌ Include emojis in translation strings (use toast variants for icons)
+- ❌ Hardcode text in components—always use `FormattedMessage`
+- ❌ Publish without testing
+
+---
+
+## Troubleshooting
+
+### Keys not appearing in admin
+
+1. Verify extraction: `pnpm extract-intl:master`
+2. Check `master.json` was generated in `packages/webapp-libs/webapp-core/src/translations/`
+3. Ensure backend is running: `pnpm saas backend up`
+4. Run sync: `pnpm translations:sync`
+5. Check backend logs: `docker compose logs backend`
+
+### Translations not loading
+
+1. Check browser console for fetch errors
+2. Verify `VITE_TRANSLATIONS_URL` is correct
+3. Check CloudFront distribution is accessible
+4. Try hard refresh (Cmd/Ctrl + Shift + R)
+
+### Old translations still showing
+
+1. Clear browser cache
+2. Wait for CloudFront invalidation (~30 sec)
+3. Force re-fetch by changing locale and back
+
+---
+
+## Related
+
+- [Add a New Language](/working-with-sb/translations/add-language)
+- [Translations Feature Overview](/introduction/features/translations)
+

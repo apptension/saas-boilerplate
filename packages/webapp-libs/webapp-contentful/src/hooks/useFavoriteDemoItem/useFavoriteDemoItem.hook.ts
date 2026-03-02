@@ -1,7 +1,7 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
 import { pipe, pluck } from 'ramda';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   useFavoriteDemoItemFragment,
@@ -10,32 +10,52 @@ import {
   useFavoriteDemoItemListQuery,
 } from './useFavoriteDemoItem.graphql';
 
-export const useFavoriteDemoItem = (id: string) => {
-  const handleCreate = useHandleCreate();
-  const handleDelete = useHandleDelete();
+export type UseFavoriteDemoItemResult = {
+  isFavorite: boolean;
+  isLoading: boolean;
+  error: Error | null;
+  setFavorite: (isFavorite: boolean) => Promise<void>;
+};
 
-  const { data } = useQuery(useFavoriteDemoItemListQuery, { fetchPolicy: 'cache-and-network' });
+export const useFavoriteDemoItem = (id: string): UseFavoriteDemoItemResult => {
+  const { handleCreate, createLoading, createError } = useHandleCreate();
+  const { handleDelete, deleteLoading, deleteError } = useHandleDelete();
+  const [lastError, setLastError] = useState<Error | null>(null);
+
+  const { data, error: queryError } = useQuery(useFavoriteDemoItemListQuery, {
+    fetchPolicy: 'cache-and-network',
+  });
   const getIds = pipe<any, any, string[]>(pluck('item'), pluck('pk'));
   const favorites = useMappedConnection(data?.allContentfulDemoItemFavorites);
   const favoritesIds = getIds(favorites);
   const isFavorite = useMemo(() => favoritesIds.includes(id), [id, favoritesIds]);
 
-  const setFavorite = async (isFavorite: boolean) => {
-    if (isFavorite) {
-      await handleCreate(id);
-    } else {
-      await handleDelete(id);
+  const setFavorite = async (shouldBeFavorite: boolean) => {
+    setLastError(null);
+    try {
+      if (shouldBeFavorite) {
+        await handleCreate(id);
+      } else {
+        await handleDelete(id);
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        setLastError(err);
+      }
+      throw err;
     }
   };
 
   return {
     isFavorite,
+    isLoading: createLoading || deleteLoading,
+    error: lastError || createError || deleteError || queryError || null,
     setFavorite,
   };
 };
 
 export const useHandleCreate = () => {
-  const [commitCreateMutation] = useMutation(useFavoriteDemoItemListCreateMutation, {
+  const [commitCreateMutation, { loading, error }] = useMutation(useFavoriteDemoItemListCreateMutation, {
     update(cache, { data }) {
       const node = data?.createFavoriteContentfulDemoItem?.contentfulDemoItemFavoriteEdge?.node;
       if (!node) {
@@ -69,7 +89,7 @@ export const useHandleCreate = () => {
     },
   });
 
-  return async (id: string) => {
+  const handleCreate = async (id: string) => {
     return await commitCreateMutation({
       variables: {
         input: {
@@ -78,10 +98,12 @@ export const useHandleCreate = () => {
       },
     });
   };
+
+  return { handleCreate, createLoading: loading, createError: error };
 };
 
 export const useHandleDelete = () => {
-  const [commitDeleteMutation] = useMutation(useFavoriteDemoItemListDeleteMutation, {
+  const [commitDeleteMutation, { loading, error }] = useMutation(useFavoriteDemoItemListDeleteMutation, {
     update(cache, { data }) {
       const deletedId = data?.deleteFavoriteContentfulDemoItem?.deletedIds?.[0];
       const normalizedId = cache.identify({ id: deletedId, __typename: 'ContentfulDemoItemFavoriteType' });
@@ -89,7 +111,7 @@ export const useHandleDelete = () => {
     },
   });
 
-  return async (id: string) => {
+  const handleDelete = async (id: string) => {
     await commitDeleteMutation({
       variables: {
         input: {
@@ -98,4 +120,6 @@ export const useHandleDelete = () => {
       },
     });
   };
+
+  return { handleDelete, deleteLoading: loading, deleteError: error };
 };

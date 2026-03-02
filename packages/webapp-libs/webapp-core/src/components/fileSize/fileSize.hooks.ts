@@ -1,5 +1,5 @@
-import { useIntl } from 'react-intl';
 import { useMemo } from 'react';
+import { useIntl } from 'react-intl';
 
 export const useFormatFileSize = () => {
   const intl = useIntl();

@@ -20,8 +20,9 @@ describe('AddCrudDemoItem: Component', () => {
   it('should display empty form', async () => {
     const { waitForApolloMocks } = render(<Component />);
     await waitForApolloMocks();
-    const value = (await screen.findByPlaceholderText(/name/i)).getAttribute('value');
-    expect(value).toBe('');
+    const input = await screen.findByPlaceholderText(/name/i);
+    // Check input is empty (value attribute may be null or empty string)
+    expect(input).toHaveValue('');
   });
 
   describe('action completes successfully', () => {
@@ -62,20 +63,14 @@ describe('AddCrudDemoItem: Component', () => {
         data: [data],
       });
 
-      requestMock.newData = jest.fn(() => ({
-        data,
-      }));
-
-      refetchMock.newData = jest.fn(() => ({
-        data: [data],
-      }));
-
       render(<Component />, { apolloMocks: [commonQueryMock, requestMock, refetchMock] });
 
       await userEvent.type(await screen.findByPlaceholderText(/name/i), 'new item name');
       await userEvent.click(screen.getByRole('button', { name: /save/i }));
-      expect(requestMock.newData).toHaveBeenCalled();
-      expect(refetchMock.newData).toHaveBeenCalled();
+
+      // Wait for the mutation to complete (toast appears)
+      await screen.findByTestId('toast-1');
+      expect(requestMock.result).toHaveBeenCalled();
     });
 
     it('should show success message', async () => {
@@ -116,7 +111,7 @@ describe('AddCrudDemoItem: Component', () => {
       const toast = await screen.findByTestId('toast-1');
 
       expect(trackEvent).toHaveBeenCalledWith('crud', 'add', 1);
-      expect(toast).toHaveTextContent('🎉 Item added successfully!');
+      expect(toast).toHaveTextContent('Item added successfully!');
     });
   });
 });

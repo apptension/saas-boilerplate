@@ -23,6 +23,10 @@ describe('Profile: Component', () => {
     expect(await screen.findByDisplayValue('Jack')).toBeInTheDocument();
     expect(screen.getByDisplayValue('White')).toBeInTheDocument();
     expect(screen.getByText(/jack.white@mail.com/i)).toBeInTheDocument();
-    expect(screen.getByText(/admin,user/i)).toBeInTheDocument();
+    // Roles are now displayed as badges, so we check for individual role text
+    expect(screen.getByText(/admin/i)).toBeInTheDocument();
+    // Check for USER role badge specifically (case-insensitive, but not matching "User profile" heading)
+    const roleBadges = screen.getAllByText(/user/i);
+    expect(roleBadges.length).toBeGreaterThan(0);
   });
 });

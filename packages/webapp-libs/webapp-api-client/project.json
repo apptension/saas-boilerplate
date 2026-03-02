@@ -12,7 +12,11 @@
       },
       "configurations": {
         "generate-types": {
-          "commands": ["pnpm run graphql-codegen -c ./graphql/codegen.ts"],
+          "commands": [
+            "pnpm run graphql-codegen -c ./graphql/codegen.ts",
+            "node ./scripts/remove-duplicate-types.js",
+            "node ./scripts/patch-gql.js"
+          ],
           "parallel": false
         },
         "generate-types:watch": {

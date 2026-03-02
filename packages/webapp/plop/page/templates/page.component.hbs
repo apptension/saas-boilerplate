@@ -1,0 +1,113 @@
+{{#if withDataFetching}}
+import { useQuery } from '@apollo/client';
+{{/if}}
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Paragraph } from '@sb/webapp-core/components/typography';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+{{#if withSkeleton}}
+import { Skeleton } from '@sb/webapp-core/components/ui/skeleton';
+{{/if}}
+{{#if withDataFetching}}
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
+{{/if}}
+import { {{ pageIcon }} } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
+import { FormattedMessage, useIntl } from 'react-intl';
+
+{{#if withDataFetching}}
+import { {{ camelCase name }}Query } from './{{ camelCase name }}.graphql';
+{{/if}}
+{{#if withSkeleton}}
+import { {{ pascalCase name }}Skeleton } from './{{ camelCase name }}Skeleton.component';
+{{/if}}
+
+export const {{ pascalCase name }} = () => {
+  const intl = useIntl();
+{{#if withDataFetching}}
+  const { data: currentTenant } = useCurrentTenant();
+
+  const { data, loading, error } = useQuery({{ camelCase name }}Query, {
+    variables: {
+      tenantId: currentTenant?.id ?? '',
+    },
+    skip: !currentTenant,
+  });
+
+  if (loading) {
+    return <{{ pascalCase name }}Skeleton />;
+  }
+
+  if (error) {
+    return (
+      <PageLayout>
+        <div className="mx-auto w-full max-w-5xl">
+          <Card>
+            <CardContent className="py-8">
+              <div className="text-center text-destructive">
+                <FormattedMessage
+                  defaultMessage="Error loading data"
+                  id="{{ pascalCase name }} / Error"
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </PageLayout>
+    );
+  }
+{{/if}}
+
+  return (
+    <PageLayout>
+      <Helmet
+        title={intl.formatMessage({
+          defaultMessage: '{{ pageTitle }}',
+          id: '{{ pascalCase name }} / page title',
+        })}
+      />
+
+      <div className="mx-auto w-full max-w-5xl space-y-8">
+        {/* Hero Section */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <{{ pageIcon }} className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">
+              <FormattedMessage defaultMessage="{{ pageTitle }}" id="{{ pascalCase name }} / Title" />
+            </h1>
+          </div>
+          <Paragraph className="text-lg text-muted-foreground">
+            <FormattedMessage
+              defaultMessage="{{ pageDescription }}"
+              id="{{ pascalCase name }} / Description"
+            />
+          </Paragraph>
+        </div>
+
+        {/* Main Content */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <{{ pageIcon }} className="h-5 w-5" />
+              <FormattedMessage defaultMessage="Overview" id="{{ pascalCase name }} / Card title" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Your {{ pageTitle }} content goes here"
+                id="{{ pascalCase name }} / Card description"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* TODO: Add your page content here */}
+            <Paragraph>
+              <FormattedMessage
+                defaultMessage="Start building your {{ pageTitle }} page!"
+                id="{{ pascalCase name }} / Placeholder"
+              />
+            </Paragraph>
+          </CardContent>
+        </Card>
+      </div>
+    </PageLayout>
+  );
+};

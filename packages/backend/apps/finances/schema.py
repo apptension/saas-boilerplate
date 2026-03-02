@@ -11,9 +11,11 @@ from graphql_relay import to_global_id, from_global_id, offset_to_cursor
 from rest_framework.generics import get_object_or_404
 from stripe.error import InvalidRequestError
 
-from common.acl.policies import AnyoneFullAccess, IsTenantOwnerAccess
+from common.acl.policies import AnyoneFullAccess, IsTenantMemberAccess
 from common.graphql import mutations
-from common.graphql.acl import permission_classes
+from common.graphql.acl import permission_classes, requires
+from common.action_logging.service import log_action
+from apps.multitenancy.constants import ActionType
 from . import constants
 from . import utils, serializers
 from .services import subscriptions, customers
@@ -199,6 +201,23 @@ class ChangeActiveSubscriptionMutation(mutations.UpdateTenantDependentModelMutat
     def get_object(cls, model_class, root, info, **input):
         return subscriptions.get_schedule(tenant=info.context.tenant)
 
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        result = super().mutate_and_get_payload(root, info, **input)
+
+        # Log the subscription change
+        log_action(
+            tenant_id=info.context.tenant.pk,
+            action_type=ActionType.UPDATE,
+            entity_type="subscription",
+            entity_id=str(info.context.tenant.pk),
+            entity_name="Subscription Plan",
+            actor_user=info.context.user,
+            changes={"plan": {"old": None, "new": input.get("price", "updated")}},
+        )
+
+        return result
+
 
 class CancelActiveSubscriptionMutation(mutations.UpdateTenantDependentModelMutation):
     class Meta:
@@ -209,6 +228,23 @@ class CancelActiveSubscriptionMutation(mutations.UpdateTenantDependentModelMutat
     @classmethod
     def get_object(cls, model_class, root, info, **input):
         return subscriptions.get_schedule(tenant=info.context.tenant)
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        result = super().mutate_and_get_payload(root, info, **input)
+
+        # Log the subscription cancellation
+        log_action(
+            tenant_id=info.context.tenant.pk,
+            action_type=ActionType.DELETE,
+            entity_type="subscription",
+            entity_id=str(info.context.tenant.pk),
+            entity_name="Subscription",
+            actor_user=info.context.user,
+            changes={"status": {"old": "active", "new": "cancelled"}},
+        )
+
+        return result
 
 
 class PaymentMethodConnection(graphene.Connection):
@@ -241,7 +277,7 @@ class StripeSetupIntentType(StripeDjangoObjectType):
     class Meta:
         model = djstripe_models.SetupIntent
         interfaces = (relay.Node,)
-        exclude = ('setup_intents',)
+        exclude = ("setup_intents",)
 
 
 class UpdateDefaultPaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.SerializerMutation):
@@ -291,6 +327,19 @@ class DeletePaymentMethodMutation(PaymentMethodGetObjectMixin, mutations.DeleteT
             _, input["tenant_id"] = from_global_id(input["tenant_id"])
         obj = cls.get_payment_method(id, info.context.tenant)
         pk = obj.pk
+
+        # Log the payment method deletion
+        # card is stored as a dict (JSONField), so access last4 via dict syntax
+        card_last4 = obj.card.get("last4") if isinstance(obj.card, dict) else getattr(obj.card, "last4", None)
+        log_action(
+            tenant_id=info.context.tenant.pk,
+            action_type=ActionType.DELETE,
+            entity_type="payment_method",
+            entity_id=str(pk),
+            entity_name=f"Payment Method (*{card_last4 if card_last4 else 'N/A'})",
+            actor_user=info.context.user,
+        )
+
         customers.remove_payment_method(payment_method=obj)
         obj.delete()
         return cls(
@@ -342,41 +391,59 @@ class Query(graphene.ObjectType):
         )
 
     @staticmethod
-    @permission_classes(IsTenantOwnerAccess)
+    @permission_classes(IsTenantMemberAccess, requires("billing.view"))
     def resolve_active_subscription(root, info, **kwargs):
         return subscriptions.get_schedule(tenant=info.context.tenant)
 
     @staticmethod
-    @permission_classes(IsTenantOwnerAccess)
+    @permission_classes(IsTenantMemberAccess, requires("billing.view"))
     def resolve_all_payment_methods(root, info, **kwargs):
         return djstripe_models.PaymentMethod.objects.filter(customer__subscriber=info.context.tenant)
 
     @staticmethod
-    @permission_classes(IsTenantOwnerAccess)
+    @permission_classes(IsTenantMemberAccess, requires("billing.view"))
     def resolve_all_charges(root, info, **kwargs):
         customer, _ = djstripe_models.Customer.get_or_create(info.context.tenant)
         return customer.charges.filter(status=djstripe_enums.ChargeStatus.succeeded).order_by("-created")
 
     @staticmethod
-    @permission_classes(IsTenantOwnerAccess)
+    @permission_classes(IsTenantMemberAccess, requires("billing.view"))
     def resolve_charge(root, info, id, **kwargs):
         _, pk = from_global_id(id)
         customer, _ = djstripe_models.Customer.get_or_create(info.context.tenant)
         return customer.charges.get(status=djstripe_enums.ChargeStatus.succeeded, pk=pk)
 
     @staticmethod
-    @permission_classes(IsTenantOwnerAccess)
+    @permission_classes(IsTenantMemberAccess, requires("billing.view"))
     def resolve_payment_intent(root, info, id, **kwargs):
         _, pk = from_global_id(id)
         return djstripe_models.PaymentIntent.objects.get(customer__subscriber=info.context.tenant, pk=pk)
 
 
-@permission_classes(IsTenantOwnerAccess)
+@permission_classes(IsTenantMemberAccess)
 class Mutation(graphene.ObjectType):
-    change_active_subscription = ChangeActiveSubscriptionMutation.Field()
-    cancel_active_subscription = CancelActiveSubscriptionMutation.Field()
-    update_default_payment_method = UpdateDefaultPaymentMethodMutation.Field()
-    delete_payment_method = DeletePaymentMethodMutation.Field()
-    create_payment_intent = CreatePaymentIntentMutation.Field()
-    update_payment_intent = UpdatePaymentIntentMutation.Field()
-    create_setup_intent = CreateSetupIntentMutation.Field()
+    """
+    Billing mutations with RBAC permission checks.
+
+    Uses IsTenantMemberAccess at class level (requires membership),
+    with specific RBAC permissions for each mutation.
+    """
+
+    # Subscription management - requires billing.manage
+    change_active_subscription = permission_classes(requires("billing.manage"))(
+        ChangeActiveSubscriptionMutation.Field()
+    )
+    cancel_active_subscription = permission_classes(requires("billing.manage"))(
+        CancelActiveSubscriptionMutation.Field()
+    )
+
+    # Payment method management - requires billing.manage
+    update_default_payment_method = permission_classes(requires("billing.manage"))(
+        UpdateDefaultPaymentMethodMutation.Field()
+    )
+    delete_payment_method = permission_classes(requires("billing.manage"))(DeletePaymentMethodMutation.Field())
+
+    # Payment intents - requires billing.manage
+    create_payment_intent = permission_classes(requires("billing.manage"))(CreatePaymentIntentMutation.Field())
+    update_payment_intent = permission_classes(requires("billing.manage"))(UpdatePaymentIntentMutation.Field())
+    create_setup_intent = permission_classes(requires("billing.manage"))(CreateSetupIntentMutation.Field())

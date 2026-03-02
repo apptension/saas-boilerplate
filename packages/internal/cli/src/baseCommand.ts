@@ -3,6 +3,10 @@ import { ExitError } from '@oclif/core/lib/errors';
 import { Span, SpanStatusCode, trace, Tracer } from '@opentelemetry/api';
 
 import * as telemetry from './config/telemetry';
+import { getConfigStorage } from './config/storage';
+
+const TELEMETRY_NOTICE_KEY = 'telemetryNoticeShown';
+const TELEMETRY_NOTICE_INTERVAL_DAYS = 7; // Show notice once per week
 
 const formatAttrs = (obj: { [k: string]: string } = {}, prefix = '') => {
   return Object.fromEntries(
@@ -38,7 +42,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     this.args = args as Args<T>;
 
     if (telemetry.isEnabled) {
-      this.printTelemetryInfo();
+      await this.maybeShowTelemetryNotice();
       this.tracer = trace.getTracer('command', this.config.version);
     }
   }
@@ -102,14 +106,47 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     return super.finally(_);
   }
 
+  /**
+   * Show telemetry notice only periodically (once per week)
+   */
+  private async maybeShowTelemetryNotice(): Promise<void> {
+    try {
+      const storage = await getConfigStorage();
+      const lastShown = await storage.getItem(TELEMETRY_NOTICE_KEY);
+      const now = Date.now();
+
+      // Check if we should show the notice
+      const shouldShow =
+        !lastShown ||
+        now - lastShown > TELEMETRY_NOTICE_INTERVAL_DAYS * 24 * 60 * 60 * 1000;
+
+      if (shouldShow) {
+        this.printTelemetryInfo();
+        await storage.setItem(TELEMETRY_NOTICE_KEY, now);
+      }
+    } catch {
+      // If storage fails, show a minimal one-line notice
+      this.printMinimalTelemetryInfo();
+    }
+  }
+
+  /**
+   * Full telemetry notice (shown periodically)
+   */
   protected printTelemetryInfo(): void {
-    this.log(`\x1b[2m
------- Notice ------
-This CLI collects various anonymous events, warnings, and errors to improve the CLI tool and enhance your user experience.
-Read more: https://docs.demo.saas.apptoku.com/working-with-sb/dev-tools/telemetry
-If you want to opt out of telemetry, you can set the environment variable SB_TELEMETRY_DISABLED to 1 in your shell.
-For example:
-   export SB_TELEMETRY_DISABLED=1
-    \x1b[0m`);
+    // Compact, less intrusive notice
+    this.log(
+      '\x1b[2m' +
+        'Telemetry enabled. Opt out: export SB_TELEMETRY_DISABLED=1 | ' +
+        'More: https://docs.demo.saas.apptoku.com/working-with-sb/dev-tools/telemetry' +
+        '\x1b[0m\n',
+    );
+  }
+
+  /**
+   * Minimal one-line telemetry notice (fallback)
+   */
+  protected printMinimalTelemetryInfo(): void {
+    this.log('\x1b[2mTelemetry enabled. Set SB_TELEMETRY_DISABLED=1 to opt out.\x1b[0m\n');
   }
 }

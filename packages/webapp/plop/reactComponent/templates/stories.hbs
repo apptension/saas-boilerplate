@@ -1,22 +1,44 @@
-import { StoryFn } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
+
 import { {{ pascalCase name }}{{#if hasProps}}, {{ pascalCase name }}Props{{/if}} } from './{{ camelCase name }}.component';
 
-{{#if hasProps}}
-const Template: StoryFn<{{ pascalCase name }}Props> = (args) => {
-  return <{{ pascalCase name }} {...args} />;
-};
-{{else}}
-const Template: StoryFn = () => {
-  return <{{ pascalCase name }} />;
-};
-{{/if}}
-
-export default {
+const meta: Meta<typeof {{ pascalCase name }}> = {
   title: '{{ storyTitleNamespace }}{{ pascalCase name }}',
   component: {{ pascalCase name }},
+{{#if hasProps}}
+  args: {
+    children: 'Example content',
+  },
+  argTypes: {
+    children: {
+      control: 'text',
+      description: 'Content to render inside the component',
+    },
+    className: {
+      control: 'text',
+      description: 'Additional CSS classes',
+    },
+  },
+{{/if}}
 };
 
-export const Default = Template.bind({});
+export default meta;
+
+type Story = StoryObj<typeof {{ pascalCase name }}>;
+
+export const Default: Story = {
 {{#if hasProps}}
-Default.args = { children: 'text' };
+  args: {
+    children: 'Default content',
+  },
+{{/if}}
+};
+{{#if hasProps}}
+
+export const WithCustomClass: Story = {
+  args: {
+    children: 'Content with custom styling',
+    className: 'bg-muted p-4 rounded-lg',
+  },
+};
 {{/if}}

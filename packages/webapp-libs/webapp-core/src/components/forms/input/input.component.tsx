@@ -10,8 +10,18 @@ export type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, error, label, required, type, ...props }: InputProps, ref) => {
     return (
-      <div className={cn(`relative w-full max-w-xs`, className)}>
+      <div className={cn(`w-full`, className)}>
         <label className="flex flex-col items-start">
+          {label && (
+            <p
+              className={cn(`order-first mb-1.5 text-sm font-medium`, {
+                'text-destructive': !!error,
+                'text-foreground': !error,
+              })}
+            >
+              {label}
+            </p>
+          )}
           <input
             type={type}
             className={cn(
@@ -20,23 +30,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none 
               focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`,
               {
-                'border-red-500': !!error,
+                'border-destructive focus-visible:ring-destructive': !!error,
               }
             )}
             ref={ref}
             {...props}
           />
-          {label && (
-            <p
-              className={cn(`order-first mb-1 text-xs`, {
-                'text-red-500': !!error,
-              })}
-            >
-              {label}
-            </p>
-          )}
         </label>
-        <p className="absolute top-[calc(100%+4px)] m-0 text-xs leading-3 text-red-500">{error}</p>
+        {error && <p className="text-destructive mt-1.5 text-sm leading-tight">{error}</p>}
       </div>
     );
   }

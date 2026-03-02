@@ -9,6 +9,13 @@ import { Documents } from '../documents.component';
 
 jest.mock('@sb/webapp-core/services/analytics');
 
+// Mock PermissionGate to always render children (simulate having permission)
+jest.mock('@sb/webapp-tenants/hooks', () => ({
+  ...jest.requireActual('@sb/webapp-tenants/hooks'),
+  PermissionGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  usePermissionCheck: () => ({ hasPermission: true, loading: false }),
+}));
+
 describe('Documents: Component', () => {
   const Component = () => <Documents />;
 
@@ -28,7 +35,7 @@ describe('Documents: Component', () => {
 
     render(<Component />, { apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest) });
 
-    expect(await screen.findByText('No documents')).toBeInTheDocument();
+    expect(await screen.findByText('No documents yet')).toBeInTheDocument();
   });
 
   it('should render maximum size state', async () => {
@@ -72,19 +79,19 @@ describe('Documents: Component', () => {
     };
 
     const deleteMutationMock = fillDocumentDeleteQuery(id, mutationData);
-    deleteMutationMock.newData = jest.fn(() => ({
-      data: mutationData,
-    }));
 
     const mockRequest = fillDocumentsListQuery([generatedDoc]);
 
     render(<Component />, {
       apolloMocks: (defaultMocks) => defaultMocks.concat(mockRequest, deleteMutationMock),
     });
-    fireEvent.click(await screen.findByRole('button', { name: /delete/i }));
+
+    // Find and click the delete button (aria-label is "Delete document")
+    fireEvent.click(await screen.findByRole('button', { name: /delete document/i }));
     fireEvent.click(screen.getByText(/continue/i));
 
-    expect(deleteMutationMock.newData).toHaveBeenCalled();
+    // Wait for the mutation to complete by checking for tracking event
     await waitFor(() => expect(trackEvent).toHaveBeenCalledWith('document', 'delete', id));
+    expect(deleteMutationMock.result).toHaveBeenCalled();
   });
 });

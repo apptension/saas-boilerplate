@@ -1,12 +1,14 @@
-import { Story } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import { {{ pascalCase name }}List } from './{{ camelCase name }}List.component';
 
-const Template: Story = (args) => <{{ pascalCase name }}List {...args} />;
-
-export default {
-  title: '{{ pascalCase name }} / {{ pascalCase name }}List',
+const meta: Meta<typeof {{ pascalCase name }}List> = {
+  title: 'Routes/{{ pascalCase name }}/{{ pascalCase name }}List',
   component: {{ pascalCase name }}List,
 };
 
-export const Default = Template.bind({});
+export default meta;
+
+type Story = StoryObj<typeof {{ pascalCase name }}List>;
+
+export const Default: Story = {};

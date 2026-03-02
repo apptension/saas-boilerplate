@@ -1,0 +1,68 @@
+import { screen, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+
+import { render } from '../../../tests/utils/rendering';
+import { {{ pascalCase name }}Modal, {{ pascalCase name }}ModalProps } from '../{{ camelCase name }}Modal.component';
+
+describe('{{ pascalCase name }}Modal: Component', () => {
+  const defaultProps: {{ pascalCase name }}ModalProps = {
+    isOpen: true,
+    onClose: jest.fn(),
+{{#if_eq variant "confirm"}}
+    onConfirm: jest.fn(),
+{{/if_eq}}
+  };
+
+  const Component = (props: Partial<{{ pascalCase name }}ModalProps>) => (
+    <{{ pascalCase name }}Modal {...defaultProps} {...props} />
+  );
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should render modal when open', async () => {
+    render(<Component />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+    });
+  });
+
+  it('should not render modal when closed', async () => {
+    render(<Component isOpen={false} />);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('should call onClose when cancel button is clicked', async () => {
+    const onClose = jest.fn();
+    render(<Component onClose={onClose} />);
+
+    const cancelButton = await screen.findByRole('button', { name: /cancel|close/i });
+    await userEvent.click(cancelButton);
+
+    expect(onClose).toHaveBeenCalled();
+  });
+
+{{#if_eq variant "confirm"}}
+  it('should call onConfirm when confirm button is clicked', async () => {
+    const onConfirm = jest.fn();
+    render(<Component onConfirm={onConfirm} />);
+
+    const confirmButton = await screen.findByRole('button', { name: /confirm/i });
+    await userEvent.click(confirmButton);
+
+    expect(onConfirm).toHaveBeenCalled();
+  });
+
+  it('should disable buttons when loading', async () => {
+    render(<Component isLoading={true} />);
+
+    const buttons = await screen.findAllByRole('button');
+    buttons.forEach((button) => {
+      expect(button).toBeDisabled();
+    });
+  });
+{{/if_eq}}
+});

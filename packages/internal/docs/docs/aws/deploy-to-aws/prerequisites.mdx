@@ -1,0 +1,342 @@
+---
+title: Prerequisites
+description: Tools and accounts needed before deploying to AWS
+---
+
+import ProjectName from '../../shared/components/ProjectName.component';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Step 0: Prerequisites
+
+Before deploying <ProjectName /> to AWS, you need to install several tools and set up accounts. This step ensures everything is ready for a smooth deployment.
+
+**Estimated time: 15-30 minutes**
+
+---
+
+## Checklist
+
+Complete all items before proceeding:
+
+- [ ] AWS account with admin access
+- [ ] Docker Hub account
+- [ ] AWS CLI installed
+- [ ] aws-vault installed
+- [ ] Chamber installed
+- [ ] Domain name (for production deployment)
+- [ ] Local development environment working
+
+---
+
+## 1. AWS Account
+
+You need an AWS account with administrator access. If you're part of an organization, ask your AWS administrator for credentials.
+
+### Creating a New AWS Account
+
+If you don't have an AWS account:
+
+1. Go to [aws.amazon.com](https://aws.amazon.com/)
+2. Click **Create an AWS Account**
+3. Follow the signup process (requires credit card)
+4. After creation, sign in to the [AWS Console](https://console.aws.amazon.com/)
+
+:::caution New AWS Accounts Have Limits
+Fresh AWS accounts have service limits that may affect deployment:
+
+- **SES Sandbox Mode**: Can only send emails to verified addresses
+- **CodeBuild**: Limited to 1 concurrent build (affects CI/CD speed)
+- **CloudFront**: May require account verification
+
+These limits typically increase automatically with account age and usage. See our [Troubleshooting Guide](/aws/troubleshooting) for workarounds.
+:::
+
+### Required Permissions
+
+Your AWS user needs administrator permissions. If using a limited account, ensure you have access to:
+
+- IAM (to create roles)
+- ECS, ECR
+- RDS, ElastiCache
+- S3, CloudFront
+- Route 53, ACM
+- Secrets Manager, Systems Manager
+- CodePipeline, CodeBuild
+- CloudWatch, Lambda
+
+---
+
+## 2. Docker Hub Account
+
+Docker Hub is required for pulling base images during builds. Without it, AWS CodeBuild will hit rate limits and fail.
+
+1. Go to [hub.docker.com](https://hub.docker.com/)
+2. Create a free account
+3. Note your username and password (you'll need these later)
+
+:::tip Why Docker Hub?
+AWS CodeBuild shares IP addresses with other AWS customers. Without Docker Hub authentication, you'll quickly hit Docker's anonymous pull rate limits.
+:::
+
+---
+
+## 3. Install AWS CLI
+
+The AWS Command Line Interface is required for interacting with AWS services.
+
+<Tabs>
+<TabItem value="mac" label="macOS">
+
+```bash
+# Using Homebrew (recommended)
+brew install awscli
+
+# Verify installation
+aws --version
+```
+
+</TabItem>
+<TabItem value="linux" label="Linux">
+
+```bash
+# Download and install
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+# Verify installation
+aws --version
+```
+
+</TabItem>
+<TabItem value="windows" label="Windows">
+
+Download and run the AWS CLI MSI installer from:
+[AWS CLI Installation Page](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+
+After installation, open a new terminal and verify:
+
+```powershell
+aws --version
+```
+
+</TabItem>
+</Tabs>
+
+**Expected output:** `aws-cli/2.x.x Python/3.x.x ...`
+
+---
+
+## 4. Install aws-vault
+
+aws-vault securely stores AWS credentials and makes working with multiple AWS accounts easier. It's optional but **strongly recommended** for security.
+
+<Tabs>
+<TabItem value="mac" label="macOS">
+
+```bash
+# Using Homebrew
+brew install aws-vault
+
+# Verify installation
+aws-vault --version
+```
+
+</TabItem>
+<TabItem value="linux" label="Linux">
+
+```bash
+# Download the latest release
+sudo curl -L -o /usr/local/bin/aws-vault https://github.com/99designs/aws-vault/releases/latest/download/aws-vault-linux-amd64
+sudo chmod 755 /usr/local/bin/aws-vault
+
+# Verify installation
+aws-vault --version
+```
+
+</TabItem>
+<TabItem value="windows" label="Windows">
+
+```powershell
+# Using Chocolatey
+choco install aws-vault
+
+# Or download from GitHub releases:
+# https://github.com/99designs/aws-vault/releases
+```
+
+</TabItem>
+</Tabs>
+
+**Expected output:** `v7.x.x` (version number)
+
+:::info Why aws-vault?
+Storing AWS credentials in plain text (`~/.aws/credentials`) is a security risk. aws-vault encrypts your credentials using your operating system's keychain/credential manager.
+:::
+
+---
+
+## 5. Install Chamber
+
+Chamber manages environment variables in AWS Systems Manager Parameter Store. It's required for setting deployment configuration and secrets.
+
+<Tabs>
+<TabItem value="mac" label="macOS">
+
+```bash
+# Using Homebrew
+brew install chamber
+
+# Verify installation
+chamber version
+```
+
+</TabItem>
+<TabItem value="linux" label="Linux">
+
+```bash
+# Download the latest release
+VERSION=v2.14.0
+curl -LOs https://github.com/segmentio/chamber/releases/download/${VERSION}/chamber-${VERSION}-linux-amd64
+sudo mv chamber-${VERSION}-linux-amd64 /usr/local/bin/chamber
+sudo chmod 755 /usr/local/bin/chamber
+
+# Verify installation
+chamber version
+```
+
+</TabItem>
+<TabItem value="windows" label="Windows">
+
+Download from [Chamber releases](https://github.com/segmentio/chamber/releases) and add to your PATH.
+
+</TabItem>
+</Tabs>
+
+**Expected output:** `chamber v2.x.x`
+
+---
+
+## 6. Install Session Manager Plugin (Optional)
+
+Required if you want to SSH into running containers for debugging:
+
+<Tabs>
+<TabItem value="mac" label="macOS">
+
+```bash
+# Using Homebrew
+brew install --cask session-manager-plugin
+
+# Verify installation
+session-manager-plugin --version
+```
+
+</TabItem>
+<TabItem value="linux" label="Linux">
+
+```bash
+# Debian/Ubuntu
+curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+sudo dpkg -i session-manager-plugin.deb
+
+# Verify installation
+session-manager-plugin --version
+```
+
+</TabItem>
+<TabItem value="windows" label="Windows">
+
+Download and run the installer from:
+[Session Manager Plugin Installation](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
+
+</TabItem>
+</Tabs>
+
+---
+
+## 7. Domain Name
+
+For production deployments, you need a domain name. You have several options:
+
+| Option | Best For | Notes |
+|--------|----------|-------|
+| **Buy through Route 53** | Simplest setup | AWS handles everything automatically |
+| **Transfer existing domain** | Already own a domain | Requires DNS migration |
+| **Use external DNS** | Complex requirements | More manual configuration required |
+
+For testing, you can use AWS-generated subdomains, but production requires a real domain.
+
+:::tip For Learning
+If you're just testing the deployment process, you can proceed without a custom domain initially. The deployment will still work, but some features may be limited.
+:::
+
+---
+
+## 8. Verify Local Development Setup
+
+Ensure you can run <ProjectName /> locally before attempting AWS deployment:
+
+```bash
+# From the project root
+pnpm saas up
+
+# You should be able to access:
+# - Frontend: http://localhost:3000
+# - Backend API: http://localhost:5001
+# - Admin panel: http://localhost:5001/admin
+```
+
+If local development isn't working, [complete the Quick Start guide](/getting-started) first.
+
+---
+
+## Verification Checklist
+
+Run these commands to verify all tools are installed:
+
+```bash
+# AWS CLI
+aws --version
+# Expected: aws-cli/2.x.x ...
+
+# aws-vault
+aws-vault --version
+# Expected: v7.x.x
+
+# Chamber
+chamber version
+# Expected: chamber v2.x.x
+
+# Docker (should already be installed for local dev)
+docker --version
+# Expected: Docker version 24.x.x ...
+
+# Node.js (should already be installed)
+node --version
+# Expected: v18.x.x or higher
+```
+
+---
+
+## What You'll Need to Gather
+
+During deployment, you'll need these values. It's helpful to note them down:
+
+| Value | Where to Find It | Example |
+|-------|------------------|---------|
+| **AWS Account ID** | AWS Console → Account Settings | `123456789012` |
+| **AWS Region** | Choose based on your users' location | `us-east-1`, `eu-west-1` |
+| **Domain Name** | Your registrar | `mycompany.com` |
+| **Docker Hub Username** | Docker Hub account | `myusername` |
+| **Docker Hub Password** | Docker Hub account settings | `***` |
+
+---
+
+## Next Step
+
+You have all prerequisites installed. Let's configure secure AWS access.
+
+**[Continue to Step 1: Configure AWS Credentials →](/aws/deploy-to-aws/configure-aws-credentials)**
+

@@ -1,27 +1,43 @@
-import { useGenerateAbsoluteLocalePath } from '@sb/webapp-core/hooks';
-import { RoutesConfig } from '@sb/webapp-core/config/routes';
-import { FormattedMessage } from 'react-intl';
+import { Body, Container, Head, Heading, Html, Preview, Section, Text } from '@react-email/components';
 
 import { EmailComponentProps } from '../../types';
-import { Button, Layout } from '../../base';
+import { button, container, heading, main, paragraph } from '../styles';
 
-
-export type {{ pascalCase name }}Props = EmailComponentProps & {};
-
-export const Template = ({}: {{ pascalCase name }}Props) => {
-  const generateLocalePath = useGenerateAbsoluteLocalePath();
-  const url = generateLocalePath(RoutesConfig.home);
-
-  return (
-    <Layout
-      title={<FormattedMessage defaultMessage="Title" id="Email / {{ titleCase name }} / Title" />}
-      text={<FormattedMessage defaultMessage="Text" id="Email / {{ titleCase name }} / Text" />}
-    >
-      <Button linkTo={url}>
-        <FormattedMessage defaultMessage="Button" id="Email / {{ titleCase name }} / Link label" />
-      </Button>
-    </Layout>
-  );
+export type {{ pascalCase name }}Props = EmailComponentProps & {
+  // Add your custom props here
+  userName?: string;
 };
 
-export const Subject = () => <FormattedMessage defaultMessage="Subject" id="Email / {{ titleCase name }} / Subject" />
+export const Subject = () => '{{ subject }}';
+
+export const Template = ({ userName = 'User' }: {{ pascalCase name }}Props) => {
+  return (
+    <Html>
+      <Head />
+      <Preview>{{ subject }}</Preview>
+      <Body style={main}>
+        <Container style={container}>
+          <Heading style={heading}>{{ pascalCase name }}</Heading>
+
+          <Section>
+            <Text style={paragraph}>Hello {userName},</Text>
+
+            <Text style={paragraph}>
+              This is your {{ pascalCase name }} email template. Customize this content to match your needs.
+            </Text>
+
+            <Text style={paragraph}>
+              You can add more sections, buttons, images, and other components from @react-email/components.
+            </Text>
+          </Section>
+
+          <Text style={paragraph}>
+            Best regards,
+            <br />
+            The Team
+          </Text>
+        </Container>
+      </Body>
+    </Html>
+  );
+};

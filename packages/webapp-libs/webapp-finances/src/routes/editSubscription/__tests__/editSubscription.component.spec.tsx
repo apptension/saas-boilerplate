@@ -104,7 +104,10 @@ describe('EditSubscription: Component', () => {
         apolloMocks: [tenantMock, requestMock, requestMockMutation, requestPlansMock],
       });
 
-      await userEvent.click(await screen.findByText(/monthly/i));
+      // Find all elements with "monthly" text and click the first one (the plan card)
+      const monthlyElements = await screen.findAllByText(/monthly/i);
+      expect(monthlyElements.length).toBeGreaterThan(0);
+      await userEvent.click(monthlyElements[0]);
 
       const monthlyButton = screen.getAllByRole('button', { name: /select/i })[0];
       expect(monthlyButton).not.toBeDisabled();
@@ -144,7 +147,10 @@ describe('EditSubscription: Component', () => {
         apolloMocks: [requestMock, requestMockMutation, requestPlansMock, tenantMock],
       });
 
-      await userEvent.click(await screen.findByText(/monthly/i));
+      // Find all elements with "monthly" text and click the first one (the plan card)
+      const monthlyElements = await screen.findAllByText(/monthly/i);
+      expect(monthlyElements.length).toBeGreaterThan(0);
+      await userEvent.click(monthlyElements[0]);
       await userEvent.click(screen.getAllByRole('button', { name: /select/i })[0]);
 
       const toast = await screen.findByTestId('toast-1');

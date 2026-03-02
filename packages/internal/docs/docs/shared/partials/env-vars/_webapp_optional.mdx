@@ -4,9 +4,30 @@ import WebappContentful from './_webapp_contentful.mdx';
 
 ##### Other optional web app variables
 
-| Name                              | Description                                                               |        |
-|-----------------------------------|---------------------------------------------------------------------------|--------|
+| Name                              | Description                                                               | Default |
+|-----------------------------------|---------------------------------------------------------------------------|---------|
 | VITE_BASE_API_URL                 | Path to access backend API. Set if you want to override default behaviour | `/api` |
 | VITE_STRIPE_PUBLISHABLE_KEY       | Stripe Publishable key                                                    |        |
 | VITE_SENTRY_DSN                   | [Sentry](https://sentry.io/) client key                                   |        |
 | VITE_GOOGLE_ANALYTICS_TRACKING_ID | Google Analytics 4 GTM ID                                                 |        |
+
+##### Enterprise Authentication Feature Flags
+
+Control which authentication methods are available on the login page:
+
+| Name                       | Description                                              | Default |
+|----------------------------|----------------------------------------------------------|---------|
+| VITE_ENABLE_SSO            | Show SSO discovery when user enters email with SSO domain | `true`  |
+| VITE_ENABLE_PASSKEYS       | Show "Sign in with Passkey" button (WebAuthn)            | `true`  |
+| VITE_ENABLE_SOCIAL_LOGIN   | Show Google/Facebook login buttons                       | `true`  |
+| VITE_ENABLE_PASSWORD_LOGIN | Show email/password login form                           | `true`  |
+
+:::tip
+Set these to `false` to disable the corresponding authentication method. For example, to build a passkey-only app:
+```bash
+VITE_ENABLE_PASSKEYS=true
+VITE_ENABLE_SSO=false
+VITE_ENABLE_SOCIAL_LOGIN=false
+VITE_ENABLE_PASSWORD_LOGIN=false
+```
+:::

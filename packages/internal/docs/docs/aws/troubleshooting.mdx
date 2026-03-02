@@ -1,14 +1,411 @@
+---
+title: Troubleshooting
+description: Common AWS deployment issues and solutions
+---
 
-# Troubleshooting
+import ProjectName from '../shared/components/ProjectName.component';
 
-## Deployment errors
+# AWS Deployment Troubleshooting
 
-#### The certificate that is attached to your distribution doesn't cover the alternate domain name (CNAME) that you're trying to add.
+This guide covers common issues you might encounter when deploying <ProjectName /> to AWS, along with their solutions.
 
-By default, SaaS Boilerplate creates certificate that supports `*.[ENV_STAGE].[HOSTED_ZONE_NAME]` domains
-(e.g. `*.production.example.com`). If you want to override this behaviour and name your domain differently
-(e.g. `example.com`) then you can override this behaviour be setting `SB_CERTIFICATE_DOMAIN` variable:
+---
 
+## Quick Diagnosis
+
+Before diving into specific issues, gather information:
+
+```bash
+# Check which environment you're targeting
+pnpm saas aws get-env
+
+# Open AWS Console to check resources
+pnpm saas aws login
 ```
+
+### Key Places to Check
+
+| Where | What to Look For |
+|-------|-----------------|
+| **CloudFormation** | Stack status, failed resources |
+| **ECS → Services** | Task status, deployment status |
+| **CloudWatch → Logs** | Application errors, startup issues |
+| **Route 53** | DNS record existence |
+| **ACM (Certificate Manager)** | Certificate validation status |
+
+---
+
+## Deployment Errors
+
+### Certificate domain mismatch
+
+**Error:**
+```
+Resource handler returned message: "Invalid request provided: AWS::CloudFront::Distribution: 
+The certificate that is attached to your distribution doesn't cover the alternate domain name 
+(CNAME) that you're trying to add."
+```
+
+**Cause:** The SSL certificate doesn't match your domain configuration.
+
+**Solution:**
+
+By default, <ProjectName /> creates a certificate for `*.[STAGE].[DOMAIN]` (e.g., `*.qa.example.com`). 
+
+If you're using a production domain without the stage prefix (e.g., `app.example.com`), set:
+
+```bash
+pnpm saas aws set-env production
 pnpm saas aws set-var SB_CERTIFICATE_DOMAIN example.com
 ```
+
+Then redeploy infrastructure:
+```bash
+pnpm saas infra deploy
+```
+
+---
+
+### SSL Certificate stuck in "Pending Validation"
+
+**Symptoms:** Infrastructure deployment hangs, certificate shows "Pending validation" in ACM.
+
+**Cause:** DNS validation records weren't created or haven't propagated.
+
+**Solutions:**
+
+1. **Check Route 53 for validation records:**
+   - Go to ACM → Certificate → Domain validation
+   - Verify CNAME records exist in your hosted zone
+
+2. **If records are missing:**
+   - The hosted zone ID might be wrong
+   - Verify `SB_HOSTED_ZONE_ID` matches your actual hosted zone
+
+3. **If using external DNS:**
+   - Manually create the CNAME records shown in ACM
+   - Wait up to 30 minutes for propagation
+
+4. **Force recreation:**
+   - Delete the pending certificate in ACM
+   - Redeploy infrastructure
+
+---
+
+### "User doesn't have permission to call iam:GetRole"
+
+**Error:**
+```
+AccessDenied. User doesn't have permission to call iam:GetRole
+```
+
+**Cause:** Your AWS credentials don't have sufficient permissions, or MFA is required.
+
+**Solutions:**
+
+1. **Verify IAM role permissions:**
+   - Check that `SaaSBoilerplateAdminRole` has `AdministratorAccess` policy
+
+2. **Configure MFA:**
+   - Add `mfa_serial` to your `~/.aws/config`
+   - See [Configure AWS Credentials](/aws/deploy-to-aws/configure-aws-credentials#optional-multi-factor-authentication)
+
+---
+
+### CloudFormation stack in ROLLBACK_COMPLETE
+
+**Symptoms:** Stack creation failed and is stuck in `ROLLBACK_COMPLETE` state.
+
+**Cause:** Initial deployment failed and CloudFormation rolled back.
+
+**Solution:**
+
+1. **Check the Events tab** in CloudFormation for the actual error
+2. **Delete the failed stack** before retrying
+3. **Fix the underlying issue** (usually a configuration or permission problem)
+4. **Redeploy:**
+   ```bash
+   pnpm saas infra deploy
+   ```
+
+---
+
+### Resource limit exceeded
+
+**Error:** Messages about reaching service limits for CodeBuild, ECS, NAT Gateways, etc.
+
+**Cause:** New AWS accounts have conservative default limits.
+
+**Solutions:**
+
+1. **Request a limit increase:**
+   - Go to AWS Console → Service Quotas
+   - Find the relevant service
+   - Request an increase (usually approved quickly)
+
+2. **For CodeBuild concurrent builds:**
+   ```bash
+   pnpm saas aws set-var SB_CI_MODE simple
+   ```
+   This runs builds sequentially instead of in parallel.
+
+3. **Common limits to increase:**
+   - CodeBuild: Concurrent builds → 5+
+   - VPC: NAT Gateways per availability zone → 5
+   - ECS: Tasks per service → 10+
+
+---
+
+## Runtime Errors
+
+### 502 Bad Gateway / 503 Service Unavailable
+
+**Symptoms:** Application URLs return 502 or 503 errors.
+
+**Causes and solutions:**
+
+1. **Service is still starting** (wait 2-5 minutes after deployment)
+   - Check ECS → Services for task status
+   - Wait for tasks to show "RUNNING"
+
+2. **Health checks failing:**
+   - Check CloudWatch logs for startup errors
+   - Verify environment variables are set correctly
+   - Common issue: missing required secrets
+
+3. **Container crashing:**
+   - Check ECS → Tasks → Stopped tasks
+   - Look at the "Stopped reason"
+   - Check CloudWatch logs for crash details
+
+4. **Load balancer target not healthy:**
+   - Go to EC2 → Target Groups
+   - Check target health status
+   - Verify security group allows health check traffic
+
+---
+
+### Database connection errors
+
+**Log message:** `could not connect to server: Connection refused`
+
+**Solutions:**
+
+1. **RDS instance not ready:**
+   - Check RDS Console → Databases
+   - Wait for status to be "Available"
+
+2. **Security group misconfiguration:**
+   - ECS tasks need access to RDS security group
+   - Verify RDS security group allows inbound from ECS security group
+
+3. **Wrong credentials:**
+   - Database credentials are auto-generated and stored in Secrets Manager
+   - Backend reads them automatically; no manual configuration needed
+
+---
+
+### Redis connection errors
+
+**Log message:** `Error connecting to Redis` or `Connection refused`
+
+**Solutions:**
+
+1. **ElastiCache not ready:**
+   - Check ElastiCache Console
+   - Wait for cluster status to be "Available"
+
+2. **Security group issue:**
+   - Similar to RDS, verify security groups allow access
+
+---
+
+### "Module not found" or import errors
+
+**Symptoms:** Application crashes with Python or Node.js import errors.
+
+**Cause:** Docker image wasn't built correctly, or dependencies are missing.
+
+**Solution:**
+```bash
+# Rebuild from scratch
+pnpm saas backend build
+pnpm saas backend deploy api
+```
+
+---
+
+## DNS Issues
+
+### Domain not resolving
+
+**Symptoms:** `ERR_NAME_NOT_RESOLVED` or `NXDOMAIN`
+
+**Solutions:**
+
+1. **Check Route 53 records exist:**
+   - Go to Route 53 → Hosted zones → Your zone
+   - Verify A or ALIAS records for your subdomains
+
+2. **DNS propagation:**
+   - New records can take up to 48 hours (usually faster)
+   - Check propagation at [whatsmydns.net](https://www.whatsmydns.net/)
+
+3. **Wrong hosted zone:**
+   - Verify `SB_HOSTED_ZONE_ID` matches the correct zone
+   - If you have multiple zones, ensure you're using the right one
+
+4. **Nameserver misconfiguration (for external domains):**
+   - Verify your registrar points to AWS nameservers
+   - Run `dig example.com NS` to check
+
+---
+
+### SSL certificate errors in browser
+
+**Symptoms:** Browser shows "Your connection is not private" or certificate warnings.
+
+**Causes:**
+
+1. **Certificate not yet issued:**
+   - Check ACM for certificate status
+   - Must be "Issued" (not "Pending validation")
+
+2. **Wrong certificate attached:**
+   - CloudFront might be using wrong certificate
+   - Check CloudFront distribution settings
+
+3. **Domain mismatch:**
+   - Certificate must cover the exact domain being accessed
+   - Wildcard `*.qa.example.com` covers subdomains, not root
+
+---
+
+## CI/CD Issues
+
+### Build failing with Docker rate limit
+
+**Error:** `toomanyrequests: Rate exceeded` or `pull rate limit reached`
+
+**Cause:** Docker Hub anonymous pull rate limit exceeded.
+
+**Solution:**
+
+1. Go to AWS Console → Secrets Manager
+2. Find `GlobalBuildSecrets`
+3. Edit and add Docker Hub credentials:
+   ```json
+   {
+     "DOCKER_USERNAME": "your-username",
+     "DOCKER_PASSWORD": "your-password"
+   }
+   ```
+
+See [Set Up Docker Hub](/aws/cicd/setup-docker-hub) for details.
+
+---
+
+### Pipeline stuck waiting for approval
+
+**Symptoms:** CodePipeline shows "Waiting for approval" or similar.
+
+**Cause:** Manual approval step or missing configuration.
+
+**Solution:**
+- Check the pipeline in CodePipeline console
+- Look for failed stages
+- Check source repository connection
+
+---
+
+### "Access Denied" when pushing artifacts
+
+**Cause:** External CI (GitHub/Bitbucket) doesn't have correct AWS credentials.
+
+**Solutions:**
+
+1. Verify `external-ci` user credentials in your CI/CD secrets
+2. Ensure the artifact bucket name is correct
+3. Check IAM permissions for the CI user
+
+---
+
+## New AWS Account Issues
+
+New AWS accounts have restrictions that can cause deployment problems:
+
+### SES Sandbox Mode
+
+**Symptoms:** Emails don't send; "Email address not verified" errors.
+
+**Solution:**
+- For testing: verify recipient email addresses in SES
+- For production: request SES production access
+
+### CloudFront Distribution Creation Blocked
+
+**Symptoms:** Can't create CloudFront distribution; account verification required.
+
+**Solution:**
+- Complete AWS account verification
+- Contact AWS support if needed
+
+### Limited Concurrent Builds
+
+**Symptoms:** Builds fail or queue indefinitely.
+
+**Solution:**
+```bash
+pnpm saas aws set-var SB_CI_MODE simple
+pnpm saas infra deploy ci
+```
+
+---
+
+## Getting More Help
+
+### Gather Debug Information
+
+When asking for help, include:
+
+1. **Environment details:**
+   ```bash
+   pnpm saas aws get-env
+   aws --version
+   chamber version
+   ```
+
+2. **Error messages:** Full error text from terminal or AWS Console
+
+3. **CloudWatch logs:** Relevant log entries around the error
+
+4. **CloudFormation events:** If infrastructure deployment failed
+
+### Resources
+
+- **[GitHub Issues](https://github.com/apptension/saas-boilerplate/issues):** Search existing issues or open a new one
+- **[AWS Documentation](https://docs.aws.amazon.com/):** For AWS-specific questions
+- **CloudWatch Logs:** Your first source for application errors
+
+---
+
+## Prevention Tips
+
+1. **Always check environment before running commands:**
+   ```bash
+   pnpm saas aws get-env
+   ```
+
+2. **Use `--diff` flag to preview changes:**
+   ```bash
+   pnpm saas infra deploy --diff
+   ```
+
+3. **Test in QA before production:**
+   Deploy to a non-production environment first
+
+4. **Keep backups:**
+   Before major changes, note current configuration
+
+5. **Monitor CloudWatch:**
+   Set up alarms for error rates and anomalies

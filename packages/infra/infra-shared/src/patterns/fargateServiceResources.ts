@@ -17,6 +17,7 @@ export class FargateServiceResources extends Construct {
   mainVpc: ec2.IVpc;
   mainCluster: ecs.ICluster;
   backendRepository: ecr.IRepository;
+  mcpServerRepository: ecr.IRepository;
   publicLoadBalancer: elb2.IApplicationLoadBalancer;
   publicLoadBalancerSecurityGroup: ec2.ISecurityGroup;
   fargateContainerSecurityGroup: ec2.ISecurityGroup;
@@ -36,6 +37,7 @@ export class FargateServiceResources extends Construct {
     this.publicLoadBalancerSecurityGroup =
       this.retrievePublicLoadBalancerSecurityGroup(props);
     this.backendRepository = this.retrieveBackendECRRepositories();
+    this.mcpServerRepository = this.retrieveMcpServerECRRepository();
   }
 
   private retrieveMainVpc() {
@@ -138,6 +140,14 @@ export class FargateServiceResources extends Construct {
       this,
       'ECRBackendRepository',
       GlobalECR.getBackendRepositoryName(this.envSettings)
+    );
+  }
+
+  private retrieveMcpServerECRRepository() {
+    return ecr.Repository.fromRepositoryName(
+      this,
+      'ECRMcpServerRepository',
+      GlobalECR.getMcpServerRepositoryName(this.envSettings)
     );
   }
 }

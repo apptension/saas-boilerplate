@@ -21,7 +21,7 @@ const Template: StoryFn = () => {
 
 const meta: Meta = {
   title: 'Core / UI / Forms / Select',
-  component: Template,
+  component: Template as any,
 };
 
 export default meta;

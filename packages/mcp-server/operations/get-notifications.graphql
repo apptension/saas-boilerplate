@@ -1,0 +1,26 @@
+# @tool(name: "get_notifications", description: "Get the current user's notifications. Returns notification type, creation time, read status, and associated data.")
+query GetNotifications($first: Int = 50) {
+  hasUnreadNotifications
+  unreadNotificationsCount
+  allNotifications(first: $first) {
+    edges {
+      node {
+        id
+        type
+        createdAt
+        readAt
+        data
+        issuer {
+          id
+          email
+          firstName
+          lastName
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

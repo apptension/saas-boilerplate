@@ -47,3 +47,58 @@ members receive notifications and can accept or decline invitations.
 <p align="center">
   <img src={useBaseUrl("img/features/multi-tenancy/multi-tenancy3.png")} alt="Organization members" />
 </p>
+
+#### Invitation Notification Dots
+
+Pending invitations are visually highlighted throughout the UI:
+
+- **Sidebar**: A notification dot appears on the organization switcher when invitations are pending
+- **Header**: The organization dropdown shows a badge count for pending invitations
+- **Notifications**: In-app notifications alert users about new invitations
+
+This ensures users never miss an invitation, even if they're working in a different organization.
+
+#### Invitation Actions
+
+| Action | Description |
+|--------|-------------|
+| **Accept** | User joins the organization with the assigned role |
+| **Decline** | Invitation is rejected and removed |
+| **Resend** | Owners can resend expired invitations |
+| **Revoke** | Owners can cancel pending invitations |
+
+---
+
+## Technical Implementation
+
+Under the hood, multi-tenancy is implemented with:
+
+- **Tenant-scoped data** — All queries automatically filter by current tenant
+- **URL-based tenant context** — Routes include tenant ID for proper scoping
+- **Permission checks** — Role-based access control at the API level
+- **Tenant switching** — Users can belong to multiple tenants and switch between them
+
+---
+
+## Related Features
+
+Multi-tenancy works closely with other SaaS Boilerplate features:
+
+| Feature | Integration |
+|---------|-------------|
+| [Authentication](/introduction/features/auth) | Users can belong to multiple tenants |
+| [Payments](/introduction/features/payments) | Subscriptions are tenant-scoped |
+| [Notifications](/introduction/features/notifications) | Notifications are delivered per-tenant |
+
+---
+
+## Summary
+
+Multi-tenancy in SaaS Boilerplate provides:
+
+- ✅ Default tenant on account creation
+- ✅ Create additional tenants
+- ✅ Three membership roles (Owner, Admin, Member)
+- ✅ Invitation system with email notifications
+- ✅ Tenant-scoped data isolation
+- ✅ Customizable roles and permissions

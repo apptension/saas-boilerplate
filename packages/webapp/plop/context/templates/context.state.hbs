@@ -1,0 +1,75 @@
+import { createContext, ReactNode, useState, useCallback, useMemo{{#if withPersistence}}, useEffect{{/if}} } from 'react';
+
+import { {{ pascalCase name }}State, {{ pascalCase name }}ContextValue, default{{ pascalCase name }}State } from './{{ camelCase name }}.types';
+
+{{#if withPersistence}}
+const STORAGE_KEY = '{{ camelCase name }}_state';
+
+function loadFromStorage(): {{ pascalCase name }}State | null {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveToStorage(state: {{ pascalCase name }}State): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // Storage might be full or disabled
+  }
+}
+{{/if}}
+
+export const {{ pascalCase name }}Context = createContext<{{ pascalCase name }}ContextValue | undefined>(undefined);
+
+export type {{ pascalCase name }}ProviderProps = {
+  children: ReactNode;
+  initialState?: Partial<{{ pascalCase name }}State>;
+};
+
+export const {{ pascalCase name }}Provider = ({ children, initialState }: {{ pascalCase name }}ProviderProps) => {
+  const [state, setStateInternal] = useState<{{ pascalCase name }}State>(() => {
+{{#if withPersistence}}
+    const stored = loadFromStorage();
+    return stored ?? { ...default{{ pascalCase name }}State, ...initialState };
+{{else}}
+    return { ...default{{ pascalCase name }}State, ...initialState };
+{{/if}}
+  });
+
+{{#if withPersistence}}
+  // Persist state changes to localStorage
+  useEffect(() => {
+    saveToStorage(state);
+  }, [state]);
+{{/if}}
+
+  const setState = useCallback((updates: Partial<{{ pascalCase name }}State>) => {
+    setStateInternal((prev) => ({ ...prev, ...updates }));
+  }, []);
+
+{{#if withReset}}
+  const reset = useCallback(() => {
+    setStateInternal(default{{ pascalCase name }}State);
+{{#if withPersistence}}
+    localStorage.removeItem(STORAGE_KEY);
+{{/if}}
+  }, []);
+{{/if}}
+
+  const value = useMemo<{{ pascalCase name }}ContextValue>(
+    () => ({
+      state,
+      setState,
+{{#if withReset}}
+      reset,
+{{/if}}
+    }),
+    [state, setState{{#if withReset}}, reset{{/if}}]
+  );
+
+  return <{{ pascalCase name }}Context.Provider value={value}>{children}</{{ pascalCase name }}Context.Provider>;
+};

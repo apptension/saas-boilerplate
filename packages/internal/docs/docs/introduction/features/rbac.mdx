@@ -1,0 +1,472 @@
+---
+title: RBAC (Role-Based Access Control)
+description: Flexible permission system with customizable roles for fine-grained access control
+---
+
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# Role-Based Access Control (RBAC)
+
+<ProjectName /> includes a comprehensive **RBAC system** that goes beyond basic user roles, providing fine-grained permissions and customizable organization roles.
+
+## Overview
+
+The RBAC system provides:
+
+- **Permission-Based Access**: Granular permissions for every feature
+- **Custom Roles**: Create organization-specific roles beyond Owner/Admin/Member
+- **Permission Categories**: Organized permissions for easy management
+- **Role Colors**: Visual differentiation for roles
+- **Frontend & Backend Enforcement**: Permissions checked at both layers
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      RBAC ARCHITECTURE                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  User ──────► TenantMembership ──────► OrganizationRole         │
+│                     │                        │                   │
+│                     │                        ▼                   │
+│                     │                   Permissions              │
+│                     │                   ┌──────────────────┐     │
+│                     │                   │ organization.edit │     │
+│                     │                   │ members.invite    │     │
+│                     └──────────────────►│ management.view  │     │
+│                                         │ billing.manage   │     │
+│                                         └──────────────────┘     │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Permission Categories
+
+Permissions are organized into categories:
+
+| Category | Description | Example Permissions |
+|----------|-------------|---------------------|
+| `organization` | Organization settings | `organization.view`, `organization.edit` |
+| `members` | Team management | `members.view`, `members.invite`, `members.remove` |
+| `security` | Security settings | `security.view`, `security.manage_sso` |
+| `billing` | Subscription & payments | `billing.view`, `billing.manage` |
+| `features` | Feature flags | `features.crud_demo`, `features.ai` |
+| `management` | Management Dashboard | `management.view`, `management.edit`, `management.admin` |
+
+## Built-in Roles
+
+Three system roles are created by default:
+
+### Owner
+
+Full access to everything:
+
+```python
+OWNER_PERMISSIONS = [
+    'organization.*',  # All organization permissions
+    'members.*',       # All member permissions
+    'security.*',      # All security permissions
+    'billing.*',       # All billing permissions
+    'features.*',      # All feature permissions
+    'management.*',    # All management permissions
+]
+```
+
+### Administrator
+
+Everything except billing and ownership:
+
+```python
+ADMIN_PERMISSIONS = [
+    'organization.view', 'organization.edit',
+    'members.view', 'members.invite', 'members.edit',
+    'security.view',
+    'features.*',
+    'management.view', 'management.edit',
+]
+```
+
+### Member
+
+Basic access:
+
+```python
+MEMBER_PERMISSIONS = [
+    'organization.view',
+    'members.view',
+    'features.crud_demo',
+    'management.view',
+]
+```
+
+## Custom Roles
+
+Organizations can create custom roles:
+
+```python
+# Create a Finance Manager role
+role = OrganizationRole.objects.create(
+    tenant=tenant,
+    name='Finance Manager',
+    description='Can manage all financial data',
+    color=RoleColor.GREEN,
+    is_custom=True,
+)
+
+# Assign permissions
+role.permissions.set([
+    Permission.objects.get(codename='management.view'),
+    Permission.objects.get(codename='management.edit'),
+    Permission.objects.get(codename='management.admin'),
+])
+```
+
+### Role Colors
+
+Available colors for visual differentiation:
+
+- Blue (default)
+- Green
+- Red
+- Yellow
+- Purple
+- Orange
+- Pink
+- Teal
+- Gray
+
+## Usage
+
+### Backend Permission Checks
+
+#### GraphQL Mutations
+
+```python
+from apps.multitenancy.decorators import permission_required
+
+class CreateRevenueLineMutation(graphene.Mutation):
+    @permission_required('management.edit')
+    def mutate(self, info, input):
+        # Only executes if user has 'management.edit' permission
+        ...
+```
+
+#### View-Level Checks
+
+```python
+from apps.multitenancy.permissions import has_permission
+
+def my_view(request, tenant_id):
+    if not has_permission(request.user, tenant_id, 'billing.manage'):
+        raise PermissionDenied()
+    ...
+```
+
+#### Serializer Validation
+
+```python
+from rest_framework import serializers
+
+class MySerializer(serializers.Serializer):
+    def validate(self, data):
+        user = self.context['request'].user
+        tenant_id = self.context['tenant_id']
+        
+        if not has_permission(user, tenant_id, 'management.edit'):
+            raise serializers.ValidationError("Permission denied")
+        
+        return data
+```
+
+### Frontend Permission Checks
+
+#### Permission Hook
+
+```tsx
+import { usePermissions } from '@sb/webapp-tenants/hooks';
+
+function MyComponent() {
+  const { hasPermission, isLoading } = usePermissions();
+  
+  if (isLoading) return <Spinner />;
+  
+  return (
+    <div>
+      {hasPermission('management.view') && (
+        <DashboardLink />
+      )}
+      
+      {hasPermission('management.edit') && (
+        <EditButton />
+      )}
+      
+      {hasPermission('management.admin') && (
+        <AdminSettings />
+      )}
+    </div>
+  );
+}
+```
+
+#### Permission Gate Component
+
+```tsx
+import { PermissionGate } from '@sb/webapp-tenants/components';
+
+function Page() {
+  return (
+    <div>
+      <PermissionGate permission="management.view">
+        <DashboardContent />
+      </PermissionGate>
+      
+      <PermissionGate 
+        permission="billing.manage"
+        fallback={<UpgradePrompt />}
+      >
+        <BillingSettings />
+      </PermissionGate>
+    </div>
+  );
+}
+```
+
+#### Route Protection
+
+```tsx
+import { ProtectedRoute } from '@sb/webapp-tenants/components';
+
+const routes = [
+  {
+    path: '/management',
+    element: (
+      <ProtectedRoute permission="management.view">
+        <ManagementDashboard />
+      </ProtectedRoute>
+    ),
+  },
+];
+```
+
+## Data Models
+
+### Permission
+
+```python
+class Permission(models.Model):
+    codename = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    category = models.CharField(choices=PermissionCategory.choices)
+```
+
+### OrganizationRole
+
+```python
+class OrganizationRole(models.Model):
+    tenant = models.ForeignKey(Tenant)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    color = models.CharField(choices=RoleColor.choices, default='blue')
+    permissions = models.ManyToManyField(Permission)
+    is_system = models.BooleanField(default=False)  # Can't be deleted
+    is_custom = models.BooleanField(default=False)
+```
+
+### TenantMembership
+
+```python
+class TenantMembership(models.Model):
+    user = models.ForeignKey(User)
+    tenant = models.ForeignKey(Tenant)
+    role = models.CharField(choices=TenantUserRole.choices)  # Legacy
+    organization_role = models.ForeignKey(OrganizationRole, null=True)
+```
+
+## GraphQL API
+
+### Query Permissions
+
+```graphql
+query MyPermissions($tenantId: ID!) {
+  currentTenantMembership(tenantId: $tenantId) {
+    role
+    organizationRole {
+      name
+      color
+      permissions {
+        codename
+        name
+        category
+      }
+    }
+  }
+}
+```
+
+### Query Available Roles
+
+```graphql
+query OrganizationRoles($tenantId: ID!) {
+  organizationRoles(tenantId: $tenantId) {
+    edges {
+      node {
+        id
+        name
+        description
+        color
+        isSystem
+        permissions {
+          codename
+        }
+      }
+    }
+  }
+}
+```
+
+### Create Custom Role
+
+```graphql
+mutation CreateRole($input: CreateOrganizationRoleMutationInput!) {
+  createOrganizationRole(input: $input) {
+    role {
+      id
+      name
+      permissions {
+        codename
+      }
+    }
+  }
+}
+```
+
+### Assign Role to Member
+
+```graphql
+mutation AssignRole($input: UpdateMemberRoleMutationInput!) {
+  updateMemberRole(input: $input) {
+    membership {
+      organizationRole {
+        name
+      }
+    }
+  }
+}
+```
+
+## Profile Display
+
+Users can view their roles and permissions on their profile:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  Your Organization Roles                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Acme Corp                                                       │
+│  ├── Role: 🟢 Finance Manager                                   │
+│  └── Permissions:                                                │
+│      • View Management Dashboard                                 │
+│      • Edit Financial Data                                       │
+│      • Manage Dashboard Settings                                 │
+│                                                                  │
+│  TechStart Inc                                                   │
+│  ├── Role: 🔵 Administrator                                     │
+│  └── Permissions:                                                │
+│      • All organization permissions                              │
+│      • All member management                                     │
+│      • All feature access                                        │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Adding New Permissions
+
+### 1. Define the Permission
+
+```python
+# Create a migration
+def add_permissions(apps, schema_editor):
+    Permission = apps.get_model('multitenancy', 'Permission')
+    
+    Permission.objects.create(
+        codename='my_feature.view',
+        name='View My Feature',
+        description='Can view the my feature page',
+        category='features'
+    )
+    
+    Permission.objects.create(
+        codename='my_feature.edit',
+        name='Edit My Feature',
+        description='Can create and edit my feature data',
+        category='features'
+    )
+```
+
+### 2. Update System Roles
+
+```python
+def assign_to_roles(apps, schema_editor):
+    OrganizationRole = apps.get_model('multitenancy', 'OrganizationRole')
+    Permission = apps.get_model('multitenancy', 'Permission')
+    
+    # Add to Admin role
+    admin_roles = OrganizationRole.objects.filter(system_type='ADMIN')
+    view_perm = Permission.objects.get(codename='my_feature.view')
+    edit_perm = Permission.objects.get(codename='my_feature.edit')
+    
+    for role in admin_roles:
+        role.permissions.add(view_perm, edit_perm)
+```
+
+### 3. Use in Code
+
+```python
+@permission_required('my_feature.edit')
+def mutate(self, info, input):
+    ...
+```
+
+```tsx
+<PermissionGate permission="my_feature.view">
+  <MyFeature />
+</PermissionGate>
+```
+
+## Best Practices
+
+### Permission Naming
+
+Use consistent naming: `{category}.{action}`
+
+- `organization.view`
+- `organization.edit`
+- `management.view`
+- `management.edit`
+- `management.admin`
+
+### Hierarchical Permissions
+
+Design permissions with inheritance in mind:
+
+```
+management.admin (includes all below)
+├── management.edit (includes view)
+└── management.view (base level)
+```
+
+### Frontend/Backend Sync
+
+Always check permissions on both:
+
+1. **Frontend**: For UX (hide/show elements)
+2. **Backend**: For security (actual enforcement)
+
+## Related Documentation
+
+- [Multi-tenancy](/introduction/features/multi-tenancy) - Tenant structure
+- [Activity Logs](/introduction/features/activity-logs) - Permission usage auditing
+- [AI Agent](/introduction/features/ai-agent) - AI permission integration
+- [Enterprise SSO](/features/enterprise-sso) - Role mapping from IdP

@@ -7,9 +7,11 @@ export default {
   },
   transformIgnorePatterns: ['/node_modules/(?!(@iconify-icons|react-markdown)/)'],
   moduleNameMapper: {
-    'react-markdown': '<rootDir>/node_modules/react-markdown/react-markdown.min.js',
+    'react-markdown': '<rootDir>/src/tests/mocks/reactMarkdown.tsx',
+    'remark-gfm': '<rootDir>/src/tests/mocks/remarkGfm.ts',
     '^!!raw-loader!.*': 'jest-raw-loader',
     '\\.svg\\?react$': '<rootDir>/src/tests/svgMock.ts',
+    'apollo-upload-client/UploadHttpLink.mjs': '<rootDir>/src/tests/mocks/apolloUploadClient.ts',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageReporters: ['lcov'],

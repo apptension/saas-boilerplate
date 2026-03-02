@@ -1,5 +1,108 @@
-# Architecture
+---
+title: Architecture
+description: Understanding the AWS infrastructure of SaaS Boilerplate
+---
 
 import DocCardList from '@theme/DocCardList';
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# AWS Architecture
+
+Understanding how <ProjectName /> is deployed helps you troubleshoot issues, optimize costs, and customize the infrastructure for your needs.
+
+---
+
+## Architecture Overview
+
+<ProjectName /> deploys a complete, production-ready infrastructure using AWS services:
+
+```
+                                    ┌─────────────┐
+                                    │   Route 53  │
+                                    │    (DNS)    │
+                                    └──────┬──────┘
+                                           │
+              ┌────────────────────────────┼────────────────────────────┐
+              │                            │                            │
+              ▼                            ▼                            ▼
+       ┌─────────────┐              ┌─────────────┐              ┌─────────────┐
+       │ CloudFront  │              │ CloudFront  │              │ CloudFront  │
+       │ (Web App)   │              │ (API/Admin) │              │ (Docs)      │
+       └──────┬──────┘              └──────┬──────┘              └──────┬──────┘
+              │                            │                            │
+              ▼                            ▼                            ▼
+       ┌─────────────┐              ┌─────────────┐              ┌─────────────┐
+       │     S3      │              │     ALB     │              │     S3      │
+       │ (Static)    │              │             │              │ (Static)    │
+       └─────────────┘              └──────┬──────┘              └─────────────┘
+                                           │
+                    ┌──────────────────────┼──────────────────────┐
+                    │                      │                      │
+                    ▼                      ▼                      ▼
+             ┌─────────────┐        ┌─────────────┐        ┌─────────────┐
+             │  ECS Task   │        │  ECS Task   │        │  ECS Task   │
+             │  Backend    │        │  Celery     │        │  Celery     │
+             │  API        │        │  Worker     │        │  Beat       │
+             └──────┬──────┘        └──────┬──────┘        └─────────────┘
+                    │                      │
+                    └──────────┬───────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+              ▼                ▼                ▼
+       ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+       │    RDS      │  │ ElastiCache │  │  Lambda     │
+       │ PostgreSQL  │  │   Redis     │  │  Workers    │
+       └─────────────┘  └─────────────┘  └─────────────┘
+```
+
+---
+
+## Key Components
+
+| Component | AWS Service | Purpose |
+|-----------|-------------|---------|
+| **Web Application** | S3 + CloudFront | Hosts React frontend, globally cached |
+| **Backend API** | ECS Fargate + ALB | Django REST/GraphQL API |
+| **Admin Panel** | ECS Fargate + ALB | Django Admin interface |
+| **Background Jobs** | ECS Fargate (Celery) | Async task processing |
+| **Scheduled Tasks** | ECS Fargate (Celery Beat) | Periodic job scheduling |
+| **Serverless Functions** | Lambda | Short-lived async tasks |
+| **Database** | RDS PostgreSQL | Persistent data storage |
+| **Cache/Broker** | ElastiCache Redis | Caching + Celery message broker |
+| **Static Assets** | S3 | File uploads, static files |
+| **CDN** | CloudFront | Global content delivery |
+| **DNS** | Route 53 | Domain name resolution |
+| **SSL/TLS** | ACM | Certificate management |
+| **Secrets** | Secrets Manager + Parameter Store | Secure configuration |
+
+---
+
+## Infrastructure as Code
+
+All infrastructure is defined in TypeScript using AWS CDK:
+
+```
+packages/
+├── infra/
+│   └── infra-shared/
+│       └── src/
+│           └── stacks/
+│               ├── global/     # ECR, shared resources
+│               ├── main/       # VPC, ALB, ECS Cluster
+│               ├── db/         # RDS, ElastiCache
+│               ├── ci/         # CodePipeline, CodeBuild
+│               └── components/ # CloudFront, S3
+├── webapp/
+│   └── infra/                  # Webapp-specific CDK
+├── backend/
+│   └── infra/                  # Backend-specific CDK
+└── workers/
+    └── (serverless.yml)        # Lambda functions
+```
+
+---
+
+## Documentation
 
 <DocCardList />

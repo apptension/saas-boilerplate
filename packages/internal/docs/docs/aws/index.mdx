@@ -1,8 +1,143 @@
 ---
-title: AWS
+title: AWS Deployment
+description: Deploy your SaaS application to production on AWS
 pagination_next: null
 ---
 
 import DocCardList from '@theme/DocCardList';
+import ProjectName from '../shared/components/ProjectName.component';
+import { Rocket, GitBranch, Building2, Wrench } from '../shared/components/Icon.component';
+
+# Deploy to AWS
+
+<ProjectName /> is designed to deploy seamlessly to AWS using infrastructure as code (CDK). This guide will take you from zero to a fully deployed, production-ready application.
+
+---
+
+## What You'll Accomplish
+
+By the end of this guide, you'll have:
+
+- ✅ A fully deployed SaaS application on AWS
+- ✅ Automated CI/CD pipelines for continuous deployment
+- ✅ Secure secrets management with AWS Systems Manager
+- ✅ SSL certificates and custom domain setup
+- ✅ Database, caching, and all required infrastructure
+
+---
+
+## Deployment Overview
+
+<div className="feature-grid feature-grid--2-cols">
+  <a href="/aws/deploy-to-aws" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Rocket size={18} /></div>
+      <h3 className="feature-card__title">Step-by-Step Guide</h3>
+      <p className="feature-card__description">
+        Complete walkthrough from AWS account setup to live deployment. Perfect for first-time deployments.
+      </p>
+    </div>
+  </a>
+  <a href="/aws/cicd" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><GitBranch size={18} /></div>
+      <h3 className="feature-card__title">CI/CD Automation</h3>
+      <p className="feature-card__description">
+        Set up automated deployments with GitHub Actions or Bitbucket Pipelines.
+      </p>
+    </div>
+  </a>
+  <a href="/aws/architecture" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Building2 size={18} /></div>
+      <h3 className="feature-card__title">Architecture</h3>
+      <p className="feature-card__description">
+        Understand the AWS services used and how they work together.
+      </p>
+    </div>
+  </a>
+  <a href="/aws/troubleshooting" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Wrench size={18} /></div>
+      <h3 className="feature-card__title">Troubleshooting</h3>
+      <p className="feature-card__description">
+        Common issues and solutions for AWS deployments.
+      </p>
+    </div>
+  </a>
+</div>
+
+---
+
+## Time & Cost Expectations
+
+| Aspect | Estimate |
+|--------|----------|
+| **First Deployment Time** | 2-4 hours (including AWS setup) |
+| **Subsequent Deployments** | 15-30 minutes via CI/CD |
+| **AWS Monthly Cost** | ~$50-150/month for staging, ~$200-500+ for production |
+| **Required AWS Services** | ECS Fargate, RDS, ElastiCache, S3, CloudFront, Route 53 |
+
+:::tip Cost Optimization
+Start with a staging environment to learn the deployment process. You can delete resources when not in use to minimize costs during development.
+:::
+
+---
+
+## AWS Services Used
+
+The boilerplate leverages these AWS services:
+
+| Service | Purpose |
+|---------|---------|
+| **ECS Fargate** | Container orchestration for backend API and Celery workers |
+| **RDS PostgreSQL** | Managed relational database |
+| **ElastiCache Redis** | Caching, session storage, and Celery message broker |
+| **S3** | Static file hosting, asset storage, and CI/CD artifacts |
+| **CloudFront** | CDN for frontend assets with edge caching |
+| **Route 53** | DNS management and domain routing |
+| **Secrets Manager** | Secure storage for API keys and credentials |
+| **Systems Manager** | Environment variable management (Parameter Store) |
+| **CloudWatch** | Logging, monitoring, and alerting |
+| **CodePipeline** | CI/CD orchestration |
+| **CodeBuild** | Build and deploy automation |
+| **ACM** | SSL/TLS certificate management |
+
+---
+
+## Before You Begin
+
+Make sure you have completed the [local development setup](/getting-started) and can run the application locally. This ensures you understand the project structure before deploying.
+
+### Required Knowledge
+
+You don't need to be an AWS expert, but familiarity with these concepts helps:
+
+- **Basic command-line usage** – Running terminal commands
+- **Environment variables** – What they are and how they work
+- **DNS basics** – Understanding domains and subdomains
+- **Git** – Pushing code to repositories
+
+:::info New to AWS?
+Don't worry! We'll explain each step. The guide includes links to AWS documentation when you need more context.
+:::
+
+---
+
+## Quick Start Checklist
+
+Before starting deployment, ensure you have:
+
+- [ ] Working local development environment ([Quick Start](/getting-started))
+- [ ] AWS account (or access to one)
+- [ ] Domain name you control (can be purchased through AWS Route 53)
+- [ ] ~2-4 hours of uninterrupted time for first deployment
+- [ ] Docker Hub account (free tier is fine)
+
+Ready? **[Start with the Prerequisites →](/aws/deploy-to-aws/prerequisites)**
+
+---
+
+## All AWS Documentation
 
 <DocCardList />

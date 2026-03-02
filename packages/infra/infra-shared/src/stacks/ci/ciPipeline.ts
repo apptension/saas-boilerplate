@@ -15,10 +15,12 @@ import { ServerlessCiConfig } from './ciServerless';
 import { UploadVersionCiConfig } from './ciUploadVersion';
 import { ComponentsCiConfig } from './ciComponents';
 import { DocsCiConfig } from './ciDocs';
+import { McpServerCiConfig } from './ciMcpServer';
 
 export interface CiPipelineProps extends EnvConstructProps {
   entrypointArtifactBucket: Bucket;
   backendRepository: ecr.IRepository;
+  mcpServerRepository: ecr.IRepository;
 }
 
 export class CiPipeline extends Construct {
@@ -84,6 +86,17 @@ export class CiPipeline extends Construct {
         envSettings: props.envSettings,
         stage: deployStage,
         inputArtifact: sourceOutputArtifact,
+      });
+    }
+
+    // MCP Server CI/CD - only when AI features are enabled
+    if (props.envSettings.aiConfig?.enabled) {
+      new McpServerCiConfig(this, 'McpServerConfig', {
+        buildStage,
+        deployStage,
+        envSettings: props.envSettings,
+        inputArtifact: sourceOutputArtifact,
+        mcpServerRepository: props.mcpServerRepository,
       });
     }
   }

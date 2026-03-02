@@ -1,83 +1,34 @@
-import { useQuery } from '@apollo/client';
+import { makeFragmentData } from '@sb/webapp-api-client/graphql';
 import { screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
-import { gql } from '@sb/webapp-api-client/graphql';
-import { append } from 'ramda';
-import { Route, Routes, useParams } from 'react-router';
 
-import { RoutesConfig } from '../../../../../app/config/routes';
-import { composeMockedQueryResult } from '../../../../../tests/utils/fixtures';
 import { render } from '../../../../../tests/utils/rendering';
 import { {{ pascalCase name }}ListItem } from '../{{ camelCase name }}ListItem.component';
-
-const {{ camelCase name }}ListItemTestQuery = gql(/* GraphQL */ `
-  query {{ camelCase name }}ListItemTestQuery {
-    item: {{ camelCase name }}(id: "test-id") {
-      ...{{ camelCase name }}ListItemFragment
-    }
-  }
-`);
+import { {{ camelCase name }}ListItemFragment } from '../{{ camelCase name }}ListItem.graphql';
 
 describe('{{ pascalCase name }}ListItem: Component', () => {
-  const EditRouteMock = () => {
-    const params = useParams<{ id: string }>();
-    return <span>Crud demo item edit mock {params?.id}</span>;
-  };
+  const defaultItem = makeFragmentData(
+    {
+      id: '1',
+      name: 'Test Item',
+    },
+    {{ camelCase name }}ListItemFragment
+  );
 
-  const DetailsRouteMock = () => {
-    const params = useParams<{ id: string }>();
-    return <span>Crud demo item details mock {params?.id}</span>;
-  };
+  it('should render item name', async () => {
+    render(<{{ pascalCase name }}ListItem item={defaultItem} />);
 
-  const Component = () => {
-    const { loading, data } = useQuery({{ camelCase name }}ListItemTestQuery);
-
-    if (loading || !data?.item) {
-      return <span />;
-    }
-
-    return (
-      <Routes>
-        <Route path="/" element={<{{ pascalCase name }}ListItem item={data.item} />} />
-        <Route path={RoutesConfig.getLocalePath(['{{ camelCase name }}', 'details'])} element={<DetailsRouteMock />} />
-        <Route path={RoutesConfig.getLocalePath(['{{ camelCase name }}', 'edit'])} element={<EditRouteMock />} />
-      </Routes>
-    );
-  };
-
-  it('should render link to details page', async () => {
-    const item = { id: 'test-id', name: 'demo item name' };
-
-    const requestMock = composeMockedQueryResult({{ camelCase name }}ListItemTestQuery, {
-      data: {
-        item: {
-          __typename: '{{ pascalCase name }}Type',
-          ...item,
-        },
-      },
-    });
-
-    render(<Component />, { apolloMocks: append(requestMock) });
-    expect(await screen.findByText(item.name)).toBeInTheDocument();
-    await userEvent.click(screen.getByText(/demo item name/i));
-    expect(screen.getByText('Crud demo item details mock test-id')).toBeInTheDocument();
+    expect(await screen.findByText('Test Item')).toBeInTheDocument();
   });
 
-  it('should render link to edit form', async () => {
-    const item = { id: 'test-id', name: 'demo item name' };
+  it('should render edit link', async () => {
+    render(<{{ pascalCase name }}ListItem item={defaultItem} />);
 
-    const requestMock = composeMockedQueryResult({{ camelCase name }}ListItemTestQuery, {
-      data: {
-        item: {
-          ...item,
-          __typename: '{{ pascalCase name }}Type',
-        },
-      },
-    });
+    expect(await screen.findByRole('link', { name: /edit/i })).toBeInTheDocument();
+  });
 
-    render(<Component />, { apolloMocks: append(requestMock) });
-    expect(await screen.findByText(item.name)).toBeInTheDocument();
-    await userEvent.click(screen.getByText(/edit/i));
-    expect(screen.getByText('Crud demo item edit mock test-id')).toBeInTheDocument();
+  it('should render delete button', async () => {
+    render(<{{ pascalCase name }}ListItem item={defaultItem} />);
+
+    expect(await screen.findByRole('button', { name: /delete/i })).toBeInTheDocument();
   });
 });

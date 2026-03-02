@@ -6,11 +6,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        node-version: [ 18, 20 ]
+        node-version: [ 22, 24 ]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -30,11 +30,11 @@ jobs:
         run: pnpm nx run webapp:build
 
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        node-version: [ 18, 20 ]
+        node-version: [ 22, 24 ]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -73,11 +73,11 @@ jobs:
           projectBaseDir: packages/webapp
 
   test-lib:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        node-version: [ 18, 20 ]
+        node-version: [ 22, 24 ]
         webapp-lib-name:
           - webapp-core
           - webapp-api-client

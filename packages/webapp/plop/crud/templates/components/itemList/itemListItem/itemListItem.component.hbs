@@ -5,79 +5,79 @@ import { FragmentType, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
 import { Icon } from '@sb/webapp-core/components/icons';
-import { useGenerateLocalePath, useMediaQuery } from '@sb/webapp-core/hooks';
+import { useMediaQuery } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { media } from '@sb/webapp-core/theme';
 import { useToast } from '@sb/webapp-core/toast';
-import { MouseEvent } from 'react';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { RoutesConfig } from '../../../../app/config/routes';
-import { {{ camelCase name }}ListItemDeleteMutation, {{ camelCase name }}ListItemFragment } from '../{{ camelCase name }}List.graphql';
+import { RoutesConfig } from '{{ routesConfigImport }}';
+import { {{ camelCase name }}ListItemDeleteMutation, {{ camelCase name }}ListItemFragment } from './{{ camelCase name }}ListItem.graphql';
 import { {{ pascalCase name }}DropdownMenu } from './{{ camelCase name }}DropdownMenu';
-
 
 export type {{ pascalCase name }}ListItemProps = {
   item: FragmentType<typeof {{ camelCase name }}ListItemFragment>;
 };
 
 export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}ListItemProps) => {
-  const generateLocalePath = useGenerateLocalePath();
+  const { data: currentTenant } = useCurrentTenant();
+  const generateTenantPath = useGenerateTenantPath();
   const { matches: isDesktop } = useMediaQuery({ above: media.Breakpoint.TABLET });
   const { toast } = useToast();
   const intl = useIntl();
 
   const successMessage = intl.formatMessage({
-    id: '{{ pascalCase name }} form / Success message',
-    defaultMessage: '🎉 Item deleted successfully!',
+    id: '{{ pascalCase name }} form / Delete {{ pascalCase name }} / Success message',
+    defaultMessage: 'Item deleted successfully!',
   });
 
   const [commitDeleteMutation, { loading }] = useMutation({{ camelCase name }}ListItemDeleteMutation, {
     update(cache, { data }) {
-      data?.delete{{ camelCase name }}?.deletedIds?.forEach((deletedId) => {
-        const normalizedId = cache.identify({ id: deletedId, __typename: '{{ camelCase name }}Type' });
+      data?.delete{{ pascalCase name }}?.deletedIds?.forEach((deletedId) => {
+        const normalizedId = cache.identify({ id: deletedId, __typename: '{{ pascalCase name }}Type' });
         cache.evict({ id: normalizedId });
       });
       cache.gc();
     },
     onCompleted: (data) => {
-      const ids = data?.delete{{ camelCase name }}?.deletedIds;
+      const ids = data?.delete{{ pascalCase name }}?.deletedIds;
       trackEvent('crud', 'delete', ids?.join(', '));
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
     },
   });
 
-  const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const data = getFragmentData({{ camelCase name }}ListItemFragment, item);
+
+  const handleDelete = () => {
+    if (!currentTenant) return;
     commitDeleteMutation({
       variables: {
-        input: { id: data.id },
+        input: { id: data.id, tenantId: currentTenant.id },
       },
     });
   };
-
-  const data = getFragmentData({{ camelCase name }}ListItemFragment, item);
-
 
   const renderInlineButtons = () => (
     <div className="flex ml-3 shrink-0 [&>*]:mr-4 [&>*:last-child]:mr-0">
       <Link
         variant={ButtonVariant.GHOST}
         className="border"
-        to={generateLocalePath(RoutesConfig.{{ camelCase name }}.edit, { id: data.id })}
+        to={generateTenantPath(RoutesConfig.{{ camelCase name }}.edit, { id: data.id })}
         icon={<Icon size={14} icon={editIcon} />}
       >
-        <FormattedMessage id="{{ camelCase name }} list / Edit link" defaultMessage="Edit" />
+        <FormattedMessage id="{{ pascalCase name }} list / Edit link" defaultMessage="Edit" />
       </Link>
       <ConfirmDialog
         onContinue={handleDelete}
-        title={<FormattedMessage id="{{ camelCase name }}  list / Confirm dialog / Title" defaultMessage="Delete {{ camelCase name }} item" />}
+        title={<FormattedMessage id="{{ pascalCase name }} list / Confirm dialog / Title" defaultMessage="Delete {{ pascalCase name }} item" />}
         variant="destructive"
         description={
-        <FormattedMessage
-          id="{{ camelCase name }}  list / Confirm dialog / Description"
-          defaultMessage="Are you sure you want to continue?"
-        />
+          <FormattedMessage
+            id="{{ pascalCase name }} list / Confirm dialog / Description"
+            defaultMessage="Are you sure you want to continue?"
+          />
         }
       >
         <Button
@@ -86,7 +86,7 @@ export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}Lis
           disabled={loading}
           icon={<Icon size={14} icon={deleteIcon} />}
         >
-          <FormattedMessage id="{{ camelCase name }} list / Delete button" defaultMessage="Delete" />
+          <FormattedMessage id="{{ pascalCase name }} list / Delete button" defaultMessage="Delete" />
         </Button>
       </ConfirmDialog>
     </div>
@@ -97,17 +97,17 @@ export const {{ pascalCase name }}ListItem = ({ item }: {{ pascalCase name }}Lis
   );
 
   return (
-    <li className="group dark:hover:text-slate-500">
-      <div className="group flex items-center justify-between w-full min-w-15 p-4 transition focus:outline-none hover:bg-secondary hover:text-secondary-foreground dark:hover:text-slate-100">
+    <li className="group">
+      <div className="group flex items-center justify-between w-full min-w-15 p-4 transition focus:outline-none hover:bg-muted/50">
         <Link
-          className="border-input transition-colors group-hover:dark:text-slate-100 hover:no-underline w-full justify-start min-w-0 max-w-full cursor-pointer"
-          to={generateLocalePath(RoutesConfig.{{ camelCase name }}.details, { id: data.id })}
+          className="transition-colors hover:no-underline w-full justify-start min-w-0 max-w-full cursor-pointer flex-1"
+          to={generateTenantPath(RoutesConfig.{{ camelCase name }}.details, { id: data.id })}
         >
-          <p className="dark:hover:text-slate-500 text-base transition-colors whitespace-nowrap overflow-hidden text-ellipsis">
+          <p className="text-base font-medium transition-colors whitespace-nowrap overflow-hidden text-ellipsis hover:text-primary">
             {data.name}
           </p>
         </Link>
-        {isDesktop ? renderInlineButtons() : renderButtonsMenu()}
+        <div className="flex-shrink-0 ml-4">{isDesktop ? renderInlineButtons() : renderButtonsMenu()}</div>
       </div>
     </li>
   );

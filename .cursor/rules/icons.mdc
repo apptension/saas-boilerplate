@@ -1,0 +1,82 @@
+---
+description: SVG icons and Lucide icon usage patterns
+globs: ["**/icons/**", "**/*.svg"]
+alwaysApply: false
+---
+
+# Icons
+
+## Lucide React Icons
+
+Use Lucide React for standard icons:
+
+```tsx
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  LayoutDashboard, 
+  Settings,
+  X 
+} from 'lucide-react';
+
+<ChevronLeft className="h-4 w-4" />
+<LayoutDashboard className="h-5 w-5 shrink-0" />
+```
+
+## Custom SVG Icons
+
+### Creating New SVG Icons
+
+1. Place SVG file in `src/images/icons/` with `.svg` extension
+2. Use `currentColor` for fill to support theming:
+
+```svg
+<svg viewBox="0 0 134 171" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="..." fill="currentColor"/>
+</svg>
+```
+
+3. Adjust viewBox to match actual content bounds
+4. Remove hardcoded colors
+
+### Registering Icons
+
+Update `src/images/icons/index.ts`:
+
+```typescript
+/// <reference types="vite-plugin-svgr/client" />
+import SignetImg from './signet.svg?react';
+import { makeIcon } from './makeIcon';
+
+//<-- IMPORT ICON FILE -->
+
+export const SignetIcon = makeIcon(SignetImg);
+//<-- EXPORT ICON COMPONENT -->
+```
+
+### Using Custom Icons
+
+Custom icons support `color` and `size` props via styled-components:
+
+```tsx
+import { SignetIcon, LogoIcon } from '../images/icons';
+
+<SignetIcon 
+  color={theme === Themes.DARK ? 'white' : 'black'}
+  className="h-5 w-5"
+/>
+
+<LogoIcon
+  color={logoColor}
+  className="h-auto w-full"
+  style={{ maxWidth: '100%' }}
+  preserveAspectRatio="xMidYMid meet"
+/>
+```
+
+## Icon Sizing
+
+- Small: `h-4 w-4` (16px)
+- Medium: `h-5 w-5` (20px)
+- Large: `h-6 w-6` (24px)
+- Use `shrink-0` to prevent icons from shrinking in flex containers

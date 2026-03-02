@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { FragmentType, NotificationConnection, getFragmentData } from '@sb/webapp-api-client/graphql';
 import { useMappedConnection } from '@sb/webapp-core/hooks';
 import { useToast } from '@sb/webapp-core/toast/useToast';
@@ -19,7 +19,10 @@ export const useMarkAllAsRead = (message: string) => {
         cache.modify({
           fields: {
             hasUnreadNotifications() {
-              return false;
+              return data?.markReadAllNotifications?.hasUnreadNotifications ?? false;
+            },
+            unreadNotificationsCount() {
+              return data?.markReadAllNotifications?.unreadNotificationsCount ?? 0;
             },
             allNotifications(connection) {
               const readAt = new Date().toISOString();
@@ -40,7 +43,7 @@ export const useMarkAllAsRead = (message: string) => {
         });
       },
     });
-    toast({ description: message });
+    toast({ description: message, variant: 'success' });
   };
 };
 

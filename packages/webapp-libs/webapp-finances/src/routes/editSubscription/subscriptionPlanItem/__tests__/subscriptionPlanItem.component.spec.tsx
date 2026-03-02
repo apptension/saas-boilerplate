@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { SubscriptionPlanName } from '@sb/webapp-api-client/api/subscription';
 import {
   currentUserFactory,
@@ -144,7 +144,8 @@ describe('SubscriptionPlanItem: Component', () => {
         });
         await waitForApolloMocks();
 
-        await userEvent.click(screen.getByText(/select/i));
+        // When the plan is active, button shows "Current plan" and is disabled
+        await userEvent.click(screen.getByText(/current plan/i));
         expect(onSelect).not.toHaveBeenCalled();
       });
     });
@@ -186,7 +187,7 @@ describe('SubscriptionPlanItem: Component', () => {
         apolloMocks: [requestSubscriptionMock, requestPlansMock, tenantMock],
       });
       await waitForApolloMocks();
-      expect(await screen.findByText(/will start with a trial/i)).toBeInTheDocument();
+      expect(await screen.findByText(/start with a free trial/i)).toBeInTheDocument();
     });
   });
 
@@ -200,7 +201,7 @@ describe('SubscriptionPlanItem: Component', () => {
       });
       await waitForApolloMocks();
 
-      expect(screen.queryByText(/will start with a trial/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/start with a free trial/i)).not.toBeInTheDocument();
     });
   });
 });

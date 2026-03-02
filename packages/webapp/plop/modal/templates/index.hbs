@@ -1,0 +1,4 @@
+export { {{ pascalCase name }}Modal, type {{ pascalCase name }}ModalProps } from './{{ camelCase name }}Modal.component';
+{{#if withHook}}
+export { use{{ pascalCase name }}Modal } from './use{{ pascalCase name }}Modal.hook';
+{{/if}}

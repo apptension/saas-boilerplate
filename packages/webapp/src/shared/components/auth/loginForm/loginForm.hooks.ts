@@ -1,5 +1,5 @@
-import { useMutation } from '@apollo/client';
-import { invalidateApolloStore } from '@sb/webapp-api-client';
+import { useMutation } from '@apollo/client/react';
+import { extractGraphQLErrors, storeAuthTokens } from '@sb/webapp-api-client/api';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useCommonQuery } from '@sb/webapp-api-client/providers';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
@@ -8,6 +8,7 @@ import { useIntl } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
+import { emailPattern } from '../../../constants';
 import { authSinginMutation } from './loginForm.graphql';
 import { LoginFormFields } from './loginForm.types';
 
@@ -31,11 +32,15 @@ export const useLoginForm = () => {
         }),
       },
     },
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
   const { handleSubmit, setApolloGraphQLResponseErrors } = form;
 
   const [commitLoginMutation, { loading }] = useMutation(authSinginMutation, {
-    onCompleted: ({ tokenAuth }) => {
+    onCompleted: async ({ tokenAuth }) => {
       if (tokenAuth?.otpAuthToken) {
         return navigate({
           pathname: generateLocalePath(RoutesConfig.validateOtp),
@@ -43,22 +48,41 @@ export const useLoginForm = () => {
         });
       }
 
-      reloadCommonQuery();
+      if (tokenAuth?.access) {
+        storeAuthTokens(tokenAuth.access, tokenAuth.refresh ?? undefined);
+      }
 
       trackEvent('auth', 'log-in');
+
+      // Reload the common query to get fresh user data
+      await reloadCommonQuery();
+
+      // Get redirect URL from search params, or default to home
+      const searchParams = new URLSearchParams(search);
+      const redirect = searchParams.get('redirect');
+
+      // Navigate to the redirect URL or home page
+      navigate(redirect ?? generateLocalePath(RoutesConfig.home));
     },
     onError: (error) => {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        setApolloGraphQLResponseErrors(graphQLErrors);
+      }
     },
   });
 
   const handleLogin = handleSubmit(async (data: LoginFormFields) => {
-    await commitLoginMutation({
-      variables: {
-        input: data,
-      },
-    });
-    invalidateApolloStore();
+    try {
+      await commitLoginMutation({
+        variables: {
+          input: data,
+        },
+      });
+    } catch (error) {
+      // Error is handled by onError callback
+      // This catch prevents unhandled promise rejection
+    }
   });
 
   return { ...form, loading, handleLogin };

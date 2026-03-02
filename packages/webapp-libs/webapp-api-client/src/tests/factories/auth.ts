@@ -7,6 +7,7 @@ export const currentUserFactory = createFactory<CurrentUserType>(() => ({
   firstName: 'testFirstName',
   lastName: 'testLastName',
   email: 'mock@example.org',
+  language: 'en',
   roles: [Role.ADMIN, Role.USER],
   avatar: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/315.jpg',
   otpEnabled: false,

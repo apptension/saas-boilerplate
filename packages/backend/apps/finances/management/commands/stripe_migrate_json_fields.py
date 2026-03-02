@@ -146,7 +146,7 @@ AFFECTED_FIELDS = [
 
 
 class Command(BaseCommand):
-    help = 'Migrate text-based JSON fields to json-based ones to support dj-stripe v2.8.0'
+    help = "Migrate text-based JSON fields to json-based ones to support dj-stripe v2.8.0"
 
     @transaction.atomic
     def handle(self, *args, **options):

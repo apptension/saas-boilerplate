@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { Fragment, useEffect } from 'react';
 
@@ -31,8 +31,10 @@ describe('Toast: Component', () => {
       const firstMessageCloseButton = screen.getAllByLabelText(/dismiss/i)[0];
       await userEvent.click(firstMessageCloseButton);
 
-      const message = screen.queryByText('first message');
-      expect(message).not.toBeInTheDocument();
+      // Wait for exit animation to complete and toast to be removed
+      await waitFor(() => {
+        expect(screen.queryByText('first message')).not.toBeInTheDocument();
+      });
     });
   });
 });

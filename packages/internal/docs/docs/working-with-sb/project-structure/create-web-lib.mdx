@@ -42,8 +42,11 @@ Modify `tsconfig.base.json` located in the root of your monorepo.
   "compilerOptions": {
     "paths": {
 // highlight-start
-      "@sb/webapp-libs-mylib/*": [
-        "packages/webapp-libs/mylib/src/*"
+      "@sb/webapp-mylib": [
+        "packages/webapp-libs/webapp-mylib/src/index.ts"
+      ],
+      "@sb/webapp-mylib/*": [
+        "packages/webapp-libs/webapp-mylib/src/*"
       ]
 // highlight-end
     }
@@ -51,6 +54,11 @@ Modify `tsconfig.base.json` located in the root of your monorepo.
 }
 
 ```
+
+:::note
+Follow the existing naming convention: packages are named `webapp-{name}` (e.g., `webapp-core`, `webapp-finances`)
+and use the `@sb/webapp-{name}` import path.
+:::
 
 ## Install in webapp package
 
@@ -60,7 +68,7 @@ First add the dependency to proper `package.json` file:
 {
   "dependencies": {
 // highlight-next-line
-    "@sb/webapp-libs-mylib": "*"
+    "@sb/webapp-mylib": "*"
   }
 }
 ```
@@ -75,5 +83,5 @@ pnpm i
 
 You should be able to import the library in any TypeScript file located in `packages/webapp`:
 ```ts
-import * as mylib from '@sb/webapp-libs-mylib';
+import * as mylib from '@sb/webapp-mylib';
 ```

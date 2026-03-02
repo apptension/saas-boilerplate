@@ -1,10 +1,10 @@
 {
   "name": "@sb/cli",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "description": "SaaS Boilerplate CLI",
   "author": "Patryk Ziemkowski pziemkowski@apptension.com",
   "bin": {
-    "saas": "./bin/run"
+    "saas": "./bin/run.js"
   },
   "homepage": "https://github.com/apptension/saas-boilerplate",
   "license": "MIT",
@@ -31,10 +31,13 @@
     "@opentelemetry/sdk-trace-base": "^1.18.1",
     "@opentelemetry/sdk-trace-node": "^1.18.1",
     "@opentelemetry/semantic-conventions": "^1.18.1",
+    "chalk": "^4.1.2",
     "dotenv": "^16.3.1",
     "envalid": "^7.3.1",
     "lookpath": "^1.2.2",
-    "node-persist": "^3.1.3"
+    "node-persist": "^3.1.3",
+    "node-ssh": "^13.2.1",
+    "@inquirer/prompts": "^7.0.0"
   },
   "devDependencies": {
     "@types/node-persist": "^3.1.7",
@@ -61,25 +64,31 @@
     "topicSeparator": " ",
     "topics": {
       "aws": {
-        "description": "Groups various AWS-related commands that for example allow you to switch between environment stages"
+        "description": "AWS-related commands for environment stages and configuration"
       },
       "db": {
         "description": "Manage local database instance"
       },
       "webapp": {
-        "description": "Manage webapp package and service in AWS"
+        "description": "Manage webapp package and deployment"
       },
       "emails": {
         "description": "Manage emails package"
       },
       "backend": {
-        "description": "Manage backend package and service in AWS"
+        "description": "Manage backend package and deployment"
       },
       "workers": {
-        "description": "Manage workers package and service in AWS"
+        "description": "Manage workers package (AWS Lambda)"
       },
       "infra": {
         "description": "Configure and deploy infrastructure to AWS"
+      },
+      "render": {
+        "description": "Deploy and manage services on Render.com"
+      },
+      "vps": {
+        "description": "Deploy and manage services on VPS via Docker Compose"
       }
     }
   },

@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
@@ -33,7 +33,7 @@ export const useEditSubscription = () => {
     onCompleted: () => {
       trackEvent('subscription', 'change-plan');
 
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
       navigate(generateTenantPath(RoutesConfig.subscriptions.index));
     },
   });

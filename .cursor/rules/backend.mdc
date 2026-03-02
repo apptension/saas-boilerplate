@@ -1,0 +1,341 @@
+---
+description: Backend Python/Django patterns and best practices
+globs: ["**/*.py"]
+alwaysApply: false
+---
+
+# Backend Development Patterns
+
+## Imports
+
+**Avoid inline imports.** Place all imports at the top of the file.
+
+```python
+# ❌ WRONG - Inline import inside function/method
+def test_something(self):
+    from ..models import TenantMembershipRole
+    ...
+
+# ✅ CORRECT - Import at module top
+from ..models import TenantMembership, TenantMembershipRole
+
+def test_something(self):
+    ...
+```
+
+Exceptions: circular import workarounds (e.g. in migrations using `apps.get_model`) or lazy imports inside `TYPE_CHECKING` blocks.
+
+## GraphQL Mutation with Serializer
+
+Create a serializer-based mutation in three steps:
+
+### 1. Create the Serializer (`serializers.py`)
+
+```python
+from rest_framework import serializers, exceptions
+from hashid_field import rest as hidrest
+from graphql_relay import to_global_id
+
+class MyFeatureSerializer(serializers.Serializer):
+    """
+    Docstring describing what this serializer does.
+    """
+    id = hidrest.HashidSerializerCharField(
+        source_field="myapp.MyModel.id", 
+        write_only=True
+    )
+    tenant_id = serializers.CharField(write_only=True)
+    ok = serializers.BooleanField(read_only=True)
+
+    def validate(self, attrs):
+        # Get tenant from request context
+        tenant = self.context["request"].tenant
+        
+        # Find the object
+        obj = MyModel.objects.filter(pk=attrs["id"], tenant=tenant).first()
+        
+        if not obj:
+            raise exceptions.NotFound(_("Object not found."))
+        
+        # Store for use in create()
+        attrs["obj"] = obj
+        return super().validate(attrs)
+
+    def create(self, validated_data):
+        obj = validated_data["obj"]
+        
+        # Perform the action
+        # ...
+        
+        return {"ok": True}
+```
+
+### 2. Create the Mutation (`schema.py`)
+
+```python
+from graphql_relay import from_global_id
+from common.graphql import mutations
+
+class MyFeatureMutation(mutations.SerializerMutation):
+    ok = graphene.Boolean()
+
+    class Meta:
+        serializer_class = serializers.MyFeatureSerializer
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **input):
+        # Convert global ID to local ID
+        if "id" in input:
+            _, input["id"] = from_global_id(input["id"])
+        return super().mutate_and_get_payload(root, info, **input)
+```
+
+### 3. Register in Mutation Class
+
+```python
+@permission_classes(policies.IsTenantOwnerAccess)
+class TenantOwnerMutation(graphene.ObjectType):
+    my_feature = MyFeatureMutation.Field()
+```
+
+## Sending Emails from Serializers
+
+```python
+from common import emails
+
+class MyEmailNotification(emails.Email):
+    name = 'MY_EMAIL_TYPE'
+    serializer_class = email_serializers.MyEmailSerializer
+
+# In serializer.create():
+def create(self, validated_data):
+    obj = validated_data["obj"]
+    
+    MyEmailNotification(
+        to=obj.user.email,
+        data={'object_id': global_id, 'token': token},
+    ).send()
+    
+    return {"ok": True}
+```
+
+## Sending In-App Notifications
+
+```python
+from apps.notifications import sender
+from . import constants
+
+def send_my_notification(obj, obj_id: str):
+    if obj.user:
+        sender.send_notification(
+            user=obj.user,
+            type=constants.Notification.MY_NOTIFICATION_TYPE.value,
+            data={
+                "id": obj_id,
+                "name": obj.name,
+            },
+            issuer=obj.creator,
+        )
+```
+
+## Token Generation for Secure Actions
+
+```python
+from .tokens import my_token_generator
+
+# Generate token
+token = my_token_generator.make_token(
+    user_email=email, 
+    obj=obj
+)
+global_id = to_global_id("MyObjectType", obj.id)
+
+# Validate token
+if not my_token_generator.check_token(email, token, obj):
+    raise exceptions.ValidationError(_("Invalid token"))
+```
+
+## Backend Test Patterns
+
+### CRITICAL: Use pytest fixtures, NOT django.test.TestCase
+
+```python
+# ❌ WRONG - Can cause DB connection issues (InterfaceError: connection already closed)
+from django.test import TestCase
+
+class MyTests(TestCase):
+    def test_something(self):
+        pass
+
+# ✅ CORRECT - Use pytest fixtures
+import pytest
+
+pytestmark = pytest.mark.django_db
+
+class TestMyFeature:
+    def test_something(self, user_factory, tenant_factory):
+        pass
+```
+
+### Testing Serializers
+
+```python
+import pytest
+from unittest.mock import Mock
+
+pytestmark = pytest.mark.django_db
+
+class TestMySerializer:
+    def test_success_case(self, mocker, user_factory, tenant_factory):
+        # Mock external calls
+        mocker.patch("apps.myapp.tokens.TokenGenerator.make_token", return_value="token")
+        mock_send_email = mocker.patch("apps.myapp.serializers.MyEmail")
+        
+        # Setup
+        tenant = tenant_factory(name="Test", type=TenantType.ORGANIZATION)
+        
+        data = {
+            "id": obj.id,
+            "tenant_id": str(tenant.id),
+        }
+        
+        serializer = MySerializer(
+            data=data, 
+            context={'request': Mock(tenant=tenant, user=user)}
+        )
+        assert serializer.is_valid()
+        
+        result = serializer.create(serializer.validated_data)
+        
+        assert result['ok']
+        mock_send_email.assert_called_once()
+
+    def test_not_found(self, tenant_factory):
+        tenant = tenant_factory()
+        
+        data = {"id": "nonexistent", "tenant_id": str(tenant.id)}
+        serializer = MySerializer(
+            data=data, 
+            context={'request': Mock(tenant=tenant)}
+        )
+        
+        assert not serializer.is_valid()
+```
+
+### Testing API Views with Authentication
+
+```python
+import pytest
+from rest_framework.test import APIClient
+
+pytestmark = pytest.mark.django_db
+
+class TestMyAPIView:
+    def test_authenticated_request(self, user_factory, tenant_factory):
+        user = user_factory()
+        tenant = tenant_factory()
+        
+        client = APIClient()
+        client.force_authenticate(user=user)
+        
+        response = client.post(
+            f"/api/my-endpoint/{tenant.id}/",
+            {"key": "value"},
+            format="json"
+        )
+        
+        assert response.status_code == 200
+
+    def test_streaming_response(self, user_factory, tenant_factory):
+        """Testing StreamingHttpResponse views"""
+        user = user_factory()
+        tenant = tenant_factory()
+        
+        client = APIClient()
+        client.force_authenticate(user=user)
+        
+        response = client.post(
+            f"/api/streaming-endpoint/{tenant.id}/",
+            {"message": "test"},
+            format="json"
+        )
+        
+        # For streaming responses, read content as bytes
+        assert response.status_code == 200
+        content = b"".join(response.streaming_content)
+        assert b"expected_data" in content
+```
+
+### Factory Boy: Avoiding Duplicate Creation
+
+```python
+from factory.django import DjangoModelFactory
+import factory
+
+class OrganizationSettingsFactory(DjangoModelFactory):
+    class Meta:
+        model = OrganizationSettings
+        # CRITICAL: Prevents duplicate creation errors
+        django_get_or_create = ("tenant",)
+    
+    tenant = factory.SubFactory(TenantFactory)
+```
+
+## Permission Patterns
+
+Use decorators for permission control:
+
+```python
+from common.acl import policies
+from common.graphql.acl.decorators import permission_classes
+
+# Owner-only mutations
+@permission_classes(policies.IsTenantOwnerAccess)
+class TenantOwnerMutation(graphene.ObjectType):
+    sensitive_action = SensitiveMutation.Field()
+
+# Admin or owner mutations
+@permission_classes(policies.IsTenantAdminAccess)
+class TenantAdminMutation(graphene.ObjectType):
+    admin_action = AdminMutation.Field()
+```
+
+## GraphQL Schema Workflow
+
+When adding new GraphQL mutations or queries, follow this workflow:
+
+1. **Update Backend Schema** (`packages/backend/apps/<app>/schema.py`)
+   - Create mutation class with Arguments, return types, and mutate method
+   - Register in appropriate Mutation class (TenantOwnerMutation, etc.)
+
+2. **Download Updated Schema** (backend must be running!)
+   ```bash
+   pnpm nx run webapp-api-client:graphql:download-schema
+   ```
+
+3. **Add Frontend GraphQL Operations** (`packages/webapp-libs/webapp-<lib>/src/.../feature.graphql.ts`)
+   ```typescript
+   export const myMutation = gql(/* GraphQL */ `
+     mutation MyMutation($tenantId: ID!, $input: SomeInput!) {
+       myMutation(tenantId: $tenantId, input: $input) {
+         success
+         result { id }
+       }
+     }
+   `);
+   ```
+
+4. **Generate TypeScript Types**
+   ```bash
+   pnpm nx run webapp-api-client:graphql:generate-types
+   ```
+
+5. **Use in Components**
+   ```typescript
+   import { useMutation } from '@apollo/client';
+   import { myMutation } from './feature.graphql';
+   
+   const [commitMutation, { loading }] = useMutation(myMutation);
+   ```
+
+**Important**: The backend server must be running (`pnpm saas up`) for schema download to work!

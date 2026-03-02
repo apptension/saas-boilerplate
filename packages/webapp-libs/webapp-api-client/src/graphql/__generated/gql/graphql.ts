@@ -68,9 +68,130 @@ export type AcceptTenantInvitationMutationPayload = {
   ok?: Maybe<Scalars['Boolean']['output']>;
 };
 
+/** Connection class for paginated ActionLog lists. */
+export type ActionLogConnection = {
+  __typename?: 'ActionLogConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<ActionLogEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']['output']>;
+};
+
+/** A Relay edge containing a `ActionLog` and its cursor. */
+export type ActionLogEdge = {
+  __typename?: 'ActionLogEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
+  node?: Maybe<ActionLogType>;
+};
+
+/** GraphQL type for ActionLogExport model. */
+export type ActionLogExportType = Node & {
+  __typename?: 'ActionLogExportType';
+  celeryTaskId: Scalars['String']['output'];
+  completedAt?: Maybe<Scalars['DateTime']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  downloadUrl?: Maybe<Scalars['String']['output']>;
+  errorMessage: Scalars['String']['output'];
+  /** Path to the generated file in storage */
+  filePath: Scalars['String']['output'];
+  /** Size of the generated file in bytes */
+  fileSize?: Maybe<Scalars['BigInt']['output']>;
+  filters?: Maybe<Scalars['GenericScalar']['output']>;
+  /** The ID of the object */
+  id: Scalars['ID']['output'];
+  /** Number of logs in the export */
+  logCount?: Maybe<Scalars['Int']['output']>;
+  requestedBy: CurrentUserType;
+  startedAt?: Maybe<Scalars['DateTime']['output']>;
+  status: MultitenancyActionLogExportStatusChoices;
+  tenant: TenantType;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+/** GraphQL type for ActionLog model - audit trail of actions. */
+export type ActionLogType = Node & {
+  __typename?: 'ActionLogType';
+  /** Type of action performed */
+  actionType: MultitenancyActionLogActionTypeChoices;
+  /** Email of the actor (stored for historical reference) */
+  actorEmail: Scalars['String']['output'];
+  /** Type of actor that performed the action */
+  actorType: MultitenancyActionLogActorTypeChoices;
+  /** User who performed the action (null for system actions) */
+  actorUser?: Maybe<CurrentUserType>;
+  changes?: Maybe<Scalars['GenericScalar']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  /** ID of the affected entity */
+  entityId: Scalars['String']['output'];
+  /** Human-readable name of the entity for display */
+  entityName: Scalars['String']['output'];
+  /** Type of entity affected (e.g., client, project, user) */
+  entityType: Scalars['String']['output'];
+  /** The ID of the object */
+  id: Scalars['ID']['output'];
+  metadata?: Maybe<Scalars['GenericScalar']['output']>;
+  tenant: TenantType;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type ActivateSsoConnectionMutationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  tenantId: Scalars['String']['input'];
+};
+
+/** Activate an SSO connection. */
+export type ActivateSsoConnectionMutationPayload = {
+  __typename?: 'ActivateSSOConnectionMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  ssoConnection?: Maybe<SsoConnectionType>;
+  tenantId?: Maybe<Scalars['String']['output']>;
+};
+
+/** Event sent during AI chat streaming. */
+export type AiChatEventType = {
+  __typename?: 'AiChatEventType';
+  conversationId?: Maybe<Scalars['String']['output']>;
+  eventType: Scalars['String']['output'];
+  hasData?: Maybe<Scalars['Boolean']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  success?: Maybe<Scalars['Boolean']['output']>;
+  text?: Maybe<Scalars['String']['output']>;
+  toolDisplayName?: Maybe<Scalars['String']['output']>;
+  toolName?: Maybe<Scalars['String']['output']>;
+  toolsUsed?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/**
+ * GraphQL subscription for AI chat streaming.
+ * Receives events as the AI processes messages.
+ */
+export type AiChatSubscription = {
+  __typename?: 'AiChatSubscription';
+  event?: Maybe<AiChatEventType>;
+};
+
 export type ApiMutation = {
   __typename?: 'ApiMutation';
   acceptTenantInvitation?: Maybe<AcceptTenantInvitationMutationPayload>;
+  /** Activate an SSO connection. */
+  activateSsoConnection?: Maybe<ActivateSsoConnectionMutationPayload>;
+  /**
+   * Assign one or more organization roles to a member.
+   *
+   * SECURITY:
+   * - Requires 'members.roles.edit' permission
+   * - Only owners can assign the Owner role
+   * - Users can only assign roles with permissions they themselves have
+   * - Users cannot remove their own owner role if they're the last owner
+   */
+  assignRolesToMember?: Maybe<AssignRolesToMemberMutation>;
+  /** Block a device. */
+  blockDevice?: Maybe<BlockDeviceMutation>;
   cancelActiveSubscription?: Maybe<CancelActiveSubscriptionMutationPayload>;
   changeActiveSubscription?: Maybe<ChangeActiveSubscriptionMutationPayload>;
   changePassword?: Maybe<ChangePasswordMutationPayload>;
@@ -78,32 +199,137 @@ export type ApiMutation = {
   createCrudDemoItem?: Maybe<CreateCrudDemoItemMutationPayload>;
   createDocumentDemoItem?: Maybe<CreateDocumentDemoItemMutationPayload>;
   createFavoriteContentfulDemoItem?: Maybe<CreateFavoriteContentfulDemoItemMutationPayload>;
+  /**
+   * Create a new custom organization role.
+   *
+   * SECURITY:
+   * - Requires 'org.roles.manage' permission
+   * - Users can only create roles with permissions they themselves have (except owners)
+   */
+  createOrganizationRole?: Maybe<CreateOrganizationRoleMutation>;
   createPaymentIntent?: Maybe<CreatePaymentIntentMutationPayload>;
+  /** Create a new SCIM token. */
+  createScimToken?: Maybe<CreateScimTokenMutationPayload>;
   createSetupIntent?: Maybe<CreateSetupIntentMutationPayload>;
+  /** Create a new SSO connection. */
+  createSsoConnection?: Maybe<CreateSsoConnectionMutationPayload>;
   createTenant?: Maybe<CreateTenantMutationPayload>;
   createTenantInvitation?: Maybe<CreateTenantInvitationMutationPayload>;
+  /** Deactivate an SSO connection. Requires tenantId for tenant context. */
+  deactivateSsoConnection?: Maybe<DeactivateSsoConnectionMutation>;
   declineTenantInvitation?: Maybe<DeclineTenantInvitationMutationPayload>;
+  /** Delete a backup record and its file. */
+  deleteBackup?: Maybe<DeleteBackupMutation>;
   deleteCrudDemoItem?: Maybe<DeleteCrudDemoItemMutationPayload>;
   deleteDocumentDemoItem?: Maybe<DeleteDocumentDemoItemMutationPayload>;
   deleteFavoriteContentfulDemoItem?: Maybe<DeleteFavoriteContentfulDemoItemMutationPayload>;
+  /**
+   * Delete an organization role.
+   *
+   * If there are members with this role, a replacement_role_id must be provided.
+   *
+   * SECURITY:
+   * - Requires 'org.roles.manage' permission
+   * - Cannot delete system roles (Owner, Admin, Member)
+   */
+  deleteOrganizationRole?: Maybe<DeleteOrganizationRoleMutation>;
+  /** Delete a passkey. */
+  deletePasskey?: Maybe<DeletePasskeyMutationPayload>;
   deletePaymentMethod?: Maybe<DeletePaymentMethodMutationPayload>;
+  /** Delete an SSO connection. Requires tenantId in input for tenant context. */
+  deleteSsoConnection?: Maybe<DeleteSsoConnectionMutationPayload>;
   /** Mutation to delete a tenant from the system. */
   deleteTenant?: Maybe<DeleteTenantMutationPayload>;
+  /**
+   * Delete/remove a member from the organization.
+   *
+   * SECURITY:
+   * - Requires 'members.remove' permission to remove other members
+   * - Users can always remove themselves (leave organization)
+   * - Only owners can remove other owners
+   * - Cannot remove the last owner
+   */
   deleteTenantMembership?: Maybe<DeleteTenantMembershipMutationPayload>;
+  /** Delete a passkey as tenant admin (for any tenant member). Requires tenantId for tenant context. */
+  deleteTenantPasskey?: Maybe<DeleteTenantPasskeyMutation>;
   disableOtp?: Maybe<DisableOtpMutationPayload>;
+  /** Download a backup file with decryption applied in-memory. */
+  downloadBackupDecrypted?: Maybe<DownloadBackupDecryptedMutation>;
+  /**
+   * Mutation to trigger an async export of action logs.
+   *
+   * Creates an export job that processes in the background.
+   * User receives a notification when the export is ready.
+   */
+  exportActionLogs?: Maybe<ExportActionLogsMutation>;
   generateOtp?: Maybe<GenerateOtpMutationPayload>;
   generateSaasIdeas?: Maybe<GenerateSaasIdeasMutationPayload>;
   markReadAllNotifications?: Maybe<MarkReadAllNotificationsMutationPayload>;
   passwordReset?: Maybe<PasswordResetMutationPayload>;
   passwordResetConfirm?: Maybe<PasswordResetConfirmationMutationPayload>;
+  /** Publish translations for a locale to S3/CDN. */
+  publishTranslations?: Maybe<PublishTranslationsMutationPayload>;
+  /**
+   * Remove a specific role from a member.
+   *
+   * SECURITY:
+   * - Requires 'members.roles.edit' permission
+   * - Only owners can remove the Owner role
+   * - Cannot remove the last owner's owner role
+   * - Non-owners cannot modify owner memberships
+   */
+  removeRoleFromMember?: Maybe<RemoveRoleFromMemberMutation>;
+  /** Rename a passkey. */
+  renamePasskey?: Maybe<RenamePasskeyMutation>;
+  resendTenantInvitation?: Maybe<ResendTenantInvitationMutationPayload>;
+  /** Trigger a backup restoration for a tenant. */
+  restoreBackup?: Maybe<RestoreBackupMutation>;
+  /** Revoke all SSO sessions for the current user except the current session. */
+  revokeAllSessions?: Maybe<RevokeAllSessionsMutation>;
+  /** Revoke a SCIM token. Requires tenantId for tenant context. */
+  revokeScimToken?: Maybe<RevokeScimTokenMutation>;
+  /** Revoke an SSO session. */
+  revokeSession?: Maybe<RevokeSessionMutation>;
+  /** Rollback to a previous translation version. */
+  rollbackTranslations?: Maybe<RollbackTranslationsMutationPayload>;
+  /**
+   * Mutation to send a message to the AI assistant.
+   * The response is streamed via the AiChatSubscription.
+   */
+  sendAiMessage?: Maybe<SendAiMessageMutation>;
   signUp?: Maybe<SingUpMutationPayload>;
+  /** Sync translation keys from master JSON. */
+  syncTranslationKeys?: Maybe<SyncTranslationKeysMutationPayload>;
+  /** Test an SSO connection configuration. Requires tenantId for tenant context. */
+  testSsoConnection?: Maybe<TestSsoConnectionMutation>;
   tokenAuth?: Maybe<ObtainTokenMutationPayload>;
+  /** Manually trigger a backup for a tenant. */
+  triggerBackup?: Maybe<TriggerBackupMutation>;
+  /** Mark a device as trusted. */
+  trustDevice?: Maybe<TrustDeviceMutation>;
+  /** Remove trust from a device. */
+  untrustDevice?: Maybe<UntrustDeviceMutation>;
+  /** Create or update backup configuration for a tenant. */
+  updateBackupConfig?: Maybe<UpdateBackupConfigMutation>;
   updateCrudDemoItem?: Maybe<UpdateCrudDemoItemMutationPayload>;
   updateCurrentUser?: Maybe<UpdateCurrentUserMutationPayload>;
   updateDefaultPaymentMethod?: Maybe<UpdateDefaultPaymentMethodMutationPayload>;
   updateNotification?: Maybe<UpdateNotificationMutationPayload>;
+  /**
+   * Update an existing organization role.
+   *
+   * SECURITY:
+   * - Requires 'org.roles.manage' permission
+   * - Cannot modify the Owner role
+   * - Users can only add permissions they themselves have (except owners)
+   */
+  updateOrganizationRole?: Maybe<UpdateOrganizationRoleMutation>;
   updatePaymentIntent?: Maybe<UpdatePaymentIntentMutationPayload>;
+  /** Update an existing SSO connection. */
+  updateSsoConnection?: Maybe<UpdateSsoConnectionMutationPayload>;
   updateTenant?: Maybe<UpdateTenantMutationPayload>;
+  /** Mutation to enable or disable action logging for a tenant. */
+  updateTenantActionLogging?: Maybe<UpdateTenantActionLoggingMutation>;
   updateTenantMembership?: Maybe<UpdateTenantMembershipMutationPayload>;
   validateOtp?: Maybe<ValidateOtpMutationPayload>;
   verifyOtp?: Maybe<VerifyOtpMutationPayload>;
@@ -112,6 +338,24 @@ export type ApiMutation = {
 
 export type ApiMutationAcceptTenantInvitationArgs = {
   input: AcceptTenantInvitationMutationInput;
+};
+
+
+export type ApiMutationActivateSsoConnectionArgs = {
+  input: ActivateSsoConnectionMutationInput;
+};
+
+
+export type ApiMutationAssignRolesToMemberArgs = {
+  membershipId: Scalars['ID']['input'];
+  roleIds: Array<InputMaybe<Scalars['ID']['input']>>;
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type ApiMutationBlockDeviceArgs = {
+  id: Scalars['ID']['input'];
+  reason?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -150,13 +394,32 @@ export type ApiMutationCreateFavoriteContentfulDemoItemArgs = {
 };
 
 
+export type ApiMutationCreateOrganizationRoleArgs = {
+  color?: InputMaybe<RoleColor>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  permissionIds: Array<InputMaybe<Scalars['ID']['input']>>;
+  tenantId: Scalars['ID']['input'];
+};
+
+
 export type ApiMutationCreatePaymentIntentArgs = {
   input: CreatePaymentIntentMutationInput;
 };
 
 
+export type ApiMutationCreateScimTokenArgs = {
+  input: CreateScimTokenMutationInput;
+};
+
+
 export type ApiMutationCreateSetupIntentArgs = {
   input: CreateSetupIntentMutationInput;
+};
+
+
+export type ApiMutationCreateSsoConnectionArgs = {
+  input: CreateSsoConnectionMutationInput;
 };
 
 
@@ -170,8 +433,19 @@ export type ApiMutationCreateTenantInvitationArgs = {
 };
 
 
+export type ApiMutationDeactivateSsoConnectionArgs = {
+  id: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+};
+
+
 export type ApiMutationDeclineTenantInvitationArgs = {
   input: DeclineTenantInvitationMutationInput;
+};
+
+
+export type ApiMutationDeleteBackupArgs = {
+  backupId: Scalars['ID']['input'];
 };
 
 
@@ -190,8 +464,25 @@ export type ApiMutationDeleteFavoriteContentfulDemoItemArgs = {
 };
 
 
+export type ApiMutationDeleteOrganizationRoleArgs = {
+  id: Scalars['ID']['input'];
+  replacementRoleId?: InputMaybe<Scalars['ID']['input']>;
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type ApiMutationDeletePasskeyArgs = {
+  input: DeletePasskeyMutationInput;
+};
+
+
 export type ApiMutationDeletePaymentMethodArgs = {
   input: DeletePaymentMethodMutationInput;
+};
+
+
+export type ApiMutationDeleteSsoConnectionArgs = {
+  input: DeleteSsoConnectionMutationInput;
 };
 
 
@@ -205,8 +496,30 @@ export type ApiMutationDeleteTenantMembershipArgs = {
 };
 
 
+export type ApiMutationDeleteTenantPasskeyArgs = {
+  id: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+};
+
+
 export type ApiMutationDisableOtpArgs = {
   input: DisableOtpMutationInput;
+};
+
+
+export type ApiMutationDownloadBackupDecryptedArgs = {
+  backupId: Scalars['ID']['input'];
+};
+
+
+export type ApiMutationExportActionLogsArgs = {
+  actionType?: InputMaybe<Scalars['String']['input']>;
+  actorEmail?: InputMaybe<Scalars['String']['input']>;
+  entityType?: InputMaybe<Scalars['String']['input']>;
+  fromDatetime?: InputMaybe<Scalars['DateTime']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  tenantId: Scalars['ID']['input'];
+  toDatetime?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 
@@ -235,13 +548,98 @@ export type ApiMutationPasswordResetConfirmArgs = {
 };
 
 
+export type ApiMutationPublishTranslationsArgs = {
+  input: PublishTranslationsMutationInput;
+};
+
+
+export type ApiMutationRemoveRoleFromMemberArgs = {
+  membershipId: Scalars['ID']['input'];
+  roleId: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type ApiMutationRenamePasskeyArgs = {
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+};
+
+
+export type ApiMutationResendTenantInvitationArgs = {
+  input: ResendTenantInvitationMutationInput;
+};
+
+
+export type ApiMutationRestoreBackupArgs = {
+  backupId: Scalars['ID']['input'];
+  conflictStrategy: ConflictStrategyEnum;
+};
+
+
+export type ApiMutationRevokeScimTokenArgs = {
+  id: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type ApiMutationRevokeSessionArgs = {
+  reason?: InputMaybe<Scalars['String']['input']>;
+  sessionId: Scalars['String']['input'];
+};
+
+
+export type ApiMutationRollbackTranslationsArgs = {
+  input: RollbackTranslationsMutationInput;
+};
+
+
+export type ApiMutationSendAiMessageArgs = {
+  conversationId: Scalars['String']['input'];
+  history?: InputMaybe<Array<InputMaybe<Scalars['JSONString']['input']>>>;
+  message: Scalars['String']['input'];
+  tenantId: Scalars['String']['input'];
+};
+
+
 export type ApiMutationSignUpArgs = {
   input: SingUpMutationInput;
 };
 
 
+export type ApiMutationSyncTranslationKeysArgs = {
+  input: SyncTranslationKeysMutationInput;
+};
+
+
+export type ApiMutationTestSsoConnectionArgs = {
+  id: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+};
+
+
 export type ApiMutationTokenAuthArgs = {
   input: ObtainTokenMutationInput;
+};
+
+
+export type ApiMutationTriggerBackupArgs = {
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type ApiMutationTrustDeviceArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type ApiMutationUntrustDeviceArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type ApiMutationUpdateBackupConfigArgs = {
+  input: BackupConfigInput;
 };
 
 
@@ -265,13 +663,34 @@ export type ApiMutationUpdateNotificationArgs = {
 };
 
 
+export type ApiMutationUpdateOrganizationRoleArgs = {
+  color?: InputMaybe<RoleColor>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  permissionIds?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
+  tenantId: Scalars['ID']['input'];
+};
+
+
 export type ApiMutationUpdatePaymentIntentArgs = {
   input: UpdatePaymentIntentMutationInput;
 };
 
 
+export type ApiMutationUpdateSsoConnectionArgs = {
+  input: UpdateSsoConnectionMutationInput;
+};
+
+
 export type ApiMutationUpdateTenantArgs = {
   input: UpdateTenantMutationInput;
+};
+
+
+export type ApiMutationUpdateTenantActionLoggingArgs = {
+  enabled: Scalars['Boolean']['input'];
+  tenantId: Scalars['ID']['input'];
 };
 
 
@@ -291,7 +710,13 @@ export type ApiMutationVerifyOtpArgs = {
 
 export type ApiSubscription = {
   __typename?: 'ApiSubscription';
+  aiChat?: Maybe<AiChatSubscription>;
   notificationCreated?: Maybe<NotificationCreatedSubscription>;
+};
+
+
+export type ApiSubscriptionAiChatArgs = {
+  conversationId: Scalars['String']['input'];
 };
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/appConfig) */
@@ -584,6 +1009,184 @@ export enum AssetOrder {
   WIDTH_DESC = 'width_DESC'
 }
 
+/**
+ * Assign one or more organization roles to a member.
+ *
+ * SECURITY:
+ * - Requires 'members.roles.edit' permission
+ * - Only owners can assign the Owner role
+ * - Users can only assign roles with permissions they themselves have
+ * - Users cannot remove their own owner role if they're the last owner
+ */
+export type AssignRolesToMemberMutation = {
+  __typename?: 'AssignRolesToMemberMutation';
+  membership?: Maybe<TenantMembershipType>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
+/** An enumeration. */
+export enum BackupBackupRecordStatusChoices {
+  /** Completed */
+  COMPLETED = 'COMPLETED',
+  /** Failed */
+  FAILED = 'FAILED',
+  /** Pending */
+  PENDING = 'PENDING',
+  /** Processing */
+  PROCESSING = 'PROCESSING'
+}
+
+/** Input type for backup configuration. */
+export type BackupConfigInput = {
+  backupIntervalHours: Scalars['Int']['input'];
+  /** List of user IDs to receive email notifications */
+  emailRecipients?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>>>;
+  enabled: Scalars['Boolean']['input'];
+  /** Optional: Specific models to exclude (format: 'app_label.ModelName') */
+  excludedModels?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  retentionDays: Scalars['Int']['input'];
+  /** Optional: Specific models to include (format: 'app_label.ModelName') */
+  selectedModels?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** List of module IDs to include in backups */
+  selectedModules?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  tenantId: Scalars['ID']['input'];
+};
+
+/** GraphQL type for BackupConfig. */
+export type BackupConfigType = Node & {
+  __typename?: 'BackupConfigType';
+  /** Interval between backups in hours (minimum 1 hour) */
+  backupIntervalHours: Scalars['Int']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  /** List of user IDs (as GraphQL global IDs) */
+  emailRecipients?: Maybe<Array<Maybe<Scalars['ID']['output']>>>;
+  /** Whether periodic backups are enabled for this tenant */
+  enabled: Scalars['Boolean']['output'];
+  /** List of model names excluded from backup */
+  excludedModels?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** The ID of the object */
+  id: Scalars['ID']['output'];
+  /** Number of days to retain backup files (minimum 1 day) */
+  retentionDays: Scalars['Int']['output'];
+  /** List of specific model names selected */
+  selectedModels?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** List of module IDs selected for backup */
+  selectedModules?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+/** GraphQL type for a backupable model. */
+export type BackupModelType = {
+  __typename?: 'BackupModelType';
+  /** Django app label */
+  appLabel?: Maybe<Scalars['String']['output']>;
+  /** Human-readable model name */
+  displayName?: Maybe<Scalars['String']['output']>;
+  /** Full model name (app_label.ModelName) */
+  fullName?: Maybe<Scalars['String']['output']>;
+  /** Model class name */
+  modelName?: Maybe<Scalars['String']['output']>;
+};
+
+/** GraphQL type for a backup module. */
+export type BackupModuleType = {
+  __typename?: 'BackupModuleType';
+  /** Module description */
+  description?: Maybe<Scalars['String']['output']>;
+  /** Module identifier */
+  id?: Maybe<Scalars['String']['output']>;
+  /** Number of models in this module */
+  modelCount?: Maybe<Scalars['Int']['output']>;
+  /** Human-readable module name */
+  name?: Maybe<Scalars['String']['output']>;
+};
+
+/** Connection class for paginated BackupRecord lists. */
+export type BackupRecordConnection = {
+  __typename?: 'BackupRecordConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<BackupRecordEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+};
+
+/** A Relay edge containing a `BackupRecord` and its cursor. */
+export type BackupRecordEdge = {
+  __typename?: 'BackupRecordEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
+  node?: Maybe<BackupRecordType>;
+};
+
+/** GraphQL type for BackupRecord. */
+export type BackupRecordType = Node & {
+  __typename?: 'BackupRecordType';
+  /** The backup configuration that triggered this backup */
+  backupConfig?: Maybe<BackupConfigType>;
+  createdAt: Scalars['DateTime']['output'];
+  /** Signed download URL for the backup file */
+  downloadUrl?: Maybe<Scalars['String']['output']>;
+  /** Error message if backup failed */
+  errorMessage: Scalars['String']['output'];
+  /** Storage path to the backup file */
+  filePath: Scalars['String']['output'];
+  /** Size of the backup file in bytes */
+  fileSize?: Maybe<Scalars['BigInt']['output']>;
+  /** The ID of the object */
+  id: Scalars['ID']['output'];
+  /** Whether this backup file is encrypted at rest */
+  isEncrypted?: Maybe<Scalars['Boolean']['output']>;
+  /** Count of records per model type in this backup */
+  modelCounts: Scalars['JSONString']['output'];
+  /** The backup record that was restored */
+  restoreRecords: RestoreRecordTypeConnection;
+  /** Current status of the backup */
+  status: BackupBackupRecordStatusChoices;
+  tenant?: Maybe<TenantType>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+
+/** GraphQL type for BackupRecord. */
+export type BackupRecordTypeRestoreRecordsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** An enumeration. */
+export enum BackupRestoreRecordConflictStrategyChoices {
+  /** Fail on conflicts */
+  FAIL = 'FAIL',
+  /** Skip existing records */
+  SKIP = 'SKIP',
+  /** Update existing records */
+  UPDATE = 'UPDATE'
+}
+
+/** An enumeration. */
+export enum BackupRestoreRecordStatusChoices {
+  /** Completed */
+  COMPLETED = 'COMPLETED',
+  /** Failed */
+  FAILED = 'FAILED',
+  /** Partially Completed */
+  PARTIALLY_COMPLETED = 'PARTIALLY_COMPLETED',
+  /** Pending */
+  PENDING = 'PENDING',
+  /** Processing */
+  PROCESSING = 'PROCESSING'
+}
+
+/** Block a device. */
+export type BlockDeviceMutation = {
+  __typename?: 'BlockDeviceMutation';
+  device?: Maybe<UserDeviceType>;
+};
+
 export type CancelActiveSubscriptionMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
@@ -654,6 +1257,13 @@ export type ConfirmEmailMutationPayload = {
   clientMutationId?: Maybe<Scalars['String']['output']>;
   ok?: Maybe<Scalars['Boolean']['output']>;
 };
+
+/** Enum for backup restore conflict strategies. */
+export enum ConflictStrategyEnum {
+  FAIL = 'FAIL',
+  SKIP = 'SKIP',
+  UPDATE = 'UPDATE'
+}
 
 export type ContentfulDemoItemFavoriteConnection = {
   __typename?: 'ContentfulDemoItemFavoriteConnection';
@@ -746,7 +1356,6 @@ export type ContentfulTag = {
 
 export type CreateCrudDemoItemMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  createdBy?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   tenantId: Scalars['String']['input'];
 };
@@ -760,7 +1369,6 @@ export type CreateCrudDemoItemMutationPayload = {
 
 export type CreateDocumentDemoItemMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  createdBy?: InputMaybe<Scalars['String']['input']>;
   file?: InputMaybe<Scalars['Upload']['input']>;
 };
 
@@ -774,7 +1382,6 @@ export type CreateDocumentDemoItemMutationPayload = {
 export type CreateFavoriteContentfulDemoItemMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   item: Scalars['String']['input'];
-  user?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateFavoriteContentfulDemoItemMutationPayload = {
@@ -782,6 +1389,19 @@ export type CreateFavoriteContentfulDemoItemMutationPayload = {
   clientMutationId?: Maybe<Scalars['String']['output']>;
   contentfulDemoItemFavorite?: Maybe<ContentfulDemoItemFavoriteType>;
   contentfulDemoItemFavoriteEdge?: Maybe<ContentfulDemoItemFavoriteEdge>;
+};
+
+/**
+ * Create a new custom organization role.
+ *
+ * SECURITY:
+ * - Requires 'org.roles.manage' permission
+ * - Users can only create roles with permissions they themselves have (except owners)
+ */
+export type CreateOrganizationRoleMutation = {
+  __typename?: 'CreateOrganizationRoleMutation';
+  ok?: Maybe<Scalars['Boolean']['output']>;
+  role?: Maybe<OrganizationRoleType>;
 };
 
 export type CreatePaymentIntentMutationInput = {
@@ -794,6 +1414,113 @@ export type CreatePaymentIntentMutationPayload = {
   __typename?: 'CreatePaymentIntentMutationPayload';
   clientMutationId?: Maybe<Scalars['String']['output']>;
   paymentIntent?: Maybe<StripePaymentIntentType>;
+};
+
+export type CreateScimTokenMutationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  expiresInDays?: InputMaybe<Scalars['Int']['input']>;
+  name: Scalars['String']['input'];
+  ssoConnectionId?: InputMaybe<Scalars['String']['input']>;
+  tenantId: Scalars['String']['input'];
+};
+
+/** Create a new SCIM token. */
+export type CreateScimTokenMutationPayload = {
+  __typename?: 'CreateSCIMTokenMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  expiresInDays?: Maybe<Scalars['Int']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  rawToken?: Maybe<Scalars['String']['output']>;
+  scimToken?: Maybe<ScimTokenType>;
+  ssoConnectionId?: Maybe<Scalars['String']['output']>;
+  tenantId?: Maybe<Scalars['String']['output']>;
+};
+
+export type CreateSsoConnectionMutationInput = {
+  /** List of email domains allowed to use this SSO connection */
+  allowedDomains?: InputMaybe<Scalars['JSONString']['input']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  connectionType?: InputMaybe<Connection_Type>;
+  /** When enabled, users from allowed domains must use SSO to access this tenant. Password login will not grant access. */
+  enforceSso?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Mapping of IdP groups to tenant roles */
+  groupRoleMapping?: InputMaybe<Scalars['JSONString']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  /** Automatically create users on first SSO login */
+  jitProvisioningEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Display name for this SSO connection */
+  name: Scalars['String']['input'];
+  oidcAuthorizationEndpoint?: InputMaybe<Scalars['String']['input']>;
+  /** Mapping of OIDC claims to user fields */
+  oidcClaimMapping?: InputMaybe<Scalars['JSONString']['input']>;
+  oidcClientId?: InputMaybe<Scalars['String']['input']>;
+  oidcClientSecret?: InputMaybe<Scalars['String']['input']>;
+  oidcIssuer?: InputMaybe<Scalars['String']['input']>;
+  oidcJwksUri?: InputMaybe<Scalars['String']['input']>;
+  /** Space-separated list of OAuth scopes */
+  oidcScopes?: InputMaybe<Scalars['String']['input']>;
+  oidcTokenEndpoint?: InputMaybe<Scalars['String']['input']>;
+  oidcUserinfoEndpoint?: InputMaybe<Scalars['String']['input']>;
+  /** Mapping of SAML attributes to user fields */
+  samlAttributeMapping?: InputMaybe<Scalars['JSONString']['input']>;
+  /** IdP X.509 certificate (PEM format) - for local development */
+  samlCertificate?: InputMaybe<Scalars['String']['input']>;
+  samlEntityId?: InputMaybe<Scalars['String']['input']>;
+  samlNameIdFormat?: InputMaybe<Saml_Name_Id_Format>;
+  /** Single Logout URL */
+  samlSloUrl?: InputMaybe<Scalars['String']['input']>;
+  samlSsoUrl?: InputMaybe<Scalars['String']['input']>;
+  samlWantAssertionsSigned?: InputMaybe<Scalars['Boolean']['input']>;
+  samlWantResponseSigned?: InputMaybe<Scalars['Boolean']['input']>;
+  status?: InputMaybe<Status>;
+  tenantId: Scalars['String']['input'];
+};
+
+/** Create a new SSO connection. */
+export type CreateSsoConnectionMutationPayload = {
+  __typename?: 'CreateSSOConnectionMutationPayload';
+  /** List of email domains allowed to use this SSO connection */
+  allowedDomains?: Maybe<Scalars['JSONString']['output']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  connectionType?: Maybe<Connection_Type>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  /** When enabled, users from allowed domains must use SSO to access this tenant. Password login will not grant access. */
+  enforceSso?: Maybe<Scalars['Boolean']['output']>;
+  /** Mapping of IdP groups to tenant roles */
+  groupRoleMapping?: Maybe<Scalars['JSONString']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  /** Automatically create users on first SSO login */
+  jitProvisioningEnabled?: Maybe<Scalars['Boolean']['output']>;
+  lastLoginAt?: Maybe<Scalars['DateTime']['output']>;
+  loginCount?: Maybe<Scalars['Int']['output']>;
+  metadataLastUpdated?: Maybe<Scalars['DateTime']['output']>;
+  /** Display name for this SSO connection */
+  name?: Maybe<Scalars['String']['output']>;
+  oidcAuthorizationEndpoint?: Maybe<Scalars['String']['output']>;
+  /** Mapping of OIDC claims to user fields */
+  oidcClaimMapping?: Maybe<Scalars['JSONString']['output']>;
+  oidcClientId?: Maybe<Scalars['String']['output']>;
+  oidcIssuer?: Maybe<Scalars['String']['output']>;
+  oidcJwksUri?: Maybe<Scalars['String']['output']>;
+  /** Space-separated list of OAuth scopes */
+  oidcScopes?: Maybe<Scalars['String']['output']>;
+  oidcTokenEndpoint?: Maybe<Scalars['String']['output']>;
+  oidcUserinfoEndpoint?: Maybe<Scalars['String']['output']>;
+  /** Mapping of SAML attributes to user fields */
+  samlAttributeMapping?: Maybe<Scalars['JSONString']['output']>;
+  /** IdP X.509 certificate (PEM format) - for local development */
+  samlCertificate?: Maybe<Scalars['String']['output']>;
+  samlEntityId?: Maybe<Scalars['String']['output']>;
+  samlNameIdFormat?: Maybe<Saml_Name_Id_Format>;
+  /** Single Logout URL */
+  samlSloUrl?: Maybe<Scalars['String']['output']>;
+  samlSsoUrl?: Maybe<Scalars['String']['output']>;
+  samlWantAssertionsSigned?: Maybe<Scalars['Boolean']['output']>;
+  samlWantResponseSigned?: Maybe<Scalars['Boolean']['output']>;
+  spMetadataXml?: Maybe<Scalars['String']['output']>;
+  ssoConnection?: Maybe<SsoConnectionType>;
+  status?: Maybe<Status>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type CreateSetupIntentMutationInput = {
@@ -810,17 +1537,16 @@ export type CreateSetupIntentMutationPayload = {
 export type CreateTenantInvitationMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
-  role: TenantUserRole;
+  /** List of organization role IDs to assign to the invited member */
+  organizationRoleIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  role?: InputMaybe<TenantUserRole>;
   tenantId: Scalars['String']['input'];
 };
 
 export type CreateTenantInvitationMutationPayload = {
   __typename?: 'CreateTenantInvitationMutationPayload';
   clientMutationId?: Maybe<Scalars['String']['output']>;
-  email?: Maybe<Scalars['String']['output']>;
   ok?: Maybe<Scalars['Boolean']['output']>;
-  role?: Maybe<TenantUserRole>;
-  tenantId?: Maybe<Scalars['String']['output']>;
 };
 
 export type CreateTenantMutationInput = {
@@ -878,11 +1604,18 @@ export type CurrentUserType = {
   email: Scalars['String']['output'];
   firstName?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  language?: Maybe<Scalars['String']['output']>;
   lastName?: Maybe<Scalars['String']['output']>;
   otpEnabled: Scalars['Boolean']['output'];
   otpVerified: Scalars['Boolean']['output'];
   roles?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   tenants?: Maybe<Array<Maybe<TenantType>>>;
+};
+
+/** Deactivate an SSO connection. Requires tenantId for tenant context. */
+export type DeactivateSsoConnectionMutation = {
+  __typename?: 'DeactivateSSOConnectionMutation';
+  ssoConnection?: Maybe<SsoConnectionType>;
 };
 
 export type DeclineTenantInvitationMutationInput = {
@@ -895,6 +1628,13 @@ export type DeclineTenantInvitationMutationInput = {
 export type DeclineTenantInvitationMutationPayload = {
   __typename?: 'DeclineTenantInvitationMutationPayload';
   clientMutationId?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
+/** Delete a backup record and its file. */
+export type DeleteBackupMutation = {
+  __typename?: 'DeleteBackupMutation';
+  error?: Maybe<Scalars['String']['output']>;
   ok?: Maybe<Scalars['Boolean']['output']>;
 };
 
@@ -932,6 +1672,33 @@ export type DeleteFavoriteContentfulDemoItemMutationPayload = {
   deletedIds?: Maybe<Array<Maybe<Scalars['ID']['output']>>>;
 };
 
+/**
+ * Delete an organization role.
+ *
+ * If there are members with this role, a replacement_role_id must be provided.
+ *
+ * SECURITY:
+ * - Requires 'org.roles.manage' permission
+ * - Cannot delete system roles (Owner, Admin, Member)
+ */
+export type DeleteOrganizationRoleMutation = {
+  __typename?: 'DeleteOrganizationRoleMutation';
+  affectedMemberCount?: Maybe<Scalars['Int']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type DeletePasskeyMutationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Delete a passkey. */
+export type DeletePasskeyMutationPayload = {
+  __typename?: 'DeletePasskeyMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']['output']>>>;
+};
+
 export type DeletePaymentMethodMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
@@ -945,12 +1712,34 @@ export type DeletePaymentMethodMutationPayload = {
   deletedIds?: Maybe<Array<Maybe<Scalars['ID']['output']>>>;
 };
 
+export type DeleteSsoConnectionMutationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  tenantId: Scalars['String']['input'];
+};
+
+/** Delete an SSO connection. Requires tenantId in input for tenant context. */
+export type DeleteSsoConnectionMutationPayload = {
+  __typename?: 'DeleteSSOConnectionMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedIds?: Maybe<Array<Maybe<Scalars['ID']['output']>>>;
+};
+
 export type DeleteTenantMembershipMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   tenantId: Scalars['String']['input'];
 };
 
+/**
+ * Delete/remove a member from the organization.
+ *
+ * SECURITY:
+ * - Requires 'members.remove' permission to remove other members
+ * - Users can always remove themselves (leave organization)
+ * - Only owners can remove other owners
+ * - Cannot remove the last owner
+ */
 export type DeleteTenantMembershipMutationPayload = {
   __typename?: 'DeleteTenantMembershipMutationPayload';
   clientMutationId?: Maybe<Scalars['String']['output']>;
@@ -967,6 +1756,12 @@ export type DeleteTenantMutationPayload = {
   __typename?: 'DeleteTenantMutationPayload';
   clientMutationId?: Maybe<Scalars['String']['output']>;
   deletedIds?: Maybe<Array<Maybe<Scalars['ID']['output']>>>;
+};
+
+/** Delete a passkey as tenant admin (for any tenant member). Requires tenantId for tenant context. */
+export type DeleteTenantPasskeyMutation = {
+  __typename?: 'DeleteTenantPasskeyMutation';
+  ok?: Maybe<Scalars['Boolean']['output']>;
 };
 
 /** [See type definition](https://app.contentful.com/spaces/m7e7pnsr61vp/content_types/demoItem) */
@@ -1071,6 +1866,7 @@ export type DisableOtpMutationPayload = {
   ok?: Maybe<Scalars['Boolean']['output']>;
 };
 
+/** An enumeration. */
 export enum DjstripeChargeFailureCodeChoices {
   /** Account already exists */
   ACCOUNT_ALREADY_EXISTS = 'ACCOUNT_ALREADY_EXISTS',
@@ -1248,6 +2044,7 @@ export enum DjstripeChargeFailureCodeChoices {
   URL_INVALID = 'URL_INVALID'
 }
 
+/** An enumeration. */
 export enum DjstripeChargeStatusChoices {
   /** Failed */
   FAILED = 'FAILED',
@@ -1257,6 +2054,7 @@ export enum DjstripeChargeStatusChoices {
   SUCCEEDED = 'SUCCEEDED'
 }
 
+/** An enumeration. */
 export enum DjstripeInvoiceBillingReasonChoices {
   /** Automatic pending invoice item invoice */
   AUTOMATIC_PENDING_INVOICE_ITEM_INVOICE = 'AUTOMATIC_PENDING_INVOICE_ITEM_INVOICE',
@@ -1276,6 +2074,7 @@ export enum DjstripeInvoiceBillingReasonChoices {
   UPCOMING = 'UPCOMING'
 }
 
+/** An enumeration. */
 export enum DjstripeInvoiceCollectionMethodChoices {
   /** Charge automatically */
   CHARGE_AUTOMATICALLY = 'CHARGE_AUTOMATICALLY',
@@ -1283,6 +2082,7 @@ export enum DjstripeInvoiceCollectionMethodChoices {
   SEND_INVOICE = 'SEND_INVOICE'
 }
 
+/** An enumeration. */
 export enum DjstripeInvoiceCustomerTaxExemptChoices {
   /** Exempt */
   EXEMPT = 'EXEMPT',
@@ -1292,6 +2092,7 @@ export enum DjstripeInvoiceCustomerTaxExemptChoices {
   REVERSE = 'REVERSE'
 }
 
+/** An enumeration. */
 export enum DjstripeInvoiceStatusChoices {
   /** Draft */
   DRAFT = 'DRAFT',
@@ -1305,6 +2106,7 @@ export enum DjstripeInvoiceStatusChoices {
   VOID = 'VOID'
 }
 
+/** An enumeration. */
 export enum DjstripePaymentMethodTypeChoices {
   /** Acss Dbit */
   ACSS_DEBIT = 'ACSS_DEBIT',
@@ -1368,6 +2170,7 @@ export enum DjstripePaymentMethodTypeChoices {
   WECHAT_PAY = 'WECHAT_PAY'
 }
 
+/** An enumeration. */
 export enum DjstripePlanAggregateUsageChoices {
   /** Last during period */
   LAST_DURING_PERIOD = 'LAST_DURING_PERIOD',
@@ -1379,6 +2182,7 @@ export enum DjstripePlanAggregateUsageChoices {
   SUM = 'SUM'
 }
 
+/** An enumeration. */
 export enum DjstripePlanBillingSchemeChoices {
   /** Per-unit */
   PER_UNIT = 'PER_UNIT',
@@ -1386,6 +2190,7 @@ export enum DjstripePlanBillingSchemeChoices {
   TIERED = 'TIERED'
 }
 
+/** An enumeration. */
 export enum DjstripePlanIntervalChoices {
   /** Day */
   DAY = 'DAY',
@@ -1397,6 +2202,7 @@ export enum DjstripePlanIntervalChoices {
   YEAR = 'YEAR'
 }
 
+/** An enumeration. */
 export enum DjstripePlanTiersModeChoices {
   /** Graduated */
   GRADUATED = 'GRADUATED',
@@ -1404,6 +2210,7 @@ export enum DjstripePlanTiersModeChoices {
   VOLUME = 'VOLUME'
 }
 
+/** An enumeration. */
 export enum DjstripePlanUsageTypeChoices {
   /** Licensed */
   LICENSED = 'LICENSED',
@@ -1411,6 +2218,7 @@ export enum DjstripePlanUsageTypeChoices {
   METERED = 'METERED'
 }
 
+/** An enumeration. */
 export enum DjstripePriceBillingSchemeChoices {
   /** Per-unit */
   PER_UNIT = 'PER_UNIT',
@@ -1418,6 +2226,7 @@ export enum DjstripePriceBillingSchemeChoices {
   TIERED = 'TIERED'
 }
 
+/** An enumeration. */
 export enum DjstripePriceTiersModeChoices {
   /** Graduated */
   GRADUATED = 'GRADUATED',
@@ -1425,6 +2234,7 @@ export enum DjstripePriceTiersModeChoices {
   VOLUME = 'VOLUME'
 }
 
+/** An enumeration. */
 export enum DjstripePriceTypeChoices {
   /** One-time */
   ONE_TIME = 'ONE_TIME',
@@ -1432,6 +2242,7 @@ export enum DjstripePriceTypeChoices {
   RECURRING = 'RECURRING'
 }
 
+/** An enumeration. */
 export enum DjstripeProductTypeChoices {
   /** Good */
   GOOD = 'GOOD',
@@ -1439,6 +2250,7 @@ export enum DjstripeProductTypeChoices {
   SERVICE = 'SERVICE'
 }
 
+/** An enumeration. */
 export enum DjstripeSetupIntentCancellationReasonChoices {
   /** Abandoned */
   ABANDONED = 'ABANDONED',
@@ -1448,6 +2260,7 @@ export enum DjstripeSetupIntentCancellationReasonChoices {
   REQUESTED_BY_CUSTOMER = 'REQUESTED_BY_CUSTOMER'
 }
 
+/** An enumeration. */
 export enum DjstripeSetupIntentStatusChoices {
   /** Cancellation invalidates the intent for future confirmation and cannot be undone. */
   CANCELED = 'CANCELED',
@@ -1463,6 +2276,7 @@ export enum DjstripeSetupIntentStatusChoices {
   SUCCEEDED = 'SUCCEEDED'
 }
 
+/** An enumeration. */
 export enum DjstripeSetupIntentUsageChoices {
   /** Off session */
   OFF_SESSION = 'OFF_SESSION',
@@ -1470,6 +2284,7 @@ export enum DjstripeSetupIntentUsageChoices {
   ON_SESSION = 'ON_SESSION'
 }
 
+/** An enumeration. */
 export enum DjstripeSubscriptionScheduleEndBehaviorChoices {
   /** Cancel */
   CANCEL = 'CANCEL',
@@ -1477,6 +2292,7 @@ export enum DjstripeSubscriptionScheduleEndBehaviorChoices {
   RELEASE = 'RELEASE'
 }
 
+/** An enumeration. */
 export enum DjstripeSubscriptionScheduleStatusChoices {
   /** Active */
   ACTIVE = 'ACTIVE',
@@ -1490,6 +2306,7 @@ export enum DjstripeSubscriptionScheduleStatusChoices {
   RELEASED = 'RELEASED'
 }
 
+/** An enumeration. */
 export enum DjstripeSubscriptionStatusChoices {
   /** Active */
   ACTIVE = 'ACTIVE',
@@ -1533,6 +2350,15 @@ export type DocumentDemoItemType = Node & {
   id: Scalars['ID']['output'];
 };
 
+/** Download a backup file with decryption applied in-memory. */
+export type DownloadBackupDecryptedMutation = {
+  __typename?: 'DownloadBackupDecryptedMutation';
+  /** Decrypted backup XML content */
+  content?: Maybe<Scalars['String']['output']>;
+  error?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export type Entry = {
   contentfulMetadata: ContentfulMetadata;
   sys: Sys;
@@ -1564,6 +2390,18 @@ export enum EntryOrder {
   SYS_PUBLISHEDVERSION_DESC = 'sys_publishedVersion_DESC'
 }
 
+/**
+ * Mutation to trigger an async export of action logs.
+ *
+ * Creates an export job that processes in the background.
+ * User receives a notification when the export is ready.
+ */
+export type ExportActionLogsMutation = {
+  __typename?: 'ExportActionLogsMutation';
+  export?: Maybe<ActionLogExportType>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export type FileFieldType = {
   __typename?: 'FileFieldType';
   name?: Maybe<Scalars['String']['output']>;
@@ -1589,7 +2427,7 @@ export type GenerateSaasIdeasMutationInput = {
 export type GenerateSaasIdeasMutationPayload = {
   __typename?: 'GenerateSaasIdeasMutationPayload';
   clientMutationId?: Maybe<Scalars['String']['output']>;
-  ideas?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  response?: Maybe<Scalars['String']['output']>;
 };
 
 export enum ImageFormat {
@@ -1687,6 +2525,35 @@ export type ImageTransformOptions = {
   width?: InputMaybe<Scalars['Dimension']['input']>;
 };
 
+/** Type for locale translation progress. */
+export type LocaleProgressType = {
+  __typename?: 'LocaleProgressType';
+  code?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  progress?: Maybe<Scalars['Float']['output']>;
+  publishedTranslations?: Maybe<Scalars['Int']['output']>;
+};
+
+/** GraphQL type for Locale model. */
+export type LocaleType = Node & {
+  __typename?: 'LocaleType';
+  /** Locale code (e.g., 'en', 'pl', 'de', 'en-US') */
+  code: Scalars['String']['output'];
+  /** The ID of the object */
+  id: Scalars['ID']['output'];
+  /** Whether this locale is available to users */
+  isActive: Scalars['Boolean']['output'];
+  /** Whether this is the default/fallback locale */
+  isDefault: Scalars['Boolean']['output'];
+  /** Language name in English (e.g., 'English', 'Polish') */
+  name: Scalars['String']['output'];
+  /** Language name in native language (e.g., 'English', 'Polski') */
+  nativeName: Scalars['String']['output'];
+  /** Right-to-left language (e.g., Arabic, Hebrew) */
+  rtl: Scalars['Boolean']['output'];
+  translationProgress?: Maybe<Scalars['Float']['output']>;
+};
+
 export type MarkReadAllNotificationsMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
 };
@@ -1694,8 +2561,64 @@ export type MarkReadAllNotificationsMutationInput = {
 export type MarkReadAllNotificationsMutationPayload = {
   __typename?: 'MarkReadAllNotificationsMutationPayload';
   clientMutationId?: Maybe<Scalars['String']['output']>;
+  hasUnreadNotifications?: Maybe<Scalars['Boolean']['output']>;
   ok?: Maybe<Scalars['Boolean']['output']>;
+  unreadNotificationsCount?: Maybe<Scalars['Int']['output']>;
 };
+
+/** An enumeration. */
+export enum MultitenancyActionLogActionTypeChoices {
+  /** Activate */
+  ACTIVATE = 'ACTIVATE',
+  /** Bulk Delete */
+  BULK_DELETE = 'BULK_DELETE',
+  /** Bulk Update */
+  BULK_UPDATE = 'BULK_UPDATE',
+  /** Create */
+  CREATE = 'CREATE',
+  /** Deactivate */
+  DEACTIVATE = 'DEACTIVATE',
+  /** Delete */
+  DELETE = 'DELETE',
+  /** Import */
+  IMPORT = 'IMPORT',
+  /** Revoke */
+  REVOKE = 'REVOKE',
+  /** Settings Change */
+  SETTINGS_CHANGE = 'SETTINGS_CHANGE',
+  /** Sync */
+  SYNC = 'SYNC',
+  /** Update */
+  UPDATE = 'UPDATE'
+}
+
+/** An enumeration. */
+export enum MultitenancyActionLogActorTypeChoices {
+  /** AI Agent */
+  AI_AGENT = 'AI_AGENT',
+  /** System (Import) */
+  SYSTEM_IMPORT = 'SYSTEM_IMPORT',
+  /** System (Migration) */
+  SYSTEM_MIGRATION = 'SYSTEM_MIGRATION',
+  /** System (Scheduled Task) */
+  SYSTEM_SCHEDULED_TASK = 'SYSTEM_SCHEDULED_TASK',
+  /** System (Sync) */
+  SYSTEM_SYNC = 'SYSTEM_SYNC',
+  /** User */
+  USER = 'USER'
+}
+
+/** An enumeration. */
+export enum MultitenancyActionLogExportStatusChoices {
+  /** Completed */
+  COMPLETED = 'COMPLETED',
+  /** Failed */
+  FAILED = 'FAILED',
+  /** Pending */
+  PENDING = 'PENDING',
+  /** Processing */
+  PROCESSING = 'PROCESSING'
+}
 
 /** An object with an ID */
 export type Node = {
@@ -1711,7 +2634,13 @@ export type NotificationConnection = {
   pageInfo: PageInfo;
 };
 
-/** Simple GraphQL subscription. */
+/**
+ * GraphQL subscription for real-time notification updates.
+ *
+ * SECURITY: Ensures only authenticated users can subscribe to their own
+ * notifications. The subscribe method verifies authentication and prevents
+ * users from subscribing to other users' notification streams.
+ */
 export type NotificationCreatedSubscription = {
   __typename?: 'NotificationCreatedSubscription';
   notification?: Maybe<NotificationType>;
@@ -1752,6 +2681,41 @@ export type ObtainTokenMutationPayload = {
   refresh?: Maybe<Scalars['String']['output']>;
 };
 
+export type OrganizationRoleConnection = {
+  __typename?: 'OrganizationRoleConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<OrganizationRoleEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+};
+
+/** A Relay edge containing a `OrganizationRole` and its cursor. */
+export type OrganizationRoleEdge = {
+  __typename?: 'OrganizationRoleEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
+  node?: Maybe<OrganizationRoleType>;
+};
+
+/** GraphQL type for OrganizationRole - custom roles per tenant. */
+export type OrganizationRoleType = Node & {
+  __typename?: 'OrganizationRoleType';
+  color?: Maybe<RoleColor>;
+  createdAt: Scalars['DateTime']['output'];
+  /** Description of the role's purpose */
+  description: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  isOwnerRole?: Maybe<Scalars['Boolean']['output']>;
+  isSystemRole?: Maybe<Scalars['Boolean']['output']>;
+  memberCount?: Maybe<Scalars['Int']['output']>;
+  /** Display name of the role */
+  name: Scalars['String']['output'];
+  permissions?: Maybe<Array<Maybe<PermissionType>>>;
+  systemRoleType?: Maybe<SystemRoleType>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 export type PageCursor = {
   __typename?: 'PageCursor';
   cursor?: Maybe<Scalars['String']['output']>;
@@ -1779,6 +2743,38 @@ export type PageInfo = {
   hasPreviousPage: Scalars['Boolean']['output'];
   /** When paginating backwards, the cursor to continue. */
   startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+export type PasskeyConnection = {
+  __typename?: 'PasskeyConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<PasskeyEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+};
+
+/** A Relay edge containing a `Passkey` and its cursor. */
+export type PasskeyEdge = {
+  __typename?: 'PasskeyEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
+  node?: Maybe<PasskeyType>;
+};
+
+/** GraphQL type for passkeys. */
+export type PasskeyType = Node & {
+  __typename?: 'PasskeyType';
+  authenticatorType: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  deviceType: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  isActive: Scalars['Boolean']['output'];
+  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** User-provided name for this passkey */
+  name: Scalars['String']['output'];
+  transports: Scalars['JSONString']['output'];
+  useCount: Scalars['Int']['output'];
 };
 
 export type PasswordResetConfirmationMutationInput = {
@@ -1825,32 +2821,133 @@ export type PaymentMethodEdge = {
   node?: Maybe<StripePaymentMethodType>;
 };
 
+/** Categories for grouping permissions in the UI. */
+export enum PermissionCategory {
+  BILLING = 'BILLING',
+  DASHBOARD = 'DASHBOARD',
+  FEATURES = 'FEATURES',
+  MEMBERS = 'MEMBERS',
+  ORGANIZATION = 'ORGANIZATION',
+  SECURITY = 'SECURITY'
+}
+
+export type PermissionConnection = {
+  __typename?: 'PermissionConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<PermissionEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+};
+
+/** A Relay edge containing a `Permission` and its cursor. */
+export type PermissionEdge = {
+  __typename?: 'PermissionEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
+  node?: Maybe<PermissionType>;
+};
+
+/** GraphQL type for Permission model - available permissions in the system. */
+export type PermissionType = Node & {
+  __typename?: 'PermissionType';
+  /** Category for grouping (multitenancy or app-defined) */
+  category?: Maybe<Scalars['String']['output']>;
+  /** Optional description (app-defined categories only) */
+  categoryDescription?: Maybe<Scalars['String']['output']>;
+  /** Display label for the category */
+  categoryLabel?: Maybe<Scalars['String']['output']>;
+  /** Unique permission code (e.g., 'dashboard.projects.edit') */
+  code: Scalars['String']['output'];
+  /** Detailed description of what this permission allows */
+  description: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  /** System permissions cannot be deleted */
+  isSystem: Scalars['Boolean']['output'];
+  /** Human-readable name for display */
+  name: Scalars['String']['output'];
+  /** Order within category for UI display */
+  sortOrder: Scalars['Int']['output'];
+};
+
+export type PublishTranslationsMutationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  localeCode: Scalars['String']['input'];
+};
+
+/** Publish translations for a locale to S3/CDN. */
+export type PublishTranslationsMutationPayload = {
+  __typename?: 'PublishTranslationsMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  success?: Maybe<Scalars['Boolean']['output']>;
+  version?: Maybe<Scalars['String']['output']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   _node?: Maybe<_Node>;
   activeSubscription?: Maybe<SubscriptionScheduleType>;
+  allActionLogs?: Maybe<ActionLogConnection>;
   allCharges?: Maybe<ChargeConnection>;
   allContentfulDemoItemFavorites?: Maybe<ContentfulDemoItemFavoriteConnection>;
   allCrudDemoItems?: Maybe<CrudDemoItemConnection>;
   allDocumentDemoItems?: Maybe<DocumentDemoItemConnection>;
   allNotifications?: Maybe<NotificationConnection>;
+  allOrganizationRoles?: Maybe<OrganizationRoleConnection>;
   allPaymentMethods?: Maybe<PaymentMethodConnection>;
+  allPermissions?: Maybe<PermissionConnection>;
   allSubscriptionPlans?: Maybe<StripePriceConnection>;
   allTenants?: Maybe<TenantConnection>;
   appConfig?: Maybe<AppConfig>;
   appConfigCollection?: Maybe<AppConfigCollection>;
   asset?: Maybe<Asset>;
   assetCollection?: Maybe<AssetCollection>;
+  /** Get all available models for a specific module */
+  availableBackupModels?: Maybe<Array<Maybe<BackupModelType>>>;
+  /** Get all available backup modules */
+  availableBackupModules?: Maybe<Array<Maybe<BackupModuleType>>>;
+  /** Get all active locales */
+  availableLocales?: Maybe<Array<Maybe<LocaleType>>>;
+  /** Get backup configuration for a tenant */
+  backupConfig?: Maybe<BackupConfigType>;
+  /** Tenant members who have backup.manage permission (for email recipients) */
+  backupEligibleRecipients?: Maybe<Array<Maybe<TenantMembershipType>>>;
+  /** Get backup records for a tenant */
+  backupRecords?: Maybe<BackupRecordConnection>;
   charge?: Maybe<StripeChargeType>;
   crudDemoItem?: Maybe<CrudDemoItemType>;
   currentUser?: Maybe<CurrentUserType>;
+  /** Get all organization roles for the current user in a tenant */
+  currentUserOrganizationRoles?: Maybe<Array<Maybe<OrganizationRoleType>>>;
+  /** Get all permission codes for the current user in a tenant */
+  currentUserPermissions?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Get the default locale */
+  defaultLocale?: Maybe<LocaleType>;
   demoItem?: Maybe<DemoItem>;
   demoItemCollection?: Maybe<DemoItemCollection>;
   entryCollection?: Maybe<EntryCollection>;
   hasUnreadNotifications?: Maybe<Scalars['Boolean']['output']>;
+  /** Get translation progress for all locales */
+  localeProgress?: Maybe<Array<Maybe<LocaleProgressType>>>;
+  myDevices?: Maybe<UserDeviceConnection>;
+  myPasskeys?: Maybe<PasskeyConnection>;
+  mySessions?: Maybe<SsoSessionConnection>;
   node?: Maybe<Node>;
+  organizationRole?: Maybe<OrganizationRoleType>;
   paymentIntent?: Maybe<StripePaymentIntentType>;
+  /** Get restore records for a tenant */
+  restoreRecords?: Maybe<RestoreRecordConnection>;
+  scimTokens?: Maybe<ScimTokenConnection>;
+  ssoAuditLogs?: Maybe<SsoAuditLogConnection>;
+  ssoConnection?: Maybe<SsoConnectionType>;
+  ssoConnections?: Maybe<SsoConnectionConnection>;
+  ssoDiscover?: Maybe<SsoDiscoveryResultType>;
   tenant?: Maybe<TenantType>;
+  tenantPasskeys?: Maybe<Array<Maybe<TenantPasskeyType>>>;
+  /** Get translation sync status (admin only) */
+  translationSyncStatus?: Maybe<TranslationSyncStatusType>;
+  unreadNotificationsCount?: Maybe<Scalars['Int']['output']>;
 };
 
 
@@ -1863,6 +2960,21 @@ export type Query_NodeArgs = {
 
 export type QueryActiveSubscriptionArgs = {
   tenantId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+
+export type QueryAllActionLogsArgs = {
+  actionType?: InputMaybe<Scalars['String']['input']>;
+  actorEmail?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  entityType?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  fromDatetime?: InputMaybe<Scalars['DateTime']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  tenantId: Scalars['ID']['input'];
+  toDatetime?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 
@@ -1908,12 +3020,30 @@ export type QueryAllNotificationsArgs = {
 };
 
 
+export type QueryAllOrganizationRolesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  tenantId: Scalars['ID']['input'];
+};
+
+
 export type QueryAllPaymentMethodsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   tenantId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+
+export type QueryAllPermissionsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  category?: InputMaybe<PermissionCategory>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -1967,6 +3097,36 @@ export type QueryAssetCollectionArgs = {
 };
 
 
+export type QueryAvailableBackupModelsArgs = {
+  moduleId: Scalars['String']['input'];
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type QueryAvailableBackupModulesArgs = {
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type QueryBackupConfigArgs = {
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type QueryBackupEligibleRecipientsArgs = {
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type QueryBackupRecordsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  tenantId: Scalars['ID']['input'];
+};
+
+
 export type QueryChargeArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
   tenantId?: InputMaybe<Scalars['ID']['input']>;
@@ -1976,6 +3136,16 @@ export type QueryChargeArgs = {
 export type QueryCrudDemoItemArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
   tenantId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+
+export type QueryCurrentUserOrganizationRolesArgs = {
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type QueryCurrentUserPermissionsArgs = {
+  tenantId: Scalars['ID']['input'];
 };
 
 
@@ -2006,7 +3176,36 @@ export type QueryEntryCollectionArgs = {
 };
 
 
+export type QueryMyDevicesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryMyPasskeysArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryMySessionsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryNodeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryOrganizationRoleArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -2017,8 +3216,418 @@ export type QueryPaymentIntentArgs = {
 };
 
 
+export type QueryRestoreRecordsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type QueryScimTokensArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type QuerySsoAuditLogsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  endDate?: InputMaybe<Scalars['String']['input']>;
+  eventType?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  startDate?: InputMaybe<Scalars['String']['input']>;
+  success?: InputMaybe<Scalars['Boolean']['input']>;
+  tenantId: Scalars['ID']['input'];
+  userEmail?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QuerySsoConnectionArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type QuerySsoConnectionsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  tenantId: Scalars['ID']['input'];
+};
+
+
+export type QuerySsoDiscoverArgs = {
+  email: Scalars['String']['input'];
+};
+
+
 export type QueryTenantArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
+};
+
+
+export type QueryTenantPasskeysArgs = {
+  search?: InputMaybe<Scalars['String']['input']>;
+  tenantId: Scalars['ID']['input'];
+};
+
+/**
+ * Remove a specific role from a member.
+ *
+ * SECURITY:
+ * - Requires 'members.roles.edit' permission
+ * - Only owners can remove the Owner role
+ * - Cannot remove the last owner's owner role
+ * - Non-owners cannot modify owner memberships
+ */
+export type RemoveRoleFromMemberMutation = {
+  __typename?: 'RemoveRoleFromMemberMutation';
+  membership?: Maybe<TenantMembershipType>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
+/** Rename a passkey. */
+export type RenamePasskeyMutation = {
+  __typename?: 'RenamePasskeyMutation';
+  passkey?: Maybe<PasskeyType>;
+};
+
+export type ResendTenantInvitationMutationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  tenantId: Scalars['String']['input'];
+};
+
+export type ResendTenantInvitationMutationPayload = {
+  __typename?: 'ResendTenantInvitationMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
+/** Trigger a backup restoration for a tenant. */
+export type RestoreBackupMutation = {
+  __typename?: 'RestoreBackupMutation';
+  error?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
+  /** ID of the created restore record */
+  restoreId?: Maybe<Scalars['ID']['output']>;
+};
+
+/** Connection class for paginated RestoreRecord lists. */
+export type RestoreRecordConnection = {
+  __typename?: 'RestoreRecordConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<RestoreRecordEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+};
+
+/** A Relay edge containing a `RestoreRecord` and its cursor. */
+export type RestoreRecordEdge = {
+  __typename?: 'RestoreRecordEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
+  node?: Maybe<RestoreRecordType>;
+};
+
+/** GraphQL type for RestoreRecord. */
+export type RestoreRecordType = Node & {
+  __typename?: 'RestoreRecordType';
+  /** The backup record that was restored */
+  backupRecord: BackupRecordType;
+  /** When the restoration completed or failed */
+  completedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** Strategy used for handling conflicting records during restore */
+  conflictStrategy: BackupRestoreRecordConflictStrategyChoices;
+  createdAt: Scalars['DateTime']['output'];
+  /** Error message if restoration failed */
+  errorMessage: Scalars['String']['output'];
+  /** The ID of the object */
+  id: Scalars['ID']['output'];
+  /** Detailed counts per model: {ModelName: {created: N, updated: N, skipped: N, failed: N}} */
+  modelCounts: Scalars['JSONString']['output'];
+  /** When the restoration started processing */
+  startedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** Current status of the restoration */
+  status: BackupRestoreRecordStatusChoices;
+  /** Total records created across all models */
+  totalCreated?: Maybe<Scalars['Int']['output']>;
+  /** Total records failed across all models */
+  totalFailed?: Maybe<Scalars['Int']['output']>;
+  /** Total records skipped across all models */
+  totalSkipped?: Maybe<Scalars['Int']['output']>;
+  /** Total records updated across all models */
+  totalUpdated?: Maybe<Scalars['Int']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type RestoreRecordTypeConnection = {
+  __typename?: 'RestoreRecordTypeConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<RestoreRecordTypeEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+};
+
+/** A Relay edge containing a `RestoreRecordType` and its cursor. */
+export type RestoreRecordTypeEdge = {
+  __typename?: 'RestoreRecordTypeEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
+  node?: Maybe<RestoreRecordType>;
+};
+
+/** Revoke all SSO sessions for the current user except the current session. */
+export type RevokeAllSessionsMutation = {
+  __typename?: 'RevokeAllSessionsMutation';
+  ok?: Maybe<Scalars['Boolean']['output']>;
+  revokedCount?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Revoke a SCIM token. Requires tenantId for tenant context. */
+export type RevokeScimTokenMutation = {
+  __typename?: 'RevokeSCIMTokenMutation';
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
+/** Revoke an SSO session. */
+export type RevokeSessionMutation = {
+  __typename?: 'RevokeSessionMutation';
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
+/** Predefined colors for organization roles. */
+export enum RoleColor {
+  BLUE = 'BLUE',
+  GRAY = 'GRAY',
+  GREEN = 'GREEN',
+  ORANGE = 'ORANGE',
+  PINK = 'PINK',
+  PURPLE = 'PURPLE',
+  RED = 'RED',
+  TEAL = 'TEAL',
+  YELLOW = 'YELLOW'
+}
+
+export type RollbackTranslationsMutationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  versionId: Scalars['ID']['input'];
+};
+
+/** Rollback to a previous translation version. */
+export type RollbackTranslationsMutationPayload = {
+  __typename?: 'RollbackTranslationsMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  success?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type ScimTokenConnection = {
+  __typename?: 'SCIMTokenConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<ScimTokenEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+};
+
+/** A Relay edge containing a `SCIMToken` and its cursor. */
+export type ScimTokenEdge = {
+  __typename?: 'SCIMTokenEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
+  node?: Maybe<ScimTokenType>;
+};
+
+/** GraphQL type for SCIM tokens. */
+export type ScimTokenType = Node & {
+  __typename?: 'SCIMTokenType';
+  createdAt: Scalars['DateTime']['output'];
+  expiresAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  isActive: Scalars['Boolean']['output'];
+  isExpired?: Maybe<Scalars['Boolean']['output']>;
+  isValid?: Maybe<Scalars['Boolean']['output']>;
+  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
+  lastUsedIp?: Maybe<Scalars['String']['output']>;
+  /** Display name for this token */
+  name: Scalars['String']['output'];
+  requestCount: Scalars['Int']['output'];
+  /** First 8 chars of token for identification */
+  tokenPrefix: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type SsoAuditLogConnection = {
+  __typename?: 'SSOAuditLogConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<SsoAuditLogEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+};
+
+/** A Relay edge containing a `SSOAuditLog` and its cursor. */
+export type SsoAuditLogEdge = {
+  __typename?: 'SSOAuditLogEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
+  node?: Maybe<SsoAuditLogType>;
+};
+
+/** GraphQL type for SSO audit logs. */
+export type SsoAuditLogType = Node & {
+  __typename?: 'SSOAuditLogType';
+  connectionName?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  errorMessage: Scalars['String']['output'];
+  eventDescription: Scalars['String']['output'];
+  eventType: SsoSsoAuditLogEventTypeChoices;
+  id: Scalars['ID']['output'];
+  ipAddress?: Maybe<Scalars['String']['output']>;
+  metadata: Scalars['JSONString']['output'];
+  success: Scalars['Boolean']['output'];
+  userEmail?: Maybe<Scalars['String']['output']>;
+};
+
+export type SsoConnectionConnection = {
+  __typename?: 'SSOConnectionConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<SsoConnectionEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+};
+
+/** A Relay edge containing a `SSOConnection` and its cursor. */
+export type SsoConnectionEdge = {
+  __typename?: 'SSOConnectionEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
+  node?: Maybe<SsoConnectionType>;
+};
+
+/** GraphQL type for SSO connections. */
+export type SsoConnectionType = Node & {
+  __typename?: 'SSOConnectionType';
+  /** List of email domains allowed to use this SSO connection */
+  allowedDomains: Scalars['JSONString']['output'];
+  connectionType: SsoTenantSsoConnectionConnectionTypeChoices;
+  createdAt: Scalars['DateTime']['output'];
+  /** When enabled, users from allowed domains must use SSO to access this tenant. Password login will not grant access. */
+  enforceSso: Scalars['Boolean']['output'];
+  /** Mapping of IdP groups to tenant roles */
+  groupRoleMapping: Scalars['JSONString']['output'];
+  id: Scalars['ID']['output'];
+  isActive?: Maybe<Scalars['Boolean']['output']>;
+  isOidc?: Maybe<Scalars['Boolean']['output']>;
+  isSaml?: Maybe<Scalars['Boolean']['output']>;
+  /** Automatically create users on first SSO login */
+  jitProvisioningEnabled: Scalars['Boolean']['output'];
+  lastLoginAt?: Maybe<Scalars['DateTime']['output']>;
+  loginCount: Scalars['Int']['output'];
+  /** Display name for this SSO connection */
+  name: Scalars['String']['output'];
+  oidcAuthorizationEndpoint: Scalars['String']['output'];
+  oidcCallbackUrl?: Maybe<Scalars['String']['output']>;
+  /** Mapping of OIDC claims to user fields */
+  oidcClaimMapping: Scalars['JSONString']['output'];
+  oidcClientId: Scalars['String']['output'];
+  oidcIssuer: Scalars['String']['output'];
+  oidcJwksUri: Scalars['String']['output'];
+  oidcLoginUrl?: Maybe<Scalars['String']['output']>;
+  /** Space-separated list of OAuth scopes */
+  oidcScopes: Scalars['String']['output'];
+  oidcTokenEndpoint: Scalars['String']['output'];
+  oidcUserinfoEndpoint: Scalars['String']['output'];
+  /** Mapping of SAML attributes to user fields */
+  samlAttributeMapping: Scalars['JSONString']['output'];
+  samlEntityId: Scalars['String']['output'];
+  samlNameIdFormat: SsoTenantSsoConnectionSamlNameIdFormatChoices;
+  /** Single Logout URL */
+  samlSloUrl: Scalars['String']['output'];
+  samlSsoUrl: Scalars['String']['output'];
+  samlWantAssertionsSigned: Scalars['Boolean']['output'];
+  samlWantResponseSigned: Scalars['Boolean']['output'];
+  spAcsUrl?: Maybe<Scalars['String']['output']>;
+  spEntityId?: Maybe<Scalars['String']['output']>;
+  spMetadataUrl?: Maybe<Scalars['String']['output']>;
+  status: SsoTenantSsoConnectionStatusChoices;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type SsoDiscoveryConnectionType = {
+  __typename?: 'SSODiscoveryConnectionType';
+  id?: Maybe<Scalars['String']['output']>;
+  loginUrl?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  tenantId?: Maybe<Scalars['String']['output']>;
+  tenantName?: Maybe<Scalars['String']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
+export type SsoDiscoveryResultType = {
+  __typename?: 'SSODiscoveryResultType';
+  connections?: Maybe<Array<Maybe<SsoDiscoveryConnectionType>>>;
+  requireSso?: Maybe<Scalars['Boolean']['output']>;
+  ssoAvailable?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type SsoSessionConnection = {
+  __typename?: 'SSOSessionConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<SsoSessionEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+};
+
+/** A Relay edge containing a `SSOSession` and its cursor. */
+export type SsoSessionEdge = {
+  __typename?: 'SSOSessionEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
+  node?: Maybe<SsoSessionType>;
+};
+
+/** GraphQL type for SSO sessions. */
+export type SsoSessionType = Node & {
+  __typename?: 'SSOSessionType';
+  browser: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  deviceName: Scalars['String']['output'];
+  deviceType: Scalars['String']['output'];
+  expiresAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  ipAddress?: Maybe<Scalars['String']['output']>;
+  isActive: Scalars['Boolean']['output'];
+  isCurrent?: Maybe<Scalars['Boolean']['output']>;
+  isExpired?: Maybe<Scalars['Boolean']['output']>;
+  isValid?: Maybe<Scalars['Boolean']['output']>;
+  lastActivityAt: Scalars['DateTime']['output'];
+  location: Scalars['String']['output'];
+  operatingSystem: Scalars['String']['output'];
+  sessionId: Scalars['String']['output'];
+};
+
+/**
+ * Mutation to send a message to the AI assistant.
+ * The response is streamed via the AiChatSubscription.
+ */
+export type SendAiMessageMutation = {
+  __typename?: 'SendAiMessageMutation';
+  error?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type SingUpMutationInput = {
@@ -2036,6 +3645,100 @@ export type SingUpMutationPayload = {
   id?: Maybe<Scalars['String']['output']>;
   refresh?: Maybe<Scalars['String']['output']>;
 };
+
+/** An enumeration. */
+export enum SsoSsoAuditLogEventTypeChoices {
+  /** Device Registered */
+  DEVICE_REGISTERED = 'DEVICE_REGISTERED',
+  /** Device Removed */
+  DEVICE_REMOVED = 'DEVICE_REMOVED',
+  /** Group Mapping Applied */
+  GROUP_MAPPING_APPLIED = 'GROUP_MAPPING_APPLIED',
+  /** IdP Configuration Activated */
+  IDP_CONFIG_ACTIVATED = 'IDP_CONFIG_ACTIVATED',
+  /** IdP Configuration Created */
+  IDP_CONFIG_CREATED = 'IDP_CONFIG_CREATED',
+  /** IdP Configuration Deactivated */
+  IDP_CONFIG_DEACTIVATED = 'IDP_CONFIG_DEACTIVATED',
+  /** IdP Configuration Deleted */
+  IDP_CONFIG_DELETED = 'IDP_CONFIG_DELETED',
+  /** IdP Configuration Updated */
+  IDP_CONFIG_UPDATED = 'IDP_CONFIG_UPDATED',
+  /** Passkey Auth Failed */
+  PASSKEY_AUTH_FAILED = 'PASSKEY_AUTH_FAILED',
+  /** Passkey Auth Success */
+  PASSKEY_AUTH_SUCCESS = 'PASSKEY_AUTH_SUCCESS',
+  /** Passkey Clone Detected */
+  PASSKEY_CLONE_DETECTED = 'PASSKEY_CLONE_DETECTED',
+  /** Passkey Registered */
+  PASSKEY_REGISTERED = 'PASSKEY_REGISTERED',
+  /** Passkey Removed */
+  PASSKEY_REMOVED = 'PASSKEY_REMOVED',
+  /** SCIM Group Created */
+  SCIM_GROUP_CREATED = 'SCIM_GROUP_CREATED',
+  /** SCIM Group Deleted */
+  SCIM_GROUP_DELETED = 'SCIM_GROUP_DELETED',
+  /** SCIM Group Updated */
+  SCIM_GROUP_UPDATED = 'SCIM_GROUP_UPDATED',
+  /** SCIM User Created */
+  SCIM_USER_CREATED = 'SCIM_USER_CREATED',
+  /** SCIM User Deleted */
+  SCIM_USER_DELETED = 'SCIM_USER_DELETED',
+  /** SCIM User Updated */
+  SCIM_USER_UPDATED = 'SCIM_USER_UPDATED',
+  /** Security Anomaly Detected */
+  SECURITY_ANOMALY = 'SECURITY_ANOMALY',
+  /** Session Created */
+  SESSION_CREATED = 'SESSION_CREATED',
+  /** Session Revoked */
+  SESSION_REVOKED = 'SESSION_REVOKED',
+  /** SSO Enforce Bypass Login */
+  SSO_ENFORCE_BYPASS = 'SSO_ENFORCE_BYPASS',
+  /** SSO Login Failed */
+  SSO_LOGIN_FAILED = 'SSO_LOGIN_FAILED',
+  /** SSO Login Initiated */
+  SSO_LOGIN_INITIATED = 'SSO_LOGIN_INITIATED',
+  /** SSO Login Success */
+  SSO_LOGIN_SUCCESS = 'SSO_LOGIN_SUCCESS',
+  /** SSO Logout */
+  SSO_LOGOUT = 'SSO_LOGOUT',
+  /** User Provisioned via JIT */
+  USER_PROVISIONED = 'USER_PROVISIONED',
+  /** User Updated via SSO */
+  USER_UPDATED = 'USER_UPDATED'
+}
+
+/** An enumeration. */
+export enum SsoTenantSsoConnectionConnectionTypeChoices {
+  /** OpenID Connect */
+  OIDC = 'OIDC',
+  /** SAML 2.0 */
+  SAML = 'SAML'
+}
+
+/** An enumeration. */
+export enum SsoTenantSsoConnectionSamlNameIdFormatChoices {
+  /** Email Address */
+  URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_EMAILADDRESS = 'URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_EMAILADDRESS',
+  /** Unspecified */
+  URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_UNSPECIFIED = 'URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_UNSPECIFIED',
+  /** Persistent */
+  URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_PERSISTENT = 'URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_PERSISTENT',
+  /** Transient */
+  URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_TRANSIENT = 'URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_TRANSIENT'
+}
+
+/** An enumeration. */
+export enum SsoTenantSsoConnectionStatusChoices {
+  /** Active */
+  ACTIVE = 'ACTIVE',
+  /** Draft */
+  DRAFT = 'DRAFT',
+  /** Configuration Error */
+  ERROR = 'ERROR',
+  /** Inactive */
+  INACTIVE = 'INACTIVE'
+}
 
 export type StripeChargeType = Node & {
   __typename?: 'StripeChargeType';
@@ -2668,6 +4371,22 @@ export type SubscriptionScheduleTypeSubscriptionsArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type SyncTranslationKeysMutationInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  translations: Scalars['JSONString']['input'];
+};
+
+/** Sync translation keys from master JSON. */
+export type SyncTranslationKeysMutationPayload = {
+  __typename?: 'SyncTranslationKeysMutationPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  created?: Maybe<Scalars['Int']['output']>;
+  deprecated?: Maybe<Scalars['Int']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  success?: Maybe<Scalars['Boolean']['output']>;
+  updated?: Maybe<Scalars['Int']['output']>;
+};
+
 export type Sys = {
   __typename?: 'Sys';
   environmentId: Scalars['String']['output'];
@@ -2715,6 +4434,13 @@ export type SysFilter = {
   publishedVersion_not_in?: InputMaybe<Array<InputMaybe<Scalars['Float']['input']>>>;
 };
 
+/** System role types that serve as templates. */
+export enum SystemRoleType {
+  ADMIN = 'ADMIN',
+  MEMBER = 'MEMBER',
+  OWNER = 'OWNER'
+}
+
 export type TenantConnection = {
   __typename?: 'TenantConnection';
   /** Contains the nodes in this connection. */
@@ -2735,19 +4461,37 @@ export type TenantEdge = {
 export type TenantMembershipType = Node & {
   __typename?: 'TenantMembershipType';
   avatar?: Maybe<Scalars['String']['output']>;
+  effectivePermissions?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   firstName?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   invitationAccepted?: Maybe<Scalars['Boolean']['output']>;
   invitationToken?: Maybe<Scalars['String']['output']>;
   inviteeEmailAddress?: Maybe<Scalars['String']['output']>;
   lastName?: Maybe<Scalars['String']['output']>;
+  organizationRoles?: Maybe<Array<Maybe<OrganizationRoleType>>>;
   role?: Maybe<TenantUserRole>;
   userEmail?: Maybe<Scalars['String']['output']>;
   userId?: Maybe<Scalars['ID']['output']>;
 };
 
+export type TenantPasskeyType = {
+  __typename?: 'TenantPasskeyType';
+  authenticatorType?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  deviceType?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  isActive?: Maybe<Scalars['Boolean']['output']>;
+  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  transports?: Maybe<Scalars['GenericScalar']['output']>;
+  useCount?: Maybe<Scalars['Int']['output']>;
+  userEmail?: Maybe<Scalars['String']['output']>;
+  userName?: Maybe<Scalars['String']['output']>;
+};
+
 export type TenantType = Node & {
   __typename?: 'TenantType';
+  actionLoggingEnabled?: Maybe<Scalars['Boolean']['output']>;
   billingEmail?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   membership: TenantMembershipType;
@@ -2769,9 +4513,68 @@ export enum TenantUserRole {
   OWNER = 'OWNER'
 }
 
+export type TestSsoConnectionCheckType = {
+  __typename?: 'TestSSOConnectionCheckType';
+  details?: Maybe<Scalars['GenericScalar']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<Scalars['String']['output']>;
+};
+
+/** Test an SSO connection configuration. Requires tenantId for tenant context. */
+export type TestSsoConnectionMutation = {
+  __typename?: 'TestSSOConnectionMutation';
+  result?: Maybe<TestSsoConnectionPayload>;
+};
+
+export type TestSsoConnectionPayload = {
+  __typename?: 'TestSSOConnectionPayload';
+  checks?: Maybe<Array<Maybe<TestSsoConnectionCheckType>>>;
+  connectionId?: Maybe<Scalars['String']['output']>;
+  connectionName?: Maybe<Scalars['String']['output']>;
+  connectionType?: Maybe<Scalars['String']['output']>;
+  overallStatus?: Maybe<Scalars['String']['output']>;
+  testedAt?: Maybe<Scalars['String']['output']>;
+};
+
+/** Type for translation sync status. */
+export type TranslationSyncStatusType = {
+  __typename?: 'TranslationSyncStatusType';
+  activeKeys?: Maybe<Scalars['Int']['output']>;
+  deprecatedKeys?: Maybe<Scalars['Int']['output']>;
+  totalKeys?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Manually trigger a backup for a tenant. */
+export type TriggerBackupMutation = {
+  __typename?: 'TriggerBackupMutation';
+  backupId?: Maybe<Scalars['ID']['output']>;
+  error?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
+/** Mark a device as trusted. */
+export type TrustDeviceMutation = {
+  __typename?: 'TrustDeviceMutation';
+  device?: Maybe<UserDeviceType>;
+};
+
+/** Remove trust from a device. */
+export type UntrustDeviceMutation = {
+  __typename?: 'UntrustDeviceMutation';
+  device?: Maybe<UserDeviceType>;
+};
+
+/** Create or update backup configuration for a tenant. */
+export type UpdateBackupConfigMutation = {
+  __typename?: 'UpdateBackupConfigMutation';
+  backupConfig?: Maybe<BackupConfigType>;
+  error?: Maybe<Scalars['String']['output']>;
+  ok?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export type UpdateCrudDemoItemMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  createdBy?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   name: Scalars['String']['input'];
   tenantId: Scalars['String']['input'];
@@ -2788,6 +4591,7 @@ export type UpdateCurrentUserMutationInput = {
   avatar?: InputMaybe<Scalars['Upload']['input']>;
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
+  language?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -2823,6 +4627,21 @@ export type UpdateNotificationMutationPayload = {
   hasUnreadNotifications?: Maybe<Scalars['Boolean']['output']>;
   notification?: Maybe<NotificationType>;
   notificationEdge?: Maybe<NotificationEdge>;
+  unreadNotificationsCount?: Maybe<Scalars['Int']['output']>;
+};
+
+/**
+ * Update an existing organization role.
+ *
+ * SECURITY:
+ * - Requires 'org.roles.manage' permission
+ * - Cannot modify the Owner role
+ * - Users can only add permissions they themselves have (except owners)
+ */
+export type UpdateOrganizationRoleMutation = {
+  __typename?: 'UpdateOrganizationRoleMutation';
+  ok?: Maybe<Scalars['Boolean']['output']>;
+  role?: Maybe<OrganizationRoleType>;
 };
 
 export type UpdatePaymentIntentMutationInput = {
@@ -2836,6 +4655,101 @@ export type UpdatePaymentIntentMutationPayload = {
   __typename?: 'UpdatePaymentIntentMutationPayload';
   clientMutationId?: Maybe<Scalars['String']['output']>;
   paymentIntent?: Maybe<StripePaymentIntentType>;
+};
+
+export type UpdateSsoConnectionMutationInput = {
+  /** List of email domains allowed to use this SSO connection */
+  allowedDomains?: InputMaybe<Scalars['JSONString']['input']>;
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  connectionType?: InputMaybe<Connection_Type>;
+  /** When enabled, users from allowed domains must use SSO to access this tenant. Password login will not grant access. */
+  enforceSso?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Mapping of IdP groups to tenant roles */
+  groupRoleMapping?: InputMaybe<Scalars['JSONString']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  /** Automatically create users on first SSO login */
+  jitProvisioningEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Display name for this SSO connection */
+  name?: InputMaybe<Scalars['String']['input']>;
+  oidcAuthorizationEndpoint?: InputMaybe<Scalars['String']['input']>;
+  /** Mapping of OIDC claims to user fields */
+  oidcClaimMapping?: InputMaybe<Scalars['JSONString']['input']>;
+  oidcClientId?: InputMaybe<Scalars['String']['input']>;
+  /** OIDC client secret. Leave blank to keep existing. Only set when updating. */
+  oidcClientSecret?: InputMaybe<Scalars['String']['input']>;
+  oidcIssuer?: InputMaybe<Scalars['String']['input']>;
+  oidcJwksUri?: InputMaybe<Scalars['String']['input']>;
+  /** Space-separated list of OAuth scopes */
+  oidcScopes?: InputMaybe<Scalars['String']['input']>;
+  oidcTokenEndpoint?: InputMaybe<Scalars['String']['input']>;
+  oidcUserinfoEndpoint?: InputMaybe<Scalars['String']['input']>;
+  /** Mapping of SAML attributes to user fields */
+  samlAttributeMapping?: InputMaybe<Scalars['JSONString']['input']>;
+  /** IdP X.509 certificate (PEM format) - for local development */
+  samlCertificate?: InputMaybe<Scalars['String']['input']>;
+  samlEntityId?: InputMaybe<Scalars['String']['input']>;
+  samlNameIdFormat?: InputMaybe<Saml_Name_Id_Format>;
+  /** Single Logout URL */
+  samlSloUrl?: InputMaybe<Scalars['String']['input']>;
+  samlSsoUrl?: InputMaybe<Scalars['String']['input']>;
+  samlWantAssertionsSigned?: InputMaybe<Scalars['Boolean']['input']>;
+  samlWantResponseSigned?: InputMaybe<Scalars['Boolean']['input']>;
+  status?: InputMaybe<Status>;
+  tenantId?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Update an existing SSO connection. */
+export type UpdateSsoConnectionMutationPayload = {
+  __typename?: 'UpdateSSOConnectionMutationPayload';
+  /** List of email domains allowed to use this SSO connection */
+  allowedDomains?: Maybe<Scalars['JSONString']['output']>;
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  connectionType?: Maybe<Connection_Type>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  /** When enabled, users from allowed domains must use SSO to access this tenant. Password login will not grant access. */
+  enforceSso?: Maybe<Scalars['Boolean']['output']>;
+  /** Mapping of IdP groups to tenant roles */
+  groupRoleMapping?: Maybe<Scalars['JSONString']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  /** Automatically create users on first SSO login */
+  jitProvisioningEnabled?: Maybe<Scalars['Boolean']['output']>;
+  lastLoginAt?: Maybe<Scalars['DateTime']['output']>;
+  loginCount?: Maybe<Scalars['Int']['output']>;
+  metadataLastUpdated?: Maybe<Scalars['DateTime']['output']>;
+  /** Display name for this SSO connection */
+  name?: Maybe<Scalars['String']['output']>;
+  oidcAuthorizationEndpoint?: Maybe<Scalars['String']['output']>;
+  /** Mapping of OIDC claims to user fields */
+  oidcClaimMapping?: Maybe<Scalars['JSONString']['output']>;
+  oidcClientId?: Maybe<Scalars['String']['output']>;
+  oidcIssuer?: Maybe<Scalars['String']['output']>;
+  oidcJwksUri?: Maybe<Scalars['String']['output']>;
+  /** Space-separated list of OAuth scopes */
+  oidcScopes?: Maybe<Scalars['String']['output']>;
+  oidcTokenEndpoint?: Maybe<Scalars['String']['output']>;
+  oidcUserinfoEndpoint?: Maybe<Scalars['String']['output']>;
+  /** Mapping of SAML attributes to user fields */
+  samlAttributeMapping?: Maybe<Scalars['JSONString']['output']>;
+  /** IdP X.509 certificate (PEM format) - for local development */
+  samlCertificate?: Maybe<Scalars['String']['output']>;
+  samlEntityId?: Maybe<Scalars['String']['output']>;
+  samlNameIdFormat?: Maybe<Saml_Name_Id_Format>;
+  /** Single Logout URL */
+  samlSloUrl?: Maybe<Scalars['String']['output']>;
+  samlSsoUrl?: Maybe<Scalars['String']['output']>;
+  samlWantAssertionsSigned?: Maybe<Scalars['Boolean']['output']>;
+  samlWantResponseSigned?: Maybe<Scalars['Boolean']['output']>;
+  spMetadataXml?: Maybe<Scalars['String']['output']>;
+  ssoConnection?: Maybe<SsoConnectionType>;
+  status?: Maybe<Status>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
+/** Mutation to enable or disable action logging for a tenant. */
+export type UpdateTenantActionLoggingMutation = {
+  __typename?: 'UpdateTenantActionLoggingMutation';
+  ok?: Maybe<Scalars['Boolean']['output']>;
+  tenant?: Maybe<TenantType>;
 };
 
 export type UpdateTenantMembershipMutationInput = {
@@ -2866,13 +4780,53 @@ export type UpdateTenantMutationPayload = {
   tenantEdge?: Maybe<TenantEdge>;
 };
 
+export type UserDeviceConnection = {
+  __typename?: 'UserDeviceConnection';
+  /** Contains the nodes in this connection. */
+  edges: Array<Maybe<UserDeviceEdge>>;
+  /** Pagination data for this connection. */
+  pageInfo: PageInfo;
+};
+
+/** A Relay edge containing a `UserDevice` and its cursor. */
+export type UserDeviceEdge = {
+  __typename?: 'UserDeviceEdge';
+  /** A cursor for use in pagination */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge */
+  node?: Maybe<UserDeviceType>;
+};
+
+/** GraphQL type for user devices. */
+export type UserDeviceType = Node & {
+  __typename?: 'UserDeviceType';
+  browser: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  deviceName: Scalars['String']['output'];
+  deviceType: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  isBlocked: Scalars['Boolean']['output'];
+  isTrusted: Scalars['Boolean']['output'];
+  lastIpAddress?: Maybe<Scalars['String']['output']>;
+  lastLocation: Scalars['String']['output'];
+  lastSeenAt: Scalars['DateTime']['output'];
+  operatingSystem: Scalars['String']['output'];
+  trustedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
 export type UserProfileType = Node & {
   __typename?: 'UserProfileType';
+  avatar?: Maybe<Scalars['String']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
   firstName: Scalars['String']['output'];
   /** The ID of the object */
   id: Scalars['ID']['output'];
+  /** User's preferred language for emails and notifications */
+  language: UsersUserProfileLanguageChoices;
   lastName: Scalars['String']['output'];
   user: CurrentUserType;
+  /** The hashid of the associated user */
+  userId?: Maybe<Scalars['String']['output']>;
 };
 
 export type UserType = {
@@ -2883,6 +4837,20 @@ export type UserType = {
   id: Scalars['ID']['output'];
   lastName?: Maybe<Scalars['String']['output']>;
 };
+
+/** An enumeration. */
+export enum UsersUserProfileLanguageChoices {
+  /** German */
+  DE = 'DE',
+  /** English */
+  EN = 'EN',
+  /** Spanish */
+  ES = 'ES',
+  /** French */
+  FR = 'FR',
+  /** Polish */
+  PL = 'PL'
+}
 
 export type ValidateOtpMutationInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
@@ -2912,6 +4880,55 @@ export type _Node = {
   _id: Scalars['ID']['output'];
 };
 
+/** An enumeration. */
+export enum Connection_Type {
+  /** OpenID Connect */
+  OIDC = 'OIDC',
+  /** SAML 2.0 */
+  SAML = 'SAML'
+}
+
+/** An enumeration. */
+export enum Saml_Name_Id_Format {
+  /** Email Address */
+  URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_EMAILADDRESS = 'URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_EMAILADDRESS',
+  /** Unspecified */
+  URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_UNSPECIFIED = 'URN_OASIS_NAMES_TC_SAML_1_1_NAMEID_FORMAT_UNSPECIFIED',
+  /** Persistent */
+  URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_PERSISTENT = 'URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_PERSISTENT',
+  /** Transient */
+  URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_TRANSIENT = 'URN_OASIS_NAMES_TC_SAML_2_0_NAMEID_FORMAT_TRANSIENT'
+}
+
+/** An enumeration. */
+export enum Status {
+  /** Active */
+  ACTIVE = 'ACTIVE',
+  /** Draft */
+  DRAFT = 'DRAFT',
+  /** Configuration Error */
+  ERROR = 'ERROR',
+  /** Inactive */
+  INACTIVE = 'INACTIVE'
+}
+
+export type AiChatSubscriptionSubscriptionVariables = Exact<{
+  conversationId: Scalars['String']['input'];
+}>;
+
+
+export type AiChatSubscriptionSubscription = { __typename?: 'ApiSubscription', aiChat?: { __typename?: 'AiChatSubscription', event?: { __typename?: 'AiChatEventType', eventType: string, message?: string | null, toolName?: string | null, toolDisplayName?: string | null, success?: boolean | null, hasData?: boolean | null, text?: string | null, toolsUsed?: Array<string | null> | null, conversationId?: string | null } | null } | null };
+
+export type SendAiMessageOpMutationVariables = Exact<{
+  message: Scalars['String']['input'];
+  tenantId: Scalars['String']['input'];
+  conversationId: Scalars['String']['input'];
+  history?: InputMaybe<Array<InputMaybe<Scalars['JSONString']['input']>> | InputMaybe<Scalars['JSONString']['input']>>;
+}>;
+
+
+export type SendAiMessageOpMutation = { __typename?: 'ApiMutation', sendAiMessage?: { __typename?: 'SendAiMessageMutation', ok?: boolean | null, error?: string | null } | null };
+
 export type PageCursorsFragmentFragment = { __typename?: 'PageCursors', around?: Array<{ __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null> | null, first?: { __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null, last?: { __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null, next?: { __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null, previous?: { __typename?: 'PageCursor', cursor?: string | null, isCurrent?: boolean | null, page?: number | null } | null } & { ' $fragmentName'?: 'PageCursorsFragmentFragment' };
 
 export type PagedPaginationListTestQueryQueryVariables = Exact<{
@@ -2934,9 +4951,9 @@ export type PaginationListTestQueryQueryVariables = Exact<{
 
 export type PaginationListTestQueryQuery = { __typename?: 'Query', allNotifications?: { __typename?: 'NotificationConnection', edges: Array<{ __typename?: 'NotificationEdge', node?: { __typename?: 'NotificationType', id: string } | null } | null>, pageInfo: { __typename?: 'PageInfo', startCursor?: string | null, endCursor?: string | null, hasPreviousPage: boolean, hasNextPage: boolean } } | null };
 
-export type CommonQueryCurrentUserFragmentFragment = { __typename?: 'CurrentUserType', id: string, email: string, firstName?: string | null, lastName?: string | null, roles?: Array<string | null> | null, avatar?: string | null, otpVerified: boolean, otpEnabled: boolean } & { ' $fragmentName'?: 'CommonQueryCurrentUserFragmentFragment' };
+export type CommonQueryCurrentUserFragmentFragment = { __typename?: 'CurrentUserType', id: string, email: string, firstName?: string | null, lastName?: string | null, language?: string | null, roles?: Array<string | null> | null, avatar?: string | null, otpVerified: boolean, otpEnabled: boolean } & { ' $fragmentName'?: 'CommonQueryCurrentUserFragmentFragment' };
 
-export type CommonQueryTenantItemFragmentFragment = { __typename?: 'TenantType', id: string, name?: string | null, type?: string | null, membership: (
+export type CommonQueryTenantItemFragmentFragment = { __typename?: 'TenantType', id: string, name?: string | null, type?: string | null, actionLoggingEnabled?: boolean | null, membership: (
     { __typename?: 'TenantMembershipType' }
     & { ' $fragmentRefs'?: { 'CommonQueryMembershipFragmentFragment': CommonQueryMembershipFragmentFragment } }
   ) } & { ' $fragmentName'?: 'CommonQueryTenantItemFragmentFragment' };
@@ -2953,6 +4970,89 @@ export type CommonQueryCurrentUserQueryQuery = { __typename?: 'Query', currentUs
     ) | null> | null }
     & { ' $fragmentRefs'?: { 'CommonQueryCurrentUserFragmentFragment': CommonQueryCurrentUserFragmentFragment } }
   ) | null };
+
+export type BackupConfigQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type BackupConfigQueryQuery = { __typename?: 'Query', backupConfig?: { __typename?: 'BackupConfigType', id: string, enabled: boolean, backupIntervalHours: number, retentionDays: number, emailRecipients?: Array<string | null> | null, selectedModules?: Array<string | null> | null, selectedModels?: Array<string | null> | null, excludedModels?: Array<string | null> | null } | null };
+
+export type AvailableBackupModulesQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type AvailableBackupModulesQueryQuery = { __typename?: 'Query', availableBackupModules?: Array<{ __typename?: 'BackupModuleType', id?: string | null, name?: string | null, description?: string | null, modelCount?: number | null } | null> | null };
+
+export type AvailableBackupModelsQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+  moduleId: Scalars['String']['input'];
+}>;
+
+
+export type AvailableBackupModelsQueryQuery = { __typename?: 'Query', availableBackupModels?: Array<{ __typename?: 'BackupModelType', appLabel?: string | null, modelName?: string | null, displayName?: string | null, fullName?: string | null } | null> | null };
+
+export type BackupRecordsQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type BackupRecordsQueryQuery = { __typename?: 'Query', backupRecords?: { __typename?: 'BackupRecordConnection', edges: Array<{ __typename?: 'BackupRecordEdge', node?: { __typename?: 'BackupRecordType', id: string, filePath: string, fileSize?: any | null, status: BackupBackupRecordStatusChoices, errorMessage: string, modelCounts: any, createdAt: any, downloadUrl?: string | null, isEncrypted?: boolean | null } | null } | null>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+
+export type UpdateBackupConfigMutationMutationVariables = Exact<{
+  input: BackupConfigInput;
+}>;
+
+
+export type UpdateBackupConfigMutationMutation = { __typename?: 'ApiMutation', updateBackupConfig?: { __typename?: 'UpdateBackupConfigMutation', ok?: boolean | null, error?: string | null, backupConfig?: { __typename?: 'BackupConfigType', id: string, enabled: boolean, backupIntervalHours: number, retentionDays: number, emailRecipients?: Array<string | null> | null, selectedModules?: Array<string | null> | null, selectedModels?: Array<string | null> | null, excludedModels?: Array<string | null> | null } | null } | null };
+
+export type DeleteBackupMutationMutationVariables = Exact<{
+  backupId: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteBackupMutationMutation = { __typename?: 'ApiMutation', deleteBackup?: { __typename?: 'DeleteBackupMutation', ok?: boolean | null, error?: string | null } | null };
+
+export type TriggerBackupMutationMutationVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type TriggerBackupMutationMutation = { __typename?: 'ApiMutation', triggerBackup?: { __typename?: 'TriggerBackupMutation', ok?: boolean | null, error?: string | null, backupId?: string | null } | null };
+
+export type DownloadBackupDecryptedMutationMutationVariables = Exact<{
+  backupId: Scalars['ID']['input'];
+}>;
+
+
+export type DownloadBackupDecryptedMutationMutation = { __typename?: 'ApiMutation', downloadBackupDecrypted?: { __typename?: 'DownloadBackupDecryptedMutation', ok?: boolean | null, content?: string | null, error?: string | null } | null };
+
+export type RestoreBackupMutationMutationVariables = Exact<{
+  backupId: Scalars['ID']['input'];
+  conflictStrategy: ConflictStrategyEnum;
+}>;
+
+
+export type RestoreBackupMutationMutation = { __typename?: 'ApiMutation', restoreBackup?: { __typename?: 'RestoreBackupMutation', ok?: boolean | null, error?: string | null, restoreId?: string | null } | null };
+
+export type BackupEligibleRecipientsQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type BackupEligibleRecipientsQueryQuery = { __typename?: 'Query', backupEligibleRecipients?: Array<{ __typename?: 'TenantMembershipType', id: string, userId?: string | null, firstName?: string | null, lastName?: string | null, userEmail?: string | null, invitationAccepted?: boolean | null } | null> | null };
+
+export type RestoreRecordsQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type RestoreRecordsQueryQuery = { __typename?: 'Query', restoreRecords?: { __typename?: 'RestoreRecordConnection', edges: Array<{ __typename?: 'RestoreRecordEdge', node?: { __typename?: 'RestoreRecordType', id: string, status: BackupRestoreRecordStatusChoices, conflictStrategy: BackupRestoreRecordConflictStrategyChoices, modelCounts: any, errorMessage: string, startedAt?: any | null, completedAt?: any | null, createdAt: any, totalCreated?: number | null, totalUpdated?: number | null, totalSkipped?: number | null, totalFailed?: number | null, backupRecord: { __typename?: 'BackupRecordType', id: string, createdAt: any } } | null } | null>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 export type ConfigContentfulAppConfigQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3251,14 +5351,14 @@ export type GenerateSaasIdeasMutationMutationVariables = Exact<{
 }>;
 
 
-export type GenerateSaasIdeasMutationMutation = { __typename?: 'ApiMutation', generateSaasIdeas?: { __typename?: 'GenerateSaasIdeasMutationPayload', ideas?: Array<string | null> | null } | null };
+export type GenerateSaasIdeasMutationMutation = { __typename?: 'ApiMutation', generateSaasIdeas?: { __typename?: 'GenerateSaasIdeasMutationPayload', response?: string | null } | null };
 
 export type NotificationMutationMutationVariables = Exact<{
   input: UpdateNotificationMutationInput;
 }>;
 
 
-export type NotificationMutationMutation = { __typename?: 'ApiMutation', updateNotification?: { __typename?: 'UpdateNotificationMutationPayload', hasUnreadNotifications?: boolean | null, notificationEdge?: { __typename?: 'NotificationEdge', node?: { __typename?: 'NotificationType', id: string, readAt?: any | null } | null } | null } | null };
+export type NotificationMutationMutation = { __typename?: 'ApiMutation', updateNotification?: { __typename?: 'UpdateNotificationMutationPayload', hasUnreadNotifications?: boolean | null, unreadNotificationsCount?: number | null, notificationEdge?: { __typename?: 'NotificationEdge', node?: { __typename?: 'NotificationType', id: string, readAt?: any | null } | null } | null } | null };
 
 export type NotificationsListQueryQueryVariables = Exact<{
   count?: InputMaybe<Scalars['Int']['input']>;
@@ -3271,6 +5371,15 @@ export type NotificationsListQueryQuery = (
   & { ' $fragmentRefs'?: { 'NotificationsListContentFragmentFragment': NotificationsListContentFragmentFragment;'NotificationsButtonContentFragment': NotificationsButtonContentFragment } }
 );
 
+export type NotificationsListContentFragmentFragment = { __typename?: 'Query', hasUnreadNotifications?: boolean | null, allNotifications?: { __typename?: 'NotificationConnection', edges: Array<{ __typename?: 'NotificationEdge', node?: (
+        { __typename?: 'NotificationType', id: string }
+        & { ' $fragmentRefs'?: { 'NotificationsListItemFragmentFragment': NotificationsListItemFragmentFragment } }
+      ) | null } | null>, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean } } | null } & { ' $fragmentName'?: 'NotificationsListContentFragmentFragment' };
+
+export type NotificationsListItemFragmentFragment = { __typename?: 'NotificationType', id: string, data?: any | null, createdAt: any, readAt?: any | null, type: string, issuer?: { __typename?: 'UserType', id: string, avatar?: string | null, email: string } | null } & { ' $fragmentName'?: 'NotificationsListItemFragmentFragment' };
+
+export type NotificationsButtonContentFragment = { __typename?: 'Query', hasUnreadNotifications?: boolean | null, unreadNotificationsCount?: number | null } & { ' $fragmentName'?: 'NotificationsButtonContentFragment' };
+
 export type NotificationCreatedSubscriptionSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3279,21 +5388,115 @@ export type NotificationCreatedSubscriptionSubscription = { __typename?: 'ApiSub
       & { ' $fragmentRefs'?: { 'NotificationsListItemFragmentFragment': NotificationsListItemFragmentFragment } }
     ) | null } | null };
 
-export type NotificationsButtonContentFragment = { __typename?: 'Query', hasUnreadNotifications?: boolean | null } & { ' $fragmentName'?: 'NotificationsButtonContentFragment' };
-
-export type NotificationsListContentFragmentFragment = { __typename?: 'Query', hasUnreadNotifications?: boolean | null, allNotifications?: { __typename?: 'NotificationConnection', edges: Array<{ __typename?: 'NotificationEdge', node?: (
-        { __typename?: 'NotificationType', id: string }
-        & { ' $fragmentRefs'?: { 'NotificationsListItemFragmentFragment': NotificationsListItemFragmentFragment } }
-      ) | null } | null>, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean } } | null } & { ' $fragmentName'?: 'NotificationsListContentFragmentFragment' };
-
-export type NotificationsListItemFragmentFragment = { __typename?: 'NotificationType', id: string, data?: any | null, createdAt: any, readAt?: any | null, type: string, issuer?: { __typename?: 'UserType', id: string, avatar?: string | null, email: string } | null } & { ' $fragmentName'?: 'NotificationsListItemFragmentFragment' };
-
 export type NotificationsListMarkAsReadMutationMutationVariables = Exact<{
   input: MarkReadAllNotificationsMutationInput;
 }>;
 
 
-export type NotificationsListMarkAsReadMutationMutation = { __typename?: 'ApiMutation', markReadAllNotifications?: { __typename?: 'MarkReadAllNotificationsMutationPayload', ok?: boolean | null } | null };
+export type NotificationsListMarkAsReadMutationMutation = { __typename?: 'ApiMutation', markReadAllNotifications?: { __typename?: 'MarkReadAllNotificationsMutationPayload', ok?: boolean | null, hasUnreadNotifications?: boolean | null, unreadNotificationsCount?: number | null } | null };
+
+export type PasskeysQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PasskeysQueryQuery = { __typename?: 'Query', myPasskeys?: { __typename?: 'PasskeyConnection', edges: Array<{ __typename?: 'PasskeyEdge', node?: { __typename?: 'PasskeyType', id: string, name: string, authenticatorType: string, transports: any, isActive: boolean, lastUsedAt?: any | null, useCount: number, createdAt: any } | null } | null> } | null };
+
+export type RenameUserPasskeyMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+}>;
+
+
+export type RenameUserPasskeyMutation = { __typename?: 'ApiMutation', renamePasskey?: { __typename?: 'RenamePasskeyMutation', passkey?: { __typename?: 'PasskeyType', id: string, name: string } | null } | null };
+
+export type DeletePasskeyMutationVariables = Exact<{
+  input: DeletePasskeyMutationInput;
+}>;
+
+
+export type DeletePasskeyMutation = { __typename?: 'ApiMutation', deletePasskey?: { __typename?: 'DeletePasskeyMutationPayload', deletedIds?: Array<string | null> | null } | null };
+
+export type ScimTokensQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type ScimTokensQueryQuery = { __typename?: 'Query', scimTokens?: { __typename?: 'SCIMTokenConnection', edges: Array<{ __typename?: 'SCIMTokenEdge', node?: { __typename?: 'SCIMTokenType', id: string, name: string, tokenPrefix: string, isActive: boolean, expiresAt?: any | null, lastUsedAt?: any | null, lastUsedIp?: string | null, requestCount: number, createdAt: any } | null } | null> } | null };
+
+export type CreateScimTokenMutationVariables = Exact<{
+  input: CreateScimTokenMutationInput;
+}>;
+
+
+export type CreateScimTokenMutation = { __typename?: 'ApiMutation', createScimToken?: { __typename?: 'CreateSCIMTokenMutationPayload', rawToken?: string | null, scimToken?: { __typename?: 'SCIMTokenType', id: string, name: string, tokenPrefix: string } | null } | null };
+
+export type RevokeScimTokenOpMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type RevokeScimTokenOpMutation = { __typename?: 'ApiMutation', revokeScimToken?: { __typename?: 'RevokeSCIMTokenMutation', ok?: boolean | null } | null };
+
+export type SsoConnectionsQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type SsoConnectionsQueryQuery = { __typename?: 'Query', ssoConnections?: { __typename?: 'SSOConnectionConnection', edges: Array<{ __typename?: 'SSOConnectionEdge', node?: { __typename?: 'SSOConnectionType', id: string, name: string, connectionType: SsoTenantSsoConnectionConnectionTypeChoices, status: SsoTenantSsoConnectionStatusChoices, allowedDomains: any, jitProvisioningEnabled: boolean, samlEntityId: string, samlSsoUrl: string, oidcIssuer: string, oidcClientId: string, lastLoginAt?: any | null, loginCount: number, createdAt: any, spMetadataUrl?: string | null } | null } | null> } | null };
+
+export type CreateSsoConnectionMutationVariables = Exact<{
+  input: CreateSsoConnectionMutationInput;
+}>;
+
+
+export type CreateSsoConnectionMutation = { __typename?: 'ApiMutation', createSsoConnection?: { __typename?: 'CreateSSOConnectionMutationPayload', ssoConnection?: { __typename?: 'SSOConnectionType', id: string, name: string, connectionType: SsoTenantSsoConnectionConnectionTypeChoices, status: SsoTenantSsoConnectionStatusChoices } | null } | null };
+
+export type UpdateSsoConnectionMutationVariables = Exact<{
+  input: UpdateSsoConnectionMutationInput;
+}>;
+
+
+export type UpdateSsoConnectionMutation = { __typename?: 'ApiMutation', updateSsoConnection?: { __typename?: 'UpdateSSOConnectionMutationPayload', ssoConnection?: { __typename?: 'SSOConnectionType', id: string, name: string, connectionType: SsoTenantSsoConnectionConnectionTypeChoices, status: SsoTenantSsoConnectionStatusChoices } | null } | null };
+
+export type ActivateSsoConnectionMutationVariables = Exact<{
+  input: ActivateSsoConnectionMutationInput;
+}>;
+
+
+export type ActivateSsoConnectionMutation = { __typename?: 'ApiMutation', activateSsoConnection?: { __typename?: 'ActivateSSOConnectionMutationPayload', ssoConnection?: { __typename?: 'SSOConnectionType', id: string, status: SsoTenantSsoConnectionStatusChoices } | null } | null };
+
+export type DeactivateSsoConnectionOpMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type DeactivateSsoConnectionOpMutation = { __typename?: 'ApiMutation', deactivateSsoConnection?: { __typename?: 'DeactivateSSOConnectionMutation', ssoConnection?: { __typename?: 'SSOConnectionType', id: string, status: SsoTenantSsoConnectionStatusChoices } | null } | null };
+
+export type DeleteSsoConnectionMutationVariables = Exact<{
+  input: DeleteSsoConnectionMutationInput;
+}>;
+
+
+export type DeleteSsoConnectionMutation = { __typename?: 'ApiMutation', deleteSsoConnection?: { __typename?: 'DeleteSSOConnectionMutationPayload', deletedIds?: Array<string | null> | null } | null };
+
+export type SessionsQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SessionsQueryQuery = { __typename?: 'Query', mySessions?: { __typename?: 'SSOSessionConnection', edges: Array<{ __typename?: 'SSOSessionEdge', node?: { __typename?: 'SSOSessionType', id: string, sessionId: string, deviceName: string, deviceType: string, browser: string, operatingSystem: string, ipAddress?: string | null, location: string, isActive: boolean, isCurrent?: boolean | null, lastActivityAt: any, expiresAt: any, createdAt: any } | null } | null> } | null };
+
+export type RevokeSessionOpMutationVariables = Exact<{
+  sessionId: Scalars['String']['input'];
+  reason?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type RevokeSessionOpMutation = { __typename?: 'ApiMutation', revokeSession?: { __typename?: 'RevokeSessionMutation', ok?: boolean | null } | null };
+
+export type RevokeAllSessionsOpMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RevokeAllSessionsOpMutation = { __typename?: 'ApiMutation', revokeAllSessions?: { __typename?: 'RevokeAllSessionsMutation', ok?: boolean | null, revokedCount?: number | null } | null };
 
 export type DeleteTenantMutationMutationVariables = Exact<{
   input: DeleteTenantMutationInput;
@@ -3319,14 +5522,143 @@ export type DeleteTenantMembershipMutationMutationVariables = Exact<{
 
 export type DeleteTenantMembershipMutationMutation = { __typename?: 'ApiMutation', deleteTenantMembership?: { __typename?: 'DeleteTenantMembershipMutationPayload', deletedIds?: Array<string | null> | null, clientMutationId?: string | null } | null };
 
+export type ResendTenantInvitationMutationMutationVariables = Exact<{
+  input: ResendTenantInvitationMutationInput;
+}>;
+
+
+export type ResendTenantInvitationMutationMutation = { __typename?: 'ApiMutation', resendTenantInvitation?: { __typename?: 'ResendTenantInvitationMutationPayload', ok?: boolean | null } | null };
+
 export type TenantMembersListQueryQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type TenantMembersListQueryQuery = { __typename?: 'Query', tenant?: { __typename?: 'TenantType', userMemberships?: Array<{ __typename?: 'TenantMembershipType', id: string, role?: TenantUserRole | null, invitationAccepted?: boolean | null, inviteeEmailAddress?: string | null, userId?: string | null, firstName?: string | null, lastName?: string | null, userEmail?: string | null, avatar?: string | null } | null> | null } | null };
+export type TenantMembersListQueryQuery = { __typename?: 'Query', tenant?: { __typename?: 'TenantType', userMemberships?: Array<{ __typename?: 'TenantMembershipType', id: string, role?: TenantUserRole | null, invitationAccepted?: boolean | null, inviteeEmailAddress?: string | null, userId?: string | null, firstName?: string | null, lastName?: string | null, userEmail?: string | null, avatar?: string | null, organizationRoles?: Array<{ __typename?: 'OrganizationRoleType', id: string, name: string, color?: RoleColor | null, isSystemRole?: boolean | null, isOwnerRole?: boolean | null } | null> | null } | null> | null } | null };
 
-export type TenantFragmentFragment = { __typename?: 'TenantType', id: string, name?: string | null, slug?: string | null, membership: { __typename?: 'TenantMembershipType', role?: TenantUserRole | null, invitationAccepted?: boolean | null } } & { ' $fragmentName'?: 'TenantFragmentFragment' };
+export type SsoDiscoverQueryVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type SsoDiscoverQuery = { __typename?: 'Query', ssoDiscover?: { __typename?: 'SSODiscoveryResultType', ssoAvailable?: boolean | null, requireSso?: boolean | null, connections?: Array<{ __typename?: 'SSODiscoveryConnectionType', id?: string | null, name?: string | null, type?: string | null, tenantId?: string | null, tenantName?: string | null, loginUrl?: string | null } | null> | null } | null };
+
+export type TenantAuditLogsQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+  eventType?: InputMaybe<Scalars['String']['input']>;
+  userEmail?: InputMaybe<Scalars['String']['input']>;
+  success?: InputMaybe<Scalars['Boolean']['input']>;
+  startDate?: InputMaybe<Scalars['String']['input']>;
+  endDate?: InputMaybe<Scalars['String']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type TenantAuditLogsQueryQuery = { __typename?: 'Query', ssoAuditLogs?: { __typename?: 'SSOAuditLogConnection', edges: Array<{ __typename?: 'SSOAuditLogEdge', node?: { __typename?: 'SSOAuditLogType', id: string, eventType: SsoSsoAuditLogEventTypeChoices, eventDescription: string, userEmail?: string | null, connectionName?: string | null, ipAddress?: string | null, success: boolean, errorMessage: string, metadata: any, createdAt: any } | null } | null>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } | null };
+
+export type TenantPasskeysQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type TenantPasskeysQueryQuery = { __typename?: 'Query', tenantPasskeys?: Array<{ __typename?: 'TenantPasskeyType', id?: string | null, name?: string | null, authenticatorType?: string | null, createdAt?: any | null, lastUsedAt?: any | null, useCount?: number | null, userEmail?: string | null, userName?: string | null } | null> | null };
+
+export type MyPasskeysQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyPasskeysQueryQuery = { __typename?: 'Query', myPasskeys?: { __typename?: 'PasskeyConnection', edges: Array<{ __typename?: 'PasskeyEdge', node?: { __typename?: 'PasskeyType', id: string, name: string, authenticatorType: string, createdAt: any, lastUsedAt?: any | null, useCount: number } | null } | null> } | null };
+
+export type TenantSecurityDeletePasskeyMutationVariables = Exact<{
+  input: DeletePasskeyMutationInput;
+}>;
+
+
+export type TenantSecurityDeletePasskeyMutation = { __typename?: 'ApiMutation', deletePasskey?: { __typename?: 'DeletePasskeyMutationPayload', deletedIds?: Array<string | null> | null } | null };
+
+export type TenantSecurityDeleteTenantPasskeyMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type TenantSecurityDeleteTenantPasskeyMutation = { __typename?: 'ApiMutation', deleteTenantPasskey?: { __typename?: 'DeleteTenantPasskeyMutation', ok?: boolean | null } | null };
+
+export type TenantScimTokensQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type TenantScimTokensQueryQuery = { __typename?: 'Query', scimTokens?: { __typename?: 'SCIMTokenConnection', edges: Array<{ __typename?: 'SCIMTokenEdge', node?: { __typename?: 'SCIMTokenType', id: string, name: string, tokenPrefix: string, isActive: boolean, expiresAt?: any | null, lastUsedAt?: any | null, lastUsedIp?: string | null, requestCount: number, createdAt: any } | null } | null> } | null };
+
+export type TenantSecurityCreateScimTokenMutationVariables = Exact<{
+  input: CreateScimTokenMutationInput;
+}>;
+
+
+export type TenantSecurityCreateScimTokenMutation = { __typename?: 'ApiMutation', createScimToken?: { __typename?: 'CreateSCIMTokenMutationPayload', rawToken?: string | null, scimToken?: { __typename?: 'SCIMTokenType', id: string, name: string, tokenPrefix: string } | null } | null };
+
+export type TenantSecurityRevokeScimTokenMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type TenantSecurityRevokeScimTokenMutation = { __typename?: 'ApiMutation', revokeScimToken?: { __typename?: 'RevokeSCIMTokenMutation', ok?: boolean | null } | null };
+
+export type TenantSecuritySsoConnectionsQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type TenantSecuritySsoConnectionsQueryQuery = { __typename?: 'Query', ssoConnections?: { __typename?: 'SSOConnectionConnection', edges: Array<{ __typename?: 'SSOConnectionEdge', node?: { __typename?: 'SSOConnectionType', id: string, name: string, connectionType: SsoTenantSsoConnectionConnectionTypeChoices, status: SsoTenantSsoConnectionStatusChoices, allowedDomains: any, enforceSso: boolean, jitProvisioningEnabled: boolean, samlEntityId: string, samlSsoUrl: string, oidcIssuer: string, oidcClientId: string, lastLoginAt?: any | null, loginCount: number, createdAt: any, spMetadataUrl?: string | null, spAcsUrl?: string | null, spEntityId?: string | null, oidcCallbackUrl?: string | null, oidcLoginUrl?: string | null } | null } | null> } | null };
+
+export type TenantSecurityCreateSsoConnectionMutationVariables = Exact<{
+  input: CreateSsoConnectionMutationInput;
+}>;
+
+
+export type TenantSecurityCreateSsoConnectionMutation = { __typename?: 'ApiMutation', createSsoConnection?: { __typename?: 'CreateSSOConnectionMutationPayload', ssoConnection?: { __typename?: 'SSOConnectionType', id: string, name: string, connectionType: SsoTenantSsoConnectionConnectionTypeChoices, status: SsoTenantSsoConnectionStatusChoices, spMetadataUrl?: string | null, spAcsUrl?: string | null, spEntityId?: string | null, oidcCallbackUrl?: string | null, oidcLoginUrl?: string | null } | null } | null };
+
+export type TenantSecurityDeleteSsoConnectionMutationVariables = Exact<{
+  input: DeleteSsoConnectionMutationInput;
+}>;
+
+
+export type TenantSecurityDeleteSsoConnectionMutation = { __typename?: 'ApiMutation', deleteSsoConnection?: { __typename?: 'DeleteSSOConnectionMutationPayload', deletedIds?: Array<string | null> | null } | null };
+
+export type TenantSecurityActivateSsoConnectionMutationVariables = Exact<{
+  input: ActivateSsoConnectionMutationInput;
+}>;
+
+
+export type TenantSecurityActivateSsoConnectionMutation = { __typename?: 'ApiMutation', activateSsoConnection?: { __typename?: 'ActivateSSOConnectionMutationPayload', ssoConnection?: { __typename?: 'SSOConnectionType', id: string, status: SsoTenantSsoConnectionStatusChoices } | null } | null };
+
+export type TenantSecurityDeactivateSsoConnectionMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type TenantSecurityDeactivateSsoConnectionMutation = { __typename?: 'ApiMutation', deactivateSsoConnection?: { __typename?: 'DeactivateSSOConnectionMutation', ssoConnection?: { __typename?: 'SSOConnectionType', id: string, status: SsoTenantSsoConnectionStatusChoices } | null } | null };
+
+export type TenantSecurityUpdateSsoConnectionMutationVariables = Exact<{
+  input: UpdateSsoConnectionMutationInput;
+}>;
+
+
+export type TenantSecurityUpdateSsoConnectionMutation = { __typename?: 'ApiMutation', updateSsoConnection?: { __typename?: 'UpdateSSOConnectionMutationPayload', ssoConnection?: { __typename?: 'SSOConnectionType', id: string, name: string, connectionType: SsoTenantSsoConnectionConnectionTypeChoices, status: SsoTenantSsoConnectionStatusChoices, enforceSso: boolean, spMetadataUrl?: string | null, spAcsUrl?: string | null, spEntityId?: string | null, oidcCallbackUrl?: string | null } | null } | null };
+
+export type TenantSecurityTestSsoConnectionMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type TenantSecurityTestSsoConnectionMutation = { __typename?: 'ApiMutation', testSsoConnection?: { __typename?: 'TestSSOConnectionMutation', result?: { __typename?: 'TestSSOConnectionPayload', connectionId?: string | null, connectionName?: string | null, connectionType?: string | null, overallStatus?: string | null, testedAt?: string | null, checks?: Array<{ __typename?: 'TestSSOConnectionCheckType', name?: string | null, status?: string | null, message?: string | null, details?: any | null } | null> | null } | null } | null };
+
+export type TenantFragmentFragment = { __typename?: 'TenantType', id: string, name?: string | null, slug?: string | null, actionLoggingEnabled?: boolean | null, membership: { __typename?: 'TenantMembershipType', role?: TenantUserRole | null, invitationAccepted?: boolean | null } } & { ' $fragmentName'?: 'TenantFragmentFragment' };
 
 export type CurrentTenantQueryQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -3359,6 +5691,47 @@ export type DeclineTenantInvitationMutationMutationVariables = Exact<{
 
 export type DeclineTenantInvitationMutationMutation = { __typename?: 'ApiMutation', declineTenantInvitation?: { __typename?: 'DeclineTenantInvitationMutationPayload', ok?: boolean | null } | null };
 
+export type ActionLogFragmentFragment = { __typename?: 'ActionLogType', id: string, actionType: MultitenancyActionLogActionTypeChoices, entityType: string, entityId: string, entityName: string, actorType: MultitenancyActionLogActorTypeChoices, actorEmail: string, changes?: any | null, metadata?: any | null, createdAt: any } & { ' $fragmentName'?: 'ActionLogFragmentFragment' };
+
+export type AllActionLogsQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  entityType?: InputMaybe<Scalars['String']['input']>;
+  actionType?: InputMaybe<Scalars['String']['input']>;
+  actorEmail?: InputMaybe<Scalars['String']['input']>;
+  fromDatetime?: InputMaybe<Scalars['DateTime']['input']>;
+  toDatetime?: InputMaybe<Scalars['DateTime']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type AllActionLogsQueryQuery = { __typename?: 'Query', allActionLogs?: { __typename?: 'ActionLogConnection', totalCount?: number | null, edges: Array<{ __typename?: 'ActionLogEdge', node?: (
+        { __typename?: 'ActionLogType' }
+        & { ' $fragmentRefs'?: { 'ActionLogFragmentFragment': ActionLogFragmentFragment } }
+      ) | null } | null>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+
+export type UpdateTenantActionLoggingMutationMutationVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+  enabled: Scalars['Boolean']['input'];
+}>;
+
+
+export type UpdateTenantActionLoggingMutationMutation = { __typename?: 'ApiMutation', updateTenantActionLogging?: { __typename?: 'UpdateTenantActionLoggingMutation', ok?: boolean | null, tenant?: { __typename?: 'TenantType', id: string, actionLoggingEnabled?: boolean | null } | null } | null };
+
+export type ExportActionLogsMutationMutationVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+  entityType?: InputMaybe<Scalars['String']['input']>;
+  actionType?: InputMaybe<Scalars['String']['input']>;
+  actorEmail?: InputMaybe<Scalars['String']['input']>;
+  fromDatetime?: InputMaybe<Scalars['DateTime']['input']>;
+  toDatetime?: InputMaybe<Scalars['DateTime']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type ExportActionLogsMutationMutation = { __typename?: 'ApiMutation', exportActionLogs?: { __typename?: 'ExportActionLogsMutation', ok?: boolean | null, export?: { __typename?: 'ActionLogExportType', id: string, status: MultitenancyActionLogExportStatusChoices } | null } | null };
+
 export type UpdateTenantMutationMutationVariables = Exact<{
   input: UpdateTenantMutationInput;
 }>;
@@ -3371,7 +5744,90 @@ export type CreateTenantInvitationMutationMutationVariables = Exact<{
 }>;
 
 
-export type CreateTenantInvitationMutationMutation = { __typename?: 'ApiMutation', createTenantInvitation?: { __typename?: 'CreateTenantInvitationMutationPayload', email?: string | null, role?: TenantUserRole | null } | null };
+export type CreateTenantInvitationMutationMutation = { __typename?: 'ApiMutation', createTenantInvitation?: { __typename?: 'CreateTenantInvitationMutationPayload', ok?: boolean | null } | null };
+
+export type AllPermissionsQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllPermissionsQueryQuery = { __typename?: 'Query', allPermissions?: { __typename?: 'PermissionConnection', edges: Array<{ __typename?: 'PermissionEdge', node?: { __typename?: 'PermissionType', id: string, code: string, name: string, description: string, category?: string | null, categoryLabel?: string | null, categoryDescription?: string | null, sortOrder: number } | null } | null> } | null };
+
+export type AllOrganizationRolesQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type AllOrganizationRolesQueryQuery = { __typename?: 'Query', allOrganizationRoles?: { __typename?: 'OrganizationRoleConnection', edges: Array<{ __typename?: 'OrganizationRoleEdge', node?: { __typename?: 'OrganizationRoleType', id: string, name: string, description: string, color?: RoleColor | null, systemRoleType?: SystemRoleType | null, isSystemRole?: boolean | null, isOwnerRole?: boolean | null, memberCount?: number | null, permissions?: Array<{ __typename?: 'PermissionType', id: string, code: string, name: string, category?: string | null } | null> | null } | null } | null> } | null };
+
+export type OrganizationRoleQueryQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type OrganizationRoleQueryQuery = { __typename?: 'Query', organizationRole?: { __typename?: 'OrganizationRoleType', id: string, name: string, description: string, color?: RoleColor | null, systemRoleType?: SystemRoleType | null, isSystemRole?: boolean | null, isOwnerRole?: boolean | null, memberCount?: number | null, permissions?: Array<{ __typename?: 'PermissionType', id: string, code: string, name: string, category?: string | null } | null> | null } | null };
+
+export type CurrentUserPermissionsQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type CurrentUserPermissionsQueryQuery = { __typename?: 'Query', currentUserPermissions?: Array<string | null> | null };
+
+export type CurrentUserOrganizationRolesQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type CurrentUserOrganizationRolesQueryQuery = { __typename?: 'Query', currentUserPermissions?: Array<string | null> | null, currentUserOrganizationRoles?: Array<{ __typename?: 'OrganizationRoleType', id: string, name: string, description: string, color?: RoleColor | null, isSystemRole?: boolean | null, isOwnerRole?: boolean | null, permissions?: Array<{ __typename?: 'PermissionType', id: string, code: string, name: string, category?: string | null } | null> | null } | null> | null };
+
+export type CreateOrganizationRoleMutationMutationVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  color?: InputMaybe<RoleColor>;
+  permissionIds: Array<InputMaybe<Scalars['ID']['input']>> | InputMaybe<Scalars['ID']['input']>;
+}>;
+
+
+export type CreateOrganizationRoleMutationMutation = { __typename?: 'ApiMutation', createOrganizationRole?: { __typename?: 'CreateOrganizationRoleMutation', ok?: boolean | null, role?: { __typename?: 'OrganizationRoleType', id: string, name: string, description: string, color?: RoleColor | null, memberCount?: number | null, permissions?: Array<{ __typename?: 'PermissionType', id: string, code: string, name: string, category?: string | null } | null> | null } | null } | null };
+
+export type UpdateOrganizationRoleMutationMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  color?: InputMaybe<RoleColor>;
+  permissionIds?: InputMaybe<Array<InputMaybe<Scalars['ID']['input']>> | InputMaybe<Scalars['ID']['input']>>;
+}>;
+
+
+export type UpdateOrganizationRoleMutationMutation = { __typename?: 'ApiMutation', updateOrganizationRole?: { __typename?: 'UpdateOrganizationRoleMutation', ok?: boolean | null, role?: { __typename?: 'OrganizationRoleType', id: string, name: string, description: string, color?: RoleColor | null, memberCount?: number | null, permissions?: Array<{ __typename?: 'PermissionType', id: string, code: string, name: string, category?: string | null } | null> | null } | null } | null };
+
+export type DeleteOrganizationRoleMutationMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+  replacementRoleId?: InputMaybe<Scalars['ID']['input']>;
+}>;
+
+
+export type DeleteOrganizationRoleMutationMutation = { __typename?: 'ApiMutation', deleteOrganizationRole?: { __typename?: 'DeleteOrganizationRoleMutation', ok?: boolean | null, affectedMemberCount?: number | null } | null };
+
+export type AssignRolesToMemberMutationMutationVariables = Exact<{
+  membershipId: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+  roleIds: Array<InputMaybe<Scalars['ID']['input']>> | InputMaybe<Scalars['ID']['input']>;
+}>;
+
+
+export type AssignRolesToMemberMutationMutation = { __typename?: 'ApiMutation', assignRolesToMember?: { __typename?: 'AssignRolesToMemberMutation', ok?: boolean | null, membership?: { __typename?: 'TenantMembershipType', id: string, organizationRoles?: Array<{ __typename?: 'OrganizationRoleType', id: string, name: string, color?: RoleColor | null } | null> | null } | null } | null };
+
+export type RemoveRoleFromMemberMutationMutationVariables = Exact<{
+  membershipId: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
+  roleId: Scalars['ID']['input'];
+}>;
+
+
+export type RemoveRoleFromMemberMutationMutation = { __typename?: 'ApiMutation', removeRoleFromMember?: { __typename?: 'RemoveRoleFromMemberMutation', ok?: boolean | null, membership?: { __typename?: 'TenantMembershipType', id: string, organizationRoles?: Array<{ __typename?: 'OrganizationRoleType', id: string, name: string, color?: RoleColor | null } | null> | null } | null } | null };
 
 export type AuthConfirmUserEmailMutationMutationVariables = Exact<{
   input: ConfirmEmailMutationInput;
@@ -3379,6 +5835,31 @@ export type AuthConfirmUserEmailMutationMutationVariables = Exact<{
 
 
 export type AuthConfirmUserEmailMutationMutation = { __typename?: 'ApiMutation', confirm?: { __typename?: 'ConfirmEmailMutationPayload', ok?: boolean | null } | null };
+
+export type DashboardStatsQueryQueryVariables = Exact<{
+  tenantId: Scalars['ID']['input'];
+}>;
+
+
+export type DashboardStatsQueryQuery = { __typename?: 'Query', allCrudDemoItems?: { __typename?: 'CrudDemoItemConnection', edges: Array<{ __typename?: 'CrudDemoItemEdge', node?: { __typename?: 'CrudDemoItemType', id: string, name: string, createdBy?: { __typename?: 'CurrentUserType', id: string } | null } | null } | null> } | null, allDocumentDemoItems?: { __typename?: 'DocumentDemoItemConnection', edges: Array<{ __typename?: 'DocumentDemoItemEdge', node?: { __typename?: 'DocumentDemoItemType', id: string, createdAt: any } | null } | null> } | null, allNotifications?: { __typename?: 'NotificationConnection', edges: Array<{ __typename?: 'NotificationEdge', node?: { __typename?: 'NotificationType', id: string, type: string, createdAt: any, readAt?: any | null } | null } | null> } | null, tenant?: { __typename?: 'TenantType', userMemberships?: Array<{ __typename?: 'TenantMembershipType', id: string, role?: TenantUserRole | null, invitationAccepted?: boolean | null } | null> | null } | null };
+
+export type ActiveSessionsQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ActiveSessionsQueryQuery = { __typename?: 'Query', mySessions?: { __typename?: 'SSOSessionConnection', edges: Array<{ __typename?: 'SSOSessionEdge', node?: { __typename?: 'SSOSessionType', id: string, sessionId: string, deviceName: string, deviceType: string, browser: string, operatingSystem: string, ipAddress?: string | null, location: string, isActive: boolean, isCurrent?: boolean | null, lastActivityAt: any, expiresAt: any, createdAt: any } | null } | null> } | null };
+
+export type RevokeSessionMutationMutationVariables = Exact<{
+  sessionId: Scalars['String']['input'];
+  reason?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type RevokeSessionMutationMutation = { __typename?: 'ApiMutation', revokeSession?: { __typename?: 'RevokeSessionMutation', ok?: boolean | null } | null };
+
+export type RevokeAllSessionsMutationMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RevokeAllSessionsMutationMutation = { __typename?: 'ApiMutation', revokeAllSessions?: { __typename?: 'RevokeAllSessionsMutation', ok?: boolean | null, revokedCount?: number | null } | null };
 
 export type AuthChangePasswordMutationMutationVariables = Exact<{
   input: ChangePasswordMutationInput;
@@ -3454,9 +5935,9 @@ export type DisableOtpMutationVariables = Exact<{
 export type DisableOtpMutation = { __typename?: 'ApiMutation', disableOtp?: { __typename?: 'DisableOTPMutationPayload', ok?: boolean | null } | null };
 
 export const PageCursorsFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"pageCursorsFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PageCursors"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"around"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"first"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"last"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"next"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"previous"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}}]}}]} as unknown as DocumentNode<PageCursorsFragmentFragment, unknown>;
-export const CommonQueryCurrentUserFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CurrentUserType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"otpVerified"}},{"kind":"Field","name":{"kind":"Name","value":"otpEnabled"}}]}}]} as unknown as DocumentNode<CommonQueryCurrentUserFragmentFragment, unknown>;
+export const CommonQueryCurrentUserFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CurrentUserType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"otpVerified"}},{"kind":"Field","name":{"kind":"Name","value":"otpEnabled"}}]}}]} as unknown as DocumentNode<CommonQueryCurrentUserFragmentFragment, unknown>;
 export const CommonQueryMembershipFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryMembershipFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantMembershipType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"invitationToken"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}}]} as unknown as DocumentNode<CommonQueryMembershipFragmentFragment, unknown>;
-export const CommonQueryTenantItemFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryTenantItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryMembershipFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryMembershipFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantMembershipType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"invitationToken"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}}]} as unknown as DocumentNode<CommonQueryTenantItemFragmentFragment, unknown>;
+export const CommonQueryTenantItemFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryTenantItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"actionLoggingEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryMembershipFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryMembershipFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantMembershipType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"invitationToken"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}}]} as unknown as DocumentNode<CommonQueryTenantItemFragmentFragment, unknown>;
 export const UseFavoriteDemoItem_ItemFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"useFavoriteDemoItem_item"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ContentfulDemoItemFavoriteType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}}]}}]}}]} as unknown as DocumentNode<UseFavoriteDemoItem_ItemFragment, unknown>;
 export const DemoItemListItemFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"demoItemListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"DemoItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]} as unknown as DocumentNode<DemoItemListItemFragmentFragment, unknown>;
 export const CrudDemoItemListItemFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"crudDemoItemListItem"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CrudDemoItemType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]} as unknown as DocumentNode<CrudDemoItemListItemFragment, unknown>;
@@ -3470,13 +5951,27 @@ export const StripeSetupIntentFragmentFragmentDoc = {"kind":"Document","definiti
 export const StripePaymentMethodFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}}]} as unknown as DocumentNode<StripePaymentMethodFragmentFragment, unknown>;
 export const SubscriptionPlanItemFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionPlanItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionPlanType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"amount"}}]}}]} as unknown as DocumentNode<SubscriptionPlanItemFragmentFragment, unknown>;
 export const StripeChargeFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripeChargeFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripeChargeType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"created"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}},{"kind":"Field","name":{"kind":"Name","value":"paymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"invoice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plan"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionPlanItemFragment"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionPlanItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionPlanType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"amount"}}]}}]} as unknown as DocumentNode<StripeChargeFragmentFragment, unknown>;
-export const NotificationsButtonContentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsButtonContent"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}}]}}]} as unknown as DocumentNode<NotificationsButtonContentFragment, unknown>;
 export const NotificationsListItemFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<NotificationsListItemFragmentFragment, unknown>;
 export const NotificationsListContentFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListContentFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"allNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"count"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"cursor"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListItemFragment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<NotificationsListContentFragmentFragment, unknown>;
-export const TenantFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"tenantFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}}]}}]}}]} as unknown as DocumentNode<TenantFragmentFragment, unknown>;
+export const NotificationsButtonContentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsButtonContent"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"unreadNotificationsCount"}}]}}]} as unknown as DocumentNode<NotificationsButtonContentFragment, unknown>;
+export const TenantFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"tenantFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"actionLoggingEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}}]}}]}}]} as unknown as DocumentNode<TenantFragmentFragment, unknown>;
+export const ActionLogFragmentFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"actionLogFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ActionLogType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"actionType"}},{"kind":"Field","name":{"kind":"Name","value":"entityType"}},{"kind":"Field","name":{"kind":"Name","value":"entityId"}},{"kind":"Field","name":{"kind":"Name","value":"entityName"}},{"kind":"Field","name":{"kind":"Name","value":"actorType"}},{"kind":"Field","name":{"kind":"Name","value":"actorEmail"}},{"kind":"Field","name":{"kind":"Name","value":"changes"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]} as unknown as DocumentNode<ActionLogFragmentFragment, unknown>;
+export const AiChatSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"AiChatSubscription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"conversationId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"aiChat"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"conversationId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"conversationId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"event"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"eventType"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"toolName"}},{"kind":"Field","name":{"kind":"Name","value":"toolDisplayName"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"hasData"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"toolsUsed"}},{"kind":"Field","name":{"kind":"Name","value":"conversationId"}}]}}]}}]}}]} as unknown as DocumentNode<AiChatSubscriptionSubscription, AiChatSubscriptionSubscriptionVariables>;
+export const SendAiMessageOpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SendAiMessageOp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"message"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"conversationId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"history"}},"type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"JSONString"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sendAiMessage"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"message"},"value":{"kind":"Variable","name":{"kind":"Name","value":"message"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"conversationId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"conversationId"}}},{"kind":"Argument","name":{"kind":"Name","value":"history"},"value":{"kind":"Variable","name":{"kind":"Name","value":"history"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<SendAiMessageOpMutation, SendAiMessageOpMutationVariables>;
 export const PagedPaginationListTestQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"pagedPaginationListTestQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"last"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"before"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCrudDemoItems"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"Variable","name":{"kind":"Name","value":"last"}}},{"kind":"Argument","name":{"kind":"Name","value":"before"},"value":{"kind":"Variable","name":{"kind":"Name","value":"before"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageCursors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"around"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"first"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"last"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"next"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}},{"kind":"Field","name":{"kind":"Name","value":"previous"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"page"}}]}}]}}]}}]}}]} as unknown as DocumentNode<PagedPaginationListTestQueryQuery, PagedPaginationListTestQueryQueryVariables>;
 export const PaginationListTestQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"paginationListTestQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"last"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"before"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"last"},"value":{"kind":"Variable","name":{"kind":"Name","value":"last"}}},{"kind":"Argument","name":{"kind":"Name","value":"before"},"value":{"kind":"Variable","name":{"kind":"Name","value":"before"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startCursor"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}}]}}]}}]}}]} as unknown as DocumentNode<PaginationListTestQueryQuery, PaginationListTestQueryQueryVariables>;
-export const CommonQueryCurrentUserQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"commonQueryCurrentUserQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"}},{"kind":"Field","name":{"kind":"Name","value":"tenants"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryTenantItemFragment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryMembershipFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantMembershipType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"invitationToken"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CurrentUserType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"otpVerified"}},{"kind":"Field","name":{"kind":"Name","value":"otpEnabled"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryTenantItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryMembershipFragment"}}]}}]}}]} as unknown as DocumentNode<CommonQueryCurrentUserQueryQuery, CommonQueryCurrentUserQueryQueryVariables>;
+export const CommonQueryCurrentUserQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"commonQueryCurrentUserQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"}},{"kind":"Field","name":{"kind":"Name","value":"tenants"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryTenantItemFragment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryMembershipFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantMembershipType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"invitationToken"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CurrentUserType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"otpVerified"}},{"kind":"Field","name":{"kind":"Name","value":"otpEnabled"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryTenantItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"actionLoggingEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryMembershipFragment"}}]}}]}}]} as unknown as DocumentNode<CommonQueryCurrentUserQueryQuery, CommonQueryCurrentUserQueryQueryVariables>;
+export const BackupConfigQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"backupConfigQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backupConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"enabled"}},{"kind":"Field","name":{"kind":"Name","value":"backupIntervalHours"}},{"kind":"Field","name":{"kind":"Name","value":"retentionDays"}},{"kind":"Field","name":{"kind":"Name","value":"emailRecipients"}},{"kind":"Field","name":{"kind":"Name","value":"selectedModules"}},{"kind":"Field","name":{"kind":"Name","value":"selectedModels"}},{"kind":"Field","name":{"kind":"Name","value":"excludedModels"}}]}}]}}]} as unknown as DocumentNode<BackupConfigQueryQuery, BackupConfigQueryQueryVariables>;
+export const AvailableBackupModulesQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"availableBackupModulesQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"availableBackupModules"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"modelCount"}}]}}]}}]} as unknown as DocumentNode<AvailableBackupModulesQueryQuery, AvailableBackupModulesQueryQueryVariables>;
+export const AvailableBackupModelsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"availableBackupModelsQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"moduleId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"availableBackupModels"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"moduleId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"moduleId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"appLabel"}},{"kind":"Field","name":{"kind":"Name","value":"modelName"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"fullName"}}]}}]}}]} as unknown as DocumentNode<AvailableBackupModelsQueryQuery, AvailableBackupModelsQueryQueryVariables>;
+export const BackupRecordsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"backupRecordsQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backupRecords"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"filePath"}},{"kind":"Field","name":{"kind":"Name","value":"fileSize"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"errorMessage"}},{"kind":"Field","name":{"kind":"Name","value":"modelCounts"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"downloadUrl"}},{"kind":"Field","name":{"kind":"Name","value":"isEncrypted"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}}]}}]}}]}}]} as unknown as DocumentNode<BackupRecordsQueryQuery, BackupRecordsQueryQueryVariables>;
+export const UpdateBackupConfigMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateBackupConfigMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BackupConfigInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateBackupConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backupConfig"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"enabled"}},{"kind":"Field","name":{"kind":"Name","value":"backupIntervalHours"}},{"kind":"Field","name":{"kind":"Name","value":"retentionDays"}},{"kind":"Field","name":{"kind":"Name","value":"emailRecipients"}},{"kind":"Field","name":{"kind":"Name","value":"selectedModules"}},{"kind":"Field","name":{"kind":"Name","value":"selectedModels"}},{"kind":"Field","name":{"kind":"Name","value":"excludedModels"}}]}},{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<UpdateBackupConfigMutationMutation, UpdateBackupConfigMutationMutationVariables>;
+export const DeleteBackupMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteBackupMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"backupId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteBackup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"backupId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"backupId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<DeleteBackupMutationMutation, DeleteBackupMutationMutationVariables>;
+export const TriggerBackupMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"triggerBackupMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"triggerBackup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"backupId"}}]}}]}}]} as unknown as DocumentNode<TriggerBackupMutationMutation, TriggerBackupMutationMutationVariables>;
+export const DownloadBackupDecryptedMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"downloadBackupDecryptedMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"backupId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"downloadBackupDecrypted"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"backupId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"backupId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"error"}}]}}]}}]} as unknown as DocumentNode<DownloadBackupDecryptedMutationMutation, DownloadBackupDecryptedMutationMutationVariables>;
+export const RestoreBackupMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"restoreBackupMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"backupId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"conflictStrategy"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ConflictStrategyEnum"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"restoreBackup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"backupId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"backupId"}}},{"kind":"Argument","name":{"kind":"Name","value":"conflictStrategy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"conflictStrategy"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"error"}},{"kind":"Field","name":{"kind":"Name","value":"restoreId"}}]}}]}}]} as unknown as DocumentNode<RestoreBackupMutationMutation, RestoreBackupMutationMutationVariables>;
+export const BackupEligibleRecipientsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"backupEligibleRecipientsQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"backupEligibleRecipients"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}}]}}]}}]} as unknown as DocumentNode<BackupEligibleRecipientsQueryQuery, BackupEligibleRecipientsQueryQueryVariables>;
+export const RestoreRecordsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"restoreRecordsQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"restoreRecords"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"conflictStrategy"}},{"kind":"Field","name":{"kind":"Name","value":"modelCounts"}},{"kind":"Field","name":{"kind":"Name","value":"errorMessage"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"completedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"totalCreated"}},{"kind":"Field","name":{"kind":"Name","value":"totalUpdated"}},{"kind":"Field","name":{"kind":"Name","value":"totalSkipped"}},{"kind":"Field","name":{"kind":"Name","value":"totalFailed"}},{"kind":"Field","name":{"kind":"Name","value":"backupRecord"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}}]}}]}}]}}]} as unknown as DocumentNode<RestoreRecordsQueryQuery, RestoreRecordsQueryQueryVariables>;
 export const ConfigContentfulAppConfigQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"configContentfulAppConfigQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"appConfigCollection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"items"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"privacyPolicy"}},{"kind":"Field","name":{"kind":"Name","value":"termsAndConditions"}}]}}]}}]}}]} as unknown as DocumentNode<ConfigContentfulAppConfigQueryQuery, ConfigContentfulAppConfigQueryQueryVariables>;
 export const UseFavoriteDemoItemListCreateMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"useFavoriteDemoItemListCreateMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateFavoriteContentfulDemoItemMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createFavoriteContentfulDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"contentfulDemoItemFavoriteEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<UseFavoriteDemoItemListCreateMutationMutation, UseFavoriteDemoItemListCreateMutationMutationVariables>;
 export const UseFavoriteDemoItemListDeleteMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"useFavoriteDemoItemListDeleteMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteFavoriteContentfulDemoItemMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteFavoriteContentfulDemoItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}}]}}]}}]} as unknown as DocumentNode<UseFavoriteDemoItemListDeleteMutationMutation, UseFavoriteDemoItemListDeleteMutationMutationVariables>;
@@ -3505,24 +6000,73 @@ export const StripeCreateSetupIntentMutation_Document = {"kind":"Document","defi
 export const SubscriptionChangeActiveSubscriptionMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"subscriptionChangeActiveSubscriptionMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChangeActiveSubscriptionMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"changeActiveSubscription"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subscriptionSchedule"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment_"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionActiveSubscriptionFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionScheduleType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"phases"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"endDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"price"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startDate"}},{"kind":"Field","name":{"kind":"Name","value":"trialEnd"}},{"kind":"Field","name":{"kind":"Name","value":"trialStart"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"canActivateTrial"}},{"kind":"Field","name":{"kind":"Name","value":"defaultPaymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment_"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<SubscriptionChangeActiveSubscriptionMutationMutation, SubscriptionChangeActiveSubscriptionMutationMutationVariables>;
 export const SubscriptionPlansAllQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"subscriptionPlansAllQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allSubscriptionPlans"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"100"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionPriceItemFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionPriceItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePriceType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitAmount"}}]}}]} as unknown as DocumentNode<SubscriptionPlansAllQueryQuery, SubscriptionPlansAllQueryQueryVariables>;
 export const StripeAllChargesQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"stripeAllChargesQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCharges"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripeChargeFragment"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripePaymentMethodFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripePaymentMethodType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"card"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"subscriptionPlanItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SubscriptionPlanType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pk"}},{"kind":"Field","name":{"kind":"Name","value":"product"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"amount"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"stripeChargeFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"StripeChargeType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"created"}},{"kind":"Field","name":{"kind":"Name","value":"billingDetails"}},{"kind":"Field","name":{"kind":"Name","value":"paymentMethod"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"stripePaymentMethodFragment"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"invoice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"subscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"plan"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"subscriptionPlanItemFragment"}}]}}]}}]}}]}}]} as unknown as DocumentNode<StripeAllChargesQueryQuery, StripeAllChargesQueryQueryVariables>;
-export const GenerateSaasIdeasMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"generateSaasIdeasMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GenerateSaasIdeasMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"generateSaasIdeas"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ideas"}}]}}]}}]} as unknown as DocumentNode<GenerateSaasIdeasMutationMutation, GenerateSaasIdeasMutationMutationVariables>;
-export const NotificationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"notificationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateNotificationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateNotification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"notificationEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<NotificationMutationMutation, NotificationMutationMutationVariables>;
-export const NotificationsListQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"notificationsListQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"count"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}},"defaultValue":{"kind":"IntValue","value":"20"}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"cursor"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListContentFragment"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsButtonContent"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListContentFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"allNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"count"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"cursor"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListItemFragment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsButtonContent"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}}]}}]} as unknown as DocumentNode<NotificationsListQueryQuery, NotificationsListQueryQueryVariables>;
+export const GenerateSaasIdeasMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"generateSaasIdeasMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GenerateSaasIdeasMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"generateSaasIdeas"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"response"}}]}}]}}]} as unknown as DocumentNode<GenerateSaasIdeasMutationMutation, GenerateSaasIdeasMutationMutationVariables>;
+export const NotificationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"notificationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateNotificationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateNotification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"unreadNotificationsCount"}},{"kind":"Field","name":{"kind":"Name","value":"notificationEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<NotificationMutationMutation, NotificationMutationMutationVariables>;
+export const NotificationsListQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"notificationsListQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"count"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}},"defaultValue":{"kind":"IntValue","value":"20"}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"cursor"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListContentFragment"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsButtonContent"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListContentFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"allNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"count"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"cursor"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListItemFragment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsButtonContent"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Query"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"unreadNotificationsCount"}}]}}]} as unknown as DocumentNode<NotificationsListQueryQuery, NotificationsListQueryQueryVariables>;
 export const NotificationCreatedSubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"NotificationCreatedSubscription"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"notificationCreated"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"notification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"notificationsListItemFragment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"notificationsListItemFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"issuer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]} as unknown as DocumentNode<NotificationCreatedSubscriptionSubscription, NotificationCreatedSubscriptionSubscriptionVariables>;
-export const NotificationsListMarkAsReadMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"notificationsListMarkAsReadMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MarkReadAllNotificationsMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"markReadAllNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<NotificationsListMarkAsReadMutationMutation, NotificationsListMarkAsReadMutationMutationVariables>;
+export const NotificationsListMarkAsReadMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"notificationsListMarkAsReadMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MarkReadAllNotificationsMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"markReadAllNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"hasUnreadNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"unreadNotificationsCount"}}]}}]}}]} as unknown as DocumentNode<NotificationsListMarkAsReadMutationMutation, NotificationsListMarkAsReadMutationMutationVariables>;
+export const PasskeysQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PasskeysQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myPasskeys"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"20"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"authenticatorType"}},{"kind":"Field","name":{"kind":"Name","value":"transports"}},{"kind":"Field","name":{"kind":"Name","value":"isActive"}},{"kind":"Field","name":{"kind":"Name","value":"lastUsedAt"}},{"kind":"Field","name":{"kind":"Name","value":"useCount"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<PasskeysQueryQuery, PasskeysQueryQueryVariables>;
+export const RenameUserPasskeyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RenameUserPasskey"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"renamePasskey"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"passkey"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<RenameUserPasskeyMutation, RenameUserPasskeyMutationVariables>;
+export const DeletePasskeyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeletePasskey"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeletePasskeyMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletePasskey"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}}]}}]}}]} as unknown as DocumentNode<DeletePasskeyMutation, DeletePasskeyMutationVariables>;
+export const ScimTokensQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SCIMTokensQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scimTokens"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"50"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"tokenPrefix"}},{"kind":"Field","name":{"kind":"Name","value":"isActive"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"lastUsedAt"}},{"kind":"Field","name":{"kind":"Name","value":"lastUsedIp"}},{"kind":"Field","name":{"kind":"Name","value":"requestCount"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<ScimTokensQueryQuery, ScimTokensQueryQueryVariables>;
+export const CreateScimTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateSCIMToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateSCIMTokenMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createScimToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scimToken"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"tokenPrefix"}}]}},{"kind":"Field","name":{"kind":"Name","value":"rawToken"}}]}}]}}]} as unknown as DocumentNode<CreateScimTokenMutation, CreateScimTokenMutationVariables>;
+export const RevokeScimTokenOpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RevokeSCIMTokenOp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"revokeScimToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<RevokeScimTokenOpMutation, RevokeScimTokenOpMutationVariables>;
+export const SsoConnectionsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SSOConnectionsQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoConnections"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"50"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"connectionType"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"allowedDomains"}},{"kind":"Field","name":{"kind":"Name","value":"jitProvisioningEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"samlEntityId"}},{"kind":"Field","name":{"kind":"Name","value":"samlSsoUrl"}},{"kind":"Field","name":{"kind":"Name","value":"oidcIssuer"}},{"kind":"Field","name":{"kind":"Name","value":"oidcClientId"}},{"kind":"Field","name":{"kind":"Name","value":"lastLoginAt"}},{"kind":"Field","name":{"kind":"Name","value":"loginCount"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"spMetadataUrl"}}]}}]}}]}}]}}]} as unknown as DocumentNode<SsoConnectionsQueryQuery, SsoConnectionsQueryQueryVariables>;
+export const CreateSsoConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateSSOConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateSSOConnectionMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSsoConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoConnection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"connectionType"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]} as unknown as DocumentNode<CreateSsoConnectionMutation, CreateSsoConnectionMutationVariables>;
+export const UpdateSsoConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateSSOConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateSSOConnectionMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateSsoConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoConnection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"connectionType"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateSsoConnectionMutation, UpdateSsoConnectionMutationVariables>;
+export const ActivateSsoConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ActivateSSOConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ActivateSSOConnectionMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"activateSsoConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoConnection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]} as unknown as DocumentNode<ActivateSsoConnectionMutation, ActivateSsoConnectionMutationVariables>;
+export const DeactivateSsoConnectionOpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeactivateSSOConnectionOp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deactivateSsoConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoConnection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]} as unknown as DocumentNode<DeactivateSsoConnectionOpMutation, DeactivateSsoConnectionOpMutationVariables>;
+export const DeleteSsoConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteSSOConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteSSOConnectionMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteSsoConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}}]}}]}}]} as unknown as DocumentNode<DeleteSsoConnectionMutation, DeleteSsoConnectionMutationVariables>;
+export const SessionsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SessionsQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mySessions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"50"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"sessionId"}},{"kind":"Field","name":{"kind":"Name","value":"deviceName"}},{"kind":"Field","name":{"kind":"Name","value":"deviceType"}},{"kind":"Field","name":{"kind":"Name","value":"browser"}},{"kind":"Field","name":{"kind":"Name","value":"operatingSystem"}},{"kind":"Field","name":{"kind":"Name","value":"ipAddress"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"isActive"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"lastActivityAt"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<SessionsQueryQuery, SessionsQueryQueryVariables>;
+export const RevokeSessionOpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RevokeSessionOp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"sessionId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"reason"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"revokeSession"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"sessionId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"sessionId"}}},{"kind":"Argument","name":{"kind":"Name","value":"reason"},"value":{"kind":"Variable","name":{"kind":"Name","value":"reason"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<RevokeSessionOpMutation, RevokeSessionOpMutationVariables>;
+export const RevokeAllSessionsOpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RevokeAllSessionsOp"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"revokeAllSessions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"revokedCount"}}]}}]}}]} as unknown as DocumentNode<RevokeAllSessionsOpMutation, RevokeAllSessionsOpMutationVariables>;
 export const DeleteTenantMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteTenantMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteTenantMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteTenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}},{"kind":"Field","name":{"kind":"Name","value":"clientMutationId"}}]}}]}}]} as unknown as DocumentNode<DeleteTenantMutationMutation, DeleteTenantMutationMutationVariables>;
 export const UpdateTenantMembershipMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateTenantMembershipMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateTenantMembershipMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTenantMembership"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenantMembership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryMembershipFragment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryMembershipFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantMembershipType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"invitationToken"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}}]} as unknown as DocumentNode<UpdateTenantMembershipMutationMutation, UpdateTenantMembershipMutationMutationVariables>;
 export const DeleteTenantMembershipMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteTenantMembershipMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteTenantMembershipMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteTenantMembership"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}},{"kind":"Field","name":{"kind":"Name","value":"clientMutationId"}}]}}]}}]} as unknown as DocumentNode<DeleteTenantMembershipMutationMutation, DeleteTenantMembershipMutationMutationVariables>;
-export const TenantMembersListQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"tenantMembersListQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userMemberships"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}}]}}]}}]}}]} as unknown as DocumentNode<TenantMembersListQueryQuery, TenantMembersListQueryQueryVariables>;
-export const CurrentTenantQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"currentTenantQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"tenantFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"tenantFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}}]}}]}}]} as unknown as DocumentNode<CurrentTenantQueryQuery, CurrentTenantQueryQueryVariables>;
+export const ResendTenantInvitationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"resendTenantInvitationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ResendTenantInvitationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"resendTenantInvitation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<ResendTenantInvitationMutationMutation, ResendTenantInvitationMutationMutationVariables>;
+export const TenantMembersListQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"tenantMembersListQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userMemberships"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}},{"kind":"Field","name":{"kind":"Name","value":"inviteeEmailAddress"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"organizationRoles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"isSystemRole"}},{"kind":"Field","name":{"kind":"Name","value":"isOwnerRole"}}]}}]}}]}}]}}]} as unknown as DocumentNode<TenantMembersListQueryQuery, TenantMembersListQueryQueryVariables>;
+export const SsoDiscoverDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"SSODiscover"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoDiscover"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoAvailable"}},{"kind":"Field","name":{"kind":"Name","value":"requireSso"}},{"kind":"Field","name":{"kind":"Name","value":"connections"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"tenantId"}},{"kind":"Field","name":{"kind":"Name","value":"tenantName"}},{"kind":"Field","name":{"kind":"Name","value":"loginUrl"}}]}}]}}]}}]} as unknown as DocumentNode<SsoDiscoverQuery, SsoDiscoverQueryVariables>;
+export const TenantAuditLogsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TenantAuditLogsQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"eventType"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userEmail"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"success"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"startDate"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"endDate"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoAuditLogs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"eventType"},"value":{"kind":"Variable","name":{"kind":"Name","value":"eventType"}}},{"kind":"Argument","name":{"kind":"Name","value":"userEmail"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userEmail"}}},{"kind":"Argument","name":{"kind":"Name","value":"success"},"value":{"kind":"Variable","name":{"kind":"Name","value":"success"}}},{"kind":"Argument","name":{"kind":"Name","value":"startDate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"startDate"}}},{"kind":"Argument","name":{"kind":"Name","value":"endDate"},"value":{"kind":"Variable","name":{"kind":"Name","value":"endDate"}}},{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"eventType"}},{"kind":"Field","name":{"kind":"Name","value":"eventDescription"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"connectionName"}},{"kind":"Field","name":{"kind":"Name","value":"ipAddress"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"errorMessage"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}}]}}]}}]}}]} as unknown as DocumentNode<TenantAuditLogsQueryQuery, TenantAuditLogsQueryQueryVariables>;
+export const TenantPasskeysQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TenantPasskeysQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenantPasskeys"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"authenticatorType"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"lastUsedAt"}},{"kind":"Field","name":{"kind":"Name","value":"useCount"}},{"kind":"Field","name":{"kind":"Name","value":"userEmail"}},{"kind":"Field","name":{"kind":"Name","value":"userName"}}]}}]}}]} as unknown as DocumentNode<TenantPasskeysQueryQuery, TenantPasskeysQueryQueryVariables>;
+export const MyPasskeysQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"MyPasskeysQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"myPasskeys"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"50"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"authenticatorType"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"lastUsedAt"}},{"kind":"Field","name":{"kind":"Name","value":"useCount"}}]}}]}}]}}]}}]} as unknown as DocumentNode<MyPasskeysQueryQuery, MyPasskeysQueryQueryVariables>;
+export const TenantSecurityDeletePasskeyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TenantSecurityDeletePasskey"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeletePasskeyMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletePasskey"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}}]}}]}}]} as unknown as DocumentNode<TenantSecurityDeletePasskeyMutation, TenantSecurityDeletePasskeyMutationVariables>;
+export const TenantSecurityDeleteTenantPasskeyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TenantSecurityDeleteTenantPasskey"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteTenantPasskey"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<TenantSecurityDeleteTenantPasskeyMutation, TenantSecurityDeleteTenantPasskeyMutationVariables>;
+export const TenantScimTokensQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TenantSCIMTokensQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scimTokens"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"50"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"tokenPrefix"}},{"kind":"Field","name":{"kind":"Name","value":"isActive"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"lastUsedAt"}},{"kind":"Field","name":{"kind":"Name","value":"lastUsedIp"}},{"kind":"Field","name":{"kind":"Name","value":"requestCount"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<TenantScimTokensQueryQuery, TenantScimTokensQueryQueryVariables>;
+export const TenantSecurityCreateScimTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TenantSecurityCreateSCIMToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateSCIMTokenMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createScimToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scimToken"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"tokenPrefix"}}]}},{"kind":"Field","name":{"kind":"Name","value":"rawToken"}}]}}]}}]} as unknown as DocumentNode<TenantSecurityCreateScimTokenMutation, TenantSecurityCreateScimTokenMutationVariables>;
+export const TenantSecurityRevokeScimTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TenantSecurityRevokeSCIMToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"revokeScimToken"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<TenantSecurityRevokeScimTokenMutation, TenantSecurityRevokeScimTokenMutationVariables>;
+export const TenantSecuritySsoConnectionsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TenantSecuritySSOConnectionsQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoConnections"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"50"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"connectionType"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"allowedDomains"}},{"kind":"Field","name":{"kind":"Name","value":"enforceSso"}},{"kind":"Field","name":{"kind":"Name","value":"jitProvisioningEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"samlEntityId"}},{"kind":"Field","name":{"kind":"Name","value":"samlSsoUrl"}},{"kind":"Field","name":{"kind":"Name","value":"oidcIssuer"}},{"kind":"Field","name":{"kind":"Name","value":"oidcClientId"}},{"kind":"Field","name":{"kind":"Name","value":"lastLoginAt"}},{"kind":"Field","name":{"kind":"Name","value":"loginCount"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"spMetadataUrl"}},{"kind":"Field","name":{"kind":"Name","value":"spAcsUrl"}},{"kind":"Field","name":{"kind":"Name","value":"spEntityId"}},{"kind":"Field","name":{"kind":"Name","value":"oidcCallbackUrl"}},{"kind":"Field","name":{"kind":"Name","value":"oidcLoginUrl"}}]}}]}}]}}]}}]} as unknown as DocumentNode<TenantSecuritySsoConnectionsQueryQuery, TenantSecuritySsoConnectionsQueryQueryVariables>;
+export const TenantSecurityCreateSsoConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TenantSecurityCreateSSOConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateSSOConnectionMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSsoConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoConnection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"connectionType"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"spMetadataUrl"}},{"kind":"Field","name":{"kind":"Name","value":"spAcsUrl"}},{"kind":"Field","name":{"kind":"Name","value":"spEntityId"}},{"kind":"Field","name":{"kind":"Name","value":"oidcCallbackUrl"}},{"kind":"Field","name":{"kind":"Name","value":"oidcLoginUrl"}}]}}]}}]}}]} as unknown as DocumentNode<TenantSecurityCreateSsoConnectionMutation, TenantSecurityCreateSsoConnectionMutationVariables>;
+export const TenantSecurityDeleteSsoConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TenantSecurityDeleteSSOConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteSSOConnectionMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteSsoConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletedIds"}}]}}]}}]} as unknown as DocumentNode<TenantSecurityDeleteSsoConnectionMutation, TenantSecurityDeleteSsoConnectionMutationVariables>;
+export const TenantSecurityActivateSsoConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TenantSecurityActivateSSOConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ActivateSSOConnectionMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"activateSsoConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoConnection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]} as unknown as DocumentNode<TenantSecurityActivateSsoConnectionMutation, TenantSecurityActivateSsoConnectionMutationVariables>;
+export const TenantSecurityDeactivateSsoConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TenantSecurityDeactivateSSOConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deactivateSsoConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoConnection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]} as unknown as DocumentNode<TenantSecurityDeactivateSsoConnectionMutation, TenantSecurityDeactivateSsoConnectionMutationVariables>;
+export const TenantSecurityUpdateSsoConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TenantSecurityUpdateSSOConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateSSOConnectionMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateSsoConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ssoConnection"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"connectionType"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"enforceSso"}},{"kind":"Field","name":{"kind":"Name","value":"spMetadataUrl"}},{"kind":"Field","name":{"kind":"Name","value":"spAcsUrl"}},{"kind":"Field","name":{"kind":"Name","value":"spEntityId"}},{"kind":"Field","name":{"kind":"Name","value":"oidcCallbackUrl"}}]}}]}}]}}]} as unknown as DocumentNode<TenantSecurityUpdateSsoConnectionMutation, TenantSecurityUpdateSsoConnectionMutationVariables>;
+export const TenantSecurityTestSsoConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TenantSecurityTestSSOConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"testSsoConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"result"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"connectionId"}},{"kind":"Field","name":{"kind":"Name","value":"connectionName"}},{"kind":"Field","name":{"kind":"Name","value":"connectionType"}},{"kind":"Field","name":{"kind":"Name","value":"overallStatus"}},{"kind":"Field","name":{"kind":"Name","value":"testedAt"}},{"kind":"Field","name":{"kind":"Name","value":"checks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"details"}}]}}]}}]}}]}}]} as unknown as DocumentNode<TenantSecurityTestSsoConnectionMutation, TenantSecurityTestSsoConnectionMutationVariables>;
+export const CurrentTenantQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"currentTenantQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"tenantFragment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"tenantFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"TenantType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"actionLoggingEnabled"}},{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}}]}}]}}]} as unknown as DocumentNode<CurrentTenantQueryQuery, CurrentTenantQueryQueryVariables>;
 export const AddTenantMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addTenantMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateTenantMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createTenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenantEdge"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<AddTenantMutationMutation, AddTenantMutationMutationVariables>;
 export const AcceptTenantInvitationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"acceptTenantInvitationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AcceptTenantInvitationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"acceptTenantInvitation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<AcceptTenantInvitationMutationMutation, AcceptTenantInvitationMutationMutationVariables>;
 export const DeclineTenantInvitationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"declineTenantInvitationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeclineTenantInvitationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"declineTenantInvitation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<DeclineTenantInvitationMutationMutation, DeclineTenantInvitationMutationMutationVariables>;
+export const AllActionLogsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allActionLogsQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"entityType"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"actionType"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"actorEmail"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"fromDatetime"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"toDatetime"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allActionLogs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"entityType"},"value":{"kind":"Variable","name":{"kind":"Name","value":"entityType"}}},{"kind":"Argument","name":{"kind":"Name","value":"actionType"},"value":{"kind":"Variable","name":{"kind":"Name","value":"actionType"}}},{"kind":"Argument","name":{"kind":"Name","value":"actorEmail"},"value":{"kind":"Variable","name":{"kind":"Name","value":"actorEmail"}}},{"kind":"Argument","name":{"kind":"Name","value":"fromDatetime"},"value":{"kind":"Variable","name":{"kind":"Name","value":"fromDatetime"}}},{"kind":"Argument","name":{"kind":"Name","value":"toDatetime"},"value":{"kind":"Variable","name":{"kind":"Name","value":"toDatetime"}}},{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"actionLogFragment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"actionLogFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ActionLogType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"actionType"}},{"kind":"Field","name":{"kind":"Name","value":"entityType"}},{"kind":"Field","name":{"kind":"Name","value":"entityId"}},{"kind":"Field","name":{"kind":"Name","value":"entityName"}},{"kind":"Field","name":{"kind":"Name","value":"actorType"}},{"kind":"Field","name":{"kind":"Name","value":"actorEmail"}},{"kind":"Field","name":{"kind":"Name","value":"changes"}},{"kind":"Field","name":{"kind":"Name","value":"metadata"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]} as unknown as DocumentNode<AllActionLogsQueryQuery, AllActionLogsQueryQueryVariables>;
+export const UpdateTenantActionLoggingMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateTenantActionLoggingMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"enabled"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTenantActionLogging"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"enabled"},"value":{"kind":"Variable","name":{"kind":"Name","value":"enabled"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenant"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"actionLoggingEnabled"}}]}},{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<UpdateTenantActionLoggingMutationMutation, UpdateTenantActionLoggingMutationMutationVariables>;
+export const ExportActionLogsMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"exportActionLogsMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"entityType"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"actionType"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"actorEmail"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"fromDatetime"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"toDatetime"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"search"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"exportActionLogs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"entityType"},"value":{"kind":"Variable","name":{"kind":"Name","value":"entityType"}}},{"kind":"Argument","name":{"kind":"Name","value":"actionType"},"value":{"kind":"Variable","name":{"kind":"Name","value":"actionType"}}},{"kind":"Argument","name":{"kind":"Name","value":"actorEmail"},"value":{"kind":"Variable","name":{"kind":"Name","value":"actorEmail"}}},{"kind":"Argument","name":{"kind":"Name","value":"fromDatetime"},"value":{"kind":"Variable","name":{"kind":"Name","value":"fromDatetime"}}},{"kind":"Argument","name":{"kind":"Name","value":"toDatetime"},"value":{"kind":"Variable","name":{"kind":"Name","value":"toDatetime"}}},{"kind":"Argument","name":{"kind":"Name","value":"search"},"value":{"kind":"Variable","name":{"kind":"Name","value":"search"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"export"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}},{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<ExportActionLogsMutationMutation, ExportActionLogsMutationMutationVariables>;
 export const UpdateTenantMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateTenantMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateTenantMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tenant"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateTenantMutationMutation, UpdateTenantMutationMutationVariables>;
-export const CreateTenantInvitationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createTenantInvitationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateTenantInvitationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createTenantInvitation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"role"}}]}}]}}]} as unknown as DocumentNode<CreateTenantInvitationMutationMutation, CreateTenantInvitationMutationMutationVariables>;
+export const CreateTenantInvitationMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createTenantInvitationMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateTenantInvitationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createTenantInvitation"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<CreateTenantInvitationMutationMutation, CreateTenantInvitationMutationMutationVariables>;
+export const AllPermissionsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allPermissionsQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allPermissions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"categoryLabel"}},{"kind":"Field","name":{"kind":"Name","value":"categoryDescription"}},{"kind":"Field","name":{"kind":"Name","value":"sortOrder"}}]}}]}}]}}]}}]} as unknown as DocumentNode<AllPermissionsQueryQuery, AllPermissionsQueryQueryVariables>;
+export const AllOrganizationRolesQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"allOrganizationRolesQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allOrganizationRoles"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"systemRoleType"}},{"kind":"Field","name":{"kind":"Name","value":"isSystemRole"}},{"kind":"Field","name":{"kind":"Name","value":"isOwnerRole"}},{"kind":"Field","name":{"kind":"Name","value":"memberCount"}},{"kind":"Field","name":{"kind":"Name","value":"permissions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"category"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<AllOrganizationRolesQueryQuery, AllOrganizationRolesQueryQueryVariables>;
+export const OrganizationRoleQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"organizationRoleQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"organizationRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"systemRoleType"}},{"kind":"Field","name":{"kind":"Name","value":"isSystemRole"}},{"kind":"Field","name":{"kind":"Name","value":"isOwnerRole"}},{"kind":"Field","name":{"kind":"Name","value":"memberCount"}},{"kind":"Field","name":{"kind":"Name","value":"permissions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"category"}}]}}]}}]}}]} as unknown as DocumentNode<OrganizationRoleQueryQuery, OrganizationRoleQueryQueryVariables>;
+export const CurrentUserPermissionsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"currentUserPermissionsQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUserPermissions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}]}]}}]} as unknown as DocumentNode<CurrentUserPermissionsQueryQuery, CurrentUserPermissionsQueryQueryVariables>;
+export const CurrentUserOrganizationRolesQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"currentUserOrganizationRolesQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentUserOrganizationRoles"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"isSystemRole"}},{"kind":"Field","name":{"kind":"Name","value":"isOwnerRole"}},{"kind":"Field","name":{"kind":"Name","value":"permissions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"category"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"currentUserPermissions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}]}]}}]} as unknown as DocumentNode<CurrentUserOrganizationRolesQueryQuery, CurrentUserOrganizationRolesQueryQueryVariables>;
+export const CreateOrganizationRoleMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createOrganizationRoleMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"description"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"color"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"RoleColor"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"permissionIds"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createOrganizationRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"description"},"value":{"kind":"Variable","name":{"kind":"Name","value":"description"}}},{"kind":"Argument","name":{"kind":"Name","value":"color"},"value":{"kind":"Variable","name":{"kind":"Name","value":"color"}}},{"kind":"Argument","name":{"kind":"Name","value":"permissionIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"permissionIds"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"role"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"memberCount"}},{"kind":"Field","name":{"kind":"Name","value":"permissions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"category"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<CreateOrganizationRoleMutationMutation, CreateOrganizationRoleMutationMutationVariables>;
+export const UpdateOrganizationRoleMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateOrganizationRoleMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"description"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"color"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"RoleColor"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"permissionIds"}},"type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateOrganizationRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}},{"kind":"Argument","name":{"kind":"Name","value":"description"},"value":{"kind":"Variable","name":{"kind":"Name","value":"description"}}},{"kind":"Argument","name":{"kind":"Name","value":"color"},"value":{"kind":"Variable","name":{"kind":"Name","value":"color"}}},{"kind":"Argument","name":{"kind":"Name","value":"permissionIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"permissionIds"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"role"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"memberCount"}},{"kind":"Field","name":{"kind":"Name","value":"permissions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"code"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"category"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<UpdateOrganizationRoleMutationMutation, UpdateOrganizationRoleMutationMutationVariables>;
+export const DeleteOrganizationRoleMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deleteOrganizationRoleMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"replacementRoleId"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteOrganizationRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"replacementRoleId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"replacementRoleId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"affectedMemberCount"}}]}}]}}]} as unknown as DocumentNode<DeleteOrganizationRoleMutationMutation, DeleteOrganizationRoleMutationMutationVariables>;
+export const AssignRolesToMemberMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"assignRolesToMemberMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"membershipId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"roleIds"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"assignRolesToMember"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"membershipId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"membershipId"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"roleIds"},"value":{"kind":"Variable","name":{"kind":"Name","value":"roleIds"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"organizationRoles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<AssignRolesToMemberMutationMutation, AssignRolesToMemberMutationMutationVariables>;
+export const RemoveRoleFromMemberMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"removeRoleFromMemberMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"membershipId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"roleId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeRoleFromMember"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"membershipId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"membershipId"}}},{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"roleId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"roleId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"membership"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"organizationRoles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"color"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<RemoveRoleFromMemberMutationMutation, RemoveRoleFromMemberMutationMutationVariables>;
 export const AuthConfirmUserEmailMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authConfirmUserEmailMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ConfirmEmailMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"confirm"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<AuthConfirmUserEmailMutationMutation, AuthConfirmUserEmailMutationMutationVariables>;
+export const DashboardStatsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"dashboardStatsQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"allCrudDemoItems"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tenantId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"100"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"allDocumentDemoItems"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"100"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"allNotifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"100"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"readAt"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"tenant"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tenantId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userMemberships"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"invitationAccepted"}}]}}]}}]}}]} as unknown as DocumentNode<DashboardStatsQueryQuery, DashboardStatsQueryQueryVariables>;
+export const ActiveSessionsQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ActiveSessionsQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mySessions"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"IntValue","value":"50"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"sessionId"}},{"kind":"Field","name":{"kind":"Name","value":"deviceName"}},{"kind":"Field","name":{"kind":"Name","value":"deviceType"}},{"kind":"Field","name":{"kind":"Name","value":"browser"}},{"kind":"Field","name":{"kind":"Name","value":"operatingSystem"}},{"kind":"Field","name":{"kind":"Name","value":"ipAddress"}},{"kind":"Field","name":{"kind":"Name","value":"location"}},{"kind":"Field","name":{"kind":"Name","value":"isActive"}},{"kind":"Field","name":{"kind":"Name","value":"isCurrent"}},{"kind":"Field","name":{"kind":"Name","value":"lastActivityAt"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<ActiveSessionsQueryQuery, ActiveSessionsQueryQueryVariables>;
+export const RevokeSessionMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RevokeSessionMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"sessionId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"reason"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"revokeSession"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"sessionId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"sessionId"}}},{"kind":"Argument","name":{"kind":"Name","value":"reason"},"value":{"kind":"Variable","name":{"kind":"Name","value":"reason"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<RevokeSessionMutationMutation, RevokeSessionMutationMutationVariables>;
+export const RevokeAllSessionsMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RevokeAllSessionsMutation"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"revokeAllSessions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}},{"kind":"Field","name":{"kind":"Name","value":"revokedCount"}}]}}]}}]} as unknown as DocumentNode<RevokeAllSessionsMutationMutation, RevokeAllSessionsMutationMutationVariables>;
 export const AuthChangePasswordMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authChangePasswordMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ChangePasswordMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"changePassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access"}},{"kind":"Field","name":{"kind":"Name","value":"refresh"}}]}}]}}]} as unknown as DocumentNode<AuthChangePasswordMutationMutation, AuthChangePasswordMutationMutationVariables>;
-export const AuthUpdateUserProfileMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authUpdateUserProfileMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateCurrentUserMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateCurrentUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userProfile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CurrentUserType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"otpVerified"}},{"kind":"Field","name":{"kind":"Name","value":"otpEnabled"}}]}}]} as unknown as DocumentNode<AuthUpdateUserProfileMutationMutation, AuthUpdateUserProfileMutationMutationVariables>;
+export const AuthUpdateUserProfileMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authUpdateUserProfileMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateCurrentUserMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateCurrentUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"userProfile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"}}]}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"commonQueryCurrentUserFragment"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CurrentUserType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"otpVerified"}},{"kind":"Field","name":{"kind":"Name","value":"otpEnabled"}}]}}]} as unknown as DocumentNode<AuthUpdateUserProfileMutationMutation, AuthUpdateUserProfileMutationMutationVariables>;
 export const LoginFormMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"loginFormMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ObtainTokenMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tokenAuth"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"access"}},{"kind":"Field","name":{"kind":"Name","value":"refresh"}},{"kind":"Field","name":{"kind":"Name","value":"otpAuthToken"}}]}}]}}]} as unknown as DocumentNode<LoginFormMutationMutation, LoginFormMutationMutationVariables>;
 export const AuthRequestPasswordResetConfirmMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authRequestPasswordResetConfirmMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PasswordResetConfirmationMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"passwordResetConfirm"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<AuthRequestPasswordResetConfirmMutationMutation, AuthRequestPasswordResetConfirmMutationMutationVariables>;
 export const AuthRequestPasswordResetMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"authRequestPasswordResetMutation"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PasswordResetMutationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"passwordReset"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ok"}}]}}]}}]} as unknown as DocumentNode<AuthRequestPasswordResetMutationMutation, AuthRequestPasswordResetMutationMutationVariables>;

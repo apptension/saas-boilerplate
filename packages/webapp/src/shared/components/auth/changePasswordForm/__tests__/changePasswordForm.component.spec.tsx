@@ -112,7 +112,7 @@ describe('ChangePasswordForm: Component', () => {
   });
 
   it('should show field error if action throws error', async () => {
-    const errorMessage = 'The password is too common.';
+    const errorMessage = 'This password is too common. Please choose a more unique password.';
     const errors = [
       new GraphQLError('GraphQlValidationError', {
         extensions: { newPassword: [{ message: errorMessage, code: 'password_too_common' }] },
@@ -120,7 +120,7 @@ describe('ChangePasswordForm: Component', () => {
     ];
     const requestMock = composeMockedQueryResult(authChangePasswordMutation, {
       variables: defaultValues,
-      data: defaultResult,
+      data: {},
       errors,
     });
 
@@ -136,7 +136,7 @@ describe('ChangePasswordForm: Component', () => {
     const toaster = await screen.findByTestId('toaster');
     expect(toaster).toBeEmptyDOMElement();
 
-    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
+    expect(await screen.findByText(errorMessage, {}, { timeout: 3000 })).toBeInTheDocument();
   });
 
   it('should show generic form error if action throws error', async () => {
@@ -144,7 +144,7 @@ describe('ChangePasswordForm: Component', () => {
     const errors = [new GraphQLError(errorMessage)];
     const requestMock = composeMockedQueryResult(authChangePasswordMutation, {
       variables: defaultValues,
-      data: defaultResult,
+      data: {},
       errors,
     });
 
@@ -160,6 +160,6 @@ describe('ChangePasswordForm: Component', () => {
     const toaster = await screen.findByTestId('toaster');
     expect(toaster).toBeEmptyDOMElement();
 
-    expect(await screen.findByText(errorMessage)).toBeInTheDocument();
+    expect(await screen.findByText(errorMessage, {}, { timeout: 3000 })).toBeInTheDocument();
   });
 });

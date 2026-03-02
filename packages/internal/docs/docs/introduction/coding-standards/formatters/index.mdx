@@ -1,7 +1,41 @@
 ---
 title: Formatters
+description: Code formatters used in SaaS Boilerplate
 ---
 
 import DocCardList from '@theme/DocCardList';
+
+# Code Formatters
+
+Code formatters automatically reformat your code to follow consistent style guidelines. They eliminate debates about code style and ensure uniform formatting across the entire codebase.
+
+## Why Use Formatters?
+
+- **Consistency** — Every file follows the same formatting rules
+- **Automation** — No manual formatting required; save time during development
+- **Focus** — Code reviews focus on logic, not style preferences
+- **Onboarding** — New developers don't need to learn arbitrary style rules
+
+## Formatters in SaaS Boilerplate
+
+| Formatter | Language | Config Location |
+|-----------|----------|-----------------|
+| **Prettier** | TypeScript, JavaScript, JSON, CSS, MDX | `.prettierrc` (root) |
+| **Black** | Python | `packages/backend/pyproject.toml` |
+
+### Running Formatters
+
+```bash
+# Format frontend code
+pnpm prettier --write .
+
+# Format Python backend code
+cd packages/backend
+uv run black .
+```
+
+---
+
+## Detailed Documentation
 
 <DocCardList />

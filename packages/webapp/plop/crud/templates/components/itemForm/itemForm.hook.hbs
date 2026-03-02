@@ -1,7 +1,8 @@
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { useEffect } from 'react';
 
-import { {{ pascalCase name }}FormFields, {{ pascalCase name }}FormProps } from './{{ pascalCase name }}Form.component';
+import { {{ pascalCase name }}FormFields, {{ pascalCase name }}FormProps } from './{{ camelCase name }}Form.component';
 
 type Use{{ pascalCase name }}FormProps = Omit<{{ pascalCase name }}FormProps, 'loading'>;
 
@@ -15,7 +16,8 @@ export const use{{ pascalCase name }}Form = ({ error, onSubmit, initialData }: U
   const { handleSubmit, setApolloGraphQLResponseErrors } = form;
 
   useEffect(() => {
-    if (error) setApolloGraphQLResponseErrors(error.graphQLErrors);
+    const graphQLErrors = extractGraphQLErrors(error);
+    if (graphQLErrors) setApolloGraphQLResponseErrors(graphQLErrors);
   }, [error, setApolloGraphQLResponseErrors]);
 
   const handleFormSubmit = handleSubmit((formData: {{ pascalCase name }}FormFields) => onSubmit(formData));

@@ -1,46 +1,33 @@
-import { gql } from '@sb/webapp-api-client/graphql';
-import { useQuery } from '@apollo/client';
-import { Story } from '@storybook/react';
-import { append } from 'ramda';
+import { makeFragmentData } from '@sb/webapp-api-client/graphql';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { withProviders } from '../../../../shared/utils/storybook';
-import { composeMockedQueryResult } from '../../../../tests/utils/fixtures';
-import { {{ pascalCase name }}ListItem, {{ pascalCase name }}ListItemProps } from './{{ camelCase name }}ListItem.component';
+import { {{ pascalCase name }}ListItem } from './{{ camelCase name }}ListItem.component';
+import { {{ camelCase name }}ListItemFragment } from './{{ camelCase name }}ListItem.graphql';
 
-const {{ camelCase name }}ListItemTestQuery = gql(/* GraphQL */ `
-  query {{ camelCase name }}ListItemDefaultStoryQuery {
-    item: {{ camelCase name }}(id: "test-id") {
-      ...{{ camelCase name }}ListItemFragment
-    }
-  }
-`);
-
-const Template: Story<{{ pascalCase name }}ListItemProps> = (args: {{ pascalCase name }}ListItemProps) => {
-  const { loading, data } = useQuery({{ camelCase name }}ListItemTestQuery);
-
-  return !loading && data?.item ? <{{ pascalCase name }}ListItem {...args} item={data.item} /> : <span />;
-};
-
-export default {
-  title: '{{ pascalCase name }} / {{ pascalCase name }}ListItem',
+const meta: Meta<typeof {{ pascalCase name }}ListItem> = {
+  title: 'Routes/{{ pascalCase name }}/{{ pascalCase name }}ListItem',
   component: {{ pascalCase name }}ListItem,
-  decorators: [withProviders()],
+  decorators: [
+    (Story) => (
+      <ul className="divide-y border rounded-md">
+        <Story />
+      </ul>
+    ),
+  ],
 };
 
-export const Default = Template.bind({});
-Default.decorators = [
-  withProviders({
-    apolloMocks: append(
-      composeMockedQueryResult({{ camelCase name }}ListItemTestQuery, {
-        data: {
-          item: {
-            __typename: '{{ pascalCase name }}Type',
-            id: 1,
-            name: 'Demo item name',
-          },
-        },
-      })
+export default meta;
+
+type Story = StoryObj<typeof {{ pascalCase name }}ListItem>;
+
+export const Default: Story = {
+  args: {
+    item: makeFragmentData(
+      {
+        id: '1',
+        name: 'Example {{ pascalCase name }} Item',
+      },
+      {{ camelCase name }}ListItemFragment
     ),
-  }),
-];
-Default.args = {};
+  },
+};

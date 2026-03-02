@@ -1,107 +1,294 @@
 ---
-description: Steps required to deploy SaaS Boilerplate on AWS
+title: Configure App Secrets
+description: Set runtime environment variables for your services
 ---
 
 import ProjectName from '../../shared/components/ProjectName.component';
 
-# Step 5: Create runtime environment variables
+# Step 5: Configure App Secrets
 
-Every running application requires environment-specific runtime values to function properly. These values could include
-secret keys for third-party services, boolean flags enabling features, and much more.
+Your application needs runtime configuration: database credentials, API keys, Django settings, and more. This step configures the secrets each service needs to run.
 
-To manage these variables, the <ProjectName/> leverages AWS Systems Manager Parameter Store and a tool called
-[`chamber`](https://github.com/segmentio/chamber). With these tools, managing environment variables is easy and secure.
+**Estimated time: 15-20 minutes**
 
-:::caution
+---
 
-Before deploying your application's code, you must set all required environmental variables!
+## What You'll Accomplish
 
+- ✅ Configure backend secrets (Django settings, admin credentials)
+- ✅ Configure worker secrets (async job processing)
+- ✅ Configure webapp secrets (API URLs, feature flags)
+- ✅ Store all secrets securely in AWS Parameter Store
+
+---
+
+## How Secret Management Works
+
+<ProjectName /> uses **AWS Systems Manager Parameter Store** with **Chamber** to manage secrets:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    AWS Parameter Store                       │
+├─────────────────────────────────────────────────────────────┤
+│  /env-saas-qa-backend/                                       │
+│    ├── DJANGO_SECRET_KEY = "abc123..."                      │
+│    ├── DJANGO_DEBUG = "False"                               │
+│    └── ADMIN_EMAIL = "admin@example.com"                    │
+│                                                              │
+│  /env-saas-qa-workers/                                       │
+│    ├── HASHID_SALT = "xyz789..."                            │
+│    └── JWT_SECRET = "abc123..."                             │
+│                                                              │
+│  /env-saas-qa-webapp/                                        │
+│    └── (optional frontend settings)                         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+Secrets are:
+- Encrypted at rest using AWS KMS
+- Loaded into containers at runtime
+- Never stored in git
+
+---
+
+## Step 5.1: Ensure Correct Environment
+
+```bash
+pnpm saas aws set-env qa
+
+# Verify
+pnpm saas aws get-env
+# Expected: qa
+```
+
+---
+
+## Step 5.2: Configure Backend Secrets
+
+The backend (Django) requires several secrets to run.
+
+### Open the Secrets Editor
+
+```bash
+pnpm saas backend secrets
+```
+
+This opens a JSON editor (Vim) with the current secrets. Add or update the following values:
+
+```json
+{
+  "DJANGO_DEBUG": "False",
+  "DJANGO_SECRET_KEY": "your-long-random-string-at-least-50-chars",
+  "HASHID_FIELD_SALT": "another-random-string-for-hashids",
+  "ADMIN_EMAIL": "admin@yourcompany.com",
+  "ADMIN_DEFAULT_PASSWORD": "initial-admin-password-change-later",
+  "FLOWER_BASIC_AUTH": "flower_admin:flower_password"
+}
+```
+
+**Save and exit** (`:wq` in Vim).
+
+### Generate Secure Values
+
+For `DJANGO_SECRET_KEY` and `HASHID_FIELD_SALT`, generate random strings:
+
+```bash
+# Generate a random 50-character string
+openssl rand -base64 50 | tr -d '\n' | head -c 50
+```
+
+### Required Backend Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DJANGO_DEBUG` | Debug mode (always `False` in production) | `False` |
+| `DJANGO_SECRET_KEY` | Django cryptographic secret (50+ chars) | `kj3h2kj...` |
+| `HASHID_FIELD_SALT` | Salt for hash IDs | `a8d7f3...` |
+| `ADMIN_EMAIL` | Admin user email | `admin@example.com` |
+| `ADMIN_DEFAULT_PASSWORD` | Initial admin password | `ChangeMe123!` |
+| `FLOWER_BASIC_AUTH` | Celery Flower login | `user:pass` |
+
+:::warning Security
+- Use unique random values for `DJANGO_SECRET_KEY` and `HASHID_FIELD_SALT`
+- Change `ADMIN_DEFAULT_PASSWORD` after first login
+- Never reuse secrets across environments
 :::
 
-## Install chamber CLI tool
+### Optional Backend Variables
 
-Follow the [official instructions](https://github.com/segmentio/chamber#installing) on how to install chamber.
+These enable additional features:
 
-## Switch context to proper environment stage
+| Variable | Description | Required For |
+|----------|-------------|--------------|
+| `STRIPE_LIVE_SECRET_KEY` | Stripe API key | Payments |
+| `STRIPE_LIVE_PUBLISHABLE_KEY` | Stripe publishable key | Payments |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook verification | Payments |
+| `OPENAI_API_KEY` | OpenAI API key | AI features |
+| `SENTRY_DSN` | Sentry error tracking | Monitoring |
+| `SOCIAL_AUTH_GOOGLE_OAUTH2_KEY` | Google OAuth client ID | Google login |
+| `SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET` | Google OAuth secret | Google login |
+| `SOCIAL_AUTH_FACEBOOK_KEY` | Facebook App ID | Facebook login |
+| `SOCIAL_AUTH_FACEBOOK_SECRET` | Facebook App secret | Facebook login |
 
-Run the following command that will switch context to specific environment stage.
+See [API Reference: Environment Variables](/api-reference/env#backend-service) for the complete list.
 
-```shell
-saas aws set-env [STAGE_NAME]
+### AI Assistant Configuration (Optional)
+
+If you're using the AI Assistant feature with the MCP Server, you need to configure AI secrets in AWS Secrets Manager:
+
+1. Go to **AWS Console → Secrets Manager**
+2. Click **Store a new secret**
+3. Select **Other type of secret**
+4. Add key/value pair:
+   - Key: `OPENAI_API_KEY`
+   - Value: Your OpenAI API key
+5. Name the secret: `env-{project-name}-{env-stage}-ai-secrets`
+   - Example: `env-saas-qa-ai-secrets`
+6. Click through to create the secret
+
+Then enable AI features in your environment variables:
+```bash
+export SB_AI_ENABLED=true
+export SB_MCP_SERVER_URL=https://mcp.qa.yourdomain.com
+export SB_DOMAIN_MCP=mcp.qa.yourdomain.com
 ```
 
-## How does it work?
+The MCP Server will be deployed automatically when you run the backend deployment with AI enabled.
 
-### Using the CLI tool
+---
 
-You can then set the environment variables for the service (such as `backend`) in JSON format using the CLI command
+## Step 5.3: Configure Worker Secrets
 
-Backend:
+Workers (async tasks, Lambda functions) need their own configuration:
 
-```shell
-pnpm saas backend secrets
-```
-
-Webapp:
-
-```shell
-pnpm saas webapp secrets
-```
-
-Workers:
-
-```shell
+```bash
 pnpm saas workers secrets
 ```
 
-This will download a JSON secrets file, open it in Vim, and re-upload it when you save the file.
+Add these values:
 
-### Manually using the AWS console
-
-Alternatively, you can set your environment variables manually by going to the
-[AWS console](https://console.aws.amazon.com/) and adding or editing the parameters in the
-`Systems Manager > Parameter Store` section.
-
-Note that the **Name** of every parameter should follow this naming convention:
-
-```
-/env-<PROJECT_NAME>-<STAGE_NAME>-<SERVICE_NAME>/<ENVIRONMENT_VARIABLE_NAME>
+```json
+{
+  "HASHID_SALT": "same-value-as-backend-HASHID_FIELD_SALT",
+  "JWT_SECRET": "same-value-as-backend-DJANGO_SECRET_KEY"
+}
 ```
 
-in order to be correctly loaded into
+**Important:** Use the SAME values you set for the backend to ensure consistent encoding/decoding of tokens and hash IDs.
 
-### Set env variables for backend
+### Required Worker Variables
 
-import BackendEnvVars from '../../shared/partials/env-vars/_backend.mdx';
+| Variable | Description | Must Match |
+|----------|-------------|------------|
+| `HASHID_SALT` | Hash ID salt | Same as backend `HASHID_FIELD_SALT` |
+| `JWT_SECRET` | JWT signing secret | Same as backend `DJANGO_SECRET_KEY` |
 
-```shell
-pnpm saas backend secrets
-```
+---
 
-<BackendEnvVars optional={false} />
+## Step 5.4: Configure Webapp Secrets (Optional)
 
-Check the [api reference](../../api-reference/env#backend-service) for full list of backend env vars.
+The webapp typically doesn't need additional secrets beyond what's configured during build, but you can add feature flags:
 
-### Set env variables for workers
-
-import WorkersEnvVars from '../../shared/partials/env-vars/_workers.mdx';
-
-```shell
-pnpm saas workers secrets
-```
-
-<WorkersEnvVars optional={false} />
-
-Check the [api reference](../../api-reference/env#workers-service) for full list of workers env vars.
-
-### Set env variables for web app
-
-import WebappEnvVars from '../../shared/partials/env-vars/_webapp.mdx';
-
-```shell
+```bash
 pnpm saas webapp secrets
 ```
 
-<WebappEnvVars optional={false} />
+Most webapp configuration is injected at build time from the deployment infrastructure.
 
-Check the [api reference](../../api-reference/env#webapp-service) for full list of web app env vars.
+---
+
+## Verification
+
+### Check Secrets in AWS Console
+
+1. Open AWS Console: `pnpm saas aws login`
+2. Go to **Systems Manager → Parameter Store**
+3. Filter by prefix: `/env-saas-qa-backend/`
+4. Verify your secrets are listed
+
+### Check Required Secrets Exist
+
+For backend, verify these parameters exist:
+- [ ] `/env-saas-qa-backend/DJANGO_DEBUG`
+- [ ] `/env-saas-qa-backend/DJANGO_SECRET_KEY`
+- [ ] `/env-saas-qa-backend/HASHID_FIELD_SALT`
+- [ ] `/env-saas-qa-backend/ADMIN_EMAIL`
+- [ ] `/env-saas-qa-backend/ADMIN_DEFAULT_PASSWORD`
+- [ ] `/env-saas-qa-backend/FLOWER_BASIC_AUTH`
+
+For workers, verify:
+- [ ] `/env-saas-qa-workers/HASHID_SALT`
+- [ ] `/env-saas-qa-workers/JWT_SECRET`
+
+---
+
+## Updating Secrets Later
+
+To update secrets after initial deployment:
+
+1. Run the same `pnpm saas [service] secrets` command
+2. Edit the values in the JSON editor
+3. Save and exit
+4. **Redeploy the service** to pick up new values:
+
+```bash
+# After updating backend secrets
+pnpm saas backend deploy api
+
+# After updating worker secrets
+pnpm saas workers deploy
+```
+
+:::info Secret Changes Require Redeployment
+Services load secrets at startup. Changing a secret in Parameter Store doesn't immediately affect running containers—you need to redeploy.
+:::
+
+---
+
+## Troubleshooting
+
+### "Unable to locate credentials"
+
+Ensure you've set the environment:
+```bash
+pnpm saas aws set-env qa
+```
+
+### Vim Editor Issues
+
+If you're not familiar with Vim:
+- Press `i` to enter insert mode (to type)
+- Press `Esc` to exit insert mode
+- Type `:wq` and press Enter to save and quit
+- Type `:q!` and press Enter to quit without saving
+
+### Secrets Not Found at Runtime
+
+- Verify the parameter path matches the expected format
+- Check the service name is correct (`backend`, `workers`, `webapp`)
+- Ensure the environment stage matches
+
+### "Invalid JSON" Error
+
+The secrets must be valid JSON:
+- Use double quotes for keys and string values
+- No trailing commas
+- Boolean values: `true`/`false` (not quoted)
+
+---
+
+## Security Best Practices
+
+1. **Never commit secrets to git** - Use Parameter Store exclusively
+2. **Use unique secrets per environment** - Don't share between qa/staging/production
+3. **Rotate secrets periodically** - Especially after team members leave
+4. **Use strong random values** - For cryptographic keys
+5. **Limit access** - Only grant Parameter Store access to those who need it
+
+---
+
+## Next Step
+
+With secrets configured, let's deploy your application code!
+
+**[Continue to Step 6: Deploy Your App →](/aws/deploy-to-aws/run-deployment-commands)**

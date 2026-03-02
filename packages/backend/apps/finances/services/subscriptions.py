@@ -42,7 +42,7 @@ def create_schedule(
             raise UserOrCustomerNotDefined("Either user or customer must be defined")
 
         subscription_schedule_stripe_instance = djstripe_models.SubscriptionSchedule._api_create(
-            customer=customer.id, start_date='now', end_behavior="release", phases=[{'items': [{'price': price.id}]}]
+            customer=customer.id, start_date="now", end_behavior="release", phases=[{"items": [{"price": price.id}]}]
         )
 
     if subscription:
@@ -68,7 +68,7 @@ def get_valid_schedule_phases(schedule: djstripe_models.SubscriptionSchedule):
     return [
         phase
         for phase in schedule.phases
-        if timezone.datetime.fromtimestamp(phase['end_date'], tz=datetime.timezone.utc) > timezone.now()
+        if timezone.datetime.fromtimestamp(phase["end_date"], tz=datetime.timezone.utc) > timezone.now()
     ]
 
 
@@ -81,15 +81,15 @@ def is_current_schedule_phase_plan(
     schedule: djstripe_models.SubscriptionSchedule, plan_config: constants.SubscriptionPlanConfig
 ):
     current_phase = get_current_schedule_phase(schedule)
-    current_price_id = current_phase['items'][0]['price']
+    current_price_id = current_phase["items"][0]["price"]
     current_price = djstripe_models.Price.objects.get(id=current_price_id)
     return current_price.product.name == plan_config.name
 
 
 def is_current_schedule_phase_trialing(schedule: djstripe_models.SubscriptionSchedule):
     current_phase = get_current_schedule_phase(schedule)
-    if not current_phase['trial_end']:
+    if not current_phase["trial_end"]:
         return False
 
-    trial_end = timezone.datetime.fromtimestamp(current_phase['trial_end'], tz=datetime.timezone.utc)
+    trial_end = timezone.datetime.fromtimestamp(current_phase["trial_end"], tz=datetime.timezone.utc)
     return trial_end > timezone.now()

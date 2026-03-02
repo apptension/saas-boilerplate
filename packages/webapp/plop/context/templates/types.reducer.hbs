@@ -1,0 +1,34 @@
+/**
+ * {{ pascalCase name }} Context Types
+ */
+
+export type {{ pascalCase name }}State = {
+  // TODO: Define your state shape
+  value: string;
+  isLoading: boolean;
+  error: string | null;
+};
+
+export const default{{ pascalCase name }}State: {{ pascalCase name }}State = {
+  value: '',
+  isLoading: false,
+  error: null,
+};
+
+export type {{ pascalCase name }}Action =
+  | { type: 'SET_VALUE'; payload: string }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_ERROR'; payload: string | null }
+{{#if withReset}}
+  | { type: 'RESET' }{{/if}};
+
+export type {{ pascalCase name }}ContextValue = {
+  state: {{ pascalCase name }}State;
+  dispatch: React.Dispatch<{{ pascalCase name }}Action>;
+  setValue: (value: string) => void;
+  setLoading: (isLoading: boolean) => void;
+  setError: (error: string | null) => void;
+{{#if withReset}}
+  reset: () => void;
+{{/if}}
+};

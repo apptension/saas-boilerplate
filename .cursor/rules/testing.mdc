@@ -1,0 +1,286 @@
+---
+description: Testing conventions and patterns
+globs: ["**/*.spec.tsx", "**/*.spec.ts", "**/__tests__/**"]
+alwaysApply: false
+---
+
+# Testing Conventions
+
+## File Location
+
+Place tests in `__tests__/` folder adjacent to the component:
+
+```
+componentFolder/
+├── __tests__/
+│   └── componentName.component.spec.tsx
+├── componentName.component.tsx
+└── index.ts
+```
+
+## File Naming
+
+Use the pattern: `{componentName}.component.spec.tsx`
+
+Examples:
+- `sidebar.component.spec.tsx`
+- `authRoute.component.spec.tsx`
+
+## Testing Utilities
+
+Use the project's testing utilities:
+
+```tsx
+import { render, screen } from '../../tests/utils/rendering';
+```
+
+## Test Structure
+
+```tsx
+import { render, screen } from '../../tests/utils/rendering';
+import { ComponentName } from '../componentName.component';
+
+describe('ComponentName', () => {
+  it('should render correctly', () => {
+    render(<ComponentName prop="value" />);
+    expect(screen.getByText('Expected text')).toBeInTheDocument();
+  });
+
+  it('should handle interactions', async () => {
+    const onAction = jest.fn();
+    render(<ComponentName onAction={onAction} />);
+    
+    await userEvent.click(screen.getByRole('button'));
+    expect(onAction).toHaveBeenCalled();
+  });
+});
+```
+
+## What to Test
+
+- Component renders correctly with different props
+- User interactions trigger expected callbacks
+- Conditional rendering based on state/props
+- Accessibility (proper roles, labels)
+- Error states and edge cases
+
+---
+
+## CRITICAL: Permission-Protected Components
+
+**Components using `PermissionGate` or `usePermissionCheck` will NOT render protected UI without proper mocking.**
+
+### Mock PermissionGate in Test Files
+
+When testing components that use permission checks (e.g., action buttons, edit forms, delete buttons):
+
+```tsx
+// Add at the top of test file BEFORE imports that use these hooks
+jest.mock('@sb/webapp-tenants/hooks', () => ({
+  ...jest.requireActual('@sb/webapp-tenants/hooks'),
+  PermissionGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  usePermissionCheck: () => ({ hasPermission: true, loading: false }),
+}));
+```
+
+### Mock Permissions Query for More Control
+
+For tests that need specific permission states:
+
+```tsx
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { currentUserPermissionsQuery } from '../../routes/tenantSettings/tenantRoles/tenantRoles.graphql';
+
+const createPermissionsMock = (tenantId: string, permissions: string[] = []) => {
+  return composeMockedQueryResult(currentUserPermissionsQuery, {
+    variables: { tenantId },
+    data: {
+      currentUserPermissions: permissions,
+    },
+  });
+};
+
+// Usage
+const permissionsMock = createPermissionsMock('tenant-id', ['org.settings.edit', 'members.remove']);
+render(<Component />, { apolloMocks: [commonQueryMock, permissionsMock] });
+```
+
+### Common Permission Codes
+
+```tsx
+// Admin permissions
+['org.settings.view', 'org.settings.edit', 'members.view', 'members.invite', 
+ 'members.roles.edit', 'members.remove', 'billing.view', 'billing.manage']
+
+// Security permissions
+['security.view', 'security.sso.manage', 'security.passkeys.manage', 'security.logs.view']
+
+// Feature permissions
+['features.crud.manage', 'features.documents.manage']
+```
+
+---
+
+## Table Row Components
+
+**Components that render as `<tr>` (TableRow) MUST be wrapped in Table structure in tests:**
+
+```tsx
+import { Table, TableBody } from '@sb/webapp-core/components/ui/table';
+
+describe('TableRowComponent', () => {
+  const Component = (props: Props) => (
+    <Table>
+      <TableBody>
+        <TableRowComponent {...props} />
+      </TableBody>
+    </Table>
+  );
+
+  it('should render correctly', () => {
+    render(<Component item={mockItem} />);
+    // ...assertions
+  });
+});
+```
+
+---
+
+## Testing GraphQL Mutations
+
+Use the `composeMockedQueryResult` helper and mock the mutation properly:
+
+**CRITICAL: The `data` object key MUST match the mutation name exactly:**
+
+```tsx
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { updateTenantMutation } from '../component.graphql';
+
+// ❌ WRONG - key doesn't match mutation name
+const data = {
+  createTenant: { tenant: { id: '1', name: 'New' } },  // Wrong key!
+};
+
+// ✅ CORRECT - key matches mutation name
+const data = {
+  updateTenant: { tenant: { id: '1', name: 'New' } },  // Matches mutation!
+};
+
+const requestMock = composeMockedQueryResult(updateTenantMutation, {
+  variables: { input: { id: '1', name: 'New' } },
+  data,
+});
+```
+
+### Full Mutation Test Pattern
+
+```tsx
+const prepareMocks = (mutation, input = {}) => {
+  const mockedId = '1';
+  const mockedTenantId = '2';
+  
+  const data = {
+    mutationName: { ok: true },  // Must match actual mutation name
+  };
+  const variables = {
+    input: {
+      id: mockedId,
+      tenantId: mockedTenantId,
+      ...input,
+    },
+  };
+  
+  const requestMock = composeMockedQueryResult(mutation, {
+    variables,
+    data,
+  });
+
+  return { requestMock };
+};
+```
+
+## Testing Mutation Calls with Toast Notifications
+
+```tsx
+it('should call mutation and show success toast', async () => {
+  const { requestMock, commonQueryMock } = prepareMocks(myMutation);
+
+  render(<Component />, {
+    apolloMocks: [commonQueryMock, requestMock],
+  });
+
+  const actionButton = await screen.findByRole('button', { name: /action/i });
+  await userEvent.click(actionButton);
+
+  // Wait for toast first (proves mutation completed)
+  const toast = await screen.findByTestId('toast-1');
+  expect(toast).toHaveTextContent('Success message');
+  expect(requestMock.result).toHaveBeenCalled();
+});
+```
+
+---
+
+## Testing Async UI with Delays
+
+Some UI elements have intentional delays (e.g., Avatar fallback). Use `waitFor`:
+
+```tsx
+import { waitFor } from '@testing-library/react';
+
+it('should render fallback after delay', async () => {
+  render(<Avatar><AvatarFallback>Test</AvatarFallback></Avatar>);
+
+  // Wait for element that appears after delay
+  await waitFor(() => {
+    expect(screen.getByText('Test')).toBeInTheDocument();
+  }, { timeout: 2000 });
+});
+```
+
+---
+
+## Testing Conditional UI Elements
+
+```tsx
+it('should show action button only when condition is met', async () => {
+  const membership = membershipFactory({ invitationAccepted: false });
+  
+  render(<Component membership={membership} />, { apolloMocks });
+  
+  // Button should be visible
+  expect(screen.getByRole('button', { name: /resend/i })).toBeInTheDocument();
+});
+
+it('should not show action button when condition is not met', async () => {
+  const membership = membershipFactory({ invitationAccepted: true });
+  
+  render(<Component membership={membership} />, { apolloMocks });
+  
+  // Button should NOT be visible
+  expect(screen.queryByRole('button', { name: /resend/i })).not.toBeInTheDocument();
+});
+```
+
+---
+
+## Testing Organization Roles Dropdowns
+
+When testing components with role selection:
+
+```tsx
+import { composeMockedListQueryResult } from '@sb/webapp-api-client/tests/utils';
+import { allOrganizationRolesQuery } from '../tenantRoles.graphql';
+
+const mockRoles = [
+  { id: 'role-1', name: 'Member', color: 'BLUE', isSystemRole: true },
+  { id: 'role-2', name: 'Admin', color: 'GREEN', isSystemRole: true },
+];
+
+const rolesMock = composeMockedListQueryResult(
+  allOrganizationRolesQuery,
+  'allOrganizationRoles',
+  'OrganizationRoleType',
+  { variables: { tenantId }, data: mockRoles }
+);
+```

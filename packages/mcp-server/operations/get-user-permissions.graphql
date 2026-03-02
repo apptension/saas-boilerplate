@@ -1,0 +1,17 @@
+# @tool(name: "get_user_permissions", description: "IMPORTANT: Always call this first to discover what data the current user can access. Returns the user's permission codes and organization roles for the tenant. Use this to determine which other tools can be called - if the user lacks a required permission, explain what access they're missing instead of calling the tool.")
+query GetUserPermissions($tenantId: ID!) {
+  currentUserPermissions(tenantId: $tenantId)
+  currentUserOrganizationRoles(tenantId: $tenantId) {
+    id
+    name
+    description
+    systemRoleType
+    isOwnerRole
+    permissions {
+      code
+      name
+      description
+      category
+    }
+  }
+}

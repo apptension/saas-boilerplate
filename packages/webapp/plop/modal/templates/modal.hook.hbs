@@ -1,0 +1,80 @@
+import { useState, useCallback, useMemo } from 'react';
+
+import { {{ pascalCase name }}Modal, {{ pascalCase name }}ModalProps } from './{{ camelCase name }}Modal.component';
+
+type Use{{ pascalCase name }}ModalOptions = {
+  defaultOpen?: boolean;
+  onConfirm?: () => void;
+  onClose?: () => void;
+};
+
+type Use{{ pascalCase name }}ModalReturn = {
+  isOpen: boolean;
+  open: () => void;
+  close: () => void;
+  toggle: () => void;
+  Modal: React.FC<Partial<{{ pascalCase name }}ModalProps>>;
+};
+
+/**
+ * Hook to manage {{ pascalCase name }}Modal state
+ *
+ * @example
+ * ```tsx
+ * const { isOpen, open, close, Modal } = use{{ pascalCase name }}Modal({
+ *   onConfirm: () => console.log('Confirmed!'),
+ * });
+ *
+ * return (
+ *   <>
+ *     <button onClick={open}>Open Modal</button>
+ *     <Modal />
+ *   </>
+ * );
+ * ```
+ */
+export const use{{ pascalCase name }}Modal = (
+  options: Use{{ pascalCase name }}ModalOptions = {}
+): Use{{ pascalCase name }}ModalReturn => {
+  const { defaultOpen = false, onConfirm, onClose: onCloseOption } = options;
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  const open = useCallback(() => {
+    setIsOpen(true);
+  }, []);
+
+  const close = useCallback(() => {
+    setIsOpen(false);
+    onCloseOption?.();
+  }, [onCloseOption]);
+
+  const toggle = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
+
+  const handleConfirm = useCallback(() => {
+    onConfirm?.();
+    close();
+  }, [onConfirm, close]);
+
+  const Modal = useMemo(() => {
+    const ModalComponent: React.FC<Partial<{{ pascalCase name }}ModalProps>> = (props) => (
+      <{{ pascalCase name }}Modal
+        isOpen={isOpen}
+        onClose={close}
+        onConfirm={handleConfirm}
+        {...props}
+      />
+    );
+    ModalComponent.displayName = '{{ pascalCase name }}ModalWrapper';
+    return ModalComponent;
+  }, [isOpen, close, handleConfirm]);
+
+  return {
+    isOpen,
+    open,
+    close,
+    toggle,
+    Modal,
+  };
+};

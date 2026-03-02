@@ -8,12 +8,12 @@ def context_user_required(cls):
     no_user_error_msg = "No user provided in request"
 
     def _context_user(self) -> AUTH_USER_MODEL:
-        request = getattr(self, 'context', {}).get('request', None)
-        return getattr(request, 'user', None)
+        request = getattr(self, "context", {}).get("request", None)
+        return getattr(request, "user", None)
 
     cls.context_user = property(_context_user, None)
 
-    if hasattr(cls, 'default_error_messages'):
+    if hasattr(cls, "default_error_messages"):
         cls.default_error_messages[no_user_error_key] = _(no_user_error_msg)
     else:
         cls.default_error_messages = {no_user_error_key: _(no_user_error_msg)}

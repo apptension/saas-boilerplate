@@ -177,7 +177,7 @@ class TestPermissionClassesForMutationField:
 
         assert executed["errors"][0]["message"] == "permission_denied"
 
-    def test_global_policy_by_authenticated_user(self, graphene_client, user, tenant):
+    def test_global_policy_by_authenticated_user(self, graphene_client, user, tenant, tenant_membership):
         Mutation = self.create_mutation()
         schema = create_mutation_schema(Mutation)
         graphene_client.schema = schema

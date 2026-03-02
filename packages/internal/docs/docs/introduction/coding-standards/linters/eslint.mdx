@@ -1,0 +1,137 @@
+---
+title: ESLint
+description: JavaScript/TypeScript linter
+---
+
+## What is ESLint?
+
+[ESLint](https://eslint.org/) is a powerful static analysis tool for JavaScript and TypeScript code. It identifies problematic patterns, enforces coding conventions, and helps prevent bugs before they reach production.
+
+### Key Benefits
+
+- **Bug prevention** — Catch common errors like undefined variables and unused imports
+- **Best practices** — Enforce React hooks rules, accessibility, and more
+- **Monorepo support** — NX integration enforces module boundaries
+- **Customizable** — Extend with plugins for specific frameworks and patterns
+
+## Configuration
+
+ESLint is configured using the new flat config format in `eslint.config.js` at the project root.
+
+### Extends and Plugins
+
+The configuration extends these rule sets:
+
+| Extension | Purpose |
+|-----------|---------|
+| `plugin:@nx/typescript` | NX monorepo TypeScript rules |
+| `plugin:@typescript-eslint/recommended` | TypeScript best practices |
+| `plugin:import/errors` | Import/export syntax checking |
+| `plugin:import/warnings` | Import-related warnings |
+| `prettier` | Disables rules that conflict with Prettier |
+
+### NX Module Boundaries
+
+The `@nx/enforce-module-boundaries` rule ensures packages only import from allowed dependencies:
+
+```javascript title="eslint.config.js"
+'@nx/enforce-module-boundaries': [
+  'error',
+  {
+    enforceBuildableLibDependency: true,
+    allow: [
+      '@sb/webapp-core/**',
+      '@sb/webapp-api-client/**',
+      '@sb/webapp-tenants/**',
+      // ... other allowed packages
+    ],
+  },
+],
+```
+
+This prevents circular dependencies and enforces clean architecture in the monorepo.
+
+## Running ESLint
+
+### Lint Specific Package
+
+```bash
+pnpm nx run webapp:lint
+```
+
+### Lint All Packages
+
+```bash
+pnpm nx run-many --target=lint
+```
+
+### Lint with Auto-fix
+
+```bash
+pnpm nx run webapp:lint --fix
+```
+
+## Additional Plugins Used
+
+The project uses these ESLint plugins across packages:
+
+| Plugin | Purpose |
+|--------|---------|
+| `eslint-plugin-react` | React-specific linting rules |
+| `eslint-plugin-react-hooks` | Enforce React Hooks rules |
+| `eslint-plugin-jsx-a11y` | Accessibility checks for JSX |
+| `eslint-plugin-testing-library` | Testing Library best practices |
+| `eslint-plugin-formatjs` | react-intl internationalization rules |
+
+## Editor Integration
+
+### VS Code
+
+Install the [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for real-time linting feedback.
+
+```json title=".vscode/settings.json"
+{
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ]
+}
+```
+
+### WebStorm / IntelliJ
+
+ESLint is enabled by default. Go to **Preferences → Languages & Frameworks → JavaScript → Code Quality Tools → ESLint** to configure.
+
+## Ignoring Files
+
+Files that should not be linted can be excluded in the ESLint configuration or with `.eslintignore`:
+
+```text title=".eslintignore"
+# Build outputs
+dist/
+build/
+coverage/
+
+# Generated files
+*.generated.ts
+__generated__/
+```
+
+## Common Issues
+
+### Module Boundary Violations
+
+If you see `@nx/enforce-module-boundaries` errors, you're importing from a package that isn't in the allowed list. Either:
+1. Add the package to the `allow` array in `eslint.config.js`
+2. Re-architecture to avoid the cross-dependency
+
+### Conflicting with Prettier
+
+ESLint is configured with `eslint-config-prettier` which disables formatting rules. Prettier handles all formatting—ESLint handles code quality.
+
+:::tip
+Run `pnpm prettier --write . && pnpm nx run-many --target=lint` to format first, then lint.
+:::
+

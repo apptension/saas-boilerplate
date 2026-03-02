@@ -1,8 +1,8 @@
-import { ApolloError } from '@apollo/client';
 import { Button, ButtonVariant, Link } from '@sb/webapp-core/components/buttons';
 import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
 import { RoutesConfig } from '@sb/webapp-core/config/routes';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { ReactNode } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTenantForm } from './tenantForm.hook';
@@ -17,10 +17,27 @@ export type TenantFormProps = {
   initialData?: TenantFormFields | null;
   onSubmit: (formData: TenantFormFields) => void;
   loading: boolean;
-  error?: ApolloError;
+  error?: Error;
+  /** Custom submit button label, defaults to "Save changes" */
+  submitLabel?: ReactNode;
+  /** Custom cancel URL, defaults to home route */
+  cancelUrl?: string;
+  /** Hide cancel button */
+  hideCancel?: boolean;
+  /** Disable the form (read-only mode) */
+  disabled?: boolean;
 };
 
-export const TenantForm = ({ initialData, onSubmit, error, loading }: TenantFormProps) => {
+export const TenantForm = ({
+  initialData,
+  onSubmit,
+  error,
+  loading,
+  submitLabel,
+  cancelUrl,
+  hideCancel,
+  disabled,
+}: TenantFormProps) => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
 
@@ -35,6 +52,8 @@ export const TenantForm = ({ initialData, onSubmit, error, loading }: TenantForm
     hasGenericErrorOnly,
     handleFormSubmit,
   } = useTenantForm({ initialData, onSubmit, error });
+
+  const defaultCancelUrl = generateLocalePath(RoutesConfig.home);
 
   return (
     <Form {...form}>
@@ -72,21 +91,34 @@ export const TenantForm = ({ initialData, onSubmit, error, loading }: TenantForm
                     id: 'Tenant form / Name placeholder',
                   })}
                   error={errors.name?.message}
+                  disabled={disabled}
                 />
               </FormControl>
             </FormItem>
           )}
         />
 
-        {hasGenericErrorOnly && <span className="absolute text-red-500">{genericError}</span>}
+        {hasGenericErrorOnly && (
+          <div className="mt-4 text-sm text-destructive">
+            <span>{genericError}</span>
+          </div>
+        )}
 
-        <div className="mt-6">
-          <Link className="mr-4" to={generateLocalePath(RoutesConfig.home)} variant={ButtonVariant.SECONDARY}>
-            <FormattedMessage defaultMessage="Cancel" id="Tenant form / Cancel button" />
-          </Link>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          {!hideCancel && (
+            <Link
+              to={cancelUrl ?? defaultCancelUrl}
+              variant={ButtonVariant.SECONDARY}
+              className="w-full sm:w-fit"
+            >
+              <FormattedMessage defaultMessage="Cancel" id="Tenant form / Cancel button" />
+            </Link>
+          )}
 
-          <Button type="submit" disabled={loading}>
-            <FormattedMessage defaultMessage="Save changes" id="Tenant form / Submit button" />
+          <Button type="submit" disabled={loading || disabled} className="w-full sm:w-fit">
+            {submitLabel ?? (
+              <FormattedMessage defaultMessage="Save changes" id="Tenant form / Submit button" />
+            )}
           </Button>
         </div>
       </form>

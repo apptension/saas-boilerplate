@@ -1,0 +1,400 @@
+---
+description: Top essential rules for Cursor AI-Agent during SaaS Boilerplate development
+globs: []
+alwaysApply: true
+---
+
+# Top Rules for SaaS Boilerplate Development
+
+These are the most critical rules to follow when developing in the SaaS Boilerplate codebase.
+
+## 1. Keep Tests in Sync with UI Changes
+
+When modifying component text, labels, or structure:
+- **ALWAYS update corresponding test files** in the `__tests__/` folder
+- Update snapshot tests with `--updateSnapshot` flag when UI changes are intentional
+- Use `findAllByText` when multiple elements may have the same text
+- Use specific selectors: `getByRole('button', { name: /specific text/i })` instead of generic `getByRole('button')`
+
+```tsx
+// ❌ Too generic - will fail if multiple buttons exist
+screen.getByRole('button');
+
+// ✅ Specific selector
+screen.getByRole('button', { name: /delete organization/i });
+
+// ❌ Will fail if text appears in multiple elements
+screen.findByText(/demo item name/i);
+
+// ✅ Handle multiple matches
+const elements = await screen.findAllByText(/demo item name/i);
+expect(elements.length).toBeGreaterThan(0);
+```
+
+## 2. Async Testing Patterns
+
+Always use async/await properly for UI interactions:
+
+```tsx
+// ✅ Wait for elements after async operations
+const triggerButton = await screen.findByRole('button', { name: /trigger/i });
+await userEvent.click(triggerButton);
+
+// ✅ Wait for dialog/modal content to appear
+const continueButton = await screen.findByRole('button', { name: /continue/i });
+await userEvent.click(continueButton);
+
+// ✅ Wait for toast notifications
+const toast = await screen.findByTestId('toast-1');
+expect(toast).toHaveTextContent('Expected message');
+```
+
+## 3. GraphQL Patterns
+
+**CRITICAL: Apollo Client imports must use `/react` subpath:**
+
+```tsx
+// ✅ CORRECT - Always use /react subpath
+import { useMutation, useQuery } from '@apollo/client/react';
+import { gql } from '@sb/webapp-api-client/graphql';
+
+// ❌ WRONG - Will cause runtime errors
+import { useMutation, useQuery } from '@apollo/client';
+```
+
+Use the established patterns for mutations and queries:
+
+```tsx
+// Mutations with toast feedback
+const [commitMutation, { loading }] = useMutation(myMutation, {
+  onCompleted: () => {
+    toast({ description: successMessage, variant: 'success' });
+    // Additional logic
+  },
+  onError: (error) => {
+    toast({ description: error.message, variant: 'destructive' });
+  },
+});
+
+// Always include tenantId for multi-tenant operations
+commitMutation({
+  variables: {
+    input: {
+      id: itemId,
+      tenantId: currentTenant.id,
+      ...otherFields,
+    },
+  },
+});
+```
+
+**CRITICAL for tests: Mock response key MUST match mutation name:**
+
+```tsx
+// ❌ WRONG - key doesn't match mutation name
+const mockData = { createTenant: { tenant: {...} } };
+const mock = composeMockedQueryResult(updateTenantMutation, { data: mockData });
+
+// ✅ CORRECT - key matches mutation name exactly
+const mockData = { updateTenant: { tenant: {...} } };
+const mock = composeMockedQueryResult(updateTenantMutation, { data: mockData });
+```
+
+## 4. Multi-Tenancy Awareness
+
+Always consider multi-tenancy when working with tenant-scoped features:
+
+```tsx
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
+
+const { data: currentTenant } = useCurrentTenant();
+const generateTenantPath = useGenerateTenantPath();
+
+// Generate tenant-aware routes
+navigate(generateTenantPath(RoutesConfig.home, { tenantId: currentTenant.id }));
+```
+
+## 5. Component Structure Pattern
+
+Follow the established component structure:
+
+```
+featureName/
+├── __tests__/
+│   └── featureName.component.spec.tsx
+├── index.ts                          # Clean exports
+├── featureName.component.tsx         # Main component
+├── featureName.graphql.ts           # GraphQL operations
+├── featureName.hook.ts              # Custom hooks (if needed)
+└── featureName.stories.tsx          # Storybook (if needed)
+```
+
+## 6. UI Component Conventions
+
+Use shadcn/ui components from `@sb/webapp-core`:
+
+```tsx
+import { Button } from '@sb/webapp-core/components/buttons';
+import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+import { ConfirmDialog } from '@sb/webapp-core/components/confirmDialog';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { useToast } from '@sb/webapp-core/toast/useToast';
+```
+
+ConfirmDialog pattern for destructive actions:
+```tsx
+<ConfirmDialog
+  onContinue={handleAction}
+  variant="destructive"
+  title={<FormattedMessage defaultMessage="Are you sure?" id="..." />}
+  description={<FormattedMessage defaultMessage="This cannot be undone." id="..." />}
+>
+  <Button variant="destructive">Delete</Button>
+</ConfirmDialog>
+```
+
+## 7. Toast Notifications
+
+Use the correct variant for each toast type. **Never use emojis** - icons are added automatically based on variant:
+
+```tsx
+import { useToast } from '@sb/webapp-core/toast/useToast';
+
+const { toast } = useToast();
+
+// ✅ Success operations (green with checkmark icon)
+toast({ description: 'Item saved successfully!', variant: 'success' });
+
+// ✅ Errors (red with alert icon)
+toast({ description: 'Failed to save item.', variant: 'destructive' });
+
+// ✅ Warnings (amber with warning icon)
+toast({ description: 'Your session will expire soon.', variant: 'warning' });
+
+// ✅ Informational (blue with info icon)
+toast({ description: 'Changes will take effect tomorrow.', variant: 'info' });
+
+// ❌ Don't use emojis - icons are automatic
+toast({ description: '🎉 Item saved!' }); // Wrong!
+
+// ❌ Don't forget variant for success messages
+toast({ description: 'Item saved!' }); // Missing variant!
+```
+
+Available variants: `success`, `destructive`, `warning`, `info`, `default`
+
+## 8. Internationalization Requirements
+
+ALL user-facing text must use react-intl. **Don't include emojis in translatable messages** - use appropriate toast variants for visual feedback instead:
+
+```tsx
+import { FormattedMessage, useIntl } from 'react-intl';
+
+// For JSX content
+<FormattedMessage defaultMessage="Delete organization" id="Feature / Button label" />
+
+// For props/attributes
+const intl = useIntl();
+const label = intl.formatMessage({
+  defaultMessage: 'Delete organization',
+  id: 'Feature / Button label',
+});
+```
+
+Message ID convention: `"Section / Description"` (e.g., `"Tenant General Settings / Delete Button"`)
+
+## 9. Form Handling Pattern
+
+Use react-hook-form with the API form hook:
+
+```tsx
+import { useApiForm } from '@sb/webapp-api-client/hooks';
+
+const {
+  form: {
+    register,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  },
+  form,
+} = useApiForm({
+  defaultValues: {
+    fieldName: '',
+  },
+});
+
+// Register with validation
+const registerField = register('fieldName', {
+  required: {
+    value: true,
+    message: intl.formatMessage({
+      defaultMessage: 'Field is required',
+      id: 'Form / Field required error',
+    }),
+  },
+});
+```
+
+## 10. Styling with Tailwind
+
+Use the `cn()` utility for conditional classes:
+
+```tsx
+import { cn } from '@sb/webapp-core/lib/utils';
+
+className={cn(
+  'flex items-center gap-2',
+  'hover:bg-accent transition-colors',
+  {
+    'bg-primary': isActive,
+    'opacity-50': isDisabled,
+  }
+)}
+```
+
+Design tokens: `primary`, `destructive`, `muted`, `accent`, `border`, `background`, `foreground`
+
+## 11. Adding New GraphQL Mutations
+
+When adding a new mutation, update all three layers:
+
+### Backend (`packages/backend/apps/<app>/`)
+1. Add serializer in `serializers.py`
+2. Add mutation class in `schema.py`
+3. Register mutation in appropriate mutation class (TenantOwnerMutation, etc.)
+4. Add tests in `tests/test_serializers.py`
+
+### GraphQL Schema (`packages/webapp-libs/webapp-api-client/graphql/schema/api.graphql`)
+1. Add input type: `input MyMutationInput { ... }`
+2. Add payload type: `type MyMutationPayload { ok: Boolean, clientMutationId: String }`
+3. Add mutation to `ApiMutation`: `myMutation(input: MyMutationInput!): MyMutationPayload`
+
+### Frontend (`packages/webapp-libs/webapp-<lib>/`)
+1. Add mutation in `*.graphql.ts` file
+2. Run codegen: `pnpm nx run webapp-api-client:graphql:generate-types`
+3. Use mutation in component with `useMutation` hook
+
+## 12. Permission-Protected Components (CRITICAL)
+
+**Components using `PermissionGate` or `usePermissionCheck` will NOT render protected UI in tests without mocking!**
+
+```tsx
+// ✅ Add this mock at the TOP of test files (before other imports)
+jest.mock('@sb/webapp-tenants/hooks', () => ({
+  ...jest.requireActual('@sb/webapp-tenants/hooks'),
+  PermissionGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  usePermissionCheck: () => ({ hasPermission: true, loading: false }),
+}));
+
+// Common permissions to be aware of:
+// - org.settings.edit, org.settings.view
+// - members.invite, members.remove, members.roles.edit
+// - billing.manage, billing.view
+// - security.sso.manage, security.passkeys.manage
+// - features.crud.manage, features.documents.manage
+```
+
+## 13. Table Row Components in Tests
+
+**Components rendering `<tr>` need proper table wrapper:**
+
+```tsx
+// ❌ WRONG - will fail with DOM validation errors
+render(<MyTableRowComponent item={item} />);
+
+// ✅ CORRECT - wrap in Table structure
+render(
+  <Table>
+    <TableBody>
+      <MyTableRowComponent item={item} />
+    </TableBody>
+  </Table>
+);
+```
+
+## 14. Before Committing Changes
+
+1. **Run type-check**: `pnpm tsc --noEmit -p packages/webapp/tsconfig.app.json`
+2. **Run affected tests**: `pnpm nx run-many --target=test --projects=<affected-lib>`
+3. **Update snapshots if UI changed intentionally**: Add `--updateSnapshot` flag
+4. **Check for linter errors**: Tests and type-check should pass without errors
+5. **Run GraphQL codegen if schema changed**: `pnpm nx run webapp-api-client:graphql:generate-types`
+
+## Quick Reference: Common Imports
+
+```tsx
+// Core components
+import { Button } from '@sb/webapp-core/components/buttons';
+import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Card, CardContent, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
+
+// Forms
+import { Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
+
+// Hooks & utilities
+import { useToast } from '@sb/webapp-core/toast/useToast';
+import { cn } from '@sb/webapp-core/lib/utils';
+
+// Multi-tenancy
+import { useCurrentTenant } from '@sb/webapp-tenants/providers';
+import { useGenerateTenantPath, useTenantRoles } from '@sb/webapp-tenants/hooks';
+
+// API - CRITICAL: Always use /react subpath!
+import { useMutation, useQuery } from '@apollo/client/react';
+import { gql } from '@sb/webapp-api-client/graphql';
+
+// Icons
+import { Settings, User, ChevronRight } from 'lucide-react';
+
+// i18n
+import { FormattedMessage, useIntl } from 'react-intl';
+```
+
+## 15. CI Preflight Checks (Token-Optimized)
+
+**Run targeted checks to minimize CI loops. Use summary output for quick verification:**
+
+```bash
+# Quick single-package check (most efficient)
+pnpm nx run webapp-tenants:lint && pnpm nx run webapp-tenants:type-check && pnpm nx run webapp-tenants:test --watchAll=false
+
+# Backend check with summary output
+pnpm nx run backend:test 2>&1 | tail -15
+
+# Full frontend check (use Nx cache)
+pnpm nx run webapp:lint && pnpm nx run webapp:type-check && pnpm nx run webapp:test --watchAll=false
+
+# Build verification (summary)
+pnpm nx run webapp:build 2>&1 | tail -10
+```
+
+### Decision Tree for Efficient Checks
+
+1. **Changed Python?** → `pnpm nx run backend:test`
+2. **Changed single webapp-lib?** → Run lint/type-check/test on that package only
+3. **Changed webapp?** → Run webapp checks
+4. **Changed GraphQL?** → Regenerate types + type-check
+5. **Not sure?** → Full preflight
+
+See `.cursor/rules/ci-preflight.mdc` for the full preflight contract.
+
+## 16. Backend: No Inline Imports
+
+**Place all Python imports at the top of the file.** Avoid inline imports inside functions or methods.
+
+```python
+# ❌ WRONG
+def test_something(self):
+    from ..models import TenantMembershipRole
+    ...
+
+# ✅ CORRECT
+from ..models import TenantMembership, TenantMembershipRole
+
+def test_something(self):
+    ...
+```
+
+See `.cursor/rules/backend.mdc` for full backend patterns.

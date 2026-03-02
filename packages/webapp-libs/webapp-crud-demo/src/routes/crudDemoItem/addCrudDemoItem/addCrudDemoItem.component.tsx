@@ -1,14 +1,17 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { gql } from '@sb/webapp-api-client/graphql';
 import { DEFAULT_PAGE_SIZE } from '@sb/webapp-api-client/hooks/usePagedPaginatedQuery';
-import { PageHeadline } from '@sb/webapp-core/components/pageHeadline';
 import { PageLayout } from '@sb/webapp-core/components/pageLayout';
+import { Paragraph } from '@sb/webapp-core/components/typography';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@sb/webapp-core/components/ui/card';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
 import { useCurrentTenant } from '@sb/webapp-tenants/providers';
+import { ArrowLeft, Database, Plus } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../config/routes';
 import { CrudDemoItemForm } from '../crudDemoItemForm';
@@ -37,7 +40,7 @@ export const AddCrudDemoItem = () => {
 
   const successMessage = intl.formatMessage({
     id: 'CrudDemoItem form / AddCrudDemoItem / Success message',
-    defaultMessage: '🎉 Item added successfully!',
+    defaultMessage: 'Item added successfully!',
   });
 
   const [commitCrudDemoItemFormMutation, { error, loading: loadingMutation }] = useMutation(addCrudDemoItemMutation, {
@@ -55,7 +58,7 @@ export const AddCrudDemoItem = () => {
 
       trackEvent('crud', 'add', id);
 
-      toast({ description: successMessage });
+      toast({ description: successMessage, variant: 'success' });
 
       navigate(generateLocalePath(RoutesConfig.crudDemoItem.list));
     },
@@ -73,12 +76,53 @@ export const AddCrudDemoItem = () => {
 
   return (
     <PageLayout>
-      <PageHeadline
-        hasBackButton
-        header={<FormattedMessage defaultMessage="Add CRUD Example Item" id="AddCrudDemoItem / Header" />}
+      <Helmet
+        title={intl.formatMessage({
+          defaultMessage: 'Add CRUD Example Item',
+          id: 'AddCrudDemoItem / page title',
+        })}
       />
 
-      <CrudDemoItemForm onSubmit={onFormSubmit} error={error} loading={loadingMutation} />
+      <div className="mx-auto w-full max-w-5xl space-y-8">
+        {/* Hero Section */}
+        <div className="space-y-4">
+          <Link
+            to={generateLocalePath(RoutesConfig.crudDemoItem.list)}
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <FormattedMessage defaultMessage="Back to items" id="AddCrudDemoItem / Back" />
+          </Link>
+          <div className="flex items-center gap-2">
+            <Plus className="h-6 w-6 text-primary" />
+            <h1 className="text-3xl font-bold tracking-tight">
+              <FormattedMessage defaultMessage="Add CRUD Example Item" id="AddCrudDemoItem / Header" />
+            </h1>
+          </div>
+          <Paragraph className="text-lg text-muted-foreground">
+            <FormattedMessage defaultMessage="Create a new CRUD example item" id="AddCrudDemoItem / Description" />
+          </Paragraph>
+        </div>
+
+        {/* Form Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              <FormattedMessage defaultMessage="Item Details" id="AddCrudDemoItem / Form title" />
+            </CardTitle>
+            <CardDescription>
+              <FormattedMessage
+                defaultMessage="Fill in the details to create a new item"
+                id="AddCrudDemoItem / Form description"
+              />
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CrudDemoItemForm onSubmit={onFormSubmit} error={error} loading={loadingMutation} />
+          </CardContent>
+        </Card>
+      </div>
     </PageLayout>
   );
 };

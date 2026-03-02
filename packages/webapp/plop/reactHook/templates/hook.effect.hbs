@@ -1,0 +1,68 @@
+import { useState, useEffect, useCallback } from 'react';
+
+export type Use{{ hookBaseName }}Options = {
+  enabled?: boolean;
+  onSuccess?: (data: unknown) => void;
+  onError?: (error: Error) => void;
+};
+
+export type Use{{ hookBaseName }}Return = {
+  data: unknown | null;
+  isLoading: boolean;
+  error: Error | null;
+  refetch: () => void;
+};
+
+/**
+ * {{ hookName }} - A hook for handling side effects
+ *
+ * @example
+ * ```tsx
+ * const { data, isLoading, error, refetch } = {{ hookName }}({
+ *   enabled: true,
+ *   onSuccess: (data) => console.log('Success:', data),
+ * });
+ * ```
+ */
+export const {{ hookName }} = (options: Use{{ hookBaseName }}Options = {}): Use{{ hookBaseName }}Return => {
+  const { enabled = true, onSuccess, onError } = options;
+
+  const [data, setData] = useState<unknown | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchData = useCallback(async () => {
+    if (!enabled) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // TODO: Replace with your actual async operation
+      const result = await Promise.resolve({ message: 'Hello World' });
+      setData(result);
+      onSuccess?.(result);
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error('Unknown error');
+      setError(error);
+      onError?.(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [enabled, onSuccess, onError]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return {
+    data,
+    isLoading,
+    error,
+    refetch,
+  };
+};

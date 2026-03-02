@@ -1,58 +1,234 @@
 import ProjectName from '../../shared/components/ProjectName.component';
 import WSLNotice from '../../shared/partials/_wsl_notice.mdx';
 
-### Start the app
+## Step 3: Start the Application {#start-the-app}
 
-This section provides instructions for running the <ProjectName/> locally on your machine. It covers three main areas: starting the local dev web server, starting the backend services using docker compose, and (optionally) launching a local documentation instance based on Docusaurus.
+Now let's start everything and verify it's working correctly.
 
 <WSLNotice />
 
-#### Start backend
+### Option A: Start Everything (Recommended)
 
-Project includes a set of backend services that can be run using docker compose:
-
-```bash
-pnpm nx run core:docker-compose:up
-```
-
-or a shorter version:
+The easiest way to start all services is with a single command:
 
 ```bash
 pnpm saas up
 ```
 
-This will run docker containers for all the backend services in the detached mode.
+This command will:
+1. Build email templates
+2. Start all backend services (database, Redis, API, workers)
+3. Wait for the backend to be ready
+4. Start the webapp development server
 
-Backend is running on `http://localhost:5001`.
+:::info First Run
+The first run takes longer (5-10 minutes) as Docker downloads and builds images. Subsequent starts are much faster (under 1 minute).
+:::
 
-Admin Panel is running on `http://admin.localhost:5001`.
+### Option B: Start Services Separately
 
-Workers trigger server is running on `http://localhost:3005`.
-
-Mailcatcher is running on `http://localhost:1080`. Check the [dedicated doc](/working-with-sb/dev-tools/sentry) before using.
-
-#### Start webapp
-
-To start the local development web server, you'll need to run a following command in your terminal:
+If you prefer more control, start services individually:
 
 ```bash
+# Start backend services only
+pnpm nx run core:docker-compose:up
+
+# In a new terminal, start the webapp
 pnpm nx start webapp
 ```
 
-Web app is running on `http://localhost:3000`.
+---
 
-#### Start documentation
+## Step 4: Verify Everything is Working
 
-Finally, the <ProjectName/> comes with a local documentation instance based on Docusaurus. This provides easy access to the documentation while you're working on your SaaS product, so you can quickly find answers to any questions you may have.
+Once startup completes, you should be able to access:
+
+| Service | URL | What to Expect |
+|---------|-----|----------------|
+| **Web App** | [http://localhost:3000](http://localhost:3000) | Login/signup page |
+| **Backend API** | [http://localhost:5001](http://localhost:5001) | API root or GraphQL playground |
+| **Admin Panel** | [http://admin.localhost:5001](http://admin.localhost:5001) | Django admin login |
+| **Mailcatcher** | [http://localhost:1080](http://localhost:1080) | Email inbox (catches all outgoing emails) |
+| **Workers** | [http://localhost:3005](http://localhost:3005) | Workers trigger server |
+
+### Test the Setup
+
+1. **Open the web app** at [http://localhost:3000](http://localhost:3000)
+2. **Create an account** using the signup form
+3. **Check Mailcatcher** at [http://localhost:1080](http://localhost:1080) for the verification email
+4. **Verify your email** by clicking the link in Mailcatcher
+5. **Log in** with your new account
+
+:::tip Admin Access
+You can also log in to the Admin Panel at [http://admin.localhost:5001](http://admin.localhost:5001) using the credentials you set in `ADMIN_EMAIL` and `ADMIN_DEFAULT_PASSWORD`.
+:::
+
+---
+
+## Starting Documentation Locally
+
+The <ProjectName/> includes a local documentation instance:
 
 ```bash
 pnpm nx start docs
 ```
 
-Docs app is running on `http://localhost:3006`.
+Docs will be available at [http://localhost:3006](http://localhost:3006).
+
+---
+
+## Stopping the Application
+
+To stop all services:
+
+```bash
+pnpm saas down
+```
+
+Or to stop just the Docker containers:
+
+```bash
+pnpm nx run core:docker-compose:down
+```
+
+---
+
+## Troubleshooting
+
+### Docker Issues
+
+<details>
+<summary><strong>Error: Cannot connect to Docker daemon</strong></summary>
+
+Make sure Docker Desktop is running. On macOS/Windows, look for the Docker icon in your system tray.
+
+```bash
+# Check if Docker is running
+docker info
+```
+
+If Docker isn't running, start Docker Desktop and try again.
+
+</details>
+
+<details>
+<summary><strong>Error: Port already in use</strong></summary>
+
+Another application is using a required port. Find and stop it:
+
+```bash
+# Find what's using port 5001
+lsof -i :5001
+
+# Or on Windows
+netstat -ano | findstr :5001
+```
+
+Common conflicts:
+- Port 5432: Another PostgreSQL instance
+- Port 6379: Another Redis instance
+- Port 3000: Another development server
+
+</details>
+
+<details>
+<summary><strong>Docker build fails or takes forever</strong></summary>
+
+Try cleaning up Docker resources:
+
+```bash
+# Remove unused containers, networks, and images
+docker system prune -a
+
+# Rebuild from scratch
+pnpm nx run core:docker-compose:up --build
+```
+
+</details>
+
+### Backend Issues
+
+<details>
+<summary><strong>Database migration errors</strong></summary>
+
+Reset the database and run migrations:
+
+```bash
+# Stop everything
+pnpm saas down
+
+# Remove the database volume
+docker volume rm $(docker volume ls -q | grep db-data)
+
+# Start fresh
+pnpm saas up
+```
+
+</details>
+
+<details>
+<summary><strong>Backend not responding on localhost:5001</strong></summary>
+
+Check if the backend container is running:
+
+```bash
+docker ps | grep backend
+```
+
+View backend logs for errors:
+
+```bash
+docker logs $(docker ps -qf "name=backend") --tail 100
+```
+
+</details>
+
+### Frontend Issues
+
+<details>
+<summary><strong>Webapp shows blank page or errors</strong></summary>
+
+1. Clear your browser cache or try incognito mode
+2. Check the browser console for errors (F12)
+3. Restart the webapp:
+
+```bash
+# Stop webapp (Ctrl+C) and restart
+pnpm nx start webapp
+```
+
+</details>
+
+<details>
+<summary><strong>GraphQL errors or "Failed to fetch"</strong></summary>
+
+The backend might not be ready yet. Wait for all services to be healthy:
+
+```bash
+# Check service health
+docker ps
+```
+
+All containers should show "healthy" status. If the backend shows "starting", wait a moment.
+
+</details>
+
+### Still Having Issues?
+
+- Check [GitHub Issues](https://github.com/apptension/saas-boilerplate/issues) for known problems
+- Open a new issue with your error logs
+- Join our community discussions
+
+---
+
+## Next Steps
+
+Congratulations! Your <ProjectName/> project is now running. Here's what to explore next:
+
+- **[How-To Guides](/working-with-sb)** - Learn how to add features, components, and customize your app
+- **[Architecture Overview](/introduction/architecture)** - Understand how the pieces fit together
+- **[Features](/introduction/features)** - Explore all the built-in capabilities
 
 :::tip
-
-Once you've successfully set up your project, you can check out the "[Working with <ProjectName/>](/working-with-sb)" documentation to learn more about how to take advantage of the boilerplate's features and best practices.
-
+Once you've successfully set up your project, check out the "[How-To Guides](/working-with-sb)" to learn how to customize and extend your SaaS application.
 :::

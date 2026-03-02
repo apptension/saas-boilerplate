@@ -1,8 +1,10 @@
 import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
+import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { ElementType } from 'react';
 
+import { notificationCreatedSubscription } from '../notifications.graphql';
 import { Notifications, NotificationsProps } from '../notifications.component';
 import { NotificationTypes } from '../notifications.types';
 import {
@@ -86,5 +88,39 @@ describe('Notifications: Component', () => {
 
     await userEvent.click(await screen.findByTestId('notifications-trigger-testid'));
     expect(await screen.findByText('TENANT_INVITATION_ACCEPTED')).toBeInTheDocument();
+  });
+
+  it('Should handle subscription with null notification data', async () => {
+    const nullNotificationMock = composeMockedQueryResult(notificationCreatedSubscription, {
+      data: { notificationCreated: { notification: null } },
+    });
+
+    const apolloMocks = [
+      fillCommonQueryWithUser(),
+      fillNotificationsListQuery([]),
+      nullNotificationMock,
+    ];
+
+    const { waitForApolloMocks } = render(<Component />, { apolloMocks });
+    await waitForApolloMocks();
+
+    expect(await screen.findByLabelText('Open notifications')).toBeInTheDocument();
+  });
+
+  it('Should render with initial notifications when query has data', async () => {
+    const notifications = [
+      notificationFactory({ type: NotificationTypes.CRUD_ITEM_CREATED }),
+    ];
+
+    const apolloMocks = [
+      fillCommonQueryWithUser(),
+      fillNotificationsListQuery(notifications),
+    ];
+
+    const { waitForApolloMocks } = render(<Component />, { apolloMocks });
+    await waitForApolloMocks();
+    await userEvent.click(await screen.findByTestId('notifications-trigger-testid'));
+
+    expect(await screen.findByText('CRUD_ITEM_CREATED')).toBeInTheDocument();
   });
 });

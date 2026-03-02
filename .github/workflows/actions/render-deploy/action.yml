@@ -1,0 +1,104 @@
+# =============================================================================
+# Render Deploy Hook Action
+# =============================================================================
+#
+# Reusable action to trigger Render.com deployments via Deploy Hooks.
+# This action handles error checking and provides consistent logging.
+#
+# Usage:
+#   - uses: ./.github/workflows/actions/render-deploy
+#     with:
+#       service-name: backend-api
+#       deploy-hook-url: ${{ secrets.RENDER_DEPLOY_HOOK_BACKEND_API }}
+# =============================================================================
+
+name: "Trigger Render Deployment"
+description: "Trigger a Render.com service deployment via Deploy Hook"
+
+inputs:
+  service-name:
+    description: "Name of the Render service (for logging)"
+    required: true
+  deploy-hook-url:
+    description: "Render Deploy Hook URL"
+    required: true
+  wait-for-deploy:
+    description: "Wait for deployment to complete (requires Render API key)"
+    required: false
+    default: "false"
+  render-api-key:
+    description: "Render API key (required if wait-for-deploy is true)"
+    required: false
+  timeout:
+    description: "Timeout in seconds for deployment (if waiting)"
+    required: false
+    default: "600"
+
+outputs:
+  deploy-id:
+    description: "The Render deployment ID (if available)"
+    value: ${{ steps.trigger.outputs.deploy_id }}
+  status:
+    description: "Deployment status (triggered, success, failed)"
+    value: ${{ steps.trigger.outputs.status }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Validate inputs
+      shell: bash
+      run: |
+        if [[ -z "${{ inputs.deploy-hook-url }}" ]]; then
+          echo "::error::Deploy hook URL is required for ${{ inputs.service-name }}"
+          exit 1
+        fi
+        
+        # Validate URL format
+        if [[ ! "${{ inputs.deploy-hook-url }}" =~ ^https://api\.render\.com/deploy/ ]]; then
+          echo "::warning::Deploy hook URL doesn't match expected Render format"
+        fi
+
+    - name: Trigger Render deployment
+      id: trigger
+      shell: bash
+      run: |
+        echo "🚀 Triggering deployment for ${{ inputs.service-name }}..."
+        
+        # Make the deploy hook request
+        response=$(curl -s -w "\n%{http_code}" -X POST "${{ inputs.deploy-hook-url }}" \
+          -H "Accept: application/json" \
+          2>&1)
+        
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | sed '$d')
+        
+        echo "Response body: $body"
+        echo "HTTP Status: $http_code"
+        
+        # Check for success (2xx status codes)
+        if [[ "$http_code" =~ ^2[0-9][0-9]$ ]]; then
+          echo "✅ Deployment triggered successfully for ${{ inputs.service-name }}"
+          echo "status=triggered" >> $GITHUB_OUTPUT
+          
+          # Try to extract deploy ID from response
+          deploy_id=$(echo "$body" | jq -r '.deploy.id // empty' 2>/dev/null || true)
+          if [[ -n "$deploy_id" ]]; then
+            echo "deploy_id=$deploy_id" >> $GITHUB_OUTPUT
+            echo "Deploy ID: $deploy_id"
+          fi
+        else
+          echo "::error::Deployment trigger failed for ${{ inputs.service-name }} (HTTP $http_code)"
+          echo "status=failed" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+    - name: Add deployment summary
+      shell: bash
+      run: |
+        echo "### 🚀 ${{ inputs.service-name }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ${{ steps.trigger.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+        if [[ -n "${{ steps.trigger.outputs.deploy_id }}" ]]; then
+          echo "- **Deploy ID**: \`${{ steps.trigger.outputs.deploy_id }}\`" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY

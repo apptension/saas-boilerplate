@@ -1,6 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 
 export * from './auth/auth.types';
+export * from './apolloError.types';
 
 export type FieldError = {
   message?: string;

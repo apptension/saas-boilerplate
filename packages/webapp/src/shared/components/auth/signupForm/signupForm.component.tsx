@@ -1,9 +1,23 @@
-import { Button, Link } from '@sb/webapp-core/components/buttons';
-import { Checkbox, Form, FormControl, FormField, FormItem, Input } from '@sb/webapp-core/components/forms';
-import { Small } from '@sb/webapp-core/components/typography';
+import {
+  Checkbox,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@sb/webapp-core/components/forms';
+import {
+  PasswordRequirements,
+  PasswordStrengthIndicator,
+  validatePassword,
+} from '@sb/webapp-core/components/passwordStrength';
+import { Alert, AlertDescription } from '@sb/webapp-core/components/ui/alert';
+import { Button } from '@sb/webapp-core/components/ui/button';
+import { Input } from '@sb/webapp-core/components/ui/input';
 import { useGenerateLocalePath } from '@sb/webapp-core/hooks';
-import { reportError } from '@sb/webapp-core/utils/reportError';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 import { RoutesConfig } from '../../../../app/config/routes';
 import { emailPattern } from '../../../constants';
@@ -13,18 +27,15 @@ export const SignupForm = () => {
   const intl = useIntl();
   const generateLocalePath = useGenerateLocalePath();
   const {
-    form: {
-      register,
-      formState: { errors },
-    },
     form,
-    hasGenericErrorOnly,
     genericError,
     loading,
     handleSignup,
   } = useSignupForm({
     defaultValues: {
       acceptTerms: false,
+      email: '',
+      password: '',
     },
   });
 
@@ -33,47 +44,46 @@ export const SignupForm = () => {
       <form
         noValidate
         className="flex w-full flex-col gap-6"
-        onSubmit={(e) => {
-          handleSignup(e).catch(reportError);
-        }}
+        onSubmit={handleSignup}
       >
         <FormField
           control={form.control}
           name="email"
+          rules={{
+            required: intl.formatMessage({
+              defaultMessage: 'Please enter your email address',
+              id: 'Auth / Signup / Email required',
+            }),
+            pattern: {
+              value: emailPattern,
+              message: intl.formatMessage({
+                defaultMessage: 'Please enter a valid email address',
+                id: 'Auth / Signup / Email format error',
+              }),
+            },
+          }}
           render={({ field }) => (
             <FormItem>
+              <FormLabel>
+                {intl.formatMessage({
+                  defaultMessage: 'Email address',
+                  id: 'Auth / Signup / Email label',
+                })}
+              </FormLabel>
               <FormControl>
                 <Input
                   {...field}
-                  {...register('email', {
-                    required: {
-                      value: true,
-                      message: intl.formatMessage({
-                        defaultMessage: 'Email is required',
-                        id: 'Auth / Signup / Email required',
-                      }),
-                    },
-                    pattern: {
-                      value: emailPattern,
-                      message: intl.formatMessage({
-                        defaultMessage: 'Email format is invalid',
-                        id: 'Auth / Signup / Email format error',
-                      }),
-                    },
-                  })}
                   type="email"
+                  autoComplete="email"
                   required
-                  label={intl.formatMessage({
-                    defaultMessage: 'Email',
-                    id: 'Auth / Signup / Email label',
-                  })}
                   placeholder={intl.formatMessage({
-                    defaultMessage: 'Write your email here...',
+                    defaultMessage: 'name@example.com',
                     id: 'Auth / Signup / Email placeholder',
                   })}
-                  error={errors.email?.message}
+                  disabled={loading}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -81,40 +91,64 @@ export const SignupForm = () => {
         <FormField
           control={form.control}
           name="password"
+          rules={{
+            required: intl.formatMessage({
+              defaultMessage: 'Please enter a password',
+              id: 'Auth / Signup / Password required',
+            }),
+            validate: {
+              minLength: (value) =>
+                value.length >= 8 ||
+                intl.formatMessage({
+                  defaultMessage: 'Password must be at least 8 characters long',
+                  id: 'Auth / Signup / Password too short',
+                }),
+              notCommon: (value) => {
+                const validation = validatePassword(value);
+                return (
+                  validation.notCommon ||
+                  intl.formatMessage({
+                    defaultMessage: 'This password is too common. Please choose a more unique password.',
+                    id: 'Auth / Signup / Password too common',
+                  })
+                );
+              },
+              notNumericOnly: (value) => {
+                const validation = validatePassword(value);
+                return (
+                  validation.notNumericOnly ||
+                  intl.formatMessage({
+                    defaultMessage: "Password can't be entirely numeric.",
+                    id: 'Auth / Signup / Password numeric only',
+                  })
+                );
+              },
+            },
+          }}
           render={({ field }) => (
             <FormItem>
+              <FormLabel>
+                {intl.formatMessage({
+                  defaultMessage: 'Password',
+                  id: 'Auth / Signup / Password label',
+                })}
+              </FormLabel>
               <FormControl>
                 <Input
                   {...field}
-                  {...register('password', {
-                    required: {
-                      value: true,
-                      message: intl.formatMessage({
-                        defaultMessage: 'Password is required',
-                        id: 'Auth / Signup / Password required',
-                      }),
-                    },
-                    minLength: {
-                      value: 8,
-                      message: intl.formatMessage({
-                        defaultMessage: 'Password is too short. It must contain at least 8 characters.',
-                        id: 'Auth / Signup / Password too short',
-                      }),
-                    },
-                  })}
                   required
                   type="password"
-                  label={intl.formatMessage({
-                    defaultMessage: 'Password',
-                    id: 'Auth / Signup / Password label',
-                  })}
+                  autoComplete="new-password"
                   placeholder={intl.formatMessage({
-                    defaultMessage: 'Minimum 8 characters',
+                    defaultMessage: 'Create a strong password',
                     id: 'Auth / Signup / Password placeholder',
                   })}
-                  error={errors.password?.message}
+                  disabled={loading}
                 />
               </FormControl>
+              <FormMessage />
+              <PasswordStrengthIndicator password={field.value || ''} className="mt-2" />
+              <PasswordRequirements password={field.value || ''} className="mt-3" />
             </FormItem>
           )}
         />
@@ -122,56 +156,66 @@ export const SignupForm = () => {
         <FormField
           control={form.control}
           name="acceptTerms"
+          rules={{
+            required: intl.formatMessage({
+              defaultMessage: 'You must accept the terms and conditions to continue',
+              id: 'Auth / Signup / Terms and conditions required',
+            }),
+          }}
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0">
               <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  {...register('acceptTerms', {
-                    required: {
-                      value: true,
-                      message: intl.formatMessage({
-                        defaultMessage: 'You need to accept terms and conditions',
-                        id: 'Auth / Signup / Terms and conditions required',
-                      }),
-                    },
-                  })}
-                  label={intl.formatMessage(
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
+              <div className="space-y-1.5 leading-none">
+                <FormLabel className="!mt-0 cursor-pointer font-normal">
+                  {intl.formatMessage(
                     {
-                      defaultMessage: 'You must accept our {termsLink} and {policyLink}.',
+                      defaultMessage: 'I agree to the {termsLink} and {policyLink}',
                       id: 'Auth / Signup / Accept terms label',
                     },
                     {
                       termsLink: (
-                        <Link className="h-fit p-0 text-xs" to={generateLocalePath(RoutesConfig.termsAndConditions)}>
-                          <FormattedMessage
-                            id="Auth / Signup / Accept checkbox / T&C link"
-                            defaultMessage="Terms of Use"
-                          />
-                        </Link>
+                        <Button key="terms" variant="link" className="inline h-auto p-0 text-sm underline" asChild>
+                          <Link to={generateLocalePath(RoutesConfig.termsAndConditions)}>
+                            <FormattedMessage
+                              id="Auth / Signup / Accept checkbox / T&C link"
+                              defaultMessage="Terms of Use"
+                            />
+                          </Link>
+                        </Button>
                       ),
                       policyLink: (
-                        <Link className="h-fit p-0 text-xs" to={generateLocalePath(RoutesConfig.privacyPolicy)}>
-                          <FormattedMessage
-                            id="Auth / Signup / Accept checkbox / Privacy policy link"
-                            defaultMessage="Privacy Policy"
-                          />
-                        </Link>
+                        <Button key="policy" variant="link" className="inline h-auto p-0 text-sm underline" asChild>
+                          <Link to={generateLocalePath(RoutesConfig.privacyPolicy)}>
+                            <FormattedMessage
+                              id="Auth / Signup / Accept checkbox / Privacy policy link"
+                              defaultMessage="Privacy Policy"
+                            />
+                          </Link>
+                        </Button>
                       ),
                     }
                   )}
-                  error={errors.acceptTerms?.message}
-                />
-              </FormControl>
+                </FormLabel>
+                <FormMessage />
+              </div>
             </FormItem>
           )}
         />
 
-        {hasGenericErrorOnly ? <Small className="text-red-500">{genericError}</Small> : null}
+        {genericError && (
+          <Alert variant="destructive">
+            <AlertDescription>{genericError}</AlertDescription>
+          </Alert>
+        )}
 
-        <Button type="submit" disabled={loading}>
-          <FormattedMessage defaultMessage="Sign up" id="Auth / signup button" />
+        <Button type="submit" disabled={loading} className="w-full" size="lg">
+          {loading ? (
+            <FormattedMessage defaultMessage="Creating account..." id="Auth / signup button loading" />
+          ) : (
+            <FormattedMessage defaultMessage="Create account" id="Auth / signup button" />
+          )}
         </Button>
       </form>
     </Form>

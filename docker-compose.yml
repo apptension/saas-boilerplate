@@ -1,5 +1,3 @@
-version: "3.4"
-
 services:
   db:
     image: postgres:16.1-alpine
@@ -40,6 +38,7 @@ services:
       - AWS_ACCESS_KEY_ID=foo
       - AWS_SECRET_ACCESS_KEY=bar
       - AWS_DEFAULT_REGION=eu-west-1
+      - MCP_SERVER_URL=http://mcp-server:4000
     stdin_open: true
     tty: true
 
@@ -100,3 +99,23 @@ services:
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:-}
       - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN:-}
       - AWS_SESSION_EXPIRATION=${AWS_SESSION_EXPIRATION:-}
+
+  # Apollo MCP Server for AI Assistant
+  # Exposes GraphQL operations as MCP tools for AI models
+  # NOTE: Pinned to specific SHA digest for reproducibility
+  mcp-server:
+    image: ghcr.io/apollographql/apollo-mcp-server:latest@sha256:a78a66c637236d2d72b1ff1fa34a0c7c7f7d2a84b372a2c54bd2eb13655a3dc1
+    container_name: mcp-server
+    command: ["/app/config.yaml"]
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./packages/mcp-server/config.yaml:/app/config.yaml:ro
+      - ./packages/mcp-server/operations:/app/operations:ro
+      - ./packages/webapp-libs/webapp-api-client/graphql/schema:/app/schema:ro
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    depends_on:
+      backend:
+        condition: service_started
+    restart: unless-stopped

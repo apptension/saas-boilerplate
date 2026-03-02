@@ -1,11 +1,103 @@
 ---
-title: What is SaaS Boilerplate?
+title: Overview
+description: A comprehensive overview of the SaaS Boilerplate project
 pagination_next: null
 ---
 
 import DocCardList from '@theme/DocCardList';
 import SBDescriptionPartial from '../shared/partials/_sb_description.mdx';
+import ProjectName from '../shared/components/ProjectName.component';
+import { Globe, Server, Building2, Workflow, Rocket, BookOpen } from '../shared/components/Icon.component';
+
+# What is SaaS Boilerplate?
+
+<ProjectName /> is a **production-ready codebase** that dramatically reduces the time your team spends building common SaaS functionality. Instead of reinventing the wheel, you can reuse battle-tested components and focus on what makes your product unique.
+
+<div className="feature-grid feature-grid--2-cols" style={{marginTop: '1.5rem', marginBottom: '1.5rem'}}>
+  <a href="/getting-started" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><Rocket size={18} /></div>
+      <h3 className="feature-card__title">Quick Start</h3>
+      <p className="feature-card__description">
+        Get up and running in 15 minutes with our step-by-step setup guide.
+      </p>
+    </div>
+  </a>
+  <a href="/working-with-sb" className="feature-card__link">
+    <div className="feature-card">
+      <div className="feature-card__icon"><BookOpen size={18} /></div>
+      <h3 className="feature-card__title">How-To Guides</h3>
+      <p className="feature-card__description">
+        Learn how to customize and extend the boilerplate for your needs.
+      </p>
+    </div>
+  </a>
+</div>
+
+:::tip Time Savings
+Most teams report saving **3-6 months** of development time by starting with SaaS Boilerplate instead of building from scratch.
+:::
+
+---
+
+## Architecture Overview
+
+The boilerplate is built on a modern, scalable architecture that separates concerns and enables independent scaling:
+
+<div className="feature-grid feature-grid--2-cols">
+  <div className="feature-card">
+    <div className="feature-card__icon"><Globe size={18} /></div>
+    <h3 className="feature-card__title">Frontend</h3>
+    <p className="feature-card__description">
+      React 19 with TypeScript, modular monorepo structure, and shadcn/ui components for a beautiful, accessible UI.
+    </p>
+  </div>
+  <div className="feature-card">
+    <div className="feature-card__icon"><Server size={18} /></div>
+    <h3 className="feature-card__title">Backend</h3>
+    <p className="feature-card__description">
+      Django with GraphQL API, built-in admin panel, and async task processing for scalable backend operations.
+    </p>
+  </div>
+  <div className="feature-card">
+    <div className="feature-card__icon"><Building2 size={18} /></div>
+    <h3 className="feature-card__title">Infrastructure</h3>
+    <p className="feature-card__description">
+      AWS CDK for infrastructure as code, automated CI/CD pipelines, and production-ready deployment configurations.
+    </p>
+  </div>
+  <div className="feature-card">
+    <div className="feature-card__icon"><Workflow size={18} /></div>
+    <h3 className="feature-card__title">Integrations</h3>
+    <p className="feature-card__description">
+      Pre-built integrations with Stripe, Contentful, OpenAI, Sentry, and more essential SaaS services.
+    </p>
+  </div>
+</div>
+
+---
+
+## Key Capabilities
 
 <SBDescriptionPartial />
+
+---
+
+## Technology Stack
+
+Our carefully selected stack balances developer experience with production reliability:
+
+| Layer | Technologies |
+|-------|-------------|
+| **Frontend** | React, TypeScript, GraphQL, Apollo Client, shadcn/ui, Tailwind CSS |
+| **Backend** | Python, Django, Graphene, Celery, PostgreSQL, Redis |
+| **Infrastructure** | AWS (ECS, RDS, S3, CloudFront), Docker, AWS CDK |
+| **DevOps** | GitHub Actions / BitBucket Pipelines, automated testing, Sentry |
+
+---
+
+## Explore the Documentation
+
+Learn more about the boilerplate's architecture, features, and coding standards:
 
 <DocCardList />

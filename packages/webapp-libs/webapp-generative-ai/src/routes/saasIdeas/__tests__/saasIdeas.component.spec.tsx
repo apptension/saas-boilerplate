@@ -18,31 +18,32 @@ jest.mock('typewriter-effect/dist/core', () =>
 describe('SaasIdeas: Component', () => {
   const Component = () => <SaasIdeas />;
 
-  const getKeywordInput = () => screen.findByLabelText(/keywords/i);
-  const getSubmitBtn = () => screen.getByRole('button');
+  const getKeywordInput = () => screen.findByPlaceholderText(/type your keywords here/i);
+  const getSubmitBtn = () => screen.getByRole('button', { name: '' }); // Send button has icon only
 
   it('should display empty form', async () => {
     const { waitForApolloMocks } = render(<Component />);
     await waitForApolloMocks();
-    const value = (await getKeywordInput()).getAttribute('value');
-    expect(value).toBe('');
+    const input = await getKeywordInput();
+    expect(input).toHaveValue('');
   });
 
   it('should show error if input is empty', async () => {
     const { waitForApolloMocks } = render(<Component />);
     await waitForApolloMocks();
-    await userEvent.click(getSubmitBtn());
+    const submitBtn = await screen.findByRole('button', { name: '' });
+    await userEvent.click(submitBtn);
     expect(await screen.findByText('Keywords is required')).toBeInTheDocument();
   });
 
   it('should show results', async () => {
-    const ideas = ['idea 1', 'idea 2'];
+    const response = 'Here are some SaaS ideas for you';
     const keywords = ['test_keyword'];
 
     const mutationMock = composeMockedQueryResult(generateSaasIdeasMutation, {
       data: {
         generateSaasIdeas: {
-          ideas,
+          response,
         },
       },
       variables: {
@@ -55,10 +56,10 @@ describe('SaasIdeas: Component', () => {
     const { waitForApolloMocks } = render(<Component />, { apolloMocks: append(mutationMock) });
     await waitForApolloMocks(0);
     await userEvent.type(await getKeywordInput(), keywords.join(' '));
-    await userEvent.click(getSubmitBtn());
+    const submitBtn = await screen.findByRole('button', { name: '' });
+    await userEvent.click(submitBtn);
     await waitForApolloMocks();
-    expect(await screen.findByText(ideas[0])).toBeInTheDocument();
-    expect(await screen.findByText(ideas[1])).toBeInTheDocument();
+    expect(await screen.findByText(response)).toBeInTheDocument();
   });
 
   it('should show error', async () => {
@@ -82,7 +83,8 @@ describe('SaasIdeas: Component', () => {
     });
     await waitForApolloMocks(0);
     await userEvent.type(await getKeywordInput(), keywords.join(' '));
-    await userEvent.click(getSubmitBtn());
+    const submitBtn = await screen.findByRole('button', { name: '' });
+    await userEvent.click(submitBtn);
     await waitForApolloMocks();
 
     expect(await screen.findByText('error')).toBeInTheDocument();

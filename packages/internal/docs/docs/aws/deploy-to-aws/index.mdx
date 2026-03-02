@@ -1,14 +1,89 @@
 ---
-description: Steps required to deploy SaaS Boilerplate on AWS
+title: Step-by-Step Deployment Guide
+description: Complete guide to deploying SaaS Boilerplate on AWS
 ---
-# Deploy project to AWS
 
-This article will guide you through all the necessary steps to deploy a new environment to AWS.
-
-
-import DocCardList from '@theme/DocCardList';
+import ProjectName from '../../shared/components/ProjectName.component';
 import FreshAWSAccountInfo from '../../shared/partials/_freash-aws-account-info.mdx';
+
+# Deploy to AWS: Step-by-Step Guide
+
+This guide walks you through deploying <ProjectName /> to AWS from start to finish. Follow each step in order—each builds on the previous one.
+
+---
+
+## Deployment Steps Overview
+
+| Step | What You'll Do | Time |
+|------|---------------|------|
+| **[0. Prerequisites](/aws/deploy-to-aws/prerequisites)** | Install required tools and verify access | 15-30 min |
+| **[1. Configure AWS Credentials](/aws/deploy-to-aws/configure-aws-credentials)** | Set up secure AWS access with aws-vault | 20-30 min |
+| **[2. Set Up Your Domain](/aws/deploy-to-aws/configure-hosted-zone)** | Configure Route 53 hosted zone for your domain | 10-30 min |
+| **[3. Create Environment Stage](/aws/deploy-to-aws/create-env-stage-in-repo)** | Initialize your deployment environment (qa, staging, production) | 20-30 min |
+| **[4. Deploy Infrastructure](/aws/deploy-to-aws/deploy-infrastructure)** | Create AWS resources (database, cache, networking) | 30-45 min |
+| **[5. Configure App Secrets](/aws/deploy-to-aws/create-runtime-env-vars)** | Set up runtime environment variables | 15-20 min |
+| **[6. Deploy Your App](/aws/deploy-to-aws/run-deployment-commands)** | Build and deploy the application code | 20-30 min |
+| **[7. Verify & Next Steps](/aws/deploy-to-aws/verify-deployment)** | Confirm deployment and set up CI/CD | 10-15 min |
+
+**Total estimated time: 2-4 hours** for first deployment
+
+---
+
+## What Gets Deployed
+
+After completing this guide, you'll have:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Your AWS Account                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐        │
+│  │  CloudFront │────▶│   S3        │     │   Route 53  │        │
+│  │  (CDN)      │     │   (Assets)  │     │   (DNS)     │        │
+│  └─────────────┘     └─────────────┘     └─────────────┘        │
+│         │                                       │                │
+│         ▼                                       ▼                │
+│  ┌─────────────────────────────────────────────────────┐        │
+│  │                 Application Load Balancer            │        │
+│  └─────────────────────────────────────────────────────┘        │
+│         │                                                        │
+│         ▼                                                        │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐        │
+│  │  ECS        │     │  ECS        │     │  Lambda     │        │
+│  │  Backend    │────▶│  Celery     │     │  Workers    │        │
+│  │  API        │     │  Workers    │     │             │        │
+│  └─────────────┘     └─────────────┘     └─────────────┘        │
+│         │                   │                   │                │
+│         ▼                   ▼                   ▼                │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐        │
+│  │  RDS        │     │ ElastiCache │     │  Secrets    │        │
+│  │  PostgreSQL │     │  Redis      │     │  Manager    │        │
+│  └─────────────┘     └─────────────┘     └─────────────┘        │
+│                                                                   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Key Concepts
+
+Before starting, understand these terms:
+
+| Term | What It Means |
+|------|---------------|
+| **Environment Stage** | A complete deployment of your app (e.g., `qa`, `staging`, `production`). Each stage is isolated with its own database and configuration. |
+| **CDK (Cloud Development Kit)** | AWS's infrastructure-as-code tool. It turns TypeScript code into AWS resources. |
+| **Chamber** | A CLI tool for managing secrets in AWS Parameter Store. |
+| **aws-vault** | A tool for securely storing and using AWS credentials. |
+| **Hosted Zone** | A container in Route 53 that holds DNS records for your domain. |
+
+---
 
 <FreshAWSAccountInfo />
 
-<DocCardList />
+---
+
+## Ready to Start?
+
+**[Begin with Step 0: Prerequisites →](/aws/deploy-to-aws/prerequisites)**

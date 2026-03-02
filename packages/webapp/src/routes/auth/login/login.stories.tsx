@@ -10,6 +10,9 @@ const Template: StoryFn = () => {
 export default {
   title: 'Routes/Auth/Login',
   component: Login,
+  parameters: {
+    layout: 'fullscreen',
+  },
 };
 
 export const Default = {

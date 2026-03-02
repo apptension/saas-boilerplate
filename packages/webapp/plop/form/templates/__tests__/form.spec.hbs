@@ -1,0 +1,73 @@
+import { screen, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+
+import { render } from '../../../tests/utils/rendering';
+import { {{ pascalCase name }}Form } from '../{{ camelCase name }}Form.component';
+import { {{ pascalCase name }}FormProps } from '../{{ camelCase name }}Form.types';
+
+describe('{{ pascalCase name }}Form: Component', () => {
+  const defaultProps: {{ pascalCase name }}FormProps = {
+    onSubmit: jest.fn(),
+    loading: false,
+  };
+
+  const Component = (props: Partial<{{ pascalCase name }}FormProps>) => (
+    <{{ pascalCase name }}Form {...defaultProps} {...props} />
+  );
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should render form fields', async () => {
+    render(<Component />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('form') || screen.getByRole('textbox')).toBeInTheDocument();
+    });
+  });
+
+  it('should render submit button', async () => {
+    render(<Component />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument();
+    });
+  });
+
+  it('should disable submit button when loading', async () => {
+    render(<Component loading={true} />);
+
+    const submitButton = await screen.findByRole('button', { name: /saving/i });
+    expect(submitButton).toBeDisabled();
+  });
+
+  it('should call onSubmit with form data when submitted', async () => {
+    const onSubmit = jest.fn();
+    render(<Component onSubmit={onSubmit} />);
+
+    // Fill in required fields
+    const inputs = screen.getAllByRole('textbox');
+    for (const input of inputs) {
+      await userEvent.type(input, 'test value');
+    }
+
+    const submitButton = screen.getByRole('button', { name: /save/i });
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalled();
+    });
+  });
+
+  it('should show validation errors for required fields', async () => {
+    render(<Component />);
+
+    const submitButton = screen.getByRole('button', { name: /save/i });
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/required/i)).toBeInTheDocument();
+    });
+  });
+});

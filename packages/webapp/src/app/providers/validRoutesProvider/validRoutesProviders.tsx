@@ -1,22 +1,32 @@
 import { TooltipProvider } from '@sb/webapp-core/components/ui/tooltip';
-import { translationMessages } from '@sb/webapp-core/config/i18n';
-import { useLocales } from '@sb/webapp-core/hooks';
-import { ResponsiveThemeProvider } from '@sb/webapp-core/providers';
+import { Locale } from '@sb/webapp-core/config/i18n';
+import { useLocales, useAvailableLocales } from '@sb/webapp-core/hooks';
+import { ResponsiveThemeProvider, DynamicIntlProvider } from '@sb/webapp-core/providers';
 import { Toaster } from '@sb/webapp-core/toast';
 import { CurrentTenantProvider } from '@sb/webapp-tenants/providers';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { FormattedMessage, IntlProvider } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 import { Layout } from '../../../shared/components/layout';
 import { useLanguageFromParams } from './useLanguageFromParams';
 
 /**
- *
- * @constructor
- *
- * @category Component
+ * Component to render the page title using useIntl (must be inside IntlProvider)
+ */
+const PageTitle = () => {
+  const intl = useIntl();
+  const pageTitle = intl.formatMessage({
+    defaultMessage: 'Apptension Boilerplate',
+    id: 'App / Page title',
+  });
+
+  return <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />;
+};
+
+/**
+ * Provides validated routes context with locale, theme, and tenant providers.
  */
 export const ValidRoutesProviders = () => {
   useLanguageFromParams();
@@ -26,21 +36,38 @@ export const ValidRoutesProviders = () => {
 
   const {
     locales: { language },
+    setLanguage,
   } = useLocales();
 
+  // Get the dynamic default locale from the API
+  const { defaultLocale, isLoading: localesLoading } = useAvailableLocales();
+
   useEffect(() => {
-    if (language && params.lang === undefined) {
-      const url = `/${language}/${params['*']}`;
+    // Wait for locales to load before redirecting
+    if (localesLoading) return;
+
+    // If no language in URL params, redirect to the default locale
+    if (params.lang === undefined) {
+      const targetLocale = defaultLocale;
+      const restPath = params['*'] || '';
+      const url = `/${targetLocale}/${restPath}`;
+      
+      // Also set the language in context
+      setLanguage(targetLocale as Locale);
+      
       navigate(url, { replace: true });
     }
-  }, [language, params, navigate]);
+  }, [params, navigate, defaultLocale, localesLoading, setLanguage]);
 
-  return !language ? null : (
-    <IntlProvider key={language} locale={language} messages={translationMessages[language]}>
+  // Show nothing while loading locales or if no language is set
+  if (localesLoading || !language) {
+    return null;
+  }
+
+  return (
+    <DynamicIntlProvider locale={language as Locale}>
       <>
-        <FormattedMessage defaultMessage="Apptension Boilerplate" id="App / Page title">
-          {([pageTitle]: [string]) => <Helmet titleTemplate={`%s - ${pageTitle}`} defaultTitle={pageTitle} />}
-        </FormattedMessage>
+        <PageTitle />
 
         <ResponsiveThemeProvider>
           <CurrentTenantProvider>
@@ -54,6 +81,6 @@ export const ValidRoutesProviders = () => {
 
         <Toaster />
       </>
-    </IntlProvider>
+    </DynamicIntlProvider>
   );
 };

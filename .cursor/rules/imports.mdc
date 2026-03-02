@@ -1,0 +1,81 @@
+---
+description: Import conventions and workspace aliases for the monorepo
+globs: ["**/*.tsx", "**/*.ts"]
+alwaysApply: false
+---
+
+# Import Conventions
+
+## Apollo Client (IMPORTANT)
+
+**Always import Apollo hooks from `@apollo/client/react`, NOT from `@apollo/client`:**
+
+```tsx
+// ✅ CORRECT - Always use /react subpath
+import { useMutation, useQuery } from '@apollo/client/react';
+
+// ❌ WRONG - Will cause runtime errors
+import { useMutation, useQuery } from '@apollo/client';
+```
+
+For GraphQL gql tag, use the workspace package:
+
+```tsx
+import { gql } from '@sb/webapp-api-client/graphql';
+```
+
+## Workspace Aliases
+
+Use `@sb/` workspace aliases for cross-package imports:
+
+```tsx
+// UI Components
+import { Button } from '@sb/webapp-core/components/ui/button';
+import { Card } from '@sb/webapp-core/components/ui/card';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@sb/webapp-core/components/ui/tooltip';
+
+// Utilities
+import { cn } from '@sb/webapp-core/lib/utils';
+
+// Hooks
+import { useMediaQuery, useGenerateLocalePath } from '@sb/webapp-core/hooks';
+import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
+
+// Theme
+import { Themes } from '@sb/webapp-core/providers/themeProvider';
+import { media } from '@sb/webapp-core/theme';
+
+// Tenants
+import { TenantRoleAccess } from '@sb/webapp-tenants/components/tenantRoleAccess';
+import { useGenerateTenantPath } from '@sb/webapp-tenants/hooks';
+
+// API Client
+import { TenantUserRole } from '@sb/webapp-api-client';
+```
+
+## Import Order
+
+Organize imports in this order:
+
+1. External packages (React, third-party libraries)
+2. Workspace packages (`@sb/*`)
+3. Lucide icons
+4. React/React-related imports
+5. Relative imports (local files)
+
+## Example
+
+```tsx
+import { useMutation, useQuery } from '@apollo/client/react';
+import { gql } from '@sb/webapp-api-client/graphql';
+import { TenantUserRole } from '@sb/webapp-api-client';
+import { Link } from '@sb/webapp-core/components/buttons';
+import { Button } from '@sb/webapp-core/components/ui/button';
+import { cn } from '@sb/webapp-core/lib/utils';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCallback, useContext } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
+
+import { RoutesConfig } from '../../../../app/config/routes';
+import { useAuth } from '../../../hooks';
+```

@@ -1,0 +1,17 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls %}
+
+{% block object-tools-items %}
+{{ block.super }}
+{% if openai_configured %}
+<li>
+  <a
+    href="{% url 'admin:translations_locale_ai_translate' %}"
+    class="button"
+    style="background: #7c3aed"
+  >
+    🤖 AI Translate
+  </a>
+</li>
+{% endif %}
+{% endblock %}

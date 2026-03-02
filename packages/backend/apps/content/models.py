@@ -15,4 +15,4 @@ class ContentfulAbstractModel(models.Model):
 
 class DemoItem(ContentfulAbstractModel):
     def __str__(self):
-        return self.fields['title']
+        return self.fields["title"]

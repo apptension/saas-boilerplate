@@ -16,26 +16,24 @@ ENV DEST_CLI_PATH=$APP_PATH/$SRC_CLI_PATH
 ENV SRC_WORKERS_PATH=packages/workers
 ENV DEST_WORKERS_PATH=$APP_PATH/$SRC_WORKERS_PATH
 
-RUN apt-get update && apt-get install -y wget gnupg curl unzip make xz-utils build-essential
+RUN apt-get update && apt-get install -y wget gnupg curl unzip make xz-utils build-essential \
+  && pip install --upgrade pip \
+  && pip install --no-cache-dir uv==0.9.29
 
-RUN \
-  echo "deb https://deb.nodesource.com/node_18.x buster main" > /etc/apt/sources.list.d/nodesource.list && \
-  wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
-  apt-get update && \
-  apt-get install -yqq nodejs && \
-  pip install -U pip~=23.0.1 && pip install "urllib3<2" pdm~=2.5.2 && \
-  npm i -g npm@^8 pnpm@~9.5.0 && \
-  rm -rf /var/lib/apt/lists/*
+RUN curl -fsS https://deb.nodesource.com/setup_20.x | bash - \
+  && apt-get --no-install-recommends install -y nodejs \
+  && npm i --ignore-scripts -g npm@^8 pnpm@~10.13.0 \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=chamber /chamber /bin/chamber
 
 WORKDIR /pkgs
-COPY packages/workers/pdm.lock packages/workers/pyproject.toml packages/workers/pdm.toml packages/workers/.pdm-python /pkgs/
-RUN pdm sync
+COPY packages/workers/uv.lock packages/workers/pyproject.toml /pkgs/
+RUN uv sync --frozen
 
 WORKDIR $APP_PATH
 COPY /patches/ $APP_PATH/patches/
-COPY package.json pnpm*.yaml $APP_PATH/
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml $APP_PATH/
 COPY $SRC_CORE_PATH/package.json $DEST_CORE_PATH/
 COPY $SRC_WORKERS_PATH/package.json $DEST_WORKERS_PATH/
 COPY tsconfig* $APP_PATH/
@@ -47,8 +45,8 @@ COPY $SRC_CORE_PATH $DEST_CORE_PATH/
 COPY $SRC_WORKERS_PATH $DEST_WORKERS_PATH/
 RUN chmod +x $DEST_WORKERS_PATH/scripts/*.sh
 
-ENV PYTHONPATH=/pkgs/__pypackages__/3.11/lib \
-    PATH=$PATH:/pkgs/__pypackages__/3.11/bin
+ENV PYTHONPATH=/pkgs/.venv/lib/python3.11/site-packages \
+    PATH=$PATH:/pkgs/.venv/bin
 
 WORKDIR $DEST_WORKERS_PATH
 

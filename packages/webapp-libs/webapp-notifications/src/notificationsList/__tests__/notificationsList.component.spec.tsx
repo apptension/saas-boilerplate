@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { NotificationType } from '@sb/webapp-api-client';
 import { fillCommonQueryWithUser } from '@sb/webapp-api-client/tests/factories';
 import { composeMockedQueryResult } from '@sb/webapp-api-client/tests/utils';
@@ -6,15 +6,12 @@ import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { times } from 'ramda';
 
-
-
 import { NotificationTypes } from '../../';
 import { notificationsListQuery } from '../../notifications.graphql';
 import { fillNotificationsListQuery, notificationFactory } from '../../tests/factories';
 import { render } from '../../tests/utils/rendering';
 import { NotificationsList, NotificationsListProps } from '../notificationsList.component';
 import { notificationsListMarkAsReadMutation } from '../notificationsList.graphql';
-
 
 const NotificationMock = ({ type }: NotificationType) => {
   return <span>notification-mock: {type}</span>;
@@ -84,11 +81,17 @@ describe('NotificationsList: Component', () => {
   it('should not render wrong notifications', async () => {
     const correctNotifications = times(() => notificationFactory(), 3);
     const malformedNotification = notificationFactory({
-      type: "malformed-notification",
+      type: 'malformed-notification',
     });
     renderWithNotifications([...correctNotifications, malformedNotification], { hasUnreadNotifications: false });
 
     expect(await screen.findAllByText(/notification-mock/i)).toHaveLength(correctNotifications.length);
+  });
+
+  it('should render loading skeleton when loading', async () => {
+    render(<Component loading={true} />);
+
+    expect(await screen.findAllByTestId('Skeleton')).toHaveLength(3);
   });
 
   it('should render toast after click Mark all as read button', async () => {

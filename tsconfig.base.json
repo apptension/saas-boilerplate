@@ -68,7 +68,15 @@
       "@sb/webapp-tenants": [
         "packages/webapp-libs/webapp-tenants/src/index.ts"
       ],
-      "@sb/webapp-tenants/*": ["packages/webapp-libs/webapp-tenants/src/*"]
+      "@sb/webapp-tenants/*": ["packages/webapp-libs/webapp-tenants/src/*"],
+      "@sb/webapp-ai-assistant": [
+        "packages/webapp-libs/webapp-ai-assistant/src/index.ts"
+      ],
+      "@sb/webapp-ai-assistant/*": [
+        "packages/webapp-libs/webapp-ai-assistant/src/*"
+      ],
+      "@sb/webapp-backup": ["packages/webapp-libs/webapp-backup/src/index.ts"],
+      "@sb/webapp-backup/*": ["packages/webapp-libs/webapp-backup/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

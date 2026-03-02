@@ -1,0 +1,84 @@
+---
+description: Tailwind CSS styling conventions and design system usage
+globs: ["**/*.tsx"]
+alwaysApply: false
+---
+
+# Styling Conventions
+
+## Tailwind CSS with cn() Helper
+
+Use the `cn()` utility for conditional class merging:
+
+```tsx
+import { cn } from '@sb/webapp-core/lib/utils';
+
+className={cn(
+  'flex items-center rounded-md text-sm font-medium transition-colors',
+  'hover:bg-accent hover:text-accent-foreground',
+  {
+    'justify-center px-0 py-2.5': isCollapsed,
+    'gap-3 px-3 py-2.5': !isCollapsed,
+    'bg-accent text-accent-foreground': isActive,
+    'text-muted-foreground': !isActive,
+  }
+)}
+```
+
+## Design System Colors
+
+Use semantic color tokens from the design system:
+
+- `background` / `foreground` - Main background and text
+- `muted` / `muted-foreground` - Subdued elements
+- `accent` / `accent-foreground` - Interactive highlights
+- `border` - Border colors
+- `primary` / `primary-foreground` - Primary actions
+- `destructive` / `destructive-foreground` - Destructive actions
+- `card` / `card-foreground` - Card backgrounds
+
+## Theming
+
+Use the `useTheme` hook for theme-aware components:
+
+```tsx
+import { useTheme } from '@sb/webapp-core/hooks/useTheme/useTheme';
+import { Themes } from '@sb/webapp-core/providers/themeProvider';
+
+const { theme } = useTheme();
+const color = theme === Themes.DARK ? 'white' : 'black';
+```
+
+## Animation & Transitions
+
+Use Tailwind's transition utilities:
+
+```tsx
+// Smooth all properties
+className="transition-all duration-200"
+
+// Specific properties
+className="transition-colors duration-200"
+className="transition-transform duration-200"
+className="transition-opacity duration-200"
+
+// Interactive feedback
+className="transition-transform duration-200 group-hover:scale-105"
+className="group-active:scale-95"
+```
+
+## Interactive Element Pattern
+
+```tsx
+<div
+  className={cn(
+    'flex items-center justify-center rounded-lg',
+    'border border-border bg-background',
+    'transition-all duration-200',
+    'group-hover:border-muted-foreground/30 group-hover:bg-accent group-hover:shadow-sm',
+    'group-active:scale-95'
+  )}
+>
+  {/* content */}
+</div>
+```

@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-echo "Starting celery beat service..."
+echo "Starting celery flower service..."
 
-pdm run celery -A config flower --address='0.0.0.0' --port=80
+uv run celery -A config flower --address='0.0.0.0' --port=80

@@ -1,0 +1,79 @@
+# Production Dockerfile for the SaaS Boilerplate Web Application
+# This creates a lightweight nginx-based container for serving the built React app
+#
+# Build args:
+#   VITE_BASE_API_URL: The API URL with /api suffix (e.g., https://api.example.com/api)
+#
+# Usage:
+#   docker build -f packages/webapp/Dockerfile.prod --build-arg VITE_BASE_API_URL=https://api.example.com/api -t webapp .
+
+# =============================================================================
+# Stage 1: Build
+# =============================================================================
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Install pnpm and jq for JSON manipulation
+RUN npm install -g pnpm@9 && apk add --no-cache jq
+
+# Copy root workspace files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml nx.json ./
+COPY patches/ ./patches/
+COPY babel.config.json tsconfig.base.json tailwind.workspace-preset.ts jest.preset.js jest.config.ts ./
+
+# Remove workspace-only dependencies that aren't needed for webapp build
+RUN jq 'del(.devDependencies["@sb/cli"]) | del(.scripts.postinstall) | del(.scripts.prepare)' package.json > package.json.tmp && mv package.json.tmp package.json
+
+# Copy all packages (simpler and more reliable than selective copying)
+COPY packages/webapp/ ./packages/webapp/
+COPY packages/webapp-libs/ ./packages/webapp-libs/
+COPY packages/internal/core/ ./packages/internal/core/
+COPY packages/internal/tools/ ./packages/internal/tools/
+COPY packages/infra/ ./packages/infra/
+
+# Install ALL dependencies to ensure nothing is missing
+RUN pnpm install --no-frozen-lockfile
+
+# Build arguments for Vite
+ARG VITE_BASE_API_URL
+ARG VITE_SENTRY_DSN
+ARG VITE_ENVIRONMENT_NAME=production
+ARG VITE_WS_URL
+
+ENV VITE_BASE_API_URL=${VITE_BASE_API_URL}
+ENV VITE_SENTRY_DSN=${VITE_SENTRY_DSN}
+ENV VITE_ENVIRONMENT_NAME=${VITE_ENVIRONMENT_NAME}
+ENV VITE_WS_URL=${VITE_WS_URL}
+
+# Build the application
+RUN pnpm nx build webapp
+
+# =============================================================================
+# Stage 2: Production
+# =============================================================================
+FROM nginx:alpine AS production
+
+# Copy nginx configuration
+COPY packages/webapp/nginx.conf /etc/nginx/nginx.conf
+
+# Copy built files
+COPY --from=builder /app/packages/webapp/build /usr/share/nginx/html
+
+# Security: Run as non-root user
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chown -R nginx:nginx /var/cache/nginx && \
+    chown -R nginx:nginx /var/log/nginx && \
+    touch /var/run/nginx.pid && \
+    chown nginx:nginx /var/run/nginx.pid
+
+USER nginx
+
+# Expose port 80
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
+
+CMD ["nginx", "-g", "daemon off;"]

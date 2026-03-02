@@ -1,4 +1,5 @@
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
+import { extractGraphQLErrors } from '@sb/webapp-api-client/api';
 import { useApiForm } from '@sb/webapp-api-client/hooks';
 import { trackEvent } from '@sb/webapp-core/services/analytics';
 import { useToast } from '@sb/webapp-core/toast/useToast';
@@ -12,21 +13,34 @@ export const useChangePasswordForm = () => {
   const { toast } = useToast();
 
   const form = useApiForm<ChangePasswordFormFields>({
+    defaultValues: {
+      oldPassword: '',
+      newPassword: '',
+      confirmNewPassword: '',
+    },
     errorMessages: {
       oldPassword: {
         wrong_password: intl.formatMessage({
-          defaultMessage: 'The password is invalid.',
+          defaultMessage: 'The current password is incorrect.',
           id: 'Auth / Change password / wrong old password',
         }),
       },
       newPassword: {
         password_too_common: intl.formatMessage({
-          defaultMessage: 'The password is too common.',
+          defaultMessage: 'This password is too common. Please choose a more unique password.',
           id: 'Auth / Change password / password too common',
         }),
         password_entirely_numeric: intl.formatMessage({
           defaultMessage: "The password can't be entirely numeric.",
           id: 'Auth / Change password / password entirely numeric',
+        }),
+        password_too_short: intl.formatMessage({
+          defaultMessage: 'Password must be at least 8 characters long.',
+          id: 'Auth / Change password / password too short backend',
+        }),
+        password_too_similar: intl.formatMessage({
+          defaultMessage: 'The password is too similar to your personal information.',
+          id: 'Auth / Change password / password too similar',
         }),
       },
     },
@@ -49,22 +63,31 @@ export const useChangePasswordForm = () => {
           defaultMessage: 'Password successfully changed.',
           id: 'Auth / Change password / Success message',
         }),
+        variant: 'success',
       });
     },
     onError: (error) => {
-      setApolloGraphQLResponseErrors(error.graphQLErrors);
+      const graphQLErrors = extractGraphQLErrors(error);
+      if (graphQLErrors) {
+        setApolloGraphQLResponseErrors(graphQLErrors);
+      }
     },
   });
 
-  const handleChangePassword = handleSubmit(({ newPassword, oldPassword }: ChangePasswordFormFields) => {
-    commitChangePasswordMutation({
-      variables: {
-        input: {
-          newPassword,
-          oldPassword,
+  const handleChangePassword = handleSubmit(async ({ newPassword, oldPassword }: ChangePasswordFormFields) => {
+    try {
+      await commitChangePasswordMutation({
+        variables: {
+          input: {
+            newPassword,
+            oldPassword,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      // Error is handled by onError callback
+      // This catch prevents unhandled promise rejection
+    }
   });
   return { ...form, loading, handleChangePassword };
 };

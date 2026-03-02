@@ -94,7 +94,7 @@ class TestSendSubscriptionErrorEmail:
         webhook_event.invoke_webhook_handlers()
 
         send_email.apply_async.assert_called_with(
-            (subscription.customer.subscriber.email, notifications.SubscriptionErrorEmail.name, None)
+            (subscription.customer.subscriber.email, notifications.SubscriptionErrorEmail.name, None, 'en')
         )
 
     @patch('common.emails.send_email')
@@ -113,7 +113,7 @@ class TestSendSubscriptionErrorEmail:
         webhook_event.invoke_webhook_handlers()
 
         send_email.apply_async.assert_called_with(
-            (subscription.customer.subscriber.email, notifications.SubscriptionErrorEmail.name, None)
+            (subscription.customer.subscriber.email, notifications.SubscriptionErrorEmail.name, None, 'en')
         )
 
 
@@ -132,6 +132,7 @@ class TestSendTrialExpiresSoonEmail:
                 customer.subscriber.email,
                 notifications.TrialExpiresSoonEmail.name,
                 {'expiry_date': '2021-03-30T11:23:45Z'},
+                'en',
             )
         )
 

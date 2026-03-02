@@ -1,0 +1,259 @@
+---
+title: Cost Estimation
+description: Understanding AWS costs for your SaaS deployment
+---
+
+import ProjectName from '../../shared/components/ProjectName.component';
+
+# AWS Cost Estimation
+
+Understanding the costs of running <ProjectName /> on AWS helps you plan your budget and optimize spending.
+
+---
+
+## Cost Overview
+
+| Environment Type | Estimated Monthly Cost |
+|------------------|------------------------|
+| **Development/QA** | $80-150/month |
+| **Staging** | $100-200/month |
+| **Production (Small)** | $200-500/month |
+| **Production (Scaling)** | $500-2000+/month |
+
+:::info Cost Variables
+Actual costs depend on:
+- Traffic volume
+- Data storage size
+- Instance sizes
+- AWS region
+- Reserved vs. on-demand pricing
+:::
+
+---
+
+## Cost Breakdown by Service
+
+### Compute (ECS Fargate)
+
+| Component | Size | ~Monthly Cost |
+|-----------|------|--------------|
+| Backend API | 0.5 vCPU / 1GB RAM | ~$15-25 |
+| Celery Worker | 0.25 vCPU / 0.5GB RAM | ~$10-15 |
+| Celery Beat | 0.25 vCPU / 0.5GB RAM | ~$10-15 |
+
+**Scaling impact:** Each additional task multiplies these costs.
+
+### Database (RDS)
+
+| Instance | Size | ~Monthly Cost |
+|----------|------|--------------|
+| db.t3.micro | 1 vCPU / 1GB | ~$15 |
+| db.t3.small | 2 vCPU / 2GB | ~$30 |
+| db.t3.medium | 2 vCPU / 4GB | ~$60 |
+| db.r5.large | 2 vCPU / 16GB | ~$175 |
+
+**Storage:** Add ~$0.12/GB/month for data
+
+**Backups:** Included up to 100% of database size
+
+### Cache (ElastiCache)
+
+| Instance | Size | ~Monthly Cost |
+|----------|------|--------------|
+| cache.t3.micro | 0.5GB | ~$12 |
+| cache.t3.small | 1.5GB | ~$25 |
+| cache.t3.medium | 3GB | ~$50 |
+
+### Networking
+
+| Component | ~Monthly Cost |
+|-----------|--------------|
+| NAT Gateway | ~$45 (fixed) + $0.045/GB |
+| Application Load Balancer | ~$20 + $0.008/LCU-hour |
+| Data transfer (out) | ~$0.09/GB after 100GB free |
+
+:::warning NAT Gateway Costs
+NAT Gateway is one of the largest fixed costs. For cost-sensitive environments, consider NAT instances or reducing outbound traffic.
+:::
+
+### CDN & Storage
+
+| Component | ~Monthly Cost |
+|-----------|--------------|
+| CloudFront | $0.085-0.12/GB transferred |
+| S3 Storage | ~$0.023/GB/month |
+| S3 Requests | ~$0.0004/1000 requests |
+
+Typical webapp with moderate traffic: ~$10-30/month
+
+### CI/CD
+
+| Component | ~Monthly Cost |
+|-----------|--------------|
+| CodeBuild | $0.005/build-minute |
+| CodePipeline | $1/active pipeline/month |
+| ECR Storage | $0.10/GB/month |
+
+Typical usage: ~$10-30/month
+
+### Secrets & Monitoring
+
+| Component | ~Monthly Cost |
+|-----------|--------------|
+| Secrets Manager | $0.40/secret/month |
+| Parameter Store | Free (standard) |
+| CloudWatch Logs | $0.50/GB ingested |
+| CloudWatch Metrics | Free tier usually sufficient |
+
+---
+
+## Sample Configurations
+
+### Minimal (Development/Testing)
+
+```
+ECS Backend:        0.25 vCPU / 0.5GB   = $10/month
+ECS Celery Worker:  0.25 vCPU / 0.5GB   = $10/month
+RDS:                db.t3.micro          = $15/month
+ElastiCache:        cache.t3.micro       = $12/month
+NAT Gateway:        1x                   = $45/month
+ALB:                1x                   = $20/month
+S3/CloudFront:      Low usage            = $10/month
+Other:              Secrets, logs, etc.  = $10/month
+─────────────────────────────────────────────────────
+Total:                                    ~$130/month
+```
+
+### Standard (Small Production)
+
+```
+ECS Backend:        0.5 vCPU / 1GB x 2   = $50/month
+ECS Celery Worker:  0.5 vCPU / 1GB       = $25/month
+ECS Celery Beat:    0.25 vCPU / 0.5GB    = $10/month
+RDS:                db.t3.small          = $30/month
+ElastiCache:        cache.t3.small       = $25/month
+NAT Gateway:        1x                   = $45/month
+ALB:                1x                   = $25/month
+S3/CloudFront:      Moderate usage       = $30/month
+CI/CD:              Regular deployments  = $20/month
+Other:              Secrets, logs, etc.  = $15/month
+─────────────────────────────────────────────────────
+Total:                                    ~$275/month
+```
+
+### High Availability (Production)
+
+```
+ECS Backend:        1 vCPU / 2GB x 3     = $150/month
+ECS Celery Worker:  0.5 vCPU / 1GB x 2   = $50/month
+ECS Celery Beat:    0.25 vCPU / 0.5GB    = $10/month
+RDS:                db.r5.large (Multi-AZ) = $350/month
+ElastiCache:        cache.r5.large       = $150/month
+NAT Gateway:        2x (multi-AZ)        = $90/month
+ALB:                1x (higher LCU)      = $50/month
+S3/CloudFront:      High usage           = $100/month
+CI/CD:              Frequent deployments = $40/month
+Other:              Secrets, logs, etc.  = $30/month
+─────────────────────────────────────────────────────
+Total:                                    ~$1000/month
+```
+
+---
+
+## Cost Optimization Tips
+
+### 1. Use Appropriate Instance Sizes
+
+Start small and scale up based on actual usage:
+- Monitor CPU and memory utilization in CloudWatch
+- Upgrade only when hitting 70%+ sustained utilization
+
+### 2. Reserved Instances / Savings Plans
+
+For predictable workloads, commit to 1-3 year terms:
+- **RDS Reserved Instances:** Up to 60% savings
+- **EC2 Savings Plans:** Up to 72% savings (applies to Fargate)
+
+### 3. Reduce NAT Gateway Usage
+
+NAT Gateway charges per GB of data transferred:
+- Use VPC endpoints for S3 and other AWS services (free)
+- Pull Docker images through ECR (inside AWS network)
+
+### 4. Optimize Data Transfer
+
+- Enable CloudFront caching to reduce origin requests
+- Compress responses (gzip/brotli)
+- Use appropriate Cache-Control headers
+
+### 5. Right-size Database
+
+- Use RDS Performance Insights to identify oversized instances
+- Consider Aurora Serverless for variable workloads
+- Use read replicas instead of larger single instances
+
+### 6. Clean Up Unused Resources
+
+- Delete old ECS task definitions
+- Remove unused ECR images
+- Delete old CloudWatch log groups
+- Remove unused S3 objects
+
+### 7. Delete Non-Production Environments
+
+When not actively testing:
+```bash
+pnpm saas aws set-env qa
+# Delete all resources
+pnpm saas infra destroy
+```
+
+---
+
+## AWS Free Tier
+
+New AWS accounts get 12 months of free tier, which includes:
+
+| Service | Free Tier Allowance |
+|---------|---------------------|
+| EC2 | 750 hours/month t2.micro |
+| RDS | 750 hours/month db.t2.micro |
+| S3 | 5GB storage |
+| CloudFront | 1TB transfer/month |
+| Lambda | 1M requests/month |
+
+Note: Fargate is NOT included in free tier.
+
+---
+
+## Monitoring Costs
+
+### AWS Cost Explorer
+
+1. Go to AWS Console → Billing → Cost Explorer
+2. Enable Cost Explorer (if not already enabled)
+3. Set up daily/weekly cost reports
+
+### AWS Budgets
+
+1. Go to AWS Console → Billing → Budgets
+2. Create a budget (e.g., $200/month)
+3. Set up email alerts at 50%, 80%, 100%
+
+### Cost Allocation Tags
+
+<ProjectName /> tags all resources with:
+- `Environment`: qa, staging, production
+- `Project`: Your project name
+
+Use these in Cost Explorer to track costs by environment.
+
+---
+
+## Further Reading
+
+- [AWS Pricing Calculator](https://calculator.aws/)
+- [AWS Cost Optimization Best Practices](https://docs.aws.amazon.com/cost-management/latest/userguide/ce-best-practices.html)
+- [Fargate Pricing](https://aws.amazon.com/fargate/pricing/)
+- [RDS Pricing](https://aws.amazon.com/rds/pricing/)
+

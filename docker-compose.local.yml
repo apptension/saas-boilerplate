@@ -1,5 +1,3 @@
-version: '3.4'
-
 volumes:
   web_backend_db_data:
     name: '${PROJECT_NAME}-web-backend-db-data'
@@ -20,6 +18,7 @@ services:
       - ./packages/webapp-libs/webapp-emails/build/email-renderer/:/app/scripts/runtime/email/renderer:ro
       - ./packages/backend/:/app
       - ./packages/backend/docs:/app/docs
+      - ./packages/webapp-libs/webapp-core/src/translations/:/app/translations:ro
       - /app/__pypackages__
       - /app/node_modules
       - /app/cdk.out
@@ -27,8 +26,10 @@ services:
     env_file:
       - ./packages/backend/.env
     environment:
-      - AWS_ENDPOINT_URL=http://localstack:4566
-      - WORKERS_EVENT_BUS_NAME=${PROJECT_NAME}-${ENV_STAGE}-workers
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AWS_S3_CUSTOM_DOMAIN: localhost:4566/test-bucket
+      AWS_S3_URL_PROTOCOL: "http:"
+      WORKERS_EVENT_BUS_NAME: ${PROJECT_NAME}-${ENV_STAGE}-workers
     depends_on:
       - db
       - localstack
@@ -45,12 +46,17 @@ services:
     volumes:
       - ./packages/backend/:/app
       - /app/__pypackages__
+      - web_backend_staticfiles:/app/static
     env_file:
       - ./packages/backend/.env
     environment:
-      - AWS_ACCESS_KEY_ID=foo
-      - AWS_SECRET_ACCESS_KEY=bar
-      - AWS_DEFAULT_REGION=eu-west-1
+      AWS_ACCESS_KEY_ID: foo
+      AWS_SECRET_ACCESS_KEY: bar
+      AWS_DEFAULT_REGION: eu-west-1
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AWS_STORAGE_BUCKET_NAME: test-bucket
+      AWS_S3_CUSTOM_DOMAIN: localhost:4566/test-bucket
+      AWS_S3_URL_PROTOCOL: "http:"
 
   workers:
     volumes:
@@ -89,7 +95,7 @@ services:
     ports:
       - '4566:4566'
     environment:
-      - SERVICES=serverless,events,cloudformation,ses,secretsmanager
+      - SERVICES=s3,serverless,events,cloudformation,ses,secretsmanager
       - DEFAULT_REGION=eu-west-1
       - DEBUG=1
       - LAMBDA_EXECUTOR=docker

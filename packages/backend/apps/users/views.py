@@ -49,6 +49,10 @@ class LogoutView(TokenViewBase):
     Logout is implemented with normal non-GraphQL request because it needs access to a refresh token cookie,
     which is an HTTP-only cookie with a path property set; this means the cookie is never sent to the GraphQL
     endpoint, thus preventing us from adding it to a blacklist.
+
+    This endpoint is designed to be "graceful" - it always succeeds and clears cookies,
+    even if the refresh token is missing, invalid, or already expired. This ensures
+    users can always log out regardless of their token state.
     """
 
     permission_classes = ()
@@ -56,12 +60,12 @@ class LogoutView(TokenViewBase):
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        # Always try to process logout - serializer is designed to be graceful
         if serializer.is_valid(raise_exception=False):
             serializer.save()
-            response = Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            response = Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
+        # Always return success and clear cookies
+        response = Response({"ok": True}, status=status.HTTP_200_OK)
         utils.reset_auth_cookie(response)
         return response
 

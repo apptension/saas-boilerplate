@@ -1,105 +1,153 @@
 const path = require('path');
 const templatesPath = path.join(__dirname, '..', 'templates', 'components');
 
-const componentActions = (name, templatePath, routeName = `{{ camelCase name }}`) => [
-  {
-    type: 'add',
-    path: `src/routes/${routeName}/${name}/__tests__/${name}.component.spec.tsx`,
-    templateFile: path.join(templatesPath, `${templatePath}/__tests__/${templatePath}.component.spec.hbs`),
-  },
-  {
-    type: 'add',
-    path: `src/routes/${routeName}/${name}/${name}.component.tsx`,
-    templateFile: path.join(templatesPath, `${templatePath}/${templatePath}.component.hbs`),
-  },
-  {
-    type: 'add',
-    path: `src/routes/${routeName}/${name}/${name}.stories.tsx`,
-    templateFile: path.join(templatesPath, `${templatePath}/${templatePath}.stories.hbs`),
-  },
-  {
-    type: 'add',
-    path: `src/routes/${routeName}/${name}/index.tsx`,
-    templateFile: path.join(templatesPath, `${templatePath}/index.hbs`),
-  },
-];
+/**
+ * Generate actions for CRUD components
+ */
+module.exports = (data) => {
+  const basePath = data.basePath || 'src';
+  const routeName = '{{ camelCase name }}';
+  const routePath = `${basePath}/routes/${routeName}`;
 
-const graphqlActions = (name, templatePath, routeName = `{{ camelCase name }}`) => [
-  {
-    type: 'add',
-    path: `src/routes/${routeName}/${name}/${name}.graphql.ts`,
-    templateFile: path.join(templatesPath, `${templatePath}/${templatePath}.graphql.hbs`),
-  },
-];
+  // Helper to create component actions
+  const componentFiles = (componentName, templateName, subPath = '') => {
+    const componentPath = subPath ? `${routePath}/${subPath}/${componentName}` : `${routePath}/${componentName}`;
+    const templateDir = path.join(templatesPath, templateName);
 
-module.exports = [
-  {
-    type: 'add',
-    path: 'src/routes/{{ camelCase name }}/use{{ pascalCase name }}/index.tsx',
-    templateFile: path.join(templatesPath, 'useItem/index.hbs'),
-  },
-  {
-    type: 'add',
-    path: 'src/routes/{{ camelCase name }}/use{{ pascalCase name }}/use{{ pascalCase name }}.hook.tsx',
-    templateFile: path.join(templatesPath, 'useItem/useItem.hook.hbs'),
-  },
-  {
-    type: 'add',
-    path: 'src/routes/{{ camelCase name }}/use{{ pascalCase name }}/__tests__/use{{ pascalCase name }}.hook.spec.tsx',
-    templateFile: path.join(templatesPath, 'useItem/__tests__/useItem.hook.spec.hbs'),
-  },
-  ...componentActions('edit{{ pascalCase name }}', 'editItem'),
-  ...componentActions('{{ camelCase name }}Form', 'itemForm'),
-  ...componentActions('{{ camelCase name }}Details', 'itemDetails'),
-  ...componentActions('add{{ pascalCase name }}', 'addItem'),
-  ...componentActions('{{ camelCase name }}List', 'itemList'),
-  ...graphqlActions('add{{ pascalCase name }}', 'addItem'),
-  ...graphqlActions('edit{{ pascalCase name }}', 'editItem'),
-  ...graphqlActions('{{ camelCase name }}Details', 'itemDetails'),
-  ...graphqlActions('{{ camelCase name }}List', 'itemList'),
-  {
-    type: 'add',
-    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}ListItem/__tests__/{{ camelCase name }}ListItem.component.spec.tsx`,
-    templateFile: path.join(templatesPath, `itemList/itemListItem/__tests__/itemListItem.component.spec.hbs`),
-  },
-  {
-    type: 'add',
-    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}ListItem/{{ camelCase name }}ListItem.component.tsx`,
-    templateFile: path.join(templatesPath, `itemList/itemListItem/itemListItem.component.hbs`),
-  },
-  {
-    type: 'add',
-    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}ListItem/{{ camelCase name }}ListItem.stories.tsx`,
-    templateFile: path.join(templatesPath, `itemList/itemListItem/itemListItem.stories.hbs`),
-  },
-  {
-    type: 'add',
-    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}ListItem/{{ camelCase name }}DropDownMenu/{{ camelCase name }}DropDownMenu.component.tsx`,
-    templateFile: path.join(templatesPath, `itemList/itemListItem/itemDropDownMenu/itemDropDownMenu.hbs`),
-  },
-  {
-    type: 'add',
-    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}ListItem/{{ camelCase name }}DropDownMenu/index.ts`,
-    templateFile: path.join(templatesPath, `itemList/itemListItem/itemDropDownMenu/index.hbs`),
-  },
-  {
-    type: 'add',
-    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/{{ camelCase name }}ListItem/index.tsx`,
-    templateFile: path.join(templatesPath, `itemList/itemListItem/index.hbs`),
-  },
-  {
-    type: 'add',
-    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}Form/{{ camelCase name }}Form.hook.ts`,
-    templateFile: path.join(templatesPath, `itemForm/itemForm.hook.hbs`),
-  },
-  {
-    type: 'add',
-    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/listSkeleton/listSkeleton.component.tsx`,
-    templateFile: path.join(templatesPath, `itemList/listSkeleton/listSkeleton.component.hbs`),
-  },
-  {
-    type: 'add',
-    path: `src/routes/{{ camelCase name }}/{{ camelCase name }}List/listSkeleton/index.ts`,
-    templateFile: path.join(templatesPath, `itemList/listSkeleton/index.hbs`),
-  },
-];
+    return [
+      {
+        type: 'add',
+        path: `${componentPath}/index.tsx`,
+        templateFile: path.join(templateDir, 'index.hbs'),
+      },
+      {
+        type: 'add',
+        path: `${componentPath}/${componentName}.component.tsx`,
+        templateFile: path.join(templateDir, `${templateName}.component.hbs`),
+      },
+      {
+        type: 'add',
+        path: `${componentPath}/${componentName}.stories.tsx`,
+        templateFile: path.join(templateDir, `${templateName}.stories.hbs`),
+      },
+      {
+        type: 'add',
+        path: `${componentPath}/__tests__/${componentName}.component.spec.tsx`,
+        templateFile: path.join(templateDir, `__tests__/${templateName}.component.spec.hbs`),
+      },
+    ];
+  };
+
+  // Helper for GraphQL files
+  const graphqlFile = (componentName, templateName, subPath = '') => {
+    const componentPath = subPath ? `${routePath}/${subPath}/${componentName}` : `${routePath}/${componentName}`;
+    const templateDir = path.join(templatesPath, templateName);
+
+    return {
+      type: 'add',
+      path: `${componentPath}/${componentName}.graphql.ts`,
+      templateFile: path.join(templateDir, `${templateName}.graphql.hbs`),
+    };
+  };
+
+  return [
+    // ========================
+    // Root index file
+    // ========================
+    {
+      type: 'add',
+      path: `${routePath}/index.ts`,
+      templateFile: path.join(templatesPath, 'rootIndex.hbs'),
+    },
+
+    // ========================
+    // List component
+    // ========================
+    ...componentFiles('{{ camelCase name }}List', 'itemList'),
+
+    // ========================
+    // List Item component (nested in List)
+    // ========================
+    {
+      type: 'add',
+      path: `${routePath}/{{ camelCase name }}List/{{ camelCase name }}ListItem/index.tsx`,
+      templateFile: path.join(templatesPath, 'itemList/itemListItem/index.hbs'),
+    },
+    {
+      type: 'add',
+      path: `${routePath}/{{ camelCase name }}List/{{ camelCase name }}ListItem/{{ camelCase name }}ListItem.component.tsx`,
+      templateFile: path.join(templatesPath, 'itemList/itemListItem/itemListItem.component.hbs'),
+    },
+    {
+      type: 'add',
+      path: `${routePath}/{{ camelCase name }}List/{{ camelCase name }}ListItem/{{ camelCase name }}ListItem.graphql.ts`,
+      templateFile: path.join(templatesPath, 'itemList/itemListItem/itemListItem.graphql.hbs'),
+    },
+    {
+      type: 'add',
+      path: `${routePath}/{{ camelCase name }}List/{{ camelCase name }}ListItem/{{ camelCase name }}ListItem.stories.tsx`,
+      templateFile: path.join(templatesPath, 'itemList/itemListItem/itemListItem.stories.hbs'),
+    },
+    {
+      type: 'add',
+      path: `${routePath}/{{ camelCase name }}List/{{ camelCase name }}ListItem/__tests__/{{ camelCase name }}ListItem.component.spec.tsx`,
+      templateFile: path.join(templatesPath, 'itemList/itemListItem/__tests__/itemListItem.component.spec.hbs'),
+    },
+
+    // ========================
+    // Dropdown Menu (nested in List Item)
+    // ========================
+    {
+      type: 'add',
+      path: `${routePath}/{{ camelCase name }}List/{{ camelCase name }}ListItem/{{ camelCase name }}DropdownMenu/index.ts`,
+      templateFile: path.join(templatesPath, 'itemList/itemListItem/itemDropdownMenu/index.hbs'),
+    },
+    {
+      type: 'add',
+      path: `${routePath}/{{ camelCase name }}List/{{ camelCase name }}ListItem/{{ camelCase name }}DropdownMenu/{{ camelCase name }}DropdownMenu.component.tsx`,
+      templateFile: path.join(templatesPath, 'itemList/itemListItem/itemDropdownMenu/itemDropdownMenu.component.hbs'),
+    },
+
+    // ========================
+    // List Skeleton
+    // ========================
+    {
+      type: 'add',
+      path: `${routePath}/{{ camelCase name }}List/listSkeleton/index.ts`,
+      templateFile: path.join(templatesPath, 'itemList/listSkeleton/index.hbs'),
+    },
+    {
+      type: 'add',
+      path: `${routePath}/{{ camelCase name }}List/listSkeleton/listSkeleton.component.tsx`,
+      templateFile: path.join(templatesPath, 'itemList/listSkeleton/listSkeleton.component.hbs'),
+    },
+
+    // ========================
+    // Add Item component
+    // ========================
+    ...componentFiles('add{{ pascalCase name }}', 'addItem'),
+    graphqlFile('add{{ pascalCase name }}', 'addItem'),
+
+    // ========================
+    // Edit Item component
+    // ========================
+    ...componentFiles('edit{{ pascalCase name }}', 'editItem'),
+    graphqlFile('edit{{ pascalCase name }}', 'editItem'),
+
+    // ========================
+    // Item Details component
+    // ========================
+    ...componentFiles('{{ camelCase name }}Details', 'itemDetails'),
+    graphqlFile('{{ camelCase name }}Details', 'itemDetails'),
+
+    // ========================
+    // Item Form component
+    // ========================
+    ...componentFiles('{{ camelCase name }}Form', 'itemForm'),
+    {
+      type: 'add',
+      path: `${routePath}/{{ camelCase name }}Form/{{ camelCase name }}Form.hook.ts`,
+      templateFile: path.join(templatesPath, 'itemForm/itemForm.hook.hbs'),
+    },
+  ];
+};

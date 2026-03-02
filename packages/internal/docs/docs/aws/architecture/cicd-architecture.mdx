@@ -1,5 +1,279 @@
-# CI/CD architecture
+---
+title: CI/CD Architecture
+description: How the continuous integration and deployment pipeline works
+---
 
-import CiCdArchitecture from '../../shared/partials/architecture/_cicd_architecture.mdx';
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import ImgThemed from '../../shared/components/ImgThemed.component';
+import ProjectName from '../../shared/components/ProjectName.component';
 
-<CiCdArchitecture />
+# CI/CD Architecture
+
+<ProjectName /> uses a hybrid CI/CD architecture combining your preferred Git platform (GitHub/Bitbucket) with AWS-native deployment tools.
+
+---
+
+## Architecture Diagram
+
+<p align="center">
+  <ImgThemed srcDark={useBaseUrl("img/cicd-diagram-v4-dark.png")} src={useBaseUrl("img/cicd-diagram-v4.png")} alt="CI/CD Diagram" />
+</p>
+
+---
+
+## Pipeline Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         EXTERNAL CI (GitHub/Bitbucket)                   │
+├─────────────────────────────────────────────────────────────────────────┤
+│  1. Code Push                                                            │
+│  2. Run Tests                                                            │
+│  3. Build Artifacts                                                      │
+│  4. Upload to S3                                                         │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         AWS CODEPIPELINE                                 │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐            │
+│  │  Source  │──▶│  Build   │──▶│  Deploy  │──▶│  Post    │            │
+│  │  (S3)    │   │(CodeBuild│   │(CodeBuild│   │  Deploy  │            │
+│  │          │   │          │   │          │   │          │            │
+│  └──────────┘   └──────────┘   └──────────┘   └──────────┘            │
+│                                                                          │
+│  Artifacts:     Backend:       ECS Update:    Migrations:               │
+│  - Source       - Docker       - API          - Run                     │
+│    code           build        - Workers      - Verify                  │
+│                 - ECR push                                               │
+│                                                                          │
+│                 Frontend:      S3 + CDN:      Cache:                    │
+│                 - Vite         - Upload       - Invalidate             │
+│                   build        - Sync                                    │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Pipeline Stages
+
+### Stage 1: Source
+
+| Aspect | Details |
+|--------|---------|
+| **Trigger** | S3 object upload (deployment artifact) |
+| **Input** | ZIP file containing source code |
+| **Output** | Extracted source for build stage |
+
+### Stage 2: Build
+
+| Component | Actions |
+|-----------|---------|
+| **Backend** | Build Docker image, push to ECR |
+| **Workers** | Package Lambda functions |
+| **Webapp** | Run Vite build, prepare static assets |
+| **Emails** | Compile email templates |
+
+**CodeBuild Environment:**
+- Image: AWS-managed Linux
+- Compute: BUILD_GENERAL1_SMALL (default)
+- Docker Hub credentials from Secrets Manager
+
+### Stage 3: Deploy
+
+| Component | Deployment Target |
+|-----------|-------------------|
+| **Backend API** | ECS Fargate service update |
+| **Celery Workers** | ECS Fargate service update |
+| **Lambda Functions** | AWS Lambda function update |
+| **Webapp** | S3 bucket sync |
+| **Static Assets** | S3 + CloudFront invalidation |
+
+### Stage 4: Post-Deploy
+
+| Action | Purpose |
+|--------|---------|
+| **Database Migrations** | Apply pending Django migrations |
+| **Cache Invalidation** | Clear CloudFront caches |
+| **Health Checks** | Verify services are responding |
+
+---
+
+## CI Mode: Parallel vs Simple
+
+<ProjectName /> supports two CI modes to handle AWS account limits:
+
+### Parallel Mode (Default)
+
+```
+┌───────────┬───────────┬───────────┐
+│  Backend  │  Workers  │  Webapp   │  ← Run simultaneously
+│   Build   │   Build   │   Build   │
+└─────┬─────┴─────┬─────┴─────┬─────┘
+      │           │           │
+      ▼           ▼           ▼
+┌───────────┬───────────┬───────────┐
+│  Backend  │  Workers  │  Webapp   │  ← Deploy simultaneously
+│  Deploy   │  Deploy   │  Deploy   │
+└───────────┴───────────┴───────────┘
+```
+
+- Faster deployments
+- Requires higher CodeBuild concurrency limits
+- Best for established AWS accounts
+
+### Simple Mode
+
+```
+┌───────────┐
+│  Backend  │
+│   Build   │
+└─────┬─────┘
+      │
+┌─────▼─────┐
+│  Backend  │
+│  Deploy   │
+└─────┬─────┘
+      │
+┌─────▼─────┐
+│  Workers  │
+│   Build   │
+└─────┬─────┘
+      │
+(... continues sequentially ...)
+```
+
+- Slower but works with default limits
+- Only 1 CodeBuild project runs at a time
+- Best for new AWS accounts
+
+**Configure:**
+```bash
+pnpm saas aws set-var SB_CI_MODE simple  # or parallel
+```
+
+---
+
+## Build Specifications
+
+### Backend (buildspec.yml)
+
+```yaml
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REGISTRY
+      
+  build:
+    commands:
+      - echo Building Docker image...
+      - docker build -t $IMAGE_TAG .
+      - docker push $IMAGE_TAG
+      
+  post_build:
+    commands:
+      - echo Build completed
+```
+
+### Webapp (buildspec.yml)
+
+```yaml
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - npm install -g pnpm
+      - pnpm install
+      
+  build:
+    commands:
+      - pnpm saas webapp build
+      
+  post_build:
+    commands:
+      - aws s3 sync ./dist s3://$WEBAPP_BUCKET --delete
+      - aws cloudfront create-invalidation --distribution-id $CF_DISTRIBUTION_ID --paths "/*"
+```
+
+---
+
+## AWS Resources Created
+
+The CI stack creates:
+
+| Resource | Purpose |
+|----------|---------|
+| **S3 Bucket** | Artifacts storage |
+| **CodePipeline** | Orchestrates deployment |
+| **CodeBuild Projects** | Builds and deploys |
+| **IAM Roles** | Permissions for build/deploy |
+| **external-ci User** | For GitHub/Bitbucket uploads |
+| **SNS Topic** | Pipeline notifications |
+
+---
+
+## Environment Isolation
+
+Each environment has its own:
+
+```
+saas-qa-artifacts-bucket      ← S3 for QA artifacts
+saas-qa-pipeline              ← Pipeline for QA
+saas-qa-build-*               ← CodeBuild for QA
+
+saas-staging-artifacts-bucket ← S3 for Staging artifacts
+saas-staging-pipeline         ← Pipeline for Staging
+saas-staging-build-*          ← CodeBuild for Staging
+
+saas-production-...           ← Production resources
+```
+
+No resource sharing between environments ensures isolation.
+
+---
+
+## Monitoring Deployments
+
+### CodePipeline Console
+
+View pipeline status, history, and logs.
+
+### CloudWatch Logs
+
+Build logs available in:
+- `/aws/codebuild/[project-name]`
+
+### Notifications
+
+Configure Slack notifications: [Configure CI/CD Notifications](/aws/cicd/configure-cicd-notifications)
+
+---
+
+## Troubleshooting
+
+### Build Failures
+
+1. Check CodeBuild logs in CloudWatch
+2. Common issues:
+   - Docker rate limits (configure Docker Hub)
+   - Missing environment variables
+   - Test failures
+
+### Deploy Failures
+
+1. Check CodePipeline stage details
+2. Check ECS service events
+3. Verify task definition was updated
+
+### Slow Builds
+
+1. Switch to `parallel` mode if limits allow
+2. Request higher CodeBuild concurrency
+3. Optimize Docker layer caching
