@@ -98,6 +98,7 @@ export class BackendCiConfig extends ServiceCiConfig {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: this.getNodeInstallPhase(),
           pre_build: {
             commands: preBuildCommands,
           },
@@ -172,6 +173,7 @@ export class BackendCiConfig extends ServiceCiConfig {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: this.getNodeInstallPhase(),
           pre_build: {
             commands: this.getWorkspaceSetupCommands(
               PnpmWorkspaceFilters.BACKEND,
@@ -239,6 +241,7 @@ export class BackendCiConfig extends ServiceCiConfig {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: this.getNodeInstallPhase(),
           pre_build: {
             commands: this.getWorkspaceSetupCommands(
               PnpmWorkspaceFilters.BACKEND,
@@ -307,6 +310,7 @@ export class BackendCiConfig extends ServiceCiConfig {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: this.getNodeInstallPhase(),
           pre_build: {
             commands: this.getWorkspaceSetupCommands(
               PnpmWorkspaceFilters.BACKEND,

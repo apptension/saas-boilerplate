@@ -51,6 +51,7 @@ export class UploadVersionCiConfig extends ServiceCiConfig {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: this.getNodeInstallPhase(),
           pre_build: {
             commands: this.getWorkspaceSetupCommands(
               PnpmWorkspaceFilters.CORE,

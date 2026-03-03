@@ -75,6 +75,7 @@ export class DocsCiConfig extends ServiceCiConfig {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: this.getNodeInstallPhase(),
           pre_build: {
             commands: preBuildCommands,
           },
@@ -144,6 +145,7 @@ export class DocsCiConfig extends ServiceCiConfig {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: this.getNodeInstallPhase(),
           pre_build: {
             commands: this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.DOCS),
           },

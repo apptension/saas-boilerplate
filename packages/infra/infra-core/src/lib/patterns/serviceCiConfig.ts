@@ -48,6 +48,14 @@ export class ServiceCiConfig extends Construct implements IServiceCiConfig {
     this.defaultCachePaths = ['~/.pnpm-store'];
   }
 
+  protected getNodeInstallPhase() {
+    return {
+      'runtime-versions': {
+        nodejs: 22,
+      },
+    };
+  }
+
   protected getWorkspaceSetupCommands(
     ...pnpmWorkspaceFilters: PnpmWorkspaceFilters[]
   ) {

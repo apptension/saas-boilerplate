@@ -3,7 +3,7 @@ description: ""
 inputs:
   node-version:
     required: true
-    default: 20
+    default: 22
 runs:
   using: "composite"
   steps:
