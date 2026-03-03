@@ -1,10 +1,11 @@
 #!/bin/bash
 set -e
 
+TRACE_DISABLE="TRACING_BACKEND=none AWS_XRAY_SDK_ENABLED=false"
 if [ -n "${CHAMBER_SERVICE_NAME:-}" ]; then
-  RUN_CMD="/bin/chamber exec $CHAMBER_SERVICE_NAME -- ./manage.py"
+  RUN_CMD="/bin/chamber exec $CHAMBER_SERVICE_NAME -- env $TRACE_DISABLE ./manage.py"
 else
-  RUN_CMD="uv run python manage.py"
+  RUN_CMD="env $TRACE_DISABLE uv run python manage.py"
 fi
 
 echo "Running database migrations..."
