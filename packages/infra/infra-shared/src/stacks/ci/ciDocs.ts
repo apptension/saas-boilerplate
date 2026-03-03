@@ -92,6 +92,7 @@ export class DocsCiConfig extends ServiceCiConfig {
       environment: {
         privileged: true,
         buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
+        computeType: codebuild.ComputeType.MEDIUM,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
@@ -156,7 +157,10 @@ export class DocsCiConfig extends ServiceCiConfig {
         },
       }),
       environmentVariables: { ...this.defaultEnvVariables },
-      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_7_0 },
+      environment: {
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
+        computeType: codebuild.ComputeType.MEDIUM,
+      },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });
 
