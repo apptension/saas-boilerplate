@@ -57,7 +57,7 @@ export class ServiceCiConfig extends Construct implements IServiceCiConfig {
 
     return [
       'go install github.com/segmentio/chamber/v2@latest',
-      'npm i -g pnpm@~9.5.0',
+      'npm i -g pnpm@10.26.2',
       `pnpm install \
                 --include-workspace-root \
                 --frozen-lockfile`.concat(...filters),
