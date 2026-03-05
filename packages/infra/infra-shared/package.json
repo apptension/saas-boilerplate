@@ -1,6 +1,6 @@
 {
   "name": "@sb/infra-shared",
-  "version": "4.2.0",
+  "version": "5.0.0",
   "type": "commonjs",
   "scripts": {
     "build": "tsc --project tsconfig.lib.json"

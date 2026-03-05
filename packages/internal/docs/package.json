@@ -1,6 +1,6 @@
 {
   "name": "docs",
-  "version": "4.2.0",
+  "version": "5.0.0",
   "private": true,
   "scripts": {
     "docusaurus": "nx exec -- docusaurus",

@@ -1,6 +1,6 @@
 {
   "name": "@sb/core",
-  "version": "4.2.0",
+  "version": "5.0.0",
   "devDependencies": {
     "dotenv": "^16.3.1",
     "envalid": "^7.3.1",
