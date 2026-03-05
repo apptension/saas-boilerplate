@@ -3467,3 +3467,9 @@ html[data-theme='dark'] .section-divider::after {
     padding: 0;
   }
 }
+
+aside > div:first-child  {
+  height: unset;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
