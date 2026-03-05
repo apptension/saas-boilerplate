@@ -34,7 +34,15 @@ definitions:
   scripts:
     initializeStep: &initializeStep cp .env.test .env
       && corepack enable
-      && corepack prepare pnpm@~9.5.0 --activate
+      && corepack prepare pnpm@10.26.2 --activate
+      && export PNPM_HOME="/root/.local/share/pnpm"
+      && export PATH="$PNPM_HOME:$PATH"
+
+    initializeStepNode22: &initializeStepNode22 curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+      && sudo apt-get install -y nodejs
+      && cp .env.test .env
+      && corepack enable
+      && corepack prepare pnpm@10.26.2 --activate
       && export PNPM_HOME="/root/.local/share/pnpm"
       && export PATH="$PNPM_HOME:$PATH"
 
@@ -466,7 +474,7 @@ definitions:
         name: 'internal/docs: Lint & build'
         image: atlassian/default-image:4
         script:
-          - *initializeStep
+          - *initializeStepNode22
           - *setupAwsCli
           - *setupDockerCompose
           - pnpm install

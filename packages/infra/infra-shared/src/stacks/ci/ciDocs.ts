@@ -75,6 +75,7 @@ export class DocsCiConfig extends ServiceCiConfig {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: this.getNodeInstallPhase(),
           pre_build: {
             commands: preBuildCommands,
           },
@@ -91,6 +92,7 @@ export class DocsCiConfig extends ServiceCiConfig {
       environment: {
         privileged: true,
         buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
+        computeType: codebuild.ComputeType.MEDIUM,
       },
       environmentVariables: {
         ...this.defaultEnvVariables,
@@ -144,6 +146,7 @@ export class DocsCiConfig extends ServiceCiConfig {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: this.getNodeInstallPhase(),
           pre_build: {
             commands: this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.DOCS),
           },
@@ -154,7 +157,10 @@ export class DocsCiConfig extends ServiceCiConfig {
         },
       }),
       environmentVariables: { ...this.defaultEnvVariables },
-      environment: { buildImage: codebuild.LinuxBuildImage.STANDARD_7_0 },
+      environment: {
+        buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
+        computeType: codebuild.ComputeType.MEDIUM,
+      },
       cache: codebuild.Cache.local(codebuild.LocalCacheMode.CUSTOM),
     });
 

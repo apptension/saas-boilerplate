@@ -91,7 +91,7 @@ export class ApiStack extends Stack {
         healthCheckGracePeriod: Duration.minutes(2),
         cluster: resources.mainCluster,
         cpu: 512,
-        memoryLimitMiB: 1024,
+        memoryLimitMiB: 2048,
         desiredCount: 1,
         taskRole,
         taskImageOptions: [

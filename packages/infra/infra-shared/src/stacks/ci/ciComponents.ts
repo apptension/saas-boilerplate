@@ -62,6 +62,7 @@ export class ComponentsCiConfig extends ServiceCiConfig {
       buildSpec: BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: this.getNodeInstallPhase(),
           pre_build: {
             commands: this.getWorkspaceSetupCommands(
               PnpmWorkspaceFilters.INFRA_SHARED,

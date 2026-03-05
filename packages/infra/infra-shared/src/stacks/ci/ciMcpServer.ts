@@ -81,6 +81,7 @@ export class McpServerCiConfig extends ServiceCiConfig {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: this.getNodeInstallPhase(),
           pre_build: {
             commands: preBuildCommands,
           },
@@ -155,6 +156,7 @@ export class McpServerCiConfig extends ServiceCiConfig {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: this.getNodeInstallPhase(),
           pre_build: {
             commands: this.getWorkspaceSetupCommands(
               PnpmWorkspaceFilters.INFRA_SHARED,

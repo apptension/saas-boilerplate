@@ -53,7 +53,7 @@ def create_system_roles_for_existing_tenants(apps, schema_editor):
         },
     ]
     
-    for tenant in Tenant.objects.all():
+    for tenant in Tenant.objects.iterator(chunk_size=100):
         for config in role_configs:
             role, created = OrganizationRole.objects.get_or_create(
                 tenant=tenant,
@@ -98,7 +98,7 @@ def migrate_existing_memberships_to_roles(apps, schema_editor):
         TenantUserRole.MEMBER: SystemRoleType.MEMBER,
     }
     
-    for membership in TenantMembership.objects.all():
+    for membership in TenantMembership.objects.select_related('tenant').iterator(chunk_size=100):
         system_role_type = legacy_to_system.get(membership.role)
         if system_role_type:
             org_role = OrganizationRole.objects.filter(

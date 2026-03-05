@@ -3,6 +3,7 @@
   "version": "4.2.0",
   "license": "MIT",
   "private": true,
+  "packageManager": "pnpm@10.26.2",
   "scripts": {
     "prepare": "husky install",
     "postinstall": "node packages/internal/cli/scripts/build.js"
@@ -52,8 +53,8 @@
     "@typescript-eslint/scope-manager": "^7.18.0",
     "@vitejs/plugin-legacy": "^6.1.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "aws-cdk": "^2.177.0",
-    "aws-cdk-lib": "^2.177.0",
+    "aws-cdk": "^2.1108.0",
+    "aws-cdk-lib": "^2.241.0",
     "babel-jest": "29.7.0",
     "babel-plugin-transform-import-meta": "^2.3.3",
     "constructs": "^10.3.0",

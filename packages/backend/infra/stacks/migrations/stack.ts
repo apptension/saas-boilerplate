@@ -33,8 +33,8 @@ export class MigrationsStack extends Stack {
       'MigrationsTaskDefinition',
       {
         taskRole,
-        cpu: 256,
-        memoryLimitMiB: 512,
+        cpu: 1024,
+        memoryLimitMiB: 4096,
       },
     );
 
@@ -44,9 +44,12 @@ export class MigrationsStack extends Stack {
         envSettings.version,
       ),
       logging: this.createAWSLogDriver(this.node.id, props.envSettings),
-      environment: getBackendEnvironment(this, {
-        envSettings,
-      }),
+      environment: {
+        ...getBackendEnvironment(this, { envSettings }),
+        TRACING_BACKEND: 'none',
+        AWS_XRAY_SDK_ENABLED: 'false',
+        PYTHONUNBUFFERED: '1',
+      },
       secrets: getBackendSecrets(this, { envSettings }),
     });
 
@@ -66,7 +69,7 @@ export class MigrationsStack extends Stack {
         ],
         integrationPattern: sf.IntegrationPattern.RUN_JOB,
       }),
-      timeout: Duration.minutes(5),
+      timeout: Duration.minutes(30),
     });
   }
 

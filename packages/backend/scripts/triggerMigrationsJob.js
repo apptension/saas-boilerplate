@@ -18,8 +18,9 @@ const sfnClient = new SFNClient();
 async function poll(executionArn) {
   const timeout = 5 * 60;
   const sleepStep = 10;
+  let executionData;
   for (let i = timeout; i > 0; i -= sleepStep) {
-    const executionData = await sfnClient.send(
+    executionData = await sfnClient.send(
       new DescribeExecutionCommand({
         executionArn,
       })
@@ -31,6 +32,7 @@ async function poll(executionArn) {
 
     await new Promise((resolve) => setTimeout(resolve, sleepStep * 1000));
   }
+  return executionData;
 }
 
 (async () => {
@@ -56,17 +58,19 @@ async function poll(executionArn) {
       ({ type }) => type === 'TaskSubmitted'
     );
 
-    console.log('Migrations job log pulled from CloudWatch:');
-    await runCommand('aws', [
-      'logs',
-      'tail',
-      `${PROJECT_NAME}-${ENV_STAGE}-migrations-log-group`,
-      '--since',
-      taskSubmittedStep.timestamp.toISOString(),
-    ]);
+    if (taskSubmittedStep?.timestamp) {
+      console.log('Migrations job log pulled from CloudWatch:');
+      await runCommand('aws', [
+        'logs',
+        'tail',
+        `${PROJECT_NAME}-${ENV_STAGE}-migrations-log-group`,
+        '--since',
+        taskSubmittedStep.timestamp.toISOString(),
+      ]);
+    }
 
     console.log(`Migrations job result:\n ${JSON.stringify(finalResult)}`);
-    if (finalResult.status !== 'SUCCEEDED') {
+    if (!finalResult || finalResult.status !== 'SUCCEEDED') {
       process.exit(1);
     }
   } catch (error) {

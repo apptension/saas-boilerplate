@@ -81,6 +81,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         version: '0.2',
         phases: {
           install: {
+            ...this.getNodeInstallPhase(),
             commands: installCommands,
           },
           pre_build: {
@@ -190,6 +191,7 @@ export class ServerlessCiConfig extends ServiceCiConfig {
         version: '0.2',
         phases: {
           install: {
+            ...this.getNodeInstallPhase(),
             commands: installCommands,
           },
           pre_build: {
