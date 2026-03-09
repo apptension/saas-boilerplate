@@ -67,7 +67,7 @@ interface CertificatesConfig {
  * To enable the AI Assistant feature:
  * 1. Set SB_AI_ENABLED=true
  * 2. Set SB_MCP_SERVER_URL to your MCP server URL
- * 3. Create AWS Secrets Manager secret with OPENAI_API_KEY
+ * 3. Add OPENAI_API_KEY via `pnpm saas backend secrets`
  */
 export interface AiConfig {
   enabled: boolean;

@@ -18,7 +18,7 @@ const AWS_DEFAULT_REGION = process.env.AWS_DEFAULT_REGION;
 const PROJECT_NAME = process.env.PROJECT_NAME;
 const VERSION = process.env.VERSION;
 
-const ROOT_DIR = path.resolve(__dirname, '../../../..');
+const ROOT_DIR = path.resolve(__dirname, '../../..');
 
 function runCommand(command, args, options = {}) {
   return new Promise((resolve, reject) => {

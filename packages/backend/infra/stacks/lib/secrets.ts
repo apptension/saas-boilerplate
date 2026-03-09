@@ -3,36 +3,21 @@ import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as sm from 'aws-cdk-lib/aws-secretsmanager';
 import { EnvComponentsStack, MainDatabase } from '@sb/infra-shared';
 import { Fn } from 'aws-cdk-lib';
-import { EnvironmentSettings } from '@sb/infra-core';
-
-/**
- * Get the name for the AI secrets stored in AWS Secrets Manager.
- * Follows the project naming convention: env-{projectName}-{envStage}-ai-secrets
- *
- * To enable AI Assistant, create a secret in AWS Secrets Manager with this name
- * containing a JSON object with the following structure:
- * {
- *   "OPENAI_API_KEY": "sk-..."
- * }
- */
-export function getAiSecretsName(envSettings: EnvironmentSettings): string {
-  return `env-${envSettings.projectName}-${envSettings.envStage}-ai-secrets`;
-}
+import type { EnvironmentSettings } from '@sb/infra-core';
 
 interface GetBackendSecretsOptions {
   envSettings: EnvironmentSettings;
-  includeAiSecrets?: boolean;
 }
 
 export function getBackendSecrets(
   scope: Construct,
-  { envSettings, includeAiSecrets = false }: GetBackendSecretsOptions,
+  { envSettings }: GetBackendSecretsOptions,
 ) {
   const dbSecretArn = Fn.importValue(
     MainDatabase.getDatabaseSecretArnOutputExportName(envSettings),
   );
 
-  const baseSecrets = {
+  return {
     DB_CONNECTION: ecs.Secret.fromSecretsManager(
       sm.Secret.fromSecretCompleteArn(scope, 'DbSecret', dbSecretArn),
     ),
@@ -44,22 +29,4 @@ export function getBackendSecrets(
       ),
     ),
   };
-
-  // AI secrets are opt-in to avoid deployment failures when not configured
-  if (includeAiSecrets) {
-    const aiSecretsManager = sm.Secret.fromSecretNameV2(
-      scope,
-      'AiSecrets',
-      getAiSecretsName(envSettings),
-    );
-    return {
-      ...baseSecrets,
-      OPENAI_API_KEY: ecs.Secret.fromSecretsManager(
-        aiSecretsManager,
-        'OPENAI_API_KEY',
-      ),
-    };
-  }
-
-  return baseSecrets;
 }

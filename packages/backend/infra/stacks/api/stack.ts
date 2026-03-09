@@ -77,9 +77,6 @@ export class ApiStack extends Stack {
       );
 
       const healthCheckPath = '/lbcheck';
-      
-      // AI Assistant configuration
-      const aiEnabled = envSettings.aiConfig?.enabled ?? false;
       const mcpServerUrl = envSettings.aiConfig?.mcpServerUrl;
       
       return new ApplicationMultipleTargetGroupsFargateService(
@@ -112,10 +109,7 @@ export class ApiStack extends Stack {
               csrfTrustedOrigins,
               mcpServerUrl,
             }),
-            secrets: getBackendSecrets(this, { 
-              envSettings, 
-              includeAiSecrets: aiEnabled,
-            }),
+            secrets: getBackendSecrets(this, { envSettings }),
           },
           {
             containerName: 'xray-daemon',

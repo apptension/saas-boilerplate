@@ -134,23 +134,20 @@ See [API Reference: Environment Variables](/api-reference/env#backend-service) f
 
 ### AI Assistant Configuration (Optional)
 
-If you're using the AI Assistant feature with the MCP Server, you need to configure AI secrets in AWS Secrets Manager:
+If you're using the AI Assistant feature with the MCP Server:
 
-1. Go to **AWS Console → Secrets Manager**
-2. Click **Store a new secret**
-3. Select **Other type of secret**
-4. Add key/value pair:
-   - Key: `OPENAI_API_KEY`
-   - Value: Your OpenAI API key
-5. Name the secret: `env-{project-name}-{env-stage}-ai-secrets`
-   - Example: `env-saas-qa-ai-secrets`
-6. Click through to create the secret
-
-Then enable AI features in your environment variables:
+1. **Add OPENAI_API_KEY before enabling AI** — Set it via `pnpm saas backend secrets` (same flow as other backend vars). Add `"OPENAI_API_KEY": "sk-..."` to the JSON. The backend loads it from SSM at runtime via Chamber.
+2. **For the MCP server container**, set env vars via `pnpm saas mcp-server secrets`. Add `OPENAI_API_KEY` and any other MCP-specific variables. The MCP container loads these from SSM at runtime via Chamber.
+3. **Enable AI features** in your environment variables:
 ```bash
 export SB_AI_ENABLED=true
 export SB_MCP_SERVER_URL=https://mcp.qa.yourdomain.com
 export SB_DOMAIN_MCP=mcp.qa.yourdomain.com
+```
+4. **Redeploy** — After adding secrets, redeploy the API and MCP server:
+```bash
+pnpm saas backend deploy api
+pnpm saas mcp-server deploy
 ```
 
 The MCP Server will be deployed automatically when you run the backend deployment with AI enabled.

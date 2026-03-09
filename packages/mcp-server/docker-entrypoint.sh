@@ -28,6 +28,10 @@ transport:
   address: 0.0.0.0
   port: 4000
 
+health_check:
+  enabled: true
+  path: /health
+
 # Schema configuration - use local file
 schema:
   source: local
@@ -56,5 +60,8 @@ EOF
 
 echo "Generated config with endpoint: ${GRAPHQL_ENDPOINT}, mutation_mode: ${MUTATION_MODE}"
 
-# Run the Apollo MCP Server (config file is positional argument, not --config)
-exec apollo-mcp-server /app/runtime-config.yaml "$@"
+if [ -n "${CHAMBER_SERVICE_NAME}" ]; then
+  exec /bin/chamber exec "${CHAMBER_SERVICE_NAME}" -- apollo-mcp-server /app/runtime-config.yaml "$@"
+else
+  exec apollo-mcp-server /app/runtime-config.yaml "$@"
+fi

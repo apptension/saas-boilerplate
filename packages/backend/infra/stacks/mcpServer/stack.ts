@@ -7,8 +7,9 @@ import {
   EnvConstructProps,
   getHostedZone,
 } from '@sb/infra-core';
-import { FargateServiceResources, MainECSCluster } from '@sb/infra-shared';
+import { FargateServiceResources, MainECSCluster, MainKmsKey } from '@sb/infra-shared';
 
+import { getMcpServerChamberServiceName } from '../lib/names';
 import { getMcpServerServiceName } from './names';
 
 export interface McpServerStackProps extends StackProps, EnvConstructProps {}
@@ -37,7 +38,6 @@ export class McpServerStack extends Stack {
     const resources = new FargateServiceResources(this, 'McpServerResources', props);
     this.fargateService = this.createFargateService(resources, props);
 
-    // Basic auto-scaling
     const scaling = this.fargateService.service.autoScaleTaskCount({
       maxCapacity: 3,
     });
@@ -52,14 +52,36 @@ export class McpServerStack extends Stack {
     props: McpServerStackProps,
   ) {
     const { envSettings } = props;
+    const stack = Stack.of(this);
 
-    // Create a basic task role for MCP server
     const taskRole = new iam.Role(this, 'McpServerTaskRole', {
       assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
     });
 
-    // The MCP server needs to communicate with the backend API
-    // The GraphQL endpoint is internal to the VPC
+    const chamberServiceName = getMcpServerChamberServiceName(envSettings);
+    taskRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: ['kms:Get*', 'kms:Describe*', 'kms:List*', 'kms:Decrypt'],
+        resources: [
+          Fn.importValue(MainKmsKey.getMainKmsOutputExportName(envSettings)),
+        ],
+      }),
+    );
+    taskRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: ['ssm:DescribeParameters'],
+        resources: ['*'],
+      }),
+    );
+    taskRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: ['ssm:GetParameters*'],
+        resources: [
+          `arn:aws:ssm:${stack.region}:${stack.account}:parameter/${chamberServiceName}/*`,
+        ],
+      }),
+    );
+
     const graphqlEndpoint = `https://${envSettings.domains.api}/api/graphql/`;
 
     const httpsListener =
@@ -78,7 +100,6 @@ export class McpServerStack extends Stack {
 
     const domainZone = getHostedZone(this, envSettings);
 
-    // MCP Server domain from environment configuration
     const mcpDomain = envSettings.domains.mcp;
 
     return new ApplicationMultipleTargetGroupsFargateService(
@@ -89,7 +110,7 @@ export class McpServerStack extends Stack {
         serviceName: getMcpServerServiceName(props.envSettings),
         healthCheckGracePeriod: Duration.minutes(2),
         cluster: resources.mainCluster,
-        cpu: 256, // MCP server is lightweight
+        cpu: 256,
         memoryLimitMiB: 512,
         desiredCount: 1,
         taskRole,
@@ -103,7 +124,9 @@ export class McpServerStack extends Stack {
             environment: {
               GRAPHQL_ENDPOINT: graphqlEndpoint,
               MCP_LOG_LEVEL: 'info',
-              MUTATION_MODE: 'explicit', // Only allow pre-defined mutations
+              MUTATION_MODE: 'explicit',
+              CHAMBER_SERVICE_NAME: chamberServiceName,
+              CHAMBER_KMS_KEY_ALIAS: MainKmsKey.getKeyAlias(envSettings),
             },
           },
         ],
@@ -118,10 +141,11 @@ export class McpServerStack extends Stack {
         targetGroups: [
           {
             protocol: ecs.Protocol.TCP,
-            containerPort: 4000, // MCP server default port
-            priority: 10, // Lower priority than API
+            containerPort: 4000,
+            targetProtocol: elb2.ApplicationProtocol.HTTP,
+            priority: 10,
             hostHeader: mcpDomain,
-            healthCheckPath: '/', // Basic health check - MCP server responds on root
+            healthCheckPath: '/health',
           },
         ],
       },
