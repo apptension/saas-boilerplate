@@ -5,6 +5,8 @@
 # NOTE: Update this digest carefully - different versions may have different binary locations
 FROM ghcr.io/apollographql/apollo-mcp-server:latest@sha256:a78a66c637236d2d72b1ff1fa34a0c7c7f7d2a84b372a2c54bd2eb13655a3dc1 AS mcp-source
 
+FROM segment/chamber:2 AS chamber
+
 # Stage 2: Runtime image with shell support (Debian for glibc compatibility)
 FROM debian:bookworm-slim
 
@@ -15,6 +17,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Create app directory
 WORKDIR /app
+
+# Copy Chamber for runtime secret loading
+COPY --from=chamber /chamber /bin/chamber
 
 # Copy the Apollo MCP Server binary
 COPY --from=mcp-source /bin/apollo-mcp-server /usr/local/bin/apollo-mcp-server

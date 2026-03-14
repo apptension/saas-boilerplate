@@ -393,15 +393,25 @@ When deploying to AWS with AI features enabled:
 | `SB_MCP_SERVER_URL` | URL where MCP server will be accessible |
 | `SB_DOMAIN_MCP` | Domain for MCP server (e.g., `mcp.staging.example.com`) |
 
-### AWS Secrets Manager
+### AWS (Backend Secrets)
 
-For AWS deployments, create a secret named `env-{projectName}-{envStage}-ai-secrets` with:
+For the backend container, add `OPENAI_API_KEY` via the backend secrets editor:
 
-```json
-{
-  "OPENAI_API_KEY": "sk-..."
-}
+```bash
+pnpm saas backend secrets
 ```
+
+Add `"OPENAI_API_KEY": "sk-..."` to the JSON. The backend loads it from SSM at runtime via Chamber.
+
+### AWS (MCP Server Secrets)
+
+For the MCP server container, set env vars via:
+
+```bash
+pnpm saas mcp-server secrets
+```
+
+Add `OPENAI_API_KEY` and any other MCP-specific variables. The MCP container loads these from SSM at runtime via Chamber.
 
 ### Platform-Specific MCP Configuration
 

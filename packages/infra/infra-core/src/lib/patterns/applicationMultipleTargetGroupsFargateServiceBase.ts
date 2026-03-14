@@ -213,6 +213,14 @@ export interface ApplicationTargetProps {
   readonly protocol?: Protocol;
 
   /**
+   * The protocol for connections from the load balancer to the target (HTTP or HTTPS).
+   * Only needed for ports not in the default list (80, 443, 8080, 8000, 8008, 8443).
+   *
+   * @default - Inferred from port for known ports; HTTP for custom ports
+   */
+  readonly targetProtocol?: ApplicationProtocol;
+
+  /**
    * Name of the listener the target group attached to.
    *
    * @default - default listener (first added listener)
@@ -444,19 +452,24 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
     targets: ApplicationTargetProps[]
   ): ApplicationTargetGroup {
     interface GroupedTarget {
-      target: { protocol?: Protocol; containerPort: number };
+      target: {
+        protocol?: Protocol;
+        containerPort: number;
+        targetProtocol?: ApplicationProtocol;
+      };
       hosts: ApplicationTargetProps[];
       healthCheckPath: string;
     }
 
     const groupedTargets: { [id: string]: GroupedTarget } = {};
     targets?.forEach((targetProps) => {
-      const key = `${targetProps.protocol}, ${targetProps.containerPort}`;
+      const key = `${targetProps.protocol}, ${targetProps.containerPort}, ${targetProps.targetProtocol ?? 'default'}`;
       if (!(key in groupedTargets)) {
         groupedTargets[key] = {
           target: {
             protocol: targetProps.protocol,
             containerPort: targetProps.containerPort,
+            targetProtocol: targetProps.targetProtocol,
           },
           hosts: [],
           healthCheckPath: targetProps.healthCheckPath,
@@ -471,6 +484,7 @@ export abstract class ApplicationMultipleTargetGroupsServiceBase extends Constru
         {
           vpc: service.cluster.vpc,
           port: groupedTarget.target.containerPort,
+          protocol: groupedTarget.target.targetProtocol,
           healthCheck: {
             path: groupedTarget.healthCheckPath,
             protocol: ELBProtocol.HTTP,

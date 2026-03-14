@@ -73,7 +73,7 @@ export class McpServerCiConfig extends ServiceCiConfig {
 
   private createBuildProject(props: McpServerCiConfigProps) {
     const preBuildCommands = [
-      ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.INFRA_SHARED),
+      ...this.getWorkspaceSetupCommands(PnpmWorkspaceFilters.MCP_SERVER),
     ];
 
     const project = new codebuild.Project(this, 'McpServerBuildProject', {
@@ -86,7 +86,7 @@ export class McpServerCiConfig extends ServiceCiConfig {
             commands: preBuildCommands,
           },
           build: {
-            commands: ['pnpm nx run mcp-server:build'],
+            commands: ['pnpm saas mcp-server build'],
           },
         },
       }),
@@ -159,10 +159,10 @@ export class McpServerCiConfig extends ServiceCiConfig {
           install: this.getNodeInstallPhase(),
           pre_build: {
             commands: this.getWorkspaceSetupCommands(
-              PnpmWorkspaceFilters.INFRA_SHARED,
+              PnpmWorkspaceFilters.BACKEND,
             ),
           },
-          build: { commands: ['pnpm nx run mcp-server:deploy'] },
+          build: { commands: ['pnpm saas mcp-server deploy'] },
         },
         cache: {
           paths: [...this.defaultCachePaths],

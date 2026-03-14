@@ -25,13 +25,13 @@ pnpm saas aws login
 
 ### Key Places to Check
 
-| Where | What to Look For |
-|-------|-----------------|
-| **CloudFormation** | Stack status, failed resources |
-| **ECS → Services** | Task status, deployment status |
-| **CloudWatch → Logs** | Application errors, startup issues |
-| **Route 53** | DNS record existence |
-| **ACM (Certificate Manager)** | Certificate validation status |
+| Where                         | What to Look For                   |
+| ----------------------------- | ---------------------------------- |
+| **CloudFormation**            | Stack status, failed resources     |
+| **ECS → Services**            | Task status, deployment status     |
+| **CloudWatch → Logs**         | Application errors, startup issues |
+| **Route 53**                  | DNS record existence               |
+| **ACM (Certificate Manager)** | Certificate validation status      |
 
 ---
 
@@ -40,9 +40,10 @@ pnpm saas aws login
 ### Certificate domain mismatch
 
 **Error:**
+
 ```
-Resource handler returned message: "Invalid request provided: AWS::CloudFront::Distribution: 
-The certificate that is attached to your distribution doesn't cover the alternate domain name 
+Resource handler returned message: "Invalid request provided: AWS::CloudFront::Distribution:
+The certificate that is attached to your distribution doesn't cover the alternate domain name
 (CNAME) that you're trying to add."
 ```
 
@@ -50,7 +51,7 @@ The certificate that is attached to your distribution doesn't cover the alternat
 
 **Solution:**
 
-By default, <ProjectName /> creates a certificate for `*.[STAGE].[DOMAIN]` (e.g., `*.qa.example.com`). 
+By default, <ProjectName /> creates a certificate for `*.[STAGE].[DOMAIN]` (e.g., `*.qa.example.com`).
 
 If you're using a production domain without the stage prefix (e.g., `app.example.com`), set:
 
@@ -60,6 +61,7 @@ pnpm saas aws set-var SB_CERTIFICATE_DOMAIN example.com
 ```
 
 Then redeploy infrastructure:
+
 ```bash
 pnpm saas infra deploy
 ```
@@ -95,6 +97,7 @@ pnpm saas infra deploy
 ### "User doesn't have permission to call iam:GetRole"
 
 **Error:**
+
 ```
 AccessDenied. User doesn't have permission to call iam:GetRole
 ```
@@ -144,9 +147,11 @@ AccessDenied. User doesn't have permission to call iam:GetRole
    - Request an increase (usually approved quickly)
 
 2. **For CodeBuild concurrent builds:**
+
    ```bash
    pnpm saas aws set-var SB_CI_MODE simple
    ```
+
    This runs builds sequentially instead of in parallel.
 
 3. **Common limits to increase:**
@@ -227,6 +232,7 @@ AccessDenied. User doesn't have permission to call iam:GetRole
 **Cause:** Docker image wasn't built correctly, or dependencies are missing.
 
 **Solution:**
+
 ```bash
 # Rebuild from scratch
 pnpm saas backend build
@@ -312,6 +318,7 @@ See [Set Up Docker Hub](/aws/cicd/setup-docker-hub) for details.
 **Cause:** Manual approval step or missing configuration.
 
 **Solution:**
+
 - Check the pipeline in CodePipeline console
 - Look for failed stages
 - Check source repository connection
@@ -339,6 +346,7 @@ New AWS accounts have restrictions that can cause deployment problems:
 **Symptoms:** Emails don't send; "Email address not verified" errors.
 
 **Solution:**
+
 - For testing: verify recipient email addresses in SES
 - For production: request SES production access
 
@@ -347,6 +355,7 @@ New AWS accounts have restrictions that can cause deployment problems:
 **Symptoms:** Can't create CloudFront distribution; account verification required.
 
 **Solution:**
+
 - Complete AWS account verification
 - Contact AWS support if needed
 
@@ -355,6 +364,7 @@ New AWS accounts have restrictions that can cause deployment problems:
 **Symptoms:** Builds fail or queue indefinitely.
 
 **Solution:**
+
 ```bash
 pnpm saas aws set-var SB_CI_MODE simple
 pnpm saas infra deploy ci
@@ -369,6 +379,7 @@ pnpm saas infra deploy ci
 When asking for help, include:
 
 1. **Environment details:**
+
    ```bash
    pnpm saas aws get-env
    aws --version
@@ -392,11 +403,13 @@ When asking for help, include:
 ## Prevention Tips
 
 1. **Always check environment before running commands:**
+
    ```bash
    pnpm saas aws get-env
    ```
 
 2. **Use `--diff` flag to preview changes:**
+
    ```bash
    pnpm saas infra deploy --diff
    ```

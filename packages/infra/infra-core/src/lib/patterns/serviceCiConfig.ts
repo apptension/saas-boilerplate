@@ -12,6 +12,7 @@ export interface IServiceCiConfig {
 
 export enum PnpmWorkspaceFilters {
   BACKEND = 'backend...',
+  MCP_SERVER = 'mcp-server...',
   INFRA_SHARED = 'infra-shared...',
   DOCS = 'docs...',
   WEBAPP_EMAILS = 'webapp-emails...',
