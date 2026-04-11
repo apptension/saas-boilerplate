@@ -30,7 +30,27 @@ export class CiEntrypoint extends Construct {
     });
 
     const externalCiUser = this.retrieveExternalCIUser();
-    this.artifactsBucket.grantWrite(externalCiUser);
+    new iam.Policy(this, 'ExternalCiUserArtifactsPolicy', {
+      policyName: `${props.envSettings.projectEnvName}-ci-artifacts-write`,
+      users: [externalCiUser],
+      statements: [
+        new iam.PolicyStatement({
+          actions: [
+            's3:DeleteObject*',
+            's3:PutObject',
+            's3:PutObjectLegalHold',
+            's3:PutObjectRetention',
+            's3:PutObjectTagging',
+            's3:PutObjectVersionTagging',
+            's3:Abort*',
+          ],
+          resources: [
+            this.artifactsBucket.bucketArn,
+            `${this.artifactsBucket.bucketArn}/*`,
+          ],
+        }),
+      ],
+    });
 
     const trail = new cloudtrail.Trail(this, 'CloudTrail');
     trail.addS3EventSelector(
