@@ -15,6 +15,7 @@ This step initializes your deployment environment (e.g., `qa`, `staging`, `produ
 
 ## What You'll Accomplish
 
+- ✅ Select the correct AWS region
 - ✅ Bootstrap AWS CDK in your account
 - ✅ Set deployment configuration variables
 - ✅ Configure domain subdomains for your services
@@ -30,11 +31,11 @@ This step initializes your deployment environment (e.g., `qa`, `staging`, `produ
 - Configuration
 - Domain subdomains
 
-| Stage | Purpose | Example Domain |
-|-------|---------|----------------|
-| `qa` | Development/testing | `app.qa.example.com` |
-| `staging` | Pre-production testing | `app.staging.example.com` |
-| `production` | Live production | `app.example.com` or `app.production.example.com` |
+| Stage        | Purpose                | Example Domain                                    |
+|--------------|------------------------|---------------------------------------------------|
+| `qa`         | Development/testing    | `app.qa.example.com`                              |
+| `staging`    | Pre-production testing | `app.staging.example.com`                         |
+| `production` | Live production        | `app.example.com` or `app.production.example.com` |
 
 :::tip Start with QA
 For your first deployment, we recommend creating a `qa` environment. This lets you learn the process before deploying production.
@@ -42,7 +43,24 @@ For your first deployment, we recommend creating a `qa` environment. This lets y
 
 ---
 
-## Step 3.1: Bootstrap CDK
+## Step 3.1: Select Your AWS Region
+
+Before bootstrapping, make sure the correct AWS region is set in your `.env` file. The `AWS_DEFAULT_REGION` variable controls which region your infrastructure will be deployed to.
+
+Open your `.env` file and update the region:
+
+```bash
+# .env
+AWS_DEFAULT_REGION=eu-west-1  # Replace with your desired region (e.g. us-east-1, ap-southeast-1)
+```
+
+:::caution Choose Before Bootstrapping
+CDK bootstrap is region-specific. If you change `AWS_DEFAULT_REGION` after bootstrapping, you will need to bootstrap again in the new region. Pick the right region before proceeding.
+:::
+
+---
+
+## Step 3.2: Bootstrap CDK
 
 AWS CDK needs to prepare your account with resources it uses for deployments (S3 buckets, IAM roles, etc.). This only needs to be done once per AWS account/region.
 
@@ -67,7 +85,7 @@ If you see a message saying bootstrap was already run, that's fine. Each AWS acc
 
 ---
 
-## Step 3.2: Set Your Environment Context
+## Step 3.3: Set Your Environment Context
 
 Switch to the environment stage you want to configure:
 
@@ -87,7 +105,7 @@ This environment context only applies to the current terminal. If you open a new
 
 ---
 
-## Step 3.3: Set Required Configuration Variables
+## Step 3.4: Set Required Configuration Variables
 
 Now configure the environment variables that define your deployment. These are stored securely in AWS Systems Manager Parameter Store.
 
@@ -140,7 +158,7 @@ pnpm saas aws set-var SB_DOMAIN_FLOWER flower.qa.example.com
 
 ---
 
-## Step 3.4: Configure Optional Settings
+## Step 3.5: Configure Optional Settings
 
 ### For Production Environments
 
@@ -174,10 +192,10 @@ For new AWS accounts with CodeBuild limits:
 pnpm saas aws set-var SB_CI_MODE simple
 ```
 
-| Mode | Description | Recommended For |
-|------|-------------|-----------------|
-| `parallel` | Runs CI/CD stages concurrently | Established AWS accounts |
-| `simple` | Runs CI/CD stages sequentially | New AWS accounts (avoids build limits) |
+| Mode       | Description                    | Recommended For                        |
+|------------|--------------------------------|----------------------------------------|
+| `parallel` | Runs CI/CD stages concurrently | Established AWS accounts               |
+| `simple`   | Runs CI/CD stages sequentially | New AWS accounts (avoids build limits) |
 
 ### Version Matrix (Optional)
 
