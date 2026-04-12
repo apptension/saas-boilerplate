@@ -32,7 +32,7 @@ export class MainRedisCluster extends Construct {
       clusterName: `${props.envSettings.projectEnvName}-main`,
       autoMinorVersionUpgrade: true,
       engine: 'redis',
-      cacheNodeType: 'cache.t2.micro',
+      cacheNodeType: 'cache.t4g.micro',
       numCacheNodes: 1,
       cacheSubnetGroupName: subnetGroup.ref,
       vpcSecurityGroupIds: [securityGroup.securityGroupId],
