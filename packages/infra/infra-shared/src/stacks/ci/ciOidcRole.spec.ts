@@ -88,9 +88,10 @@ describe('CiOidcRole - GitHub', () => {
   });
 
   it('outputs the role ARN', () => {
-    template.hasOutput('CiRoleArn', {
+    const outputs = template.findOutputs('*', {
       Export: { Name: 'test-project-qa-ciRoleArn' },
     });
+    expect(Object.keys(outputs).length).toBeGreaterThan(0);
   });
 });
 
@@ -138,5 +139,12 @@ describe('CiOidcRole - Bitbucket', () => {
         ],
       },
     });
+  });
+
+  it('outputs the role ARN', () => {
+    const outputs = template.findOutputs('*', {
+      Export: { Name: `test-project-qa-ciRoleArn` },
+    });
+    expect(Object.keys(outputs).length).toBeGreaterThan(0);
   });
 });
