@@ -1,25 +1,17 @@
 import { Construct } from 'constructs';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cloudtrail from 'aws-cdk-lib/aws-cloudtrail';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import { CfnOutput } from 'aws-cdk-lib';
 import { EnvConstructProps, EnvironmentSettings } from '@sb/infra-core';
-import { GlobalResources } from '../global/resources';
+import { CiOidcRole } from './ciOidcRole';
 
 export interface CiEntrypointProps extends EnvConstructProps {}
 
 export class CiEntrypoint extends Construct {
   public artifactsBucket: s3.Bucket;
+
   static getArtifactsName(envSettings: EnvironmentSettings) {
     return `${envSettings.projectEnvName}-entrypoint`;
-  }
-
-  private retrieveExternalCIUser() {
-    return iam.User.fromUserName(
-      this,
-      'ExternalCiUser',
-      GlobalResources.getExternalCIUserName(),
-    );
   }
 
   constructor(scope: Construct, id: string, props: CiEntrypointProps) {
@@ -29,8 +21,10 @@ export class CiEntrypoint extends Construct {
       versioned: true,
     });
 
-    const externalCiUser = this.retrieveExternalCIUser();
-    this.artifactsBucket.grantWrite(externalCiUser);
+    const oidcRole = new CiOidcRole(this, 'OidcRole', {
+      envSettings: props.envSettings,
+    });
+    this.artifactsBucket.grantWrite(oidcRole.role);
 
     const trail = new cloudtrail.Trail(this, 'CloudTrail');
     trail.addS3EventSelector(
