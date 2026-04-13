@@ -1,6 +1,6 @@
 ---
 title: Configure Auto-Deploy
-description: Set up automatic deployments from GitHub or Bitbucket
+description: Set up automatic deployments from GitHub or Bitbucket using OIDC
 ---
 
 import ProjectName from '../../shared/components/ProjectName.component';
@@ -9,9 +9,9 @@ import TabItem from '@theme/TabItem';
 
 # Configure Automatic Deployments
 
-Set up your repository so that pushing code automatically triggers a deployment to AWS. This enables continuous deployment (CD) for your team.
+Set up your repository so that pushing code automatically triggers a deployment to AWS. This guide uses **OIDC (OpenID Connect)** — no long-lived AWS credentials are stored anywhere.
 
-**Estimated time: 20-30 minutes**
+**Estimated time: 20–30 minutes**
 
 ---
 
@@ -28,9 +28,11 @@ Set up your repository so that pushing code automatically triggers a deployment 
 
 1. You push code to your repository
 2. GitHub Actions / Bitbucket Pipelines runs tests and builds artifacts
-3. Artifacts are uploaded to an S3 bucket
-4. AWS CodePipeline detects the upload and triggers deployment
-5. CodeBuild deploys to ECS, Lambda, and S3
+3. CI requests a short-lived JWT from the OIDC provider (GitHub or Bitbucket)
+4. AWS STS exchanges the JWT for temporary credentials — no stored secrets
+5. Artifacts are uploaded to an S3 bucket
+6. AWS CodePipeline detects the upload and triggers deployment
+7. CodeBuild deploys to ECS, Lambda, and S3
 
 ---
 
@@ -44,58 +46,79 @@ Before configuring auto-deploy:
 
 ---
 
-## Step 1: Get the Artifacts Bucket Name
+## Step 1: Configure OIDC in your `.env`
 
-Your infrastructure created an S3 bucket for deployment artifacts. Get its name:
-
-```bash
-pnpm saas aws set-env qa
-pnpm saas ci get-artifacts-bucket
-```
-
-**Output:** `saas-qa-artifacts-bucket-xxxxxxxxx`
-
-Save this bucket name—you'll need it for CI configuration.
-
----
-
-## Step 2: Get CI User Credentials
-
-<ProjectName /> creates an IAM user (`external-ci`) with minimal permissions for uploading artifacts.
-
-1. Open AWS Console:
-   ```bash
-   pnpm saas aws login
-   ```
-
-2. Navigate to **IAM → Users**
-
-3. Find and click `external-ci`
-
-4. Go to **Security credentials** tab
-
-5. Under **Access keys**, click **Create access key**
-
-6. Select **Third-party service**
-
-7. Click **Create access key**
-
-8. **Copy both values:**
-   - Access key ID
-   - Secret access key
-
-:::warning Save These Credentials
-You won't be able to see the secret access key again. Save it securely.
-:::
-
----
-
-## Step 3: Configure Your CI Platform
+Add the following variables to your `.env` file:
 
 <Tabs>
 <TabItem value="github" label="GitHub Actions">
 
-### 3.1 Add Repository Secrets
+```bash
+# Which CI provider to use
+SB_CI_PROVIDER=github
+
+# Your GitHub repository in org/repo format
+SB_CI_REPO=my-org/my-repo
+```
+
+</TabItem>
+<TabItem value="bitbucket" label="Bitbucket Pipelines">
+
+```bash
+# Which CI provider to use
+SB_CI_PROVIDER=bitbucket
+
+# Your Bitbucket repository UUID (found in Repository settings → Repository details)
+SB_CI_REPO={xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}
+
+# Your Bitbucket workspace UUID (found in Workspace settings → General)
+SB_CI_BITBUCKET_WORKSPACE_UUID={yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy}
+```
+
+</TabItem>
+</Tabs>
+
+---
+
+## Step 2: Deploy the CDK infrastructure
+
+Run CDK deploy. The OIDC identity provider and IAM role are provisioned automatically:
+
+```bash
+pnpm saas aws set-env qa
+pnpm saas cdk deploy
+```
+
+---
+
+## Step 3: Get the CI Role ARN and Artifacts Bucket Name
+
+After deployment, retrieve the two values your CI platform needs:
+
+**Artifacts bucket name:**
+```bash
+pnpm saas ci get-artifacts-bucket
+```
+Output: `saas-qa-artifacts-bucket-xxxxxxxxx`
+
+**CI role ARN (from CloudFormation outputs):**
+```bash
+pnpm saas aws login
+# Open CloudFormation in the AWS console, find the CI stack,
+# and copy the output named: <project-env-name>-ciRoleArn
+```
+Output: `arn:aws:iam::123456789012:role/EnvCiStack-EntrypointOidcRoleCiOidcRoleXXXX-XXXX`
+
+Save both values — you will add them to your CI platform next.
+
+---
+
+## Step 4: Configure Your CI Platform
+
+<Tabs>
+<TabItem value="github" label="GitHub Actions">
+
+### 4.1 Add Repository Secrets
 
 1. Go to your GitHub repository
 2. Navigate to **Settings → Secrets and variables → Actions**
@@ -103,110 +126,49 @@ You won't be able to see the secret access key again. Save it securely.
 
 | Secret Name | Value |
 |-------------|-------|
-| `AWS_ACCESS_KEY_ID` | Your `external-ci` access key ID |
-| `AWS_SECRET_ACCESS_KEY` | Your `external-ci` secret access key |
-| `AWS_DEFAULT_REGION` | Your AWS region (e.g., `eu-west-1`) |
+| `AWS_DEFAULT_REGION` | Your AWS region (e.g. `eu-west-1`) |
+| `SB_CI_ROLE_ARN` | The role ARN from Step 3 |
 
-### 3.2 Create Environment
+:::info Removed secrets
+If you previously had `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` secrets, delete them — they are no longer used.
+:::
+
+### 4.2 Create Environment
 
 1. Go to **Settings → Environments**
 2. Click **New environment**
-3. Name it (e.g., `qa`, `staging`, `production`)
+3. Name it to match your stage (e.g. `QA`, `Production`)
 4. Add environment secrets:
 
 | Secret Name | Value |
 |-------------|-------|
-| `SB_CI_ARTIFACTS_BUCKET` | Your artifacts bucket name |
-
-5. Add environment variables:
-
-| Variable Name | Value |
-|---------------|-------|
-| `SB_DEPLOY_STAGE` | Environment name (e.g., `qa`) |
-
-### 3.3 Configure Workflow Files
-
-Edit `.github/workflows/deploy-qa.yml` (or create it):
-
-```yaml
-name: Deploy to QA
-
-on:
-  push:
-    branches:
-      - develop  # Change to your branch
-
-  workflow_dispatch:  # Allow manual trigger
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment: qa
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-
-      - name: Build and package
-        run: |
-          pnpm saas build
-
-      - name: Upload to S3
-        run: |
-          # Package artifacts
-          zip -r deployment.zip . -x "node_modules/*" -x ".git/*"
-          
-          # Upload to S3
-          aws s3 cp deployment.zip s3://${{ secrets.SB_CI_ARTIFACTS_BUCKET }}/
-```
-
-### 3.4 Create Workflows for Other Environments
-
-Duplicate and modify for staging/production:
-
-- `.github/workflows/deploy-staging.yml` → triggers on `staging` branch
-- `.github/workflows/deploy-production.yml` → triggers on `main` branch
+| `SB_CI_ARTIFACTS_BUCKET` | Your artifacts bucket name from Step 3 |
 
 </TabItem>
 <TabItem value="bitbucket" label="Bitbucket Pipelines">
 
-### 3.1 Enable Pipelines
+### 4.1 Enable Pipelines and OIDC
 
 1. Go to your Bitbucket repository
 2. Navigate to **Repository settings → Pipelines → Settings**
-3. Enable Bitbucket Pipelines
+3. Enable **Bitbucket Pipelines**
+4. Enable **OpenID Connect** (required for OIDC token issuance)
 
-### 3.2 Add Repository Variables
+### 4.2 Add Repository Variables
 
 1. Go to **Repository settings → Pipelines → Repository variables**
 2. Add these variables:
 
 | Variable | Value | Secured |
 |----------|-------|---------|
-| `AWS_ACCESS_KEY_ID` | Your `external-ci` access key ID | ✅ |
-| `AWS_SECRET_ACCESS_KEY` | Your `external-ci` secret access key | ✅ |
 | `AWS_DEFAULT_REGION` | Your AWS region | ❌ |
+| `SB_CI_ROLE_ARN` | The role ARN from Step 3 | ✅ |
 
-### 3.3 Configure Deployment Environments
+:::info Removed variables
+If you previously had `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, delete them — they are no longer used.
+:::
+
+### 4.3 Configure Deployment Environments
 
 1. Go to **Repository settings → Pipelines → Deployments**
 2. Add deployment environments (qa, staging, production)
@@ -215,69 +177,14 @@ Duplicate and modify for staging/production:
 | Variable | Value |
 |----------|-------|
 | `SB_CI_ARTIFACTS_BUCKET` | Your artifacts bucket name |
-| `SB_DEPLOY_ENVIRONMENT_NAME` | Full environment name (e.g., `saas-qa`) |
-
-### 3.4 Configure bitbucket-pipelines.yml
-
-```yaml
-image: node:18
-
-definitions:
-  caches:
-    pnpm: $HOME/.pnpm-store
-
-  steps:
-    - step: &build
-        name: Build
-        caches:
-          - pnpm
-        script:
-          - npm install -g pnpm
-          - pnpm install --frozen-lockfile
-          - pnpm saas build
-
-    - step: &deploy
-        name: Deploy
-        caches:
-          - pnpm
-        script:
-          - npm install -g pnpm
-          - pnpm install --frozen-lockfile
-          - pipe: atlassian/aws-s3-deploy:1.1.0
-            variables:
-              AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-              AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-              AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-              S3_BUCKET: $SB_CI_ARTIFACTS_BUCKET
-              LOCAL_PATH: '.'
-
-pipelines:
-  branches:
-    develop:
-      - step: *build
-      - step:
-          <<: *deploy
-          deployment: qa
-
-    staging:
-      - step: *build
-      - step:
-          <<: *deploy
-          deployment: staging
-
-    main:
-      - step: *build
-      - step:
-          <<: *deploy
-          deployment: production
-```
+| `SB_DEPLOY_ENVIRONMENT_NAME` | Full environment name (e.g. `saas-qa`) |
 
 </TabItem>
 </Tabs>
 
 ---
 
-## Step 4: Test the Pipeline
+## Step 5: Test the Pipeline
 
 1. Make a small change to your code
 2. Commit and push to the configured branch
@@ -301,8 +208,6 @@ Recommended setup:
 | `staging` | staging | ✅ On every push |
 | `main` | production | ⚠️ Manual approval recommended |
 
-For production, consider adding a manual approval step in your workflow.
-
 ---
 
 ## Monitoring Deployments
@@ -321,11 +226,18 @@ For production, consider adding a manual approval step in your workflow.
 
 ## Troubleshooting
 
+### "Not authorized to perform sts:AssumeRoleWithWebIdentity"
+
+- Verify `SB_CI_ROLE_ARN` matches the CloudFormation output exactly
+- Check that `SB_CI_REPO` in your `.env` matches your actual repository slug/UUID
+- For GitHub: ensure `permissions: id-token: write` is set in the workflow
+- For Bitbucket: ensure `oidc: true` is set on the deploy step and OpenID Connect is enabled in Pipelines settings
+
 ### "Access Denied" when uploading to S3
 
-- Verify `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are correct
-- Ensure `SB_CI_ARTIFACTS_BUCKET` matches the actual bucket name
-- Check that the `external-ci` user has correct permissions
+- Verify `SB_CI_ARTIFACTS_BUCKET` matches the actual bucket name
+- Check CloudFormation for the `{projectEnvName}-ciRoleArn` output to confirm the role was deployed
+- Confirm the CDK stack was redeployed after adding OIDC config to `.env`
 
 ### Pipeline not triggering in AWS
 
@@ -336,12 +248,6 @@ For production, consider adding a manual approval step in your workflow.
 ### Builds failing with Docker rate limits
 
 - Ensure [Docker Hub is configured](/aws/cicd/setup-docker-hub)
-
-### Deployment succeeds but app not updating
-
-- Check ECS service events for task startup issues
-- Verify the new task definition was deployed
-- Check CloudWatch logs for application errors
 
 ---
 
