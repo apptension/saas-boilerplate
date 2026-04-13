@@ -23,6 +23,9 @@ declare const process: {
     SB_TOOLS_HOSTED_ZONE_ID: string;
     SB_TOOLS_DOMAIN_VERSION_MATRIX: string;
     SB_CI_MODE: string;
+    SB_CI_PROVIDER: string;
+    SB_CI_REPO: string;
+    SB_CI_BITBUCKET_WORKSPACE_UUID: string;
     // AI Assistant configuration
     SB_AI_ENABLED: string;
     SB_MCP_SERVER_URL: string;
@@ -87,8 +90,16 @@ export enum CI_MODE {
   SIMPLE = 'simple',
 }
 
+export enum CI_PROVIDER {
+  GITHUB = 'github',
+  BITBUCKET = 'bitbucket',
+}
+
 interface CIConfig {
   mode: CI_MODE;
+  provider: CI_PROVIDER;
+  repo: string;
+  bitbucketWorkspaceUUID?: string;
 }
 
 export interface EnvironmentSettings {
@@ -121,6 +132,29 @@ export interface EnvConfigFileContent {
 }
 
 async function readConfig(): Promise<ConfigFileContent> {
+  const rawProvider = process.env.SB_CI_PROVIDER;
+
+  if (!rawProvider) {
+    throw new Error('SB_CI_PROVIDER env variable must be set (github or bitbucket)');
+  }
+
+  const validProviders = Object.values(CI_PROVIDER) as string[];
+  if (!validProviders.includes(rawProvider)) {
+    throw new Error(`SB_CI_PROVIDER must be "github" or "bitbucket", got: "${rawProvider}"`);
+  }
+
+  const provider = rawProvider as CI_PROVIDER; // safe: validated above
+
+  const repo = process.env.SB_CI_REPO;
+  if (!repo) {
+    throw new Error('SB_CI_REPO env variable must be set');
+  }
+
+  const bitbucketWorkspaceUUID = process.env.SB_CI_BITBUCKET_WORKSPACE_UUID;
+  if (provider === CI_PROVIDER.BITBUCKET && !bitbucketWorkspaceUUID) {
+    throw new Error('SB_CI_BITBUCKET_WORKSPACE_UUID must be set when SB_CI_PROVIDER=bitbucket');
+  }
+
   return {
     webAppConfig: {
       envVariables: {},
@@ -141,6 +175,9 @@ async function readConfig(): Promise<ConfigFileContent> {
         process.env.SB_CI_MODE === CI_MODE.SIMPLE
           ? CI_MODE.SIMPLE
           : CI_MODE.PARALLEL,
+      provider,
+      repo,
+      ...(bitbucketWorkspaceUUID ? { bitbucketWorkspaceUUID } : {}),
     },
   };
 }
