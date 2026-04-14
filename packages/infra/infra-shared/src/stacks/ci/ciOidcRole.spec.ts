@@ -134,6 +134,10 @@ describe('CiOidcRole - Bitbucket', () => {
                 [`api.bitbucket.org/2.0/workspaces/${workspaceUUID}/pipelines-config/identity/oidc:sub`]:
                   `${repoUUID}:*`,
               },
+              StringEquals: {
+                [`api.bitbucket.org/2.0/workspaces/${workspaceUUID}/pipelines-config/identity/oidc:aud`]:
+                  `ari:cloud:bitbucket::workspace/${workspaceUUID}`,
+              },
             },
           },
         ],

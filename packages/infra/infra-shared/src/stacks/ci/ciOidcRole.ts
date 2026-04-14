@@ -52,6 +52,9 @@ export class CiOidcRole extends Construct {
         StringLike: {
           [`${oidcHostname}:sub`]: `${repo}:*`,
         },
+        StringEquals: {
+          [`${oidcHostname}:aud`]: `ari:cloud:bitbucket::workspace/${workspaceUUID}`,
+        },
       };
     }
 
