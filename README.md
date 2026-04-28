@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/apptension-saas-boilerplate-badge.png)](https://mseep.ai/app/apptension-saas-boilerplate)
+
 <p align="center">
   <img src="./.github/images/saas-bp-logo.png" alt="SaaS Boilerplate powered by Apptension">
 </p>
