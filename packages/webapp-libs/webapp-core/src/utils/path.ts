@@ -64,6 +64,23 @@ export const getTenantPathHelper = (p: string) => getLocalePath(removeInitialSla
  *     )
  * }
  * ```
+ *
+ * @example
+ * When mounting a nested route group as a parent route
+ *
+ * Use `getMountPath()` to get the segment with a wildcard suffix (e.g. `'example/*'`),
+ * suitable for use as the `path` prop on a parent `<Route>` whose element renders
+ * its own nested `<Routes>` tree. Use `getRelativeUrl(key)` for leaf routes that
+ * map directly to a component without further child routes.
+ *
+ * ```tsx showLineNumbers
+ * import { Route, Routes } from 'react-router-dom';
+ *
+ * <Routes>
+ *   <Route path={RoutesConfig.example.getMountPath()} element={<Example />} />
+ *   <Route path={RoutesConfig.crudDemoItem.getRelativeUrl('details')} element={<Details />} />
+ * </Routes>
+ * ```
  */
 export const nestedPath = <T extends object>(root: string, nestedRoutes: T) => {
   const absoluteUrlsMapper = (value: any) => {
@@ -82,17 +99,21 @@ export const nestedPath = <T extends object>(root: string, nestedRoutes: T) => {
 
   return {
     ...paths,
-    getRelativeUrl: (route: keyof T) => nestedRoutes[route],
+    getRelativeUrl: <K extends keyof T>(route: K): T[K] => nestedRoutes[route],
     getLocalePath: assignLocalePathFn<T>(getLocalePath, paths),
     getTenantPath: assignLocalePathFn<T>(getTenantPathHelper, paths),
+    getMountPath: () => `${root}/*`,
   };
 };
 
 const mapRoot = <N>(root: string, obj: N): N => {
   const override: Partial<N> = {};
   for (const key in obj) {
-    if (typeof obj[key] === 'string') {
-      override[key] = (root + '/' + obj[key]) as N[Extract<keyof N, string>];
+    const value = obj[key];
+    if (typeof value === 'string') {
+      override[key] = (root + '/' + value) as N[Extract<keyof N, string>];
+    } else if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+      override[key] = mapRoot(root, value) as N[Extract<keyof N, string>];
     }
   }
   return {
