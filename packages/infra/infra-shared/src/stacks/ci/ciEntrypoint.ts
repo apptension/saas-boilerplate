@@ -30,7 +30,7 @@ export class CiEntrypoint extends Construct {
     });
 
     const externalCiUser = this.retrieveExternalCIUser();
-    this.artifactsBucket.grantWrite(externalCiUser);
+    this.artifactsBucket.grantWrite(new iam.ArnPrincipal(externalCiUser.userArn));
 
     const trail = new cloudtrail.Trail(this, 'CloudTrail');
     trail.addS3EventSelector(
