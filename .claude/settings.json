@@ -1,0 +1,10 @@
+{
+  "extraKnownMarketplaces": {
+    "apptension-dev": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/apptension/toolkit-dev.git"
+      }
+    }
+  }
+}
