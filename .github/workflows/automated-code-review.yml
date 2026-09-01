@@ -43,14 +43,14 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
       - name: Compute PR diff
         run: |
-          git diff "${{ github.event.pull_request.base.sha }}"..."${{ github.event.pull_request.head.sha }}" > pr.diff
+          git diff "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}" > pr.diff
           echo "Diff size: $(wc -l < pr.diff) lines"
 
       - name: Run Codex review
@@ -59,7 +59,6 @@ jobs:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt-file: .github/workflows/prompts/codex-review.md
           output-file: codex-review-output.md
-          permission-profile: ":read-only"
           safety-strategy: drop-sudo
 
       - uses: actions/upload-artifact@v4
@@ -76,7 +75,7 @@ jobs:
     permissions:
       issues: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v4
         with:
