@@ -1,6 +1,6 @@
 name: "\U0001F4DA Documentation"
 description: Suggest a change or new page to be added to the documentation of the SaaS Boilerplate
-labels: [documentation]
+labels: [docs]
 body:
   - type: markdown
     attributes:
