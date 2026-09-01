@@ -38,7 +38,7 @@ jobs:
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v7.0.0
-        if: env.SONAR_ORGANIZATION != ''
+        if: false  # disabled — SONAR_TOKEN broken on SonarCloud's side, see #705
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
