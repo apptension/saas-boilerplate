@@ -125,3 +125,39 @@ jobs:
               });
               core.info(`Created review comment for ${headSha}.`);
             }
+
+  automated-code-review:
+    name: Automated Code Review
+    needs: [validate-reviewer, codex-analysis, post-review]
+    if: always()
+    runs-on: ubuntu-24.04
+    permissions: {}
+    steps:
+      - name: Check results
+        env:
+          VALIDATE_RESULT: ${{ needs.validate-reviewer.result }}
+          PROVIDER: ${{ needs.validate-reviewer.outputs.provider }}
+          ANALYSIS_RESULT: ${{ needs.codex-analysis.result }}
+          POST_RESULT: ${{ needs.post-review.result }}
+        run: |
+          if [ "$VALIDATE_RESULT" != "success" ]; then
+            echo "::error::AUTOMATED_REVIEWER validation failed. See the validate-reviewer job for details."
+            exit 1
+          fi
+
+          if [ "$PROVIDER" != "codex" ]; then
+            echo "::error::AUTOMATED_REVIEWER is set to '$PROVIDER', which has no review job wired yet. Only 'codex' is implemented."
+            exit 1
+          fi
+
+          if [ "$ANALYSIS_RESULT" != "success" ] && [ "$ANALYSIS_RESULT" != "skipped" ]; then
+            echo "::error::Codex analysis job failed."
+            exit 1
+          fi
+
+          if [ "$POST_RESULT" != "success" ] && [ "$POST_RESULT" != "skipped" ]; then
+            echo "::error::Posting the review comment failed."
+            exit 1
+          fi
+
+          echo "Automated code review passed."
