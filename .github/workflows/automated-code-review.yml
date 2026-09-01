@@ -1,0 +1,32 @@
+name: Automated code review
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: automated-code-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate-reviewer:
+    name: Validate reviewer selection
+    runs-on: ubuntu-24.04
+    permissions: {}
+    outputs:
+      provider: ${{ steps.validate.outputs.provider }}
+    steps:
+      - name: Validate AUTOMATED_REVIEWER
+        id: validate
+        env:
+          AUTOMATED_REVIEWER: ${{ vars.AUTOMATED_REVIEWER }}
+        run: |
+          if [ -z "$AUTOMATED_REVIEWER" ]; then
+            echo "::error::AUTOMATED_REVIEWER repository variable is not set. Set it to 'claude' or 'codex' in Settings > Secrets and variables > Actions > Variables."
+            exit 1
+          fi
+          if [ "$AUTOMATED_REVIEWER" != "claude" ] && [ "$AUTOMATED_REVIEWER" != "codex" ]; then
+            echo "::error::AUTOMATED_REVIEWER is set to '$AUTOMATED_REVIEWER', which is not supported. Use 'claude' or 'codex'."
+            exit 1
+          fi
+          echo "provider=$AUTOMATED_REVIEWER" >> "$GITHUB_OUTPUT"
