@@ -67,3 +67,61 @@ jobs:
           name: codex-review-output
           path: codex-review-output.md
           retention-days: 1
+
+  post-review:
+    name: Post review comment
+    needs: codex-analysis
+    if: always() && needs.codex-analysis.result == 'success'
+    runs-on: ubuntu-24.04
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: codex-review-output
+          path: codex-review-output
+
+      - name: Post or update review comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const { buildMarker, decideCommentAction } = require(
+              path.join(process.env.GITHUB_WORKSPACE, '.github/workflows/scripts/dedupe-review-comment.js')
+            );
+
+            const headSha = context.payload.pull_request.head.sha;
+            const findings = fs.readFileSync('codex-review-output/codex-review-output.md', 'utf8');
+            const body = `${buildMarker(headSha)}\n## Automated code review (codex)\n\n${findings}`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              per_page: 100,
+            });
+
+            const decision = decideCommentAction(comments, headSha);
+
+            if (decision.action === 'skip') {
+              core.info(`Comment already posted for ${headSha}, skipping.`);
+            } else if (decision.action === 'update') {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: decision.commentId,
+                body,
+              });
+              core.info(`Updated review comment for ${headSha}.`);
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body,
+              });
+              core.info(`Created review comment for ${headSha}.`);
+            }
