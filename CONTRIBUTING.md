@@ -22,6 +22,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 - [I Want To Contribute](#i-want-to-contribute)
 - [Reporting Bugs](#reporting-bugs)
 - [Suggesting Enhancements](#suggesting-enhancements)
+- [Issue Labels](#issue-labels)
 - [Your First Code Contribution](#your-first-code-contribution)
 - [Improving The Documentation](#improving-the-documentation)
 - [Styleguides](#styleguides)
@@ -117,6 +118,20 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/appten
 - **Describe the current behavior** and **explain which behavior you expected to see instead** and why. At this point you can also tell which alternatives do not work for you.
 - You may want to **include screenshots and animated GIFs** which help you demonstrate the steps or point out the part which the suggestion is related to. You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
 - **Explain why this enhancement would be useful** to most SaaS Boilerplate users. You may also want to point out the other projects that solved it better and which could serve as inspiration.
+
+### Issue Labels
+
+Every issue carries exactly one area label, naming the part of the system it touches. A maintainer adds it after you file — you don't need to pick one.
+
+| Label      | Covers                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| `backend`  | `packages/backend`, `packages/workers`                                                                 |
+| `frontend` | `packages/webapp`, `packages/webapp-libs`                                                              |
+| `infra`    | `packages/infra`                                                                                       |
+| `docs`     | Documentation, including `packages/internal/docs`                                                      |
+| `tooling`  | `packages/internal`, `packages/mcp-server`, `packages/contentful`, and repo-level build and CI tooling |
+
+`dependencies`, `javascript` and `python` belong to Dependabot and appear on dependency pull requests, not on issues.
 
 ### Your First Code Contribution
 
