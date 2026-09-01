@@ -30,3 +30,40 @@ jobs:
             exit 1
           fi
           echo "provider=$AUTOMATED_REVIEWER" >> "$GITHUB_OUTPUT"
+
+  codex-analysis:
+    name: Codex analysis
+    needs: validate-reviewer
+    if: >-
+      always() &&
+      needs.validate-reviewer.result == 'success' &&
+      needs.validate-reviewer.outputs.provider == 'codex' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Compute PR diff
+        run: |
+          git diff "${{ github.event.pull_request.base.sha }}"..."${{ github.event.pull_request.head.sha }}" > pr.diff
+          echo "Diff size: $(wc -l < pr.diff) lines"
+
+      - name: Run Codex review
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: .github/workflows/prompts/codex-review.md
+          output-file: codex-review-output.md
+          permission-profile: ":read-only"
+          safety-strategy: drop-sudo
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: codex-review-output
+          path: codex-review-output.md
+          retention-days: 1
