@@ -59,6 +59,7 @@ jobs:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt-file: .github/workflows/prompts/codex-review.md
           output-file: codex-review-output.md
+          sandbox: read-only
           safety-strategy: drop-sudo
 
       - uses: actions/upload-artifact@v4
