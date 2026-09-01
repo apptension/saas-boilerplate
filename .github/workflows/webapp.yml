@@ -2,7 +2,8 @@ name: "Webapp"
 
 on:
   push:
-    branches: [ '**' ]
+    branches: [ master ]
+  pull_request:
 
 jobs:
   build:
