@@ -40,6 +40,7 @@ jobs:
       needs.validate-reviewer.outputs.provider == 'codex' &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     permissions:
       contents: read
     steps:
@@ -67,6 +68,7 @@ jobs:
           name: codex-review-output
           path: codex-review-output.md
           retention-days: 1
+          if-no-files-found: error
 
   post-review:
     name: Post review comment
@@ -75,6 +77,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       issues: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
 
