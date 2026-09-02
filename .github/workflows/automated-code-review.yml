@@ -1,0 +1,166 @@
+name: Automated code review
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: automated-code-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate-reviewer:
+    name: Validate reviewer selection
+    runs-on: ubuntu-24.04
+    permissions: {}
+    outputs:
+      provider: ${{ steps.validate.outputs.provider }}
+    steps:
+      - name: Validate AUTOMATED_REVIEWER
+        id: validate
+        env:
+          AUTOMATED_REVIEWER: ${{ vars.AUTOMATED_REVIEWER }}
+        run: |
+          if [ -z "$AUTOMATED_REVIEWER" ]; then
+            echo "::error::AUTOMATED_REVIEWER repository variable is not set. Set it to 'claude' or 'codex' in Settings > Secrets and variables > Actions > Variables."
+            exit 1
+          fi
+          if [ "$AUTOMATED_REVIEWER" != "claude" ] && [ "$AUTOMATED_REVIEWER" != "codex" ]; then
+            echo "::error::AUTOMATED_REVIEWER is set to '$AUTOMATED_REVIEWER', which is not supported. Use 'claude' or 'codex'."
+            exit 1
+          fi
+          echo "provider=$AUTOMATED_REVIEWER" >> "$GITHUB_OUTPUT"
+
+  codex-analysis:
+    name: Codex analysis
+    needs: validate-reviewer
+    if: >-
+      always() &&
+      needs.validate-reviewer.result == 'success' &&
+      needs.validate-reviewer.outputs.provider == 'codex' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Compute PR diff
+        run: |
+          git diff "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}" > pr.diff
+          echo "Diff size: $(wc -l < pr.diff) lines"
+
+      - name: Run Codex review
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: .github/workflows/prompts/codex-review.md
+          output-file: codex-review-output.md
+          sandbox: read-only
+          safety-strategy: drop-sudo
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: codex-review-output
+          path: codex-review-output.md
+          retention-days: 1
+          if-no-files-found: error
+
+  post-review:
+    name: Post review comment
+    needs: codex-analysis
+    if: always() && needs.codex-analysis.result == 'success'
+    runs-on: ubuntu-24.04
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: codex-review-output
+          path: codex-review-output
+
+      - name: Post or update review comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const { buildMarker, decideCommentAction } = require(
+              path.join(process.env.GITHUB_WORKSPACE, '.github/workflows/scripts/dedupe-review-comment.js')
+            );
+
+            const headSha = context.payload.pull_request.head.sha;
+            const findings = fs.readFileSync('codex-review-output/codex-review-output.md', 'utf8');
+            const body = `${buildMarker(headSha)}\n## Automated code review (codex)\n\n${findings}`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              per_page: 100,
+            });
+
+            const decision = decideCommentAction(comments, headSha);
+
+            if (decision.action === 'skip') {
+              core.info(`Comment already posted for ${headSha}, skipping.`);
+            } else if (decision.action === 'update') {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: decision.commentId,
+                body,
+              });
+              core.info(`Updated review comment for ${headSha}.`);
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body,
+              });
+              core.info(`Created review comment for ${headSha}.`);
+            }
+
+  automated-code-review:
+    name: Automated Code Review
+    needs: [validate-reviewer, codex-analysis, post-review]
+    if: always()
+    runs-on: ubuntu-24.04
+    permissions: {}
+    steps:
+      - name: Check results
+        env:
+          VALIDATE_RESULT: ${{ needs.validate-reviewer.result }}
+          PROVIDER: ${{ needs.validate-reviewer.outputs.provider }}
+          ANALYSIS_RESULT: ${{ needs.codex-analysis.result }}
+          POST_RESULT: ${{ needs.post-review.result }}
+        run: |
+          if [ "$VALIDATE_RESULT" != "success" ]; then
+            echo "::error::AUTOMATED_REVIEWER validation failed. See the validate-reviewer job for details."
+            exit 1
+          fi
+
+          if [ "$PROVIDER" != "codex" ]; then
+            echo "::error::AUTOMATED_REVIEWER is set to '$PROVIDER', which has no review job wired yet. Only 'codex' is implemented."
+            exit 1
+          fi
+
+          if [ "$ANALYSIS_RESULT" != "success" ] && [ "$ANALYSIS_RESULT" != "skipped" ]; then
+            echo "::error::Codex analysis job failed."
+            exit 1
+          fi
+
+          if [ "$POST_RESULT" != "success" ] && [ "$POST_RESULT" != "skipped" ]; then
+            echo "::error::Posting the review comment failed."
+            exit 1
+          fi
+
+          echo "Automated code review passed."

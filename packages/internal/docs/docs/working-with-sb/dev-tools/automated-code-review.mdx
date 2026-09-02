@@ -1,0 +1,71 @@
+---
+title: Automated code review
+description: Configure or remove the automated PR review GitHub Action
+---
+
+Every pull request opened from a branch in this repository triggers
+`.github/workflows/automated-code-review.yml`, a GitHub Action that posts a
+first-pass code review comment before a human looks at the change. It is
+gated by one stably-named check, `Automated Code Review`, so a maintainer
+can require it in branch protection without editing that rule again if the
+review provider ever changes.
+
+**This workflow ships enabled and unconfigured.** Until you set the two
+values below, every pull request shows a failing `Automated Code Review`
+check with an error naming the missing repository variable — deliberate,
+so a misconfigured reviewer never fails silently. If you forked this
+repository and don't want the workflow, see [Feature removal](#feature-removal)
+below rather than leaving it red.
+
+## Prerequisites
+
+You will need an **OpenAI API key** scoped to this workflow. See the
+[OpenAI platform docs](https://platform.openai.com/docs) for how to create
+one.
+
+## Setting up automated review
+
+##### Add the API key as a repository secret
+
+In your repository on GitHub: **Settings → Secrets and variables → Actions
+→ Secrets → New repository secret**.
+
+| Name | Value |
+|---|---|
+| `OPENAI_API_KEY` | Your OpenAI API key |
+
+##### Select the review provider
+
+In the same place, under the **Variables** tab: **New repository variable**.
+
+| Name | Value |
+|---|---|
+| `AUTOMATED_REVIEWER` | `codex` |
+
+`codex` is the only provider with a working review job today. `claude` is
+accepted by the variable's own validation but has no analysis job wired
+yet — selecting it fails the check with a named error rather than silently
+doing nothing.
+
+:::tip
+
+Review only runs for pull requests opened from a branch in this same
+repository, not from forks — see the workflow's own comments and
+[issue #707](https://github.com/apptension/saas-boilerplate/issues/707) for
+why. A fork PR still shows the `Automated Code Review` check; it just
+won't carry a review comment.
+
+:::
+
+## Feature removal
+
+- Delete `.github/workflows/automated-code-review.yml`.
+- Delete `.github/workflows/prompts/codex-review.md`.
+- Delete `.github/workflows/scripts/dedupe-review-comment.js` and its test
+  file in the same directory.
+- Remove the `OPENAI_API_KEY` secret and `AUTOMATED_REVIEWER` variable from
+  **Settings → Secrets and variables → Actions**, if you had set them.
+- If you enabled "Require approval for outside collaborators" under
+  **Settings → Actions → General → Fork pull request workflows**
+  specifically for this workflow, you can leave or revert that setting
+  independently — it isn't specific to automated review.
