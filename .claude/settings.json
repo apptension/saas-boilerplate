@@ -1,9 +1,9 @@
 {
   "extraKnownMarketplaces": {
-    "apptension-dev": {
+    "apptension-sdlc": {
       "source": {
         "source": "git",
-        "url": "https://github.com/apptension/toolkit-dev.git"
+        "url": "https://github.com/apptension/apptension-sdlc.git"
       }
     }
   }
