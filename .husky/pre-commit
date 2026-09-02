@@ -1,8 +1,9 @@
 #!/bin/sh
+set -e
 
 [ -n "$CI" ] && exit 0
 
-. "$(dirname "$0")/_/husky.sh"
+[ -d node_modules ] || { echo "node_modules is missing - run pnpm install"; exit 1; }
 
 # Fix issue with @nx/enforce-module-boundaries eslint plugin throwing error without nx graph
 if [ ! -d "$(dirname "$0")/../.nx" ]; then
