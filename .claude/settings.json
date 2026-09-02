@@ -2,7 +2,6 @@
   "enabledPlugins": {
     "apptension-sdlc@apptension-sdlc": true,
     "apptension-review@apptension-sdlc": true,
-    "apptension-frontend-craft@apptension-sdlc": true,
     "apptension-e2e-testing@apptension-sdlc": true,
     "superpowers@apptension-sdlc": true
   },
