@@ -6,7 +6,7 @@ ARG SB_PULL_THROUGH_CACHE_REPOSITORY=''
 
 FROM ${SB_MIRROR_REPOSITORY}segment/chamber:2 AS chamber
 
-FROM ${SB_PULL_THROUGH_CACHE_REPOSITORY}python:3.11-slim-bullseye
+FROM ${SB_PULL_THROUGH_CACHE_REPOSITORY}python:3.11-slim-bookworm
 
 ENV APP_PATH=/app
 ENV SRC_CORE_PATH=packages/internal/core

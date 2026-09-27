@@ -9,7 +9,7 @@ FROM ${SB_MIRROR_REPOSITORY}segment/chamber:2 AS chamber
 ##
 # App build stage
 ##
-FROM ${SB_PULL_THROUGH_CACHE_REPOSITORY}python:3.11-slim-bullseye AS backend_build
+FROM ${SB_PULL_THROUGH_CACHE_REPOSITORY}python:3.11-slim-bookworm AS backend_build
 
 ENV PYTHONUNBUFFERED=1
 ENV PIP_NO_CACHE_DIR=off
