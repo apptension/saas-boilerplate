@@ -50,7 +50,7 @@ RUN pnpm nx run webapp-emails:build
 ##
 # App build stage
 ##
-FROM python:3.11-slim-bullseye AS backend_build
+FROM python:3.11-slim-bookworm AS backend_build
 
 ENV PYTHONUNBUFFERED=1
 ENV PIP_NO_CACHE_DIR=off
