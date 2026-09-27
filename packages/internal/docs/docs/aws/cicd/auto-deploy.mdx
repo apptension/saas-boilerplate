@@ -46,33 +46,29 @@ Before configuring auto-deploy:
 
 ---
 
-## Step 1: Configure OIDC in your `.env`
+## Step 1: Check the CI Provider Variables
 
-Add the following variables to your `.env` file:
+The CI role trusts only the repository set in `SB_CI_PROVIDER` and `SB_CI_REPO` (plus `SB_CI_BITBUCKET_WORKSPACE_UUID` for Bitbucket). You set them with `pnpm saas aws set-var` in [Create Environment Stage](/aws/deploy-to-aws/create-env-stage-in-repo#ci-provider-oidc).
+
+If you skipped them, or are switching CI platforms or repositories, set them now:
 
 <Tabs>
 <TabItem value="github" label="GitHub Actions">
 
 ```bash
-# Which CI provider to use
-SB_CI_PROVIDER=github
-
-# Your GitHub repository in org/repo format
-SB_CI_REPO=my-org/my-repo
+pnpm saas aws set-env qa
+pnpm saas aws set-var SB_CI_PROVIDER github
+pnpm saas aws set-var SB_CI_REPO my-org/my-repo
 ```
 
 </TabItem>
 <TabItem value="bitbucket" label="Bitbucket Pipelines">
 
 ```bash
-# Which CI provider to use
-SB_CI_PROVIDER=bitbucket
-
-# Your Bitbucket repository UUID (found in Repository settings → Repository details)
-SB_CI_REPO={xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}
-
-# Your Bitbucket workspace UUID (found in Workspace settings → General)
-SB_CI_BITBUCKET_WORKSPACE_UUID={yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy}
+pnpm saas aws set-env qa
+pnpm saas aws set-var SB_CI_PROVIDER bitbucket
+pnpm saas aws set-var SB_CI_REPO '{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}'
+pnpm saas aws set-var SB_CI_BITBUCKET_WORKSPACE_UUID '{yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy}'
 ```
 
 </TabItem>
@@ -80,13 +76,13 @@ SB_CI_BITBUCKET_WORKSPACE_UUID={yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy}
 
 ---
 
-## Step 2: Deploy the CDK infrastructure
+## Step 2: Deploy the CI Stack
 
-Run CDK deploy. The OIDC identity provider and IAM role are provisioned automatically:
+The CI stack creates the OIDC identity provider and the IAM role. It is part of the full [infrastructure deploy](/aws/deploy-to-aws/deploy-infrastructure). After changing any of the variables above, redeploy it:
 
 ```bash
 pnpm saas aws set-env qa
-pnpm saas cdk deploy
+pnpm saas infra deploy ci
 ```
 
 ---
@@ -229,7 +225,7 @@ Recommended setup:
 ### "Not authorized to perform sts:AssumeRoleWithWebIdentity"
 
 - Verify `SB_CI_ROLE_ARN` matches the CloudFormation output exactly
-- Check that `SB_CI_REPO` in your `.env` matches your actual repository slug/UUID
+- Check that `SB_CI_REPO` matches your actual repository slug/UUID (`pnpm saas aws set-var SB_CI_REPO ...`)
 - For GitHub: ensure `permissions: id-token: write` is set in the workflow
 - For Bitbucket: ensure `oidc: true` is set on the deploy step and OpenID Connect is enabled in Pipelines settings
 
@@ -237,7 +233,7 @@ Recommended setup:
 
 - Verify `SB_CI_ARTIFACTS_BUCKET` matches the actual bucket name
 - Check CloudFormation for the `{projectEnvName}-ciRoleArn` output to confirm the role was deployed
-- Confirm the CDK stack was redeployed after adding OIDC config to `.env`
+- Confirm the CI stack was redeployed (`pnpm saas infra deploy ci`) after setting the OIDC variables
 
 ### Pipeline not triggering in AWS
 
