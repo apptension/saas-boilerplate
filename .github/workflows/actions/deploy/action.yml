@@ -7,6 +7,9 @@ inputs:
     default: "production"
   artifacts-s3-bucket:
     required: true
+  role-arn:
+    required: true
+    description: "ARN of the IAM role to assume via OIDC"
 
 runs:
   using: "composite"
@@ -15,6 +18,12 @@ runs:
       with:
         fetch-depth: 0
         fetch-tags: 'true'
+
+    - name: Configure AWS credentials via OIDC
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ inputs.role-arn }}
+        aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
     - name: Set VERSION in environment
       shell: bash

@@ -4,6 +4,8 @@ description: Initialize your deployment environment in AWS
 ---
 
 import ProjectName from '../../shared/components/ProjectName.component';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Step 3: Create Environment Stage
 
@@ -156,6 +158,40 @@ pnpm saas aws set-var SB_DOMAIN_DOCS docs.qa.example.com
 pnpm saas aws set-var SB_DOMAIN_FLOWER flower.qa.example.com
 ```
 
+### CI Provider (OIDC)
+
+Your CI platform authenticates to AWS with OIDC, so no long-lived AWS keys are stored. The infrastructure deploy creates an OIDC identity provider and an IAM role that trusts only the repository you set here.
+
+<Tabs>
+<TabItem value="github" label="GitHub Actions">
+
+```bash
+pnpm saas aws set-var SB_CI_PROVIDER github
+
+# Your GitHub repository in org/repo format
+pnpm saas aws set-var SB_CI_REPO my-org/my-repo
+```
+
+</TabItem>
+<TabItem value="bitbucket" label="Bitbucket Pipelines">
+
+```bash
+pnpm saas aws set-var SB_CI_PROVIDER bitbucket
+
+# Repository UUID, with braces (Repository settings → Repository details)
+pnpm saas aws set-var SB_CI_REPO '{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}'
+
+# Workspace UUID, with braces (Workspace settings → General)
+pnpm saas aws set-var SB_CI_BITBUCKET_WORKSPACE_UUID '{yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy}'
+```
+
+</TabItem>
+</Tabs>
+
+:::caution Required for deployment
+The infrastructure deploy fails if `SB_CI_PROVIDER` or `SB_CI_REPO` is missing, or if `SB_CI_BITBUCKET_WORKSPACE_UUID` is missing when the provider is `bitbucket`.
+:::
+
 ---
 
 ## Step 3.5: Configure Optional Settings
@@ -234,6 +270,10 @@ pnpm saas aws set-var SB_DOMAIN_CDN cdn.qa.example.com
 pnpm saas aws set-var SB_DOMAIN_DOCS docs.qa.example.com
 pnpm saas aws set-var SB_DOMAIN_FLOWER flower.qa.example.com
 
+# Required: CI provider for OIDC (GitHub example)
+pnpm saas aws set-var SB_CI_PROVIDER github
+pnpm saas aws set-var SB_CI_REPO my-org/my-repo
+
 # Recommended: Protect non-production environments
 pnpm saas aws set-var SB_BASIC_AUTH demo:secretpassword
 
@@ -254,6 +294,9 @@ pnpm saas aws set-var SB_CI_MODE simple
 | `SB_DOMAIN_API` | ✅ | Backend API URL | `api.qa.example.com` |
 | `SB_DOMAIN_ADMIN_PANEL` | ✅ | Admin panel URL | `admin.qa.example.com` |
 | `SB_DOMAIN_CDN` | ✅ | CDN URL | `cdn.qa.example.com` |
+| `SB_CI_PROVIDER` | ✅ | CI platform used for OIDC | `github` or `bitbucket` |
+| `SB_CI_REPO` | ✅ | Repository trusted by the CI role | `my-org/my-repo` or `{repo-uuid}` |
+| `SB_CI_BITBUCKET_WORKSPACE_UUID` | Bitbucket only | Bitbucket workspace UUID | `{workspace-uuid}` |
 | `SB_DOMAIN_DOCS` | Optional | Documentation URL | `docs.qa.example.com` |
 | `SB_DOMAIN_FLOWER` | Optional | Celery monitoring URL | `flower.qa.example.com` |
 | `SB_BASIC_AUTH` | Optional | HTTP basic auth | `user:pass` |
@@ -296,6 +339,9 @@ Check that you have parameters for:
 - [ ] `SB_DOMAIN_API`
 - [ ] `SB_DOMAIN_ADMIN_PANEL`
 - [ ] `SB_DOMAIN_CDN`
+- [ ] `SB_CI_PROVIDER`
+- [ ] `SB_CI_REPO`
+- [ ] `SB_CI_BITBUCKET_WORKSPACE_UUID` (Bitbucket only)
 
 ---
 

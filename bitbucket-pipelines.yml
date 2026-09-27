@@ -70,12 +70,16 @@ definitions:
     - step: &deploy-current-branch
         name: Deploy environment
         trigger: manual
+        oidc: true
         clone:
           depth: full
         script:
           - *setupAwsCli
           - sudo apt-get install zip
           - |
+            export AWS_ROLE_ARN="$SB_CI_ROLE_ARN"
+            export AWS_WEB_IDENTITY_TOKEN_FILE="$BITBUCKET_STEP_OIDC_TOKEN"
+            export AWS_ROLE_SESSION_NAME="bitbucket-ci"
             app_version=$(git describe --tags --first-parent --abbrev=11 --long --dirty --always)
             echo "VERSION=${app_version}" >> .env
             artifact_name="${SB_DEPLOY_ENVIRONMENT_NAME}-entrypoint"
