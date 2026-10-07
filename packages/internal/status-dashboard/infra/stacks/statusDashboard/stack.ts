@@ -52,8 +52,13 @@ export class StatusDashboardStack extends Stack {
   ) {
     new s3.Bucket(this, 'VersionMatrixBucket', {
       bucketName: `${props.envSettings.projectName}-status-dashboard`,
+      // The status dashboard fetches versions.json straight from this bucket in the
+      // browser, so objects stay publicly readable through the bucket policy.
+      // Current aws-cdk-lib requires an explicit blockPublicAccess with publicReadAccess
+      // (synth otherwise throws), and the legacy PUBLIC_READ ACL is rejected by S3
+      // buckets with ObjectOwnership=BucketOwnerEnforced, the default since April 2023.
       publicReadAccess: true,
-      accessControl: s3.BucketAccessControl.PUBLIC_READ,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ACLS_ONLY,
       cors: [
         {
           allowedMethods: [s3.HttpMethods.GET, s3.HttpMethods.HEAD],
