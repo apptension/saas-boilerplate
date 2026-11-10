@@ -73,23 +73,39 @@ jobs:
         with:
           projectBaseDir: packages/webapp
 
+  list-libs:
+    runs-on: ubuntu-24.04
+    outputs:
+      webapp-libs: ${{ steps.list.outputs.webapp-libs }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: 22
+
+      - shell: bash
+        run: pnpm install
+          --include-workspace-root
+          --frozen-lockfile
+          --filter=sb
+
+      - name: List webapp libs
+        id: list
+        shell: bash
+        run: |
+          libs=$(pnpm --silent nx show projects --with-target type-check --json \
+            | jq -c 'map(select(startswith("webapp-"))) | sort')
+          echo "Webapp libs: $libs"
+          echo "webapp-libs=$libs" >> "$GITHUB_OUTPUT"
+
   test-lib:
+    needs: list-libs
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         node-version: [ 22, 24 ]
-        webapp-lib-name:
-          - webapp-core
-          - webapp-api-client
-          - webapp-contentful
-          - webapp-crud-demo
-          - webapp-documents
-          - webapp-notifications
-          - webapp-emails
-          - webapp-finances
-          - webapp-generative-ai
-          - webapp-tenants
+        webapp-lib-name: ${{ fromJSON(needs.list-libs.outputs.webapp-libs) }}
     steps:
       - uses: actions/checkout@v3
         with:
