@@ -1,4 +1,5 @@
 import {
+  Connection_Type,
   TenantSecurityCreateSsoConnectionDocument,
   TenantSecuritySsoConnectionsQueryDocument,
 } from '@sb/webapp-api-client';
@@ -123,8 +124,38 @@ describe('AddSSOConnectionModal: Component', () => {
     expect(submitButton).toBeDisabled();
   });
 
-  it.skip('should create connection and show success step when form is valid', async () => {
-    renderComponent();
+  it('should create connection and show success step when form is valid', async () => {
+    const certificate = '-----BEGIN CERTIFICATE-----\ntest\n-----END CERTIFICATE-----';
+    renderComponent(
+      composeMockedQueryResult(TenantSecurityCreateSsoConnectionDocument, {
+        variables: {
+          input: {
+            tenantId: TENANT_ID,
+            name: 'Test Connection',
+            connectionType: Connection_Type.SAML,
+            allowedDomains: JSON.stringify(['example.com']),
+            samlEntityId: 'https://idp.example.com',
+            samlSsoUrl: 'https://idp.example.com/sso',
+            samlCertificate: certificate,
+          },
+        },
+        data: {
+          createSsoConnection: {
+            ssoConnection: {
+              id: 'conn-1',
+              name: 'Test Connection',
+              connectionType: Connection_Type.SAML,
+              status: 'active',
+              spMetadataUrl: 'https://example.com/metadata',
+              spAcsUrl: 'https://example.com/acs',
+              spEntityId: 'https://example.com/entity',
+              oidcCallbackUrl: null,
+              oidcLoginUrl: null,
+            },
+          },
+        },
+      })
+    );
 
     const samlButtons = await screen.findAllByRole('button');
     const samlButton = samlButtons.find((b) => b.textContent?.includes('SAML 2.0'));
@@ -137,7 +168,7 @@ describe('AddSSOConnectionModal: Component', () => {
     await userEvent.type(await screen.findByPlaceholderText(/https:\/\/idp\.example\.com\/saml\/metadata/i), 'https://idp.example.com');
     await userEvent.type(await screen.findByPlaceholderText(/https:\/\/idp\.example\.com\/saml\/sso/i), 'https://idp.example.com/sso');
     const certificateField = await screen.findByLabelText(/X\.509 Certificate/i);
-    await userEvent.type(certificateField, '-----BEGIN CERTIFICATE-----\ntest\n-----END CERTIFICATE-----');
+    await userEvent.type(certificateField, certificate);
 
     const submitButton = await screen.findByRole('button', { name: /Create Connection/i });
     await userEvent.click(submitButton);
