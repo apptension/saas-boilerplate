@@ -141,12 +141,11 @@ describe('PasskeysCard: Component', () => {
   });
 
   describe('delete passkey', () => {
-    it.skip('should call delete and show toast on success', async () => {
+    it('should call delete and show toast on success', async () => {
       const deleteMock = composeMockedQueryResult(TenantSecurityDeleteTenantPasskeyDocument, {
-          variables: { id: 'passkey-1' },
-          data: { deleteTenantPasskey: { ok: true } },
-        }
-      );
+        variables: { id: 'passkey-1', tenantId: TENANT_ID },
+        data: { deleteTenantPasskey: { ok: true } },
+      });
 
       const tenant = tenantFactory({
         id: TENANT_ID,
@@ -156,6 +155,7 @@ describe('PasskeysCard: Component', () => {
         fillCommonQueryWithUser(currentUserFactory({ tenants: [tenant] })),
         createTenantPasskeysMock([createMockPasskey()]),
         deleteMock,
+        createTenantPasskeysMock([]),
       ];
       const routerProps = createMockRouterProps(RoutesConfig.tenant.settings.security, {
         tenantId: TENANT_ID,
@@ -163,11 +163,13 @@ describe('PasskeysCard: Component', () => {
 
       render(<PasskeysCard canManagePasskeys />, { apolloMocks, routerProps });
 
-      await screen.findByText('MacBook Touch ID');
-
-      const passkeyRow = (await screen.findByText('MacBook Touch ID')).closest('div');
-      const deleteButton = passkeyRow ? within(passkeyRow as HTMLElement).getAllByRole('button').pop() : null;
-      if (deleteButton) await userEvent.click(deleteButton);
+      // The delete button has no accessible name, so find it inside the passkey's row.
+      let passkeyRow: HTMLElement | null = await screen.findByText('MacBook Touch ID');
+      while (passkeyRow && within(passkeyRow).queryAllByRole('button').length === 0) {
+        passkeyRow = passkeyRow.parentElement;
+      }
+      if (!passkeyRow) throw new Error('Passkey row not found');
+      await userEvent.click(within(passkeyRow).getByRole('button'));
 
       const toast = await screen.findByTestId('toast-1');
       expect(toast).toHaveTextContent(/deleted successfully/i);
