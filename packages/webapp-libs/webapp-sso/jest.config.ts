@@ -12,7 +12,8 @@ export default {
     },
   },
   moduleNameMapper: {
-    'react-markdown': '<rootDir>/../../../node_modules/react-markdown/react-markdown.min.js',
+    'react-markdown': '<rootDir>/../webapp-core/src/tests/mocks/reactMarkdown.tsx',
+    'remark-gfm': '<rootDir>/../webapp-core/src/tests/mocks/remarkGfm.ts',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageReporters: ['lcov'],

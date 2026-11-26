@@ -8,8 +8,7 @@ module.exports = [
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {
-      '@typescript-eslint/no-empty-function': 'error',
-      '@typescript-eslint/no-extra-semi': 'error',
+      '@typescript-eslint/no-empty-function': ['error', { allow: [] }],
     },
   },
 ];

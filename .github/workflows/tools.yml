@@ -29,3 +29,27 @@ jobs:
       - name: Lint
         shell: bash
         run: pnpm nx run tools:lint
+
+  cli:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [ 22, 24 ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/workflows/actions/setup
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - shell: bash
+        run: pnpm install
+          --include-workspace-root
+          --frozen-lockfile
+          --filter=cli...
+
+      - name: Lint
+        shell: bash
+        run: pnpm nx run cli:lint

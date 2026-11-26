@@ -29,13 +29,17 @@ module.exports = [
           enforceBuildableLibDependency: true,
           allow: [
             '@sb/webapp-core/**',
+            '@sb/webapp-ai-assistant/**',
             '@sb/webapp-api-client/**',
+            '@sb/webapp-backup/**',
             '@sb/webapp-contentful/**',
             '@sb/webapp-crud-demo/**',
             '@sb/webapp-documents/**',
+            '@sb/webapp-emails/**',
             '@sb/webapp-finances/**',
             '@sb/webapp-generative-ai/**',
             '@sb/webapp-notifications/**',
+            '@sb/webapp-sso/**',
             '@sb/webapp-tenants/**',
           ],
           depConstraints: [

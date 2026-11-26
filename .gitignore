@@ -47,7 +47,15 @@ Thumbs.db
 .saas-cli
 .env.prod
 .env.prod.example
+# TypeScript incremental build state, rewritten by the root postinstall
+*.tsbuildinfo
+
 # Nx
 .nx/cache
 .nx/workspace-data
 .worktrees
+
+# Design working files (apptension-sdlc)
+docs/superpowers/specs/
+docs/superpowers/plans/
+.superpowers/

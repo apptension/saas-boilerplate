@@ -50,18 +50,11 @@ pnpm nx run docs:build
 
 ### Webapp Libraries (packages/webapp-libs/)
 
-| Package | Lint | Type-check | Test |
-|---------|------|------------|------|
-| `webapp-core` | ✓ | ✓ | ✓ |
-| `webapp-api-client` | ✓ | ✓ | ✓ |
-| `webapp-contentful` | ✓ | ✓ | ✓ |
-| `webapp-crud-demo` | ✓ | ✓ | ✓ |
-| `webapp-documents` | ✓ | ✓ | ✓ |
-| `webapp-notifications` | ✓ | ✓ | ✓ |
-| `webapp-emails` | ✓ | ✓ | ✓ |
-| `webapp-finances` | ✓ | ✓ | ✓ |
-| `webapp-generative-ai` | ✓ | ✓ | ✓ |
-| `webapp-tenants` | ✓ | ✓ | ✓ |
+Every library in `packages/webapp-libs/` has `lint`, `type-check` and `test` targets, and CI runs all three for each one. They are the `webapp-*` entries of:
+
+```bash
+pnpm nx show projects --with-target type-check
+```
 
 ### Running Multiple Package Checks
 

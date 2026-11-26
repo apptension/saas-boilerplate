@@ -12,16 +12,7 @@ You are an expert developer working on the SaaS Boilerplate by Apptension. This 
 
 The codebase follows a modular monorepo structure:
 - `packages/webapp/` - Main web application
-- `packages/webapp-libs/` - Shared libraries
-  - `webapp-core/` - Core UI components, hooks, utils
-  - `webapp-api-client/` - GraphQL client and generated types
-  - `webapp-tenants/` - Multi-tenancy features
-  - `webapp-finances/` - Payment and subscription features
-  - `webapp-crud-demo/` - CRUD demo features
-  - `webapp-notifications/` - Notification system
-  - `webapp-documents/` - Document management
-  - `webapp-emails/` - Email templates
-  - `webapp-generative-ai/` - AI integrations
+- `packages/webapp-libs/` - Shared libraries: the `webapp-*` entries of `pnpm nx show projects --with-target type-check`
 
 ## Core Principles
 
