@@ -640,13 +640,12 @@ WEB_APP_URL = env("WEB_APP_URL", default="http://localhost:3000")
 API_URL = env("API_URL", default="http://localhost:5001")
 
 # WebAuthn/Passkey Settings
-# SECURITY: Set to True to temporarily skip signature verification for backwards compatibility
-# This should be False in production once all passkeys have been re-registered
-WEBAUTHN_SKIP_SIGNATURE_VERIFICATION = env.bool("WEBAUTHN_SKIP_SIGNATURE_VERIFICATION", default=True)
+# Passkey signatures are always verified; there is no setting to disable that.
 # Allow origin mismatch during development only
 WEBAUTHN_ALLOW_ORIGIN_MISMATCH = env.bool("WEBAUTHN_ALLOW_ORIGIN_MISMATCH", default=IS_LOCAL_DEBUG)
-# Strict sign count verification (detects cloned authenticators)
-WEBAUTHN_STRICT_SIGN_COUNT = env.bool("WEBAUTHN_STRICT_SIGN_COUNT", default=False)
+# Strict sign count verification: reject the login and deactivate the passkey when the
+# authenticator's counter goes backwards (a sign of a cloned authenticator)
+WEBAUTHN_STRICT_SIGN_COUNT = env.bool("WEBAUTHN_STRICT_SIGN_COUNT", default=True)
 
 UPLOADED_DOCUMENT_SIZE_LIMIT = env.int("UPLOADED_DOCUMENT_SIZE_LIMIT", default=10 * 1024 * 1024)
 USER_DOCUMENTS_NUMBER_LIMIT = env.int("USER_DOCUMENTS_NUMBER_LIMIT", default=10)
