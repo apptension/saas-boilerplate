@@ -50,8 +50,8 @@ and seamlessly transition from setup to innovation.
 ### Requirements
 
 - Install [Docker](https://docs.docker.com/get-docker)
-- Install [Node.js](https://nodejs.org/en/download/) version 20 or above (which can be checked by running `node -v`).
-  We recommend Node.js 20+ for optimal compatibility with the latest features. You can use [nvm](https://github.com/nvm-sh/nvm) or [n](https://github.com/tj/n) for managing multiple Node versions installed on a single machine.
+- Install [Node.js](https://nodejs.org/en/download/) version 22.19 or above (which can be checked by running `node -v`).
+  Node.js 22.19+ is required: `pnpm install` refuses older versions. You can use [nvm](https://github.com/nvm-sh/nvm) or [n](https://github.com/tj/n) for managing multiple Node versions installed on a single machine.
 - Install [pnpm](https://pnpm.io/installation) version 9 or above (which can be checked by running `pnpm --version`)
 - (Windows only) Install [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install)
 

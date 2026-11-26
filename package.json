@@ -4,6 +4,9 @@
   "license": "MIT",
   "private": true,
   "packageManager": "pnpm@10.26.2",
+  "engines": {
+    "node": ">=22.19.0"
+  },
   "scripts": {
     "prepare": "husky install",
     "postinstall": "node packages/internal/cli/scripts/build.js"
@@ -41,7 +44,7 @@
     "@types/canvas-confetti": "^1.9.0",
     "@types/gtag.js": "^0.0.19",
     "@types/jest": "^29.5.12",
-    "@types/node": "20.12.12",
+    "@types/node": "22.19.21",
     "@types/ramda": "^0.28.25",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",

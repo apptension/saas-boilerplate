@@ -5,7 +5,7 @@ Before you begin, ensure you have the following installed:
 | Requirement | Version | How to Check       | Installation                                         |
 | ----------- | ------- | ------------------ | ---------------------------------------------------- |
 | **Docker**  | Latest  | `docker --version` | [Install Docker](https://docs.docker.com/get-docker) |
-| **Node.js** | 20+     | `node -v`          | [Install Node.js](https://nodejs.org/en/download/)   |
+| **Node.js** | 22.19+  | `node -v`          | [Install Node.js](https://nodejs.org/en/download/)   |
 | **pnpm**    | 9+      | `pnpm --version`   | [Install pnpm](https://pnpm.io/installation)         |
 
 :::tip Version Managers
@@ -31,13 +31,13 @@ node -v && pnpm --version && docker --version
 **Expected output** (versions may vary):
 
 ```
-v20.10.0
+v22.19.0
 9.1.0
 Docker version 24.0.7, build afdd53b
 ```
 
 :::tip Node.js Version
-We recommend Node.js 20+ for optimal compatibility with React 19, Vite 6, and other modern tools. Node.js 18 may work but is not officially supported.
+Node.js 22.19 or newer is required. The root `package.json` sets this in `engines`, so `pnpm install` fails on older versions. CI tests Node 22 and 24.
 :::
 
 #### Optional Requirements

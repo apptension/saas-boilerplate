@@ -71,7 +71,7 @@ saas-boilerplate/
 ### Package Manager & Commands
 
 - **Package manager:** pnpm 9+
-- **Node version:** 20+ (no .nvmrc, specified in README)
+- **Node version:** 22.19+ (`engines` in the root package.json; no .nvmrc)
 - **Python version:** 3.11
 
 ### Key CLI Commands (via @sb/cli)
@@ -298,7 +298,7 @@ Location: `/README.md` (root)
 
 Checklist:
 - [ ] Clear one-paragraph value proposition
-- [ ] Prerequisites match reality (Node 20+, pnpm 9+, Docker)
+- [ ] Prerequisites match reality (Node 22.19+, pnpm 9+, Docker)
 - [ ] Quickstart with minimal steps (copy/paste friendly)
 - [ ] Environment variables section references `.env.shared` files
 - [ ] Scripts section matches actual CLI commands

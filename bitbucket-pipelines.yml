@@ -32,13 +32,8 @@ definitions:
     sonar: ~/.sonar/cache
 
   scripts:
-    initializeStep: &initializeStep cp .env.test .env
-      && corepack enable
-      && corepack prepare pnpm@10.26.2 --activate
-      && export PNPM_HOME="/root/.local/share/pnpm"
-      && export PATH="$PNPM_HOME:$PATH"
-
-    initializeStepNode22: &initializeStepNode22 curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+    # atlassian/default-image:4 ships Node 18; package.json requires >=22.19.0
+    initializeStep: &initializeStep curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
       && sudo apt-get install -y nodejs
       && cp .env.test .env
       && corepack enable
@@ -478,7 +473,7 @@ definitions:
         name: 'internal/docs: Lint & build'
         image: atlassian/default-image:4
         script:
-          - *initializeStepNode22
+          - *initializeStep
           - *setupAwsCli
           - *setupDockerCompose
           - pnpm install
