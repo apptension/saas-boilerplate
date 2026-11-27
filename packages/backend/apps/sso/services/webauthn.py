@@ -15,12 +15,13 @@ import json
 import logging
 from typing import Dict, Any, Tuple, List
 
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import ec
-from cryptography.hazmat.backends import default_backend
+import cbor2
 from cryptography.exceptions import InvalidSignature
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import ec, padding, rsa
 
 from django.conf import settings
+from django.utils import timezone
 
 from apps.users.models import User
 from apps.sso.models import UserPasskey, WebAuthnChallenge, SSOAuditLog
@@ -37,6 +38,23 @@ COSE_ALG_RS256 = -257  # RSASSA-PKCS1-v1_5 with SHA-256
 COSE_KTY_EC2 = 2  # Elliptic Curve
 COSE_KTY_RSA = 3  # RSA
 
+# COSE elliptic curves
+COSE_CRV_P256 = 1
+
+# Authenticator data layout: rpIdHash (32) | flags (1) | signCount (4) | attested credential data...
+AUTH_DATA_MIN_LENGTH = 37
+AUTH_DATA_FLAG_USER_PRESENT = 0x01
+AUTH_DATA_FLAG_ATTESTED_CREDENTIAL = 0x40
+AAGUID_LENGTH = 16
+
+
+def _b64url_decode(value: str) -> bytes:
+    return base64.urlsafe_b64decode(value + "=" * (-len(value) % 4))
+
+
+def _b64url_encode(value: bytes) -> str:
+    return base64.urlsafe_b64encode(value).rstrip(b"=").decode("ascii")
+
 
 class WebAuthnService:
     """
@@ -46,6 +64,8 @@ class WebAuthnService:
     Security Configuration (settings.py):
     - WEBAUTHN_ALLOW_ORIGIN_MISMATCH: Allow origin mismatch for local development (default: False)
     - WEBAUTHN_STRICT_SIGN_COUNT: Reject authentications with sign count anomalies (default: True)
+
+    The assertion signature is always verified. There is deliberately no setting to turn that off.
     """
 
     # Challenge TTL in seconds
@@ -118,159 +138,162 @@ class WebAuthnService:
         logger.error(f"WebAuthn origin verification failed: expected one of {allowed_origins}, got {actual_origin}")
         raise ValueError("Origin verification failed")
 
-    def _parse_cose_key(self, cose_key_bytes: bytes) -> Dict[str, Any]:
+    def _public_key_from_cose(self, cose_key: Any):
         """
-        Parse a COSE key into its components.
+        Build a public key from a decoded COSE_Key map.
 
-        Args:
-            cose_key_bytes: Raw COSE key bytes
-
-        Returns:
-            Dict with key components (kty, alg, crv, x, y for EC; n, e for RSA)
-        """
-        import cbor2
-
-        try:
-            cose_key = cbor2.loads(cose_key_bytes)
-        except Exception as e:
-            raise ValueError(f"Failed to parse COSE key: {e}")
-
-        return cose_key
-
-    def _verify_signature_ec(
-        self,
-        public_key_bytes: bytes,
-        signature: bytes,
-        data: bytes,
-        algorithm: int,
-    ) -> bool:
-        """
-        Verify an ECDSA signature.
-
-        Args:
-            public_key_bytes: Raw EC public key bytes (COSE format)
-            signature: The signature to verify (raw r||s format)
-            data: The signed data
-            algorithm: COSE algorithm identifier
-
-        Returns:
-            True if signature is valid
+        Supports the algorithms offered at registration: ES256 (P-256) and RS256.
 
         Raises:
-            ValueError: If verification fails
+            ValueError: If the key is malformed or of an unsupported type
+        """
+        if not isinstance(cose_key, dict):
+            raise ValueError("Invalid public key format: expected COSE key map")
+
+        kty = cose_key.get(1)
+        try:
+            if kty == COSE_KTY_EC2 and cose_key.get(-1) == COSE_CRV_P256:
+                x = int.from_bytes(cose_key[-2], "big")
+                y = int.from_bytes(cose_key[-3], "big")
+                return ec.EllipticCurvePublicNumbers(x, y, ec.SECP256R1()).public_key()
+            if kty == COSE_KTY_RSA:
+                n = int.from_bytes(cose_key[-1], "big")
+                e = int.from_bytes(cose_key[-2], "big")
+                return rsa.RSAPublicNumbers(e, n).public_key()
+        except (KeyError, TypeError, ValueError) as e:
+            raise ValueError(f"Invalid public key: {e}")
+
+        raise ValueError(f"Unsupported key type: kty={kty}, alg={cose_key.get(3)}")
+
+    def _load_public_key(self, stored_public_key: str):
+        """
+        Load a passkey's stored public key.
+
+        Two encodings are accepted:
+        - COSE_Key, taken from the attestation at registration (current format)
+        - SubjectPublicKeyInfo DER, as returned by the browser's `getPublicKey()`
+          (passkeys registered before the key was read from the attestation)
+
+        Raises:
+            ValueError: If the stored value is not a usable public key
         """
         try:
-            cose_key = self._parse_cose_key(public_key_bytes)
+            key_bytes = _b64url_decode(stored_public_key or "")
+        except Exception:
+            raise ValueError("Stored public key is not valid base64url")
 
-            # Extract EC key components
-            # COSE key parameter labels: -2 = x, -3 = y
-            x = cose_key.get(-2)
-            y = cose_key.get(-3)
+        if not key_bytes:
+            raise ValueError("Passkey has no stored public key")
 
-            if not x or not y:
-                raise ValueError("Missing EC key coordinates")
+        try:
+            public_key = serialization.load_der_public_key(key_bytes)
+        except Exception:
+            try:
+                cose_key = cbor2.loads(key_bytes)
+            except Exception:
+                raise ValueError("Stored public key is neither COSE nor SubjectPublicKeyInfo")
+            return self._public_key_from_cose(cose_key)
 
-            # Build the public key from x, y coordinates
-            # For P-256 curve (ES256)
-            from cryptography.hazmat.primitives.asymmetric.ec import (
-                EllipticCurvePublicNumbers,
-                SECP256R1,
-            )
-
-            x_int = int.from_bytes(x, "big")
-            y_int = int.from_bytes(y, "big")
-
-            public_numbers = EllipticCurvePublicNumbers(x_int, y_int, SECP256R1())
-            public_key = public_numbers.public_key(default_backend())
-
-            # WebAuthn signature is in raw r||s format, need to convert to DER
-            if len(signature) == 64:
-                r = int.from_bytes(signature[:32], "big")
-                s = int.from_bytes(signature[32:], "big")
-
-                # Convert to DER format
-                from cryptography.hazmat.primitives.asymmetric.utils import encode_dss_signature
-
-                der_signature = encode_dss_signature(r, s)
-            else:
-                # Assume it's already DER encoded
-                der_signature = signature
-
-            # Verify the signature
-            public_key.verify(der_signature, data, ec.ECDSA(hashes.SHA256()))
-
-            return True
-
-        except InvalidSignature:
-            logger.error("WebAuthn EC signature verification failed: invalid signature")
-            raise ValueError("Signature verification failed")
-        except Exception as e:
-            logger.error(f"WebAuthn EC signature verification error: {e}")
-            raise ValueError(f"Signature verification failed: {e}")
+        if isinstance(public_key, ec.EllipticCurvePublicKey) and not isinstance(public_key.curve, ec.SECP256R1):
+            raise ValueError(f"Unsupported elliptic curve: {public_key.curve.name}")
+        return public_key
 
     def _verify_webauthn_signature(
         self,
-        public_key_cose: bytes,
+        stored_public_key: str,
         authenticator_data: bytes,
         client_data_hash: bytes,
         signature: bytes,
     ) -> bool:
         """
-        Verify a WebAuthn authentication signature.
+        Verify a WebAuthn assertion signature.
 
         The signature is computed over: authenticator_data || SHA256(client_data_json)
 
         Args:
-            public_key_cose: The stored public key in COSE format
+            stored_public_key: The passkey's public key as stored (base64url)
             authenticator_data: Raw authenticator data bytes
             client_data_hash: SHA256 hash of client data JSON
-            signature: The signature bytes
+            signature: The signature bytes (ASN.1 DER for ES256, PKCS#1 v1.5 for RS256)
 
         Returns:
             True if signature is valid
 
         Raises:
-            ValueError: If verification fails
+            ValueError: If the key is unusable or the signature does not verify
         """
-        # Check if signature verification should be skipped (for backwards compatibility)
-        # SECURITY: This should be False in production once all passkeys are re-registered
-        skip_verification = getattr(settings, "WEBAUTHN_SKIP_SIGNATURE_VERIFICATION", False)
-        if skip_verification:
-            logger.warning(
-                "SECURITY: Skipping WebAuthn signature verification "
-                "(WEBAUTHN_SKIP_SIGNATURE_VERIFICATION=True). "
-                "This should be disabled in production!"
-            )
-            return True
-
-        # The signed data is authenticator_data || client_data_hash
+        public_key = self._load_public_key(stored_public_key)
         signed_data = authenticator_data + client_data_hash
 
-        # Parse COSE key to determine algorithm
         try:
-            cose_key = self._parse_cose_key(public_key_cose)
-        except ValueError as e:
-            logger.error(f"Failed to parse COSE key: {e}")
-            raise ValueError("Invalid public key format")
+            if isinstance(public_key, ec.EllipticCurvePublicKey):
+                public_key.verify(signature, signed_data, ec.ECDSA(hashes.SHA256()))
+            elif isinstance(public_key, rsa.RSAPublicKey):
+                public_key.verify(signature, signed_data, padding.PKCS1v15(), hashes.SHA256())
+            else:
+                raise ValueError(f"Unsupported public key type: {type(public_key).__name__}")
+        except InvalidSignature:
+            raise ValueError("Signature verification failed")
 
-        # Verify the parsed key is a dict (COSE keys are CBOR maps)
-        if not isinstance(cose_key, dict):
-            logger.error(
-                f"COSE key parsing returned unexpected type: {type(cose_key).__name__}. "
-                "The stored public key may not be in COSE format. "
-                "Re-register the passkey to fix this issue."
-            )
-            raise ValueError("Invalid public key format: expected COSE key map")
+        return True
 
-        kty = cose_key.get(1)  # Key type
-        alg = cose_key.get(3)  # Algorithm
+    def _parse_authenticator_data(self, auth_data: bytes) -> Tuple[int, int]:
+        """
+        Validate authenticator data and return (flags, sign_count).
 
-        if kty == COSE_KTY_EC2 and alg == COSE_ALG_ES256:
-            return self._verify_signature_ec(public_key_cose, signature, signed_data, alg)
-        else:
-            # For other algorithms, we'd need additional implementations
-            # Currently only ES256 is supported
-            raise ValueError(f"Unsupported key type/algorithm: kty={kty}, alg={alg}")
+        Checks that the data was produced for this relying party and that the
+        user was present.
+
+        Raises:
+            ValueError: If the data is malformed or fails a check
+        """
+        if not isinstance(auth_data, bytes) or len(auth_data) < AUTH_DATA_MIN_LENGTH:
+            raise ValueError("Invalid authenticator data")
+
+        if auth_data[:32] != hashlib.sha256(self.rp_id.encode("utf-8")).digest():
+            raise ValueError("Relying party mismatch")
+
+        flags = auth_data[32]
+        if not flags & AUTH_DATA_FLAG_USER_PRESENT:
+            raise ValueError("User presence was not confirmed")
+
+        return flags, int.from_bytes(auth_data[33:37], "big")
+
+    def _parse_attested_credential(self, attestation_object: str) -> Tuple[bytes, bytes, str]:
+        """
+        Extract the new credential from an attestation object.
+
+        Returns:
+            Tuple of (credential_id, COSE public key bytes, aaguid hex)
+
+        Raises:
+            ValueError: If the attestation is malformed or carries no supported credential
+        """
+        try:
+            attestation = cbor2.loads(_b64url_decode(attestation_object or ""))
+            auth_data = attestation["authData"]
+        except Exception:
+            raise ValueError("Invalid attestation object")
+
+        flags, _ = self._parse_authenticator_data(auth_data)
+        if not flags & AUTH_DATA_FLAG_ATTESTED_CREDENTIAL:
+            raise ValueError("Attestation has no credential data")
+
+        aaguid_end = AUTH_DATA_MIN_LENGTH + AAGUID_LENGTH
+        credential_id_start = aaguid_end + 2
+        credential_id_end = credential_id_start + int.from_bytes(auth_data[aaguid_end:credential_id_start], "big")
+        credential_id = auth_data[credential_id_start:credential_id_end]
+        if len(auth_data) <= credential_id_end or not credential_id:
+            raise ValueError("Invalid attested credential data")
+
+        try:
+            # Extensions may follow the key; only the first CBOR item is the key.
+            cose_key = cbor2.loads(auth_data[credential_id_end:])
+        except Exception:
+            raise ValueError("Invalid credential public key")
+        self._public_key_from_cose(cose_key)  # reject keys we could never verify
+
+        return credential_id, cbor2.dumps(cose_key), auth_data[AUTH_DATA_MIN_LENGTH:aaguid_end].hex()
 
     # ==================
     # Registration Flow
@@ -365,7 +388,8 @@ class WebAuthnService:
         Args:
             challenge: The original challenge
             credential_id: Base64url-encoded credential ID
-            public_key: Base64url-encoded public key (COSE format)
+            public_key: Ignored. The key is read from the attestation object; the
+                argument is kept so existing clients keep working.
             attestation_object: Base64url-encoded attestation object
             client_data_json: Base64url-encoded client data JSON
             name: User-provided name for the passkey
@@ -415,24 +439,16 @@ class WebAuthnService:
         if client_data.get("type") != "webauthn.create":
             raise ValueError("Invalid client data type")
 
-        # Parse attestation object to extract AAGUID
-        aaguid = ""
+        # The credential ID and public key come from the authenticator's own data,
+        # not from the separate fields the client sends alongside it.
+        attested_credential_id, cose_public_key, aaguid = self._parse_attested_credential(attestation_object)
+
         try:
-            import cbor2
-
-            attestation_bytes = base64.urlsafe_b64decode(attestation_object + "=" * (-len(attestation_object) % 4))
-            attestation = cbor2.loads(attestation_bytes)
-            auth_data = attestation.get("authData", b"")
-
-            # Extract AAGUID from authenticator data (bytes 37-52 if flags indicate attested credential)
-            if len(auth_data) >= 55:
-                flags = auth_data[32]
-                # Check if attested credential data is present (bit 6)
-                if flags & 0x40:
-                    aaguid_bytes = auth_data[37:53]
-                    aaguid = aaguid_bytes.hex()
-        except Exception as e:
-            logger.warning(f"Failed to extract AAGUID from attestation: {e}")
+            claimed_credential_id = _b64url_decode(credential_id or "")
+        except Exception:
+            raise ValueError("Invalid credential ID")
+        if claimed_credential_id != attested_credential_id:
+            raise ValueError("Credential ID does not match attestation")
 
         # Mark challenge as used
         challenge_record.mark_used()
@@ -442,7 +458,7 @@ class WebAuthnService:
             user=self.user,
             credential_id=credential_id,
             name=name,
-            public_key=public_key,
+            public_key=_b64url_encode(cose_public_key),
             sign_count=0,
             aaguid=aaguid,
             transports=transports or [],
@@ -571,6 +587,19 @@ class WebAuthnService:
         if not challenge_record.is_valid:
             raise ValueError("Challenge expired or already used")
 
+        # A challenge requested for a known user can only be answered by that
+        # user's passkeys. Usernameless requests have no user to bind to.
+        if challenge_record.user_id is not None and challenge_record.user_id != user.id:
+            raise ValueError("Challenge was not issued for this passkey")
+
+        # Consume the challenge before checking the response, so every challenge
+        # buys exactly one attempt. The conditional update makes this race-free.
+        consumed = WebAuthnChallenge.objects.filter(pk=challenge_record.pk, used_at__isnull=True).update(
+            used_at=timezone.now()
+        )
+        if not consumed:
+            raise ValueError("Challenge expired or already used")
+
         # Decode client data
         try:
             client_data_bytes = base64.urlsafe_b64decode(client_data_json + "=" * (-len(client_data_json) % 4))
@@ -597,24 +626,22 @@ class WebAuthnService:
         except Exception as e:
             raise ValueError(f"Invalid authenticator data or signature: {e}")
 
+        # The authenticator data must be for this relying party, with the user present
+        _, new_sign_count = self._parse_authenticator_data(auth_data_bytes)
+
         # SECURITY: Verify the cryptographic signature
         # Signature is over: authenticator_data || SHA256(client_data_json)
         client_data_hash = hashlib.sha256(client_data_bytes).digest()
 
         try:
-            # Decode the stored public key
-            public_key_bytes = base64.urlsafe_b64decode(passkey.public_key + "=" * (-len(passkey.public_key) % 4))
-
-            # Verify the signature
             self._verify_webauthn_signature(
-                public_key_cose=public_key_bytes,
+                stored_public_key=passkey.public_key,
                 authenticator_data=auth_data_bytes,
                 client_data_hash=client_data_hash,
                 signature=signature_bytes,
             )
-            logger.debug(f"WebAuthn signature verification successful for user {user.email}")
-        except ValueError:
-            # Log the authentication failure
+        except ValueError as e:
+            logger.warning(f"WebAuthn signature verification failed for passkey {passkey.id}: {e}")
             SSOAuditLog.log_event(
                 event_type=SSOAuditEventType.PASSKEY_AUTH_FAILED,
                 user=user,
@@ -624,13 +651,6 @@ class WebAuthnService:
                 metadata={"credential_id_prefix": credential_id[:8] if credential_id else "unknown"},
             )
             raise ValueError("Authentication failed: signature verification failed")
-
-        # Parse sign count from authenticator data (bytes 33-36, big-endian uint32)
-        try:
-            new_sign_count = int.from_bytes(auth_data_bytes[33:37], "big")
-        except Exception:
-            logger.warning("Failed to parse sign count from authenticator data")
-            new_sign_count = passkey.sign_count + 1
 
         # SECURITY: Verify sign count (protection against cloned authenticators)
         strict_sign_count = getattr(settings, "WEBAUTHN_STRICT_SIGN_COUNT", True)
@@ -669,9 +689,6 @@ class WebAuthnService:
                     "Sign count anomaly allowed (WEBAUTHN_STRICT_SIGN_COUNT=False). "
                     "This is not recommended for production use."
                 )
-
-        # Mark challenge as used (before successful completion)
-        challenge_record.mark_used()
 
         # Update passkey with new sign count
         passkey.record_use(new_sign_count)
