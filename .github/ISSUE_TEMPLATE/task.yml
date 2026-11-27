@@ -1,0 +1,52 @@
+name: "\U0001F4CB Task"
+description: Describe a piece of work for this repository
+title: "[Task]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to describe this task!
+
+  - type: textarea
+    id: context-why
+    attributes:
+      label: Context / Why
+      description: What is the current state, and why does it need to change? Link the code or the earlier issue that shows it.
+      placeholder: |
+        `CLAUDE.md`'s `Dev flow bindings` table carries `Specs and plans | unknown`. #714 left the row open on purpose.
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-needs-to-be-done
+    attributes:
+      label: What needs to be done
+      description: The concrete changes this task asks for. If you intend to submit a PR for this task, tell us in the description.
+      placeholder: |
+        - Decide where specs and plans live in this repo.
+        - Add or confirm the matching `.gitignore` rule.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: The checks a reviewer can run to accept this task. One `- [ ]` item per check.
+      placeholder: |
+        - [ ] `CLAUDE.md`'s `Specs and plans` row names a specs path and a plans path
+        - [ ] The tracked-or-ignored decision for those paths is reflected in `.gitignore`
+    validations:
+      required: true
+
+  - type: textarea
+    id: related-links
+    attributes:
+      label: Related links
+      description: Earlier issues, pull requests, or documentation this task builds on.
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: Work this task deliberately does not do, so the change stays small.
