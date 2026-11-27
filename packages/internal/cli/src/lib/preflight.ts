@@ -96,16 +96,16 @@ async function checkNodejs(): Promise<CheckResult> {
     return {
       passed: false,
       message: 'Node.js is not installed',
-      hint: 'Install Node.js 20+ from https://nodejs.org or use nvm',
+      hint: 'Install Node.js 22.19+ from https://nodejs.org or use nvm',
       critical: true,
     };
   }
 
-  if (result.version && !compareVersions(result.version, '20.0')) {
+  if (result.version && !compareVersions(result.version, '22.19.0')) {
     return {
       passed: false,
-      message: `Node.js ${result.version} found, but 20+ is required`,
-      hint: 'Upgrade Node.js: nvm install 20 && nvm use 20',
+      message: `Node.js ${result.version} found, but 22.19+ is required`,
+      hint: 'Upgrade Node.js: nvm install 22 && nvm use 22',
       critical: true,
     };
   }

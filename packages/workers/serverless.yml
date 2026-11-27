@@ -2,7 +2,7 @@ service: "${env:PROJECT_NAME}-workers"
 
 provider:
   name: aws
-  runtime: 'nodejs18.x'
+  runtime: python3.11
   versionFunctions: false
   stage: "${env:ENV_STAGE}"
   region: "${env:AWS_DEFAULT_REGION}"

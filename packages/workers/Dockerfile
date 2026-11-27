@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y wget gnupg curl unzip make xz-utils bui
   && pip install --upgrade pip \
   && pip install --no-cache-dir uv==0.9.29
 
-RUN curl -fsS https://deb.nodesource.com/setup_20.x | bash - \
+RUN curl -fsS https://deb.nodesource.com/setup_22.x | bash - \
   && apt-get --no-install-recommends install -y nodejs \
   && npm i --ignore-scripts -g npm@^8 pnpm@~10.13.0 \
   && rm -rf /var/lib/apt/lists/*
